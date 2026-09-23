@@ -14,6 +14,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Seed upgrades: an inventory nobody has edited is rebuilt from a newer seed (and archived first).
   An edited inventory is kept, and the user is told.
 - **iOS / iPadOS**: the same target now builds for iOS 18+ (the App Sandbox entitlements are macOS-only).
+- First notarised release (0.1.0) accepted by Apple on 2026-09-23. The release archive now targets macOS explicitly,
+  since the multiplatform target otherwise archives for iOS.
 - Signing with team 27RXPRW77S. `tools/release/build-release.sh` produces a Developer ID–signed build and
   notarises it once a `LinumicCommandCenter` notarytool profile exists.
 

@@ -19,7 +19,7 @@ rm -rf "$OUT" && mkdir -p "$OUT"
 
 xcodegen generate >/dev/null
 swift test --package-path Packages/LinumicCore >/dev/null
-xcodebuild -project LinumicCommandCenter.xcodeproj -scheme LinumicCommandCenter -configuration Release \
+xcodebuild -project LinumicCommandCenter.xcodeproj -scheme LinumicCommandCenter -configuration Release -destination 'generic/platform=macOS' \
   -archivePath "$OUT/LinumicCommandCenter.xcarchive" -allowProvisioningUpdates archive | tail -1
 xcodebuild -exportArchive -archivePath "$OUT/LinumicCommandCenter.xcarchive" -exportPath "$OUT/export" \
   -exportOptionsPlist tools/release/ExportOptions.plist -allowProvisioningUpdates | tail -1

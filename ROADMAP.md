@@ -48,5 +48,5 @@ the app.
 ## Clients
 
 - [x] iOS/iPadOS from the same target (builds for the Simulator; device install needs a provisioning run in Xcode)
-- [ ] Notarised macOS release (needs the one-time notarytool profile)
+- [x] Notarised macOS release (tools/release/build-release.sh; first build accepted 2026-09-23)
 - Web client: not planned for now (owner: Mac + iOS)
