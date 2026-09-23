@@ -1,7 +1,8 @@
 # Integrations
 
 **Connected:** GitHub (read-only) and the public App Store lookup (read-only, no credentials).
-**Not connected:** App Store Connect, Google Play Console, social networks, AI providers. Each one is added
+**Built, waiting for the owner's keys:** App Store Connect and Google Play Console (both read-only, both free).
+**Not connected:** social networks, AI providers. Each one is added
 only when explicit credentials and authorization are provided.
 
 ## Principles
@@ -56,20 +57,30 @@ only when explicit credentials and authorization are provided.
 - Limits: public data only. There are no review states, no pending versions and no TestFlight;
   those need App Store Connect.
 
-## Apple App Store Connect (Phase 4, not connected)
+## Apple App Store Connect (implemented, read-only; needs the owner's key)
 
-- App Store Connect API with an API key (`.p8`). The key is never committed
-  (`*.p8` is in `.gitignore`). It is stored in the Keychain, later on the backend.
-- Role: the least-privileged role that can read app status.
-- Data: production version, latest submitted build, review state, TestFlight
-  build state.
+- `AppStoreConnectClient` signs a 15-minute ES256 JWT with a team API key and makes only `GET`
+  requests: `/v1/apps?filter[bundleId]=…` and `/v1/apps/{id}/appStoreVersions`.
+- Key: App Store Connect → Users and Access → Integrations → App Store Connect API → Team Keys,
+  role **Developer** (the least privilege that can read versions). Free with the developer membership.
+- Settings → Integrations takes the Issuer ID, Key ID and the `.p8` file. They're stored together in
+  the Keychain (`appstoreconnect.key`); the file itself is never copied or committed (`*.p8` is ignored).
+- For each App Store listing: the live version per platform → `productionVersion`; the newest version
+  that isn't live or superseded → `latestSubmittedVersion` and `reviewStatus` (e.g. "Waiting for review").
+  A dated source "App Store Connect API /v1/apps/{id}/appStoreVersions" replaces the previous one.
 
-## Google Play Console (Phase 4, not connected)
+## Google Play Console (implemented, read-only; needs the owner's service account)
 
-- Google Play Developer API through a service account with read-only access
-  to the listed apps. The JSON key is never committed.
-- Data: track versions (internal/closed/open/production), release status,
-  review status.
+- `GooglePlayClient` exchanges an RS256 JWT for an access token (scope `androidpublisher`), then calls
+  `GET applications/{package}/tracks/{track}/releases` for production, beta, alpha and internal.
+  This endpoint needs **no edit**, so nothing is ever drafted or committed.
+- Service account: Google Cloud → service account + JSON key, enable the Google Play Android Developer
+  API; Play Console → Users and permissions → invite its email with **View app information (read-only)**.
+  Free.
+- The JSON key is stored only in the Keychain (`googleplay.serviceaccount`); `*service-account*.json` is ignored.
+- For each Google Play listing: the published production release → `productionVersion`; every other
+  release is listed in `reviewStatus` with its track and lifecycle state (draft, in review, approved…).
+- Custom closed-testing tracks aren't read yet; closed testing on the default `alpha` track is.
 
 ## Social media (Phase 5)
 

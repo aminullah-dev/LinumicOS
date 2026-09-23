@@ -110,6 +110,49 @@ final class InventoryModel {
         lastAppStoreSync = (.now, report)
     }
 
+    private(set) var syncingConsoles: Set<AppStore> = []
+    private(set) var lastConsoleSync: [AppStore: (at: Date, report: StoreConsoleSync.Report)] = [:]
+
+    func consoleSecretKey(_ store: AppStore) -> SecretKey {
+        store == .appStore ? .appStoreConnectKey : .googlePlayServiceAccount
+    }
+
+    func hasConsoleCredentials(_ store: AppStore) -> Bool {
+        ((try? secrets.read(consoleSecretKey(store))) ?? nil) != nil
+    }
+
+    /// Reads versions and review states from App Store Connect or the Play Console, read-only,
+    /// with the credentials in the Keychain, and updates only that store's listings.
+    func refreshFromConsole(_ store: AppStore) async {
+        guard !syncingConsoles.contains(store) else { return }
+        syncingConsoles.insert(store)
+        defer { syncingConsoles.remove(store) }
+        let updated: [Product]
+        let report: StoreConsoleSync.Report
+        do {
+            guard let stored = try secrets.read(consoleSecretKey(store)) else { return }
+            switch store {
+            case .appStore:
+                let credentials = try JSONDecoder().decode(AppStoreConnectCredentials.self, from: Data(stored.utf8))
+                (updated, report) = await StoreConsoleSync.refreshAppStoreConnect(products, using: AppStoreConnectClient(credentials: credentials))
+            case .googlePlay:
+                let credentials = try GooglePlayCredentials(serviceAccountJSON: Data(stored.utf8))
+                (updated, report) = await StoreConsoleSync.refreshGooglePlay(products, using: GooglePlayClient(credentials: credentials))
+            }
+        } catch {
+            errorMessage = String(localized: "Could not use the \(store.title) credentials: \(error.localizedDescription)")
+            return
+        }
+        for product in updated {
+            update(product.id) { current in
+                for listing in product.storeListings where listing.store == store {
+                    if let i = current.storeListings.firstIndex(where: { $0.id == listing.id }) { current.storeListings[i] = listing }
+                }
+            }
+        }
+        lastConsoleSync[store] = (.now, report)
+    }
+
     /// Refreshes every GitHub repository snapshot, read-only. Without a token only public repositories succeed.
     func refreshGitHub() async {
         guard !isSyncingGitHub else { return }

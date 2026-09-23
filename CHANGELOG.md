@@ -5,6 +5,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: App Store Connect and Google Play Console (read-only)
+- App Store Connect API client (ES256 JWT, GET only) and Google Play Developer API client (RS256 service
+  account, releases list without edits). Keys are added in Settings → Integrations and kept in the Keychain.
+- Store screens get "Refresh from App Store Connect" / "Refresh from Play Console": live and submitted
+  versions and review states, each with a dated API source.
+- 9 tests with generated keys and stubbed responses (83 in total).
+
 ### Added: verified product registry
 - Evidence kinds for local files: Git repository, project configuration, Xcode project, package manifest and Gradle
   configuration, plus `other`. The seed (revision 4) classifies each local source by the file it read. Unknown kinds

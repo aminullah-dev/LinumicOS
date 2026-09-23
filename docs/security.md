@@ -21,7 +21,10 @@ post as Linumic, so it is treated as a production system.
   `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`, not synced to iCloud). The store prefers the
   data-protection keychain. Ad-hoc signed development builds lack that entitlement and fall
   back to the login keychain, which is also device-local.
-- **Stored credentials today:** at most one, the optional read-only GitHub token (`github.token`).
+- **Stored credentials:** only optional read-only ones, each added by the owner in Settings: the GitHub
+  token (`github.token`), the App Store Connect API key (`appstoreconnect.key`, Developer role) and the
+  Google Play service account (`googleplay.serviceaccount`, "View app information"), plus the Supabase
+  session. The console clients only read: GET requests, and Play's release list needs no edit.
 - **No secrets in source or Git.** `.gitignore` blocks `.env*`, `*.p8`, `*.p12`,
   `*.pem`, `*.key`, keystores, provisioning profiles and service-account JSON.
   Check `git diff --cached` before each commit.

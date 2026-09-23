@@ -6,6 +6,10 @@ public enum SecretKey: String, CaseIterable, Sendable {
     case gitHubToken = "github.token"
     /// The signed-in Supabase session (access + refresh token), never written anywhere but the Keychain.
     case supabaseSession = "supabase.session"
+    /// App Store Connect API key: Issuer ID, Key ID and the .p8 contents, as JSON.
+    case appStoreConnectKey = "appstoreconnect.key"
+    /// Google Play service-account JSON key.
+    case googlePlayServiceAccount = "googleplay.serviceaccount"
 }
 
 /// Credential storage. Values never appear in source, logs or the inventory file.

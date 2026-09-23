@@ -53,6 +53,15 @@ struct StoreListingsView: View {
         }
         .navigationTitle(store.title)
         .toolbar {
+            if model.hasConsoleCredentials(store) {
+                Button {
+                    Task { await model.refreshFromConsole(store) }
+                } label: {
+                    if model.syncingConsoles.contains(store) { ProgressView().controlSize(.small) } else { Label(store == .appStore ? "Refresh from App Store Connect" : "Refresh from Play Console", systemImage: "arrow.triangle.2.circlepath") }
+                }
+                .help("Read versions and review states with the read-only key in Settings → Integrations")
+                .disabled(model.syncingConsoles.contains(store))
+            }
             if store == .appStore {
                 Button {
                     Task { await model.refreshAppStore() }
@@ -69,8 +78,16 @@ struct StoreListingsView: View {
     @ViewBuilder
     private var banner: some View {
         VStack(alignment: .leading, spacing: 4) {
+            if let sync = model.lastConsoleSync[store] {
+                Text(verbatim: String(localized: "Console refresh \(sync.at.formatted(date: .omitted, time: .shortened)): \(sync.report.updated.count) updated")
+                     + (sync.report.notInAccount.isEmpty ? "" : String(localized: ", not in this account: \(sync.report.notInAccount.joined(separator: ", "))"))
+                     + (sync.report.failed.isEmpty ? "" : String(localized: ", failed: \(sync.report.failed.map { "\($0.key) (\($0.value))" }.sorted().joined(separator: "; "))")))
+                    .foregroundStyle(.primary)
+            }
             if store == .appStore {
-                Text("Live versions come from Apple's public lookup (US, then Afghanistan storefront). Submitted versions and review states come from the owner's App Store Connect screenshot. App Store Connect itself isn't connected.")
+                Text(model.hasConsoleCredentials(.appStore)
+                     ? "Versions and review states come from App Store Connect (read-only key). Refresh Public Status reads Apple's public lookup instead."
+                     : "Live versions come from Apple's public lookup (US, then Afghanistan storefront). Submitted versions and review states come from the owner's App Store Connect screenshot. Add a read-only key in Settings → Integrations to read them directly.")
                 if let sync = model.lastAppStoreSync {
                     Text(verbatim: String(localized: "Last refresh \(sync.at.formatted(date: .omitted, time: .shortened)): \(sync.report.updated.count) updated")
                          + (sync.report.notPublic.isEmpty ? "" : String(localized: ", not public yet: \(sync.report.notPublic.joined(separator: ", "))"))
@@ -78,7 +95,9 @@ struct StoreListingsView: View {
                         .foregroundStyle(.primary)
                 }
             } else {
-                Text("Google Play has no public API. Listings here were checked on their public pages. Production versions need the Google Play Developer API, which needs a service account that isn't connected.")
+                Text(model.hasConsoleCredentials(.googlePlay)
+                     ? "Releases and review states come from the Google Play Developer API (read-only service account)."
+                     : "Listings here were checked on their public pages and in the Play Console. Add a read-only service account in Settings → Integrations to read releases directly.")
             }
         }
         .font(.caption)

@@ -81,6 +81,36 @@
         }
       }
     },
+    "%@ refused access (403). The key or account lacks read permission for this app.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ دسترسی نداد (403). کلید یا حساب اجازهٔ خواندن این برنامه را ندارد."
+          }
+        }
+      }
+    },
+    "%@ rejected the credentials (401). Check them in Settings → Integrations.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ اطلاعات ورود را رد کرد (401). آن را در تنظیمات ← اتصال‌ها بررسی کنید."
+          }
+        }
+      }
+    },
+    "%@ returned HTTP %d.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ خطای HTTP %d برگرداند."
+          }
+        }
+      }
+    },
     "%@ · %@": {
       "localizations": {
         "fa-AF": {
@@ -391,6 +421,16 @@
         }
       }
     },
+    ", not in this account: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "، در این حساب نیست: %@"
+          }
+        }
+      }
+    },
     ", not public yet: %@": {
       "localizations": {
         "fa-AF": {
@@ -647,6 +687,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "App Store Connect"
+          }
+        }
+      }
+    },
+    "App Store Connect → Users and Access → Integrations → App Store Connect API → Team Keys. Create a key with the Developer role and download the .p8 file (Apple lets you download it only once). Free.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App Store Connect ← Users and Access ← Integrations ← App Store Connect API ← Team Keys. یک کلید با نقش Developer بسازید و فایل ‎.p8 را دانلود کنید (Apple فقط یک بار اجازهٔ دانلود می‌دهد). رایگان است."
           }
         }
       }
@@ -951,6 +1001,26 @@
         }
       }
     },
+    "Choose .p8 Key File…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتخاب فایل کلید ‎.p8…"
+          }
+        }
+      }
+    },
+    "Choose JSON Key File…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتخاب فایل کلید JSON…"
+          }
+        }
+      }
+    },
     "Close and reopen the app to apply the new language.": {
       "localizations": {
         "fa-AF": {
@@ -1051,6 +1121,26 @@
         }
       }
     },
+    "Connected (read-only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وصل (فقط خواندن)"
+          }
+        }
+      }
+    },
+    "Console refresh %@: %lld updated": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به‌روزرسانی از کنسول %@: %lld مورد به‌روز شد"
+          }
+        }
+      }
+    },
     "Content Calendar": {
       "localizations": {
         "fa-AF": {
@@ -1117,6 +1207,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "فهرست محصولات به‌روز نشد: %@"
+          }
+        }
+      }
+    },
+    "Could not use the %@ credentials: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اطلاعات ورود %@ قابل استفاده نبود: %@"
           }
         }
       }
@@ -1881,6 +1981,16 @@
         }
       }
     },
+    "Google Cloud → create a service account and a JSON key, enable the Google Play Android Developer API. Then Play Console → Users and permissions → invite the service account's email with \"View app information (read-only)\". Free.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در Google Cloud یک service account و کلید JSON بسازید و Google Play Android Developer API را فعال کنید. بعد در Play Console ← Users and permissions ایمیل service account را با اجازهٔ «View app information (read-only)» دعوت کنید. رایگان است."
+          }
+        }
+      }
+    },
     "Google Play": {
       "localizations": {
         "fa-AF": {
@@ -2141,6 +2251,26 @@
         }
       }
     },
+    "Issuer ID": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Issuer ID"
+          }
+        }
+      }
+    },
+    "Issuer ID and Key ID are required.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Issuer ID و Key ID لازم است."
+          }
+        }
+      }
+    },
     "Issues": {
       "localizations": {
         "fa-AF": {
@@ -2157,6 +2287,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "مورد"
+          }
+        }
+      }
+    },
+    "Key ID": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Key ID"
+          }
+        }
+      }
+    },
+    "Key removed.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید حذف شد."
           }
         }
       }
@@ -2361,6 +2511,16 @@
         }
       }
     },
+    "Listings here were checked on their public pages and in the Play Console. Add a read-only service account in Settings → Integrations to read releases directly.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این فهرست از صفحه‌های عمومی و Play Console بررسی شده. برای خواندن مستقیم انتشارها، در تنظیمات ← اتصال‌ها یک service account فقط‌خواندنی اضافه کنید."
+          }
+        }
+      }
+    },
     "Live": {
       "localizations": {
         "fa-AF": {
@@ -2381,12 +2541,32 @@
         }
       }
     },
+    "Live versions come from Apple's public lookup (US, then Afghanistan storefront). Submitted versions and review states come from the owner's App Store Connect screenshot. Add a read-only key in Settings → Integrations to read them directly.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخه‌های زنده از جست‌وجوی عمومی Apple می‌آید (اول آمریکا، بعد افغانستان). نسخه‌های ارسال‌شده و وضعیت بررسی از اسکرین‌شات App Store Connect مالک است. برای خواندن مستقیم، در تنظیمات ← اتصال‌ها یک کلید فقط‌خواندنی اضافه کنید."
+          }
+        }
+      }
+    },
     "Live versions come from Apple's public lookup (US, then Afghanistan storefront). Submitted versions and review states come from the owner's App Store Connect screenshot. App Store Connect itself isn't connected.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "نسخه‌های فعال از جستجوی عمومی اپل (اول فروشگاه امریکا، بعد افغانستان) گرفته می‌شوند. نسخه‌های ارسال‌شده و وضعیت بازبینی از تصویر App Store Connect مالک است. خود App Store Connect وصل نیست."
+          }
+        }
+      }
+    },
+    "Live, nothing pending": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زنده، چیزی در انتظار نیست"
           }
         }
       }
@@ -3171,12 +3351,32 @@
         }
       }
     },
+    "Not found in this account: %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در این حساب پیدا نشد: %@."
+          }
+        }
+      }
+    },
     "Not found on GitHub (404): %@. A private repository needs a token with access to it.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "در GitHub پیدا نشد (404): %@. مخزن خصوصی به توکنی با دسترسی نیاز دارد."
+          }
+        }
+      }
+    },
+    "Not found: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیدا نشد: %@"
           }
         }
       }
@@ -3851,6 +4051,16 @@
         }
       }
     },
+    "Read versions and review states with the read-only key in Settings → Integrations": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن نسخه‌ها و وضعیت بررسی با کلید فقط‌خواندنی در تنظیمات ← اتصال‌ها"
+          }
+        }
+      }
+    },
     "Read-only refresh of every GitHub repository (⌘R)": {
       "localizations": {
         "fa-AF": {
@@ -3867,6 +4077,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "معلومات مخزن، کامیت‌ها، انتشارها، درخواست‌های ادغام، مشکلات و CI را می‌خواند. هرگز چیزی نمی‌نویسد."
+          }
+        }
+      }
+    },
+    "Reads the releases on each track and their review state. It never creates an edit or changes anything.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشارهای هر مسیر و وضعیت بررسی‌شان را می‌خواند. هیچ ویرایشی نمی‌سازد و چیزی را تغییر نمی‌دهد."
+          }
+        }
+      }
+    },
+    "Reads versions and review states of your apps. It never changes anything.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخه‌ها و وضعیت بررسی برنامه‌های شما را می‌خواند. هیچ چیزی را تغییر نمی‌دهد."
           }
         }
       }
@@ -3911,6 +4141,16 @@
         }
       }
     },
+    "Refresh %@ Listings": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به‌روزرسانی فهرست‌های %@"
+          }
+        }
+      }
+    },
     "Refresh All Repositories": {
       "localizations": {
         "fa-AF": {
@@ -3931,12 +4171,42 @@
         }
       }
     },
+    "Refresh from App Store Connect": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به‌روزرسانی از App Store Connect"
+          }
+        }
+      }
+    },
     "Refresh from GitHub": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "به‌روزرسانی از GitHub"
+          }
+        }
+      }
+    },
+    "Refresh from Play Console": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به‌روزرسانی از Play Console"
+          }
+        }
+      }
+    },
+    "Refreshed %lld listings at %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld فهرست در ساعت %@ به‌روز شد."
           }
         }
       }
@@ -4091,6 +4361,16 @@
         }
       }
     },
+    "Releases and review states come from the Google Play Developer API (read-only service account).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشارها و وضعیت بررسی از Google Play Developer API می‌آید (service account فقط‌خواندنی)."
+          }
+        }
+      }
+    },
     "Releases are recorded manually. There's no release tracking outside Linumic OS yet.": {
       "localizations": {
         "fa-AF": {
@@ -4107,6 +4387,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "اعتبار و شرایط استفاده"
+          }
+        }
+      }
+    },
+    "Remove Key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حذف کلید"
           }
         }
       }
@@ -4331,6 +4621,16 @@
         }
       }
     },
+    "Saved to the Keychain. You can delete the downloaded key file now.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در Keychain ذخیره شد. حالا می‌توانید فایل کلید دانلودشده را پاک کنید."
+          }
+        }
+      }
+    },
     "Schedule": {
       "localizations": {
         "fa-AF": {
@@ -4537,6 +4837,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "وارد شده‌اید، اما این حساب هنوز دسترسی مدیر به Linumic OS ندارد."
+          }
+        }
+      }
+    },
+    "Signing with the private key failed.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امضا با کلید خصوصی ناموفق بود."
           }
         }
       }
@@ -4941,6 +5251,16 @@
         }
       }
     },
+    "The .p8 file isn't an App Store Connect private key.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل ‎.p8 کلید خصوصی App Store Connect نیست."
+          }
+        }
+      }
+    },
     "The inventory file contains no secrets.": {
       "localizations": {
         "fa-AF": {
@@ -4971,6 +5291,46 @@
         }
       }
     },
+    "The key can't be used: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کلید قابل استفاده نیست: %@"
+          }
+        }
+      }
+    },
+    "The private key isn't an RSA key.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید خصوصی از نوع RSA نیست."
+          }
+        }
+      }
+    },
+    "The private key isn't valid PEM.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید خصوصی PEM معتبر نیست."
+          }
+        }
+      }
+    },
+    "The private key isn't valid PKCS#8.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید خصوصی PKCS#8 معتبر نیست."
+          }
+        }
+      }
+    },
     "These need credentials and authorization before they can be added. See docs/integrations.md.": {
       "localizations": {
         "fa-AF": {
@@ -4997,6 +5357,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "یک یافته به این شاهد استناد می‌کند. اول آن یافته را حذف یا ویرایش کنید."
+          }
+        }
+      }
+    },
+    "This isn't a Google service-account JSON key.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این فایل کلید JSON یک service account گوگل نیست."
           }
         }
       }
@@ -5277,6 +5647,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نسخه در تنظیمات بیلد"
+          }
+        }
+      }
+    },
+    "Versions and review states come from App Store Connect (read-only key). Refresh Public Status reads Apple's public lookup instead.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخه‌ها و وضعیت بررسی از App Store Connect می‌آید (کلید فقط‌خواندنی). «به‌روزرسانی وضعیت عمومی» به جای آن جست‌وجوی عمومی Apple را می‌خواند."
           }
         }
       }

@@ -4,6 +4,7 @@ import AppKit
 import AuthenticationServices
 import LinumicCore
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct IntegrationsSettingsView: View {
     @Environment(InventoryModel.self) private var model
@@ -12,8 +13,6 @@ struct IntegrationsSettingsView: View {
     @State private var message: String?
 
     private let integrations: [(name: String, symbol: String, plan: String)] = [
-        ("App Store Connect", "applelogo", "Phase 4: read-only API key"),
-        ("Google Play Console", "play.rectangle", "Phase 4: read-only service account"),
         ("Social networks", "bubble.left.and.bubble.right", "Phase 5: OAuth, approval before publishing"),
         ("AI provider", "sparkles", "Phase 6: key held on backend"),
     ]
@@ -48,6 +47,8 @@ struct IntegrationsSettingsView: View {
             } footer: {
                 Text("Use a fine-grained token with read-only Metadata, Contents, Issues, Pull requests and Actions on the Linumic repositories. It's stored only in this Mac's Keychain.")
             }
+            StoreConsoleSection(store: .appStore)
+            StoreConsoleSection(store: .googlePlay)
             Section {
                 ForEach(integrations, id: \.name) { i in
                     LabeledContent {
@@ -92,6 +93,132 @@ struct IntegrationsSettingsView: View {
     private func syncSummary() -> String? {
         guard let sync = model.lastGitHubSync else { return nil }
         var text = String(localized: "Refreshed \(sync.report.updated.count) repositories at \(sync.at.formatted(date: .omitted, time: .shortened)).")
+        if !sync.report.failed.isEmpty { text += " " + String(localized: "\(sync.report.failed.count) failed:") + " " + sync.report.failed.map { "\($0.key) (\($0.value))" }.sorted().joined(separator: "; ") }
+        return text
+    }
+}
+
+/// Read-only store console credentials: an App Store Connect API key or a Google Play service account.
+/// The key file is read once and kept only in the Keychain.
+private struct StoreConsoleSection: View {
+    let store: AppStore
+    @Environment(InventoryModel.self) private var model
+    @State private var issuerID = ""
+    @State private var keyID = ""
+    @State private var keyFileContents: String?
+    @State private var keyFileName: String?
+    @State private var isImporting = false
+    @State private var connected = false
+    @State private var message: String?
+
+    private var isApple: Bool { store == .appStore }
+    private var fileTypes: [UTType] { isApple ? [UTType(filenameExtension: "p8") ?? .data, .data] : [.json] }
+
+    var body: some View {
+        Section {
+            LabeledContent {
+                StatusBadge(text: connected ? String(localized: "Connected (read-only)") : String(localized: "Not connected"), color: connected ? .green : .gray)
+            } label: {
+                Label(isApple ? "App Store Connect" : "Google Play Console", systemImage: isApple ? "applelogo" : "play.rectangle")
+                Text(isApple ? "Reads versions and review states of your apps. It never changes anything." : "Reads the releases on each track and their review state. It never creates an edit or changes anything.")
+            }
+            if !connected {
+                if isApple {
+                    TextField("Issuer ID", text: $issuerID, prompt: Text(verbatim: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"))
+                    TextField("Key ID", text: $keyID, prompt: Text(verbatim: "ABC123DEFG"))
+                }
+                HStack {
+                    Button(isApple ? "Choose .p8 Key File…" : "Choose JSON Key File…") { isImporting = true }
+                    if let keyFileName { Text(verbatim: keyFileName).font(.caption.monospaced()).foregroundStyle(.secondary) }
+                    Spacer()
+                    Button("Save to Keychain") { save() }
+                        .disabled(keyFileContents == nil || (isApple && (issuerID.isEmpty || keyID.isEmpty)))
+                }
+            } else {
+                HStack {
+                    Button("Remove Key", role: .destructive) { remove() }
+                    Spacer()
+                    Button {
+                        Task { await model.refreshFromConsole(store); message = summary() }
+                    } label: {
+                        if model.syncingConsoles.contains(store) { ProgressView().controlSize(.small) } else { Text("Refresh \(store.title) Listings") }
+                    }
+                    .disabled(model.syncingConsoles.contains(store))
+                }
+            }
+            if let message { Text(verbatim: message).font(.caption).foregroundStyle(.secondary) }
+        } header: {
+            Text(isApple ? "App Store Connect" : "Google Play")
+        } footer: {
+            Text(isApple
+                 ? "App Store Connect → Users and Access → Integrations → App Store Connect API → Team Keys. Create a key with the Developer role and download the .p8 file (Apple lets you download it only once). Free."
+                 : "Google Cloud → create a service account and a JSON key, enable the Google Play Android Developer API. Then Play Console → Users and permissions → invite the service account's email with \"View app information (read-only)\". Free.")
+        }
+        .fileImporter(isPresented: $isImporting, allowedContentTypes: fileTypes) { result in load(result) }
+        .onAppear { connected = model.hasConsoleCredentials(store) }
+    }
+
+    private func load(_ result: Result<URL, Error>) {
+        do {
+            let url = try result.get()
+            let scoped = url.startAccessingSecurityScopedResource()
+            defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+            let text = try String(contentsOf: url, encoding: .utf8)
+            if isApple {
+                try AppStoreConnectCredentials(issuerID: "-", keyID: "-", privateKeyPEM: text).validate()
+                // The file is named AuthKey_<KeyID>.p8, so the Key ID can be filled in for the owner.
+                let name = url.deletingPathExtension().lastPathComponent
+                if keyID.isEmpty, name.hasPrefix("AuthKey_") { keyID = String(name.dropFirst("AuthKey_".count)) }
+            } else {
+                _ = try GooglePlayCredentials(serviceAccountJSON: Data(text.utf8))
+            }
+            keyFileContents = text
+            keyFileName = url.lastPathComponent
+            message = nil
+        } catch {
+            keyFileContents = nil
+            keyFileName = nil
+            message = error.localizedDescription
+        }
+    }
+
+    private func save() {
+        guard let keyFileContents else { return }
+        do {
+            let value: String
+            if isApple {
+                let credentials = AppStoreConnectCredentials(issuerID: issuerID, keyID: keyID, privateKeyPEM: keyFileContents)
+                try credentials.validate()
+                value = String(decoding: try JSONEncoder().encode(credentials), as: UTF8.self)
+            } else {
+                value = keyFileContents
+            }
+            try model.secrets.write(value, for: model.consoleSecretKey(store))
+            self.keyFileContents = nil
+            keyFileName = nil
+            issuerID = ""
+            keyID = ""
+            connected = true
+            message = String(localized: "Saved to the Keychain. You can delete the downloaded key file now.")
+        } catch {
+            message = String(localized: "Could not save: \(error.localizedDescription)")
+        }
+    }
+
+    private func remove() {
+        do {
+            try model.secrets.delete(model.consoleSecretKey(store))
+            connected = false
+            message = String(localized: "Key removed.")
+        } catch {
+            message = String(localized: "Could not remove: \(error.localizedDescription)")
+        }
+    }
+
+    private func summary() -> String? {
+        guard let sync = model.lastConsoleSync[store] else { return nil }
+        var text = String(localized: "Refreshed \(sync.report.updated.count) listings at \(sync.at.formatted(date: .omitted, time: .shortened)).")
+        if !sync.report.notInAccount.isEmpty { text += " " + String(localized: "Not found in this account: \(sync.report.notInAccount.joined(separator: ", ")).") }
         if !sync.report.failed.isEmpty { text += " " + String(localized: "\(sync.report.failed.count) failed:") + " " + sync.report.failed.map { "\($0.key) (\($0.value))" }.sorted().joined(separator: "; ") }
         return text
     }
