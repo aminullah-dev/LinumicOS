@@ -4,6 +4,12 @@ import SwiftUI
 struct DashboardView: View {
     @Environment(InventoryModel.self) private var model
     @Environment(Router.self) private var router
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    private var statusColumns: Int { sizeClass == .compact ? 2 : 4 }
+    #else
+    private let statusColumns = 4
+    #endif
 
     var body: some View {
         let s = model.summary
@@ -27,7 +33,7 @@ struct DashboardView: View {
                     .buttonStyle(.plain)
                 }
 
-                HStack(spacing: 12) {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: statusColumns), spacing: 12) {
                     ForEach([VerificationStatus.verified, .partiallyVerified, .unknown, .conflicting]) { status in
                         VStack(alignment: .leading, spacing: 6) {
                             VerificationBadge(status: status)
@@ -51,7 +57,7 @@ struct DashboardView: View {
                     MetricTile(title: "Critical issues", value: s.openCriticalIssues.count, symbol: "exclamationmark.triangle", tint: s.openCriticalIssues.isEmpty ? .secondary : .red)
                 }
 
-                HStack(alignment: .top, spacing: 16) {
+                AdaptiveStack {
                     DashboardPanel(title: "Upcoming releases") {
                         if s.upcomingReleases.isEmpty {
                             EmptyPanelText("No upcoming releases recorded.")
@@ -72,7 +78,7 @@ struct DashboardView: View {
                     }
                 }
 
-                HStack(alignment: .top, spacing: 16) {
+                AdaptiveStack {
                     DashboardPanel(title: "Critical issues") {
                         if s.openCriticalIssues.isEmpty {
                             EmptyPanelText("No open critical issues recorded.")
@@ -104,11 +110,11 @@ struct DashboardView: View {
                     }
                 }
 
-                HStack(alignment: .top, spacing: 16) {
+                AdaptiveStack {
                     DashboardPanel(title: "Store status") {
                         LabeledContent("Products on the App Store") { Text(s.productsWithAppStoreListing, format: .number) }
                         LabeledContent("Products on Google Play") { Text(s.productsWithGooglePlayListing, format: .number) }
-                        Text("From public store pages and the owner's App Store Connect screenshot (2026-09-23). Live sync needs the store integrations, which aren't connected.")
+                        Text("From public store pages and the owner's App Store Connect screenshot (2026-09-23), or live from the consoles once their read-only keys are added in Settings → Integrations.")
                             .font(.caption).foregroundStyle(.secondary)
                     }
                     DashboardPanel(title: "GitHub") {
@@ -141,6 +147,27 @@ struct DashboardView: View {
             }
         }
         .buttonStyle(.plain)
+    }
+}
+
+/// Side by side on Mac and iPad; stacked on an iPhone, where side-by-side panels would overflow.
+struct AdaptiveStack<Content: View>: View {
+    var spacing: CGFloat = 16
+    @ViewBuilder let content: Content
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    #endif
+
+    var body: some View {
+        #if os(iOS)
+        if sizeClass == .compact {
+            VStack(alignment: .leading, spacing: spacing) { content }
+        } else {
+            HStack(alignment: .top, spacing: spacing) { content }
+        }
+        #else
+        HStack(alignment: .top, spacing: spacing) { content }
+        #endif
     }
 }
 

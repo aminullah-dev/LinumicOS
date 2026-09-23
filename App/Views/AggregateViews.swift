@@ -34,7 +34,7 @@ where Record.ID == UUID, Columns.TableRowValue == Owned<Record> {
                     router.open(productID: row.productID)
                 }
             }
-            .searchable(text: $search)
+            .searchable(text: $search, prompt: Text("Search"))
             .overlay {
                 if rows.isEmpty {
                     ContentUnavailableView(LocalizedStringKey(title), systemImage: "tray", description: Text(LocalizedStringKey(emptyText)))
@@ -43,6 +43,24 @@ where Record.ID == UUID, Columns.TableRowValue == Owned<Record> {
                 }
             }
             .navigationTitle(LocalizedStringKey(title))
+    }
+}
+
+/// The product column. An iPhone shows only the first column of a table, so it also carries the row's key detail there.
+private struct ProductCell: View {
+    let name: String
+    let detail: String
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    #endif
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(name).fontWeight(.medium)
+            #if os(iOS)
+            if sizeClass == .compact { Text(verbatim: detail).font(.caption).foregroundStyle(.secondary).lineLimit(2) }
+            #endif
+        }
     }
 }
 
@@ -56,7 +74,7 @@ struct AllReleasesView: View {
             emptyText: "No releases recorded. Add them from a product's Releases tab.",
             matches: { $0.productName.localizedStandardContains($1) || $0.record.version.localizedStandardContains($1) }
         ) {
-            TableColumn("Product") { Text($0.productName).fontWeight(.medium) }
+            TableColumn("Product") { ProductCell(name: $0.productName, detail: "\($0.record.version) · \($0.record.platform.title) · \($0.record.stage.title)") }
             TableColumn("Version") { Text($0.record.version).monospacedDigit() }
             TableColumn("Build") { Text($0.record.buildNumber ?? "—").monospacedDigit() }
             TableColumn("Platform") { Text($0.record.platform.title) }
@@ -78,7 +96,7 @@ struct AllRoadmapView: View {
             emptyText: "No roadmap items recorded. Add them from a product's Roadmap tab.",
             matches: { $0.productName.localizedStandardContains($1) || $0.record.title.localizedStandardContains($1) }
         ) {
-            TableColumn("Product") { Text($0.productName).fontWeight(.medium) }
+            TableColumn("Product") { ProductCell(name: $0.productName, detail: $0.record.title) }
             TableColumn("Item") { Text($0.record.title) }
             TableColumn("Status") { StatusBadge(text: $0.record.status.title, color: $0.record.status.color) }
             TableColumn("Target version") { Text($0.record.targetVersion ?? "—") }
@@ -97,7 +115,7 @@ struct AllIssuesView: View {
             emptyText: "No issues recorded. GitHub issue sync is planned for Phase 2.",
             matches: { $0.productName.localizedStandardContains($1) || $0.record.title.localizedStandardContains($1) }
         ) {
-            TableColumn("Product") { Text($0.productName).fontWeight(.medium) }
+            TableColumn("Product") { ProductCell(name: $0.productName, detail: $0.record.title) }
             TableColumn("Issue") { Text($0.record.title) }
             TableColumn("Severity") { StatusBadge(text: $0.record.severity.title, color: $0.record.severity.color) }
             TableColumn("State") { Text($0.record.isOpen ? "Open" : "Closed") }
@@ -115,7 +133,7 @@ struct AllRepositoriesView: View {
             emptyText: "No repositories recorded.",
             matches: { $0.productName.localizedStandardContains($1) || $0.record.name.localizedStandardContains($1) }
         ) {
-            TableColumn("Product") { Text($0.productName).fontWeight(.medium) }
+            TableColumn("Product") { ProductCell(name: $0.productName, detail: $0.record.gitHubSlug ?? $0.record.name) }
             TableColumn("Repository") { row in
                 VStack(alignment: .leading, spacing: 1) {
                     Text(row.record.gitHubSlug ?? row.record.name).textSelection(.enabled)
@@ -168,7 +186,7 @@ struct AllDeploymentsView: View {
             emptyText: "No deployments recorded. Add them from a product's Deployments tab.",
             matches: { $0.productName.localizedStandardContains($1) || $0.record.target.localizedStandardContains($1) }
         ) {
-            TableColumn("Product") { Text($0.productName).fontWeight(.medium) }
+            TableColumn("Product") { ProductCell(name: $0.productName, detail: "\($0.record.environment.title) · \($0.record.target)") }
             TableColumn("Target") { Text($0.record.target) }
             TableColumn("Environment") { Text($0.record.environment.title) }
             TableColumn("Status") { StatusBadge(text: $0.record.status.title, color: $0.record.status.color) }

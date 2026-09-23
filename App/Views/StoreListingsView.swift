@@ -8,6 +8,12 @@ struct StoreListingsView: View {
     let store: AppStore
     @Environment(InventoryModel.self) private var model
     @Environment(Router.self) private var router
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    private var compact: Bool { sizeClass == .compact }
+    #else
+    private let compact = false
+    #endif
 
     private struct Row: Identifiable {
         let productID: String
@@ -25,7 +31,20 @@ struct StoreListingsView: View {
         VStack(alignment: .leading, spacing: 0) {
             banner
             Table(rows) {
-                TableColumn("Product") { Text($0.productName).fontWeight(.medium) }
+                TableColumn("Product") { row in
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(row.productName).fontWeight(.medium)
+                        // An iPhone shows only this column, so the essentials come along.
+                        if compact {
+                            Text(row.listing.appName ?? "—").font(.subheadline)
+                            HStack(spacing: 6) {
+                                ReviewPhaseBadge(phase: row.listing.reviewPhase)
+                                Text("Live: \(row.listing.productionVersion ?? String(localized: "unknown"))").font(.caption).foregroundStyle(.secondary)
+                                if let s = row.listing.latestSubmittedVersion { Text("Submitted: \(s)").font(.caption).foregroundStyle(.secondary) }
+                            }
+                        }
+                    }
+                }
                 TableColumn("App") { row in
                     VStack(alignment: .leading, spacing: 1) {
                         Text(row.listing.appName ?? "—")

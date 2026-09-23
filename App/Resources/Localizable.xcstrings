@@ -1901,6 +1901,16 @@
         }
       }
     },
+    "From public store pages and the owner's App Store Connect screenshot (2026-09-23), or live from the consoles once their read-only keys are added in Settings → Integrations.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از صفحه‌های عمومی فروشگاه و اسکرین‌شات App Store Connect مالک (۲۰۲۶-۰۹-۲۳)، یا به‌صورت زنده از کنسول‌ها وقتی کلیدهای فقط‌خواندنی‌شان در تنظیمات ← اتصال‌ها اضافه شوند."
+          }
+        }
+      }
+    },
     "From public store pages and the owner's App Store Connect screenshot (2026-09-23). Live sync needs the store integrations, which aren't connected.": {
       "localizations": {
         "fa-AF": {
@@ -4817,6 +4827,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "زمان‌بندی‌شده"
+          }
+        }
+      }
+    },
+    "Search": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جست‌وجو"
           }
         }
       }

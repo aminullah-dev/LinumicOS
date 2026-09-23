@@ -85,6 +85,15 @@ final class Router {
     var isQuickOpenPresented = false
     var isNewProductPresented = false
 
+    init() {
+        #if DEBUG
+        // Debug-only screenshot aid: `-LCCScreen appStore` and `-LCCProduct safe-beauty` as launch arguments.
+        let defaults = UserDefaults.standard
+        if let screen = defaults.string(forKey: "LCCScreen").flatMap(SidebarItem.init(rawValue:)) { sidebar = screen }
+        if let product = defaults.string(forKey: "LCCProduct") { open(productID: product) }
+        #endif
+    }
+
     func open(productID: String) {
         sidebar = .allProducts
         productPath = [productID]

@@ -22,6 +22,12 @@ struct ProductListView: View {
     @State private var selection: Set<Product.ID> = []
     @State private var sortOrder = [KeyPathComparator(\Product.name)]
     @State private var pendingDelete: Product?
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    private var compact: Bool { sizeClass == .compact }
+    #else
+    private let compact = false
+    #endif
 
     private var rows: [Product] {
         let filtered = search.isEmpty ? model.products : model.products.filter {
@@ -43,6 +49,16 @@ struct ProductListView: View {
                     Text(verbatim: p.alsoKnownAs.value.map { $0.joined(separator: " · ") } ?? " ")
                         .font(.caption).foregroundStyle(.secondary).lineLimit(1)
                         .accessibilityHidden(p.alsoKnownAs.value?.isEmpty ?? true)
+                    // An iPhone shows only this column, so the key badges come along.
+                    if compact {
+                        HStack(spacing: 6) {
+                            VerificationBadge(status: p.overallVerification, compact: true)
+                            if let st = p.status.value { StatusBadge(text: st.title, color: st.color) }
+                            let n = p.needsConfirmation.count
+                            if n > 0 { Label("\(n)", systemImage: "person.badge.clock").font(.caption).foregroundStyle(.orange).accessibilityLabel("\(n) items need your confirmation") }
+                        }
+                        .padding(.top, 2)
+                    }
                 }
             }
             .width(min: 160, ideal: 220)

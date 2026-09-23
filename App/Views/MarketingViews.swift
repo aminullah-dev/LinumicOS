@@ -21,15 +21,15 @@ struct ContentCalendarView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                HStack {
+                AdaptiveStack(spacing: 8) {
                     Text("Workflow: Idea → Draft → In Review → Approved → Scheduled → Published. Publishing is done by a person on the network, then recorded here with its link.")
                         .font(.caption).foregroundStyle(.secondary)
-                    Spacer()
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     Picker("Show", selection: $filter) {
                         Text("All").tag(ContentStatus?.none)
                         ForEach(ContentStatus.allCases) { Text($0.title).tag(ContentStatus?.some($0)) }
                     }
-                    .frame(width: 200)
+                    .frame(maxWidth: 200)
                 }
                 if model.content.isEmpty {
                     ContentUnavailableView {

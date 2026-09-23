@@ -35,18 +35,20 @@ struct ProductDetailView: View {
     @Environment(InventoryModel.self) private var model
     @State private var tab: ProductTab = .overview
     @State private var editing: RecordEditing?
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    private var compact: Bool { sizeClass == .compact }
+    #else
+    private let compact = false
+    #endif
 
     var body: some View {
         if let product = model.product(id: productID) {
             VStack(alignment: .leading, spacing: 0) {
                 header(product)
-                Picker("Section", selection: $tab) {
-                    ForEach(ProductTab.allCases) { Text(LocalizedStringKey($0.rawValue)).tag($0) }
-                }
-                .pickerStyle(.segmented)
-                .labelsHidden()
-                .padding(.horizontal, 20)
-                .padding(.bottom, 8)
+                sectionPicker
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 8)
                 Divider()
                 ScrollView {
                     tabContent(product)
@@ -55,6 +57,9 @@ struct ProductDetailView: View {
                 }
             }
             .navigationTitle(product.name)
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 Button { editing = .product } label: { Label("Edit Name & Notes", systemImage: "pencil") }
                     .keyboardShortcut("e")
@@ -66,13 +71,30 @@ struct ProductDetailView: View {
         }
     }
 
+    /// Ten segments don't fit on a phone, so it gets a menu instead.
+    @ViewBuilder
+    private var sectionPicker: some View {
+        let picker = Picker("Section", selection: $tab) {
+            ForEach(ProductTab.allCases) { Text(LocalizedStringKey($0.rawValue)).tag($0) }
+        }
+        if compact {
+            HStack {
+                Text("Section").foregroundStyle(.secondary)
+                picker.pickerStyle(.menu)
+                Spacer()
+            }
+        } else {
+            picker.pickerStyle(.segmented).labelsHidden()
+        }
+    }
+
     private func header(_ p: Product) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .firstTextBaseline, spacing: 10) {
-                Text(p.name).font(.largeTitle.weight(.semibold))
+                Text(p.name).font(compact ? .title.weight(.semibold) : .largeTitle.weight(.semibold))
                 VerificationBadge(status: p.overallVerification)
             }
-            HStack(spacing: 12) {
+            AdaptiveStack(spacing: compact ? 4 : 12) {
                 let pending = p.needsConfirmation
                 let conflicts = pending.filter { $0.verification.status == .conflicting }.count
                 if conflicts > 0 {
@@ -226,9 +248,52 @@ extension Array where Element: Identifiable {
 private struct OverviewTab: View {
     let product: Product
     let onEdit: (ProductField) -> Void
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    private var compact: Bool { sizeClass == .compact }
+    #else
+    private let compact = false
+    #endif
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
+            if compact { compactFields } else { fieldGrid }
+            footer
+        }
+    }
+
+    /// One card-like block per field: label, badge and edit on top, the value below.
+    private var compactFields: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ForEach(product.fieldStates) { state in
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 8) {
+                        Text(state.field.title).font(.subheadline).foregroundStyle(.secondary)
+                        Spacer()
+                        EvidenceButton(verification: state.verification)
+                        Button("Edit…") { onEdit(state.field) }.buttonStyle(.borderless).font(.subheadline)
+                    }
+                    fieldValue(state)
+                    if !state.verification.notes.isEmpty {
+                        Text(state.verification.notes).font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+                .padding(.vertical, 10)
+                Divider()
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func fieldValue(_ state: FieldState) -> some View {
+        if state.field == .website, let text = state.displayValue, let url = URL(string: text) {
+            Link(text, destination: url)
+        } else {
+            ValueOrUnknown(value: state.displayValue)
+        }
+    }
+
+    private var fieldGrid: some View {
             Grid(alignment: .leadingFirstTextBaseline, horizontalSpacing: 14, verticalSpacing: 12) {
                 ForEach(product.fieldStates) { state in
                     GridRow {
@@ -252,6 +317,10 @@ private struct OverviewTab: View {
                     }
                 }
             }
+    }
+
+    @ViewBuilder
+    private var footer: some View {
             if !product.notes.isEmpty {
                 GroupBox("Notes") {
                     Text(product.notes).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
@@ -268,7 +337,6 @@ private struct OverviewTab: View {
                     Label("Record problems", systemImage: "exclamationmark.octagon").foregroundStyle(.red)
                 }
             }
-        }
     }
 }
 
