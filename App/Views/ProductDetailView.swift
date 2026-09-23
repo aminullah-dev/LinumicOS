@@ -438,12 +438,13 @@ private struct StoreListingRow: View {
                 Text(listing.appName ?? String(localized: "Unnamed app")).bold()
                 if let id = listing.appIdentifier { Text(id).font(.caption.monospaced()).foregroundStyle(.secondary) }
                 Spacer()
+                if listing.reviewStatus != nil { ReviewPhaseBadge(phase: listing.reviewPhase).help(listing.reviewStatus ?? "") }
                 EvidenceButton(verification: listing.verification)
             }
             HStack(spacing: 14) {
                 Text("Live: \(listing.productionVersion ?? String(localized: "unknown"))")
                 if let s = listing.latestSubmittedVersion { Text("Submitted: \(s)") }
-                if let r = listing.reviewStatus { Text(r) }
+                if let r = listing.reviewStatus { Text(r).lineLimit(1) }
                 if let sf = listing.storefront { Text("Storefront: \(sf)") }
                 if let seller = listing.seller { Text("Seller: \(seller)") }
             }

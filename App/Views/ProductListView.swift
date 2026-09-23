@@ -39,9 +39,10 @@ struct ProductListView: View {
             TableColumn("Name", value: \.name) { p in
                 VStack(alignment: .leading, spacing: 1) {
                     Text(p.name).fontWeight(.medium)
-                    if let aka = p.alsoKnownAs.value, !aka.isEmpty {
-                        Text(aka.joined(separator: " · ")).font(.caption).foregroundStyle(.secondary).lineLimit(1)
-                    }
+                    // Always two lines, so every row has the same height.
+                    Text(verbatim: p.alsoKnownAs.value.map { $0.joined(separator: " · ") } ?? " ")
+                        .font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                        .accessibilityHidden(p.alsoKnownAs.value?.isEmpty ?? true)
                 }
             }
             .width(min: 160, ideal: 220)

@@ -166,3 +166,22 @@ struct GooglePlayTests {
         #expect(humanizeState("READY_FOR_DISTRIBUTION") == "Ready for distribution")
     }
 }
+
+@Suite("Review phase")
+struct ReviewPhaseTests {
+    @Test func classifiesSeedAndConsoleTexts() {
+        let cases: [(String?, ReviewPhase)] = [
+            ("Green check in App Store Connect (live)", .live),
+            ("Pending: yellow clock in App Store Connect (the screenshot doesn't say which state)", .pending),
+            ("Available on Google Play (production)", .live),
+            ("In review (production)", .pending),
+            ("Closed testing only (no production release)", .testing),
+            ("Live, nothing pending", .live),
+            ("iOS 1.0.1: Waiting for review; macOS 1.0: In review", .pending),
+            ("alpha 1.2.3 (6): Published", .testing),
+            ("production 2.1.6 (23): Not approved", .rejected),
+            ("", .unknown), (nil, .unknown), ("Something else", .unknown),
+        ]
+        for (text, expected) in cases { #expect(ReviewPhase(reviewStatus: text) == expected, "\(text ?? "nil")") }
+    }
+}

@@ -59,7 +59,7 @@ struct IntegrationsSettingsView: View {
                     }
                 }
             } header: {
-                Text("Not connected")
+                Text("Later")
             } footer: {
                 Text("These need credentials and authorization before they can be added. See docs/integrations.md.")
             }
@@ -112,6 +112,25 @@ private struct StoreConsoleSection: View {
     @State private var message: String?
 
     private var isApple: Bool { store == .appStore }
+    private var steps: [LocalizedStringKey] {
+        isApple ? [
+            "In App Store Connect, open \u{2068}Users and Access › Integrations\u{2069}.",
+            "Under \u{2068}App Store Connect API › Team Keys\u{2069}, create a key with the \u{2068}Developer\u{2069} role.",
+            "Download the key file (Apple allows this only once) and copy the \u{2068}Issuer ID\u{2069} shown above the keys.",
+            "Enter the Issuer ID here, choose the file, and save. The Key ID is filled in from the file name.",
+        ] : [
+            "In Google Cloud, create a project (free) and enable the \u{2068}Google Play Android Developer API\u{2069}.",
+            "Create a service account and download a JSON key for it.",
+            "In Play Console, open \u{2068}Users and permissions\u{2069} and invite the service account's email with \u{2068}View app information (read-only)\u{2069}.",
+            "Choose the JSON file here and save.",
+        ]
+    }
+
+    private var setupLink: (title: LocalizedStringKey, url: URL) {
+        isApple ? ("Open App Store Connect", URL(string: "https://appstoreconnect.apple.com/access/integrations/api")!)
+                : ("Open Google Cloud Console", URL(string: "https://console.cloud.google.com/apis/library/androidpublisher.googleapis.com")!)
+    }
+
     private var fileTypes: [UTType] { isApple ? [UTType(filenameExtension: "p8") ?? .data, .data] : [.json] }
 
     var body: some View {
@@ -123,12 +142,13 @@ private struct StoreConsoleSection: View {
                 Text(isApple ? "Reads versions and review states of your apps. It never changes anything." : "Reads the releases on each track and their review state. It never creates an edit or changes anything.")
             }
             if !connected {
+                SetupSteps(steps: steps, link: setupLink)
                 if isApple {
                     TextField("Issuer ID", text: $issuerID, prompt: Text(verbatim: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"))
                     TextField("Key ID", text: $keyID, prompt: Text(verbatim: "ABC123DEFG"))
                 }
                 HStack {
-                    Button(isApple ? "Choose .p8 Key File…" : "Choose JSON Key File…") { isImporting = true }
+                    Button(isApple ? "Choose Key File (p8)…" : "Choose Key File (JSON)…") { isImporting = true }
                     if let keyFileName { Text(verbatim: keyFileName).font(.caption.monospaced()).foregroundStyle(.secondary) }
                     Spacer()
                     Button("Save to Keychain") { save() }
@@ -150,9 +170,7 @@ private struct StoreConsoleSection: View {
         } header: {
             Text(isApple ? "App Store Connect" : "Google Play")
         } footer: {
-            Text(isApple
-                 ? "App Store Connect → Users and Access → Integrations → App Store Connect API → Team Keys. Create a key with the Developer role and download the .p8 file (Apple lets you download it only once). Free."
-                 : "Google Cloud → create a service account and a JSON key, enable the Google Play Android Developer API. Then Play Console → Users and permissions → invite the service account's email with \"View app information (read-only)\". Free.")
+            Text("Free. Read-only. The key stays in this Mac's Keychain and is never uploaded.")
         }
         .fileImporter(isPresented: $isImporting, allowedContentTypes: fileTypes) { result in load(result) }
         .onAppear { connected = model.hasConsoleCredentials(store) }
@@ -221,6 +239,35 @@ private struct StoreConsoleSection: View {
         if !sync.report.notInAccount.isEmpty { text += " " + String(localized: "Not found in this account: \(sync.report.notInAccount.joined(separator: ", ")).") }
         if !sync.report.failed.isEmpty { text += " " + String(localized: "\(sync.report.failed.count) failed:") + " " + sync.report.failed.map { "\($0.key) (\($0.value))" }.sorted().joined(separator: "; ") }
         return text
+    }
+}
+
+/// Numbered setup instructions with a link to the console where they start.
+private struct SetupSteps: View {
+    let steps: [LocalizedStringKey]
+    let link: (title: LocalizedStringKey, url: URL)
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            ForEach(steps.indices, id: \.self) { i in
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text((i + 1).formatted())
+                        .font(.caption.weight(.semibold).monospacedDigit())
+                        .foregroundStyle(.secondary)
+                        .frame(width: 14, alignment: .trailing)
+                    Text(steps[i])
+                        .font(.callout)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            Link(destination: link.url) {
+                Label(link.title, systemImage: "arrow.up.forward.square")
+            }
+            .font(.callout)
+            .padding(.top, 2)
+        }
+        .padding(.vertical, 2)
+        .accessibilityElement(children: .contain)
     }
 }
 

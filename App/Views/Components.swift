@@ -40,6 +40,48 @@ struct StatusBadge: View {
     }
 }
 
+/// Review phase as a badge: icon + text, so meaning never depends on color alone.
+struct ReviewPhaseBadge: View {
+    let phase: ReviewPhase
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: phase.symbol).foregroundStyle(phase.color)
+            Text(phase.title).foregroundStyle(.primary)
+        }
+        .font(.caption.weight(.semibold))
+        .padding(.horizontal, 7)
+        .padding(.vertical, 2)
+        .background(phase.color.opacity(0.14), in: Capsule())
+        .overlay(Capsule().strokeBorder(phase.color.opacity(0.5), lineWidth: 1))
+        .fixedSize()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("Review: \(phase.title)"))
+    }
+}
+
+extension ReviewPhase {
+    var color: Color {
+        switch self {
+        case .live: .green
+        case .pending: .orange
+        case .testing: .blue
+        case .rejected: .red
+        case .unknown: .gray
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .live: "checkmark.circle.fill"
+        case .pending: "clock.fill"
+        case .testing: "testtube.2"
+        case .rejected: "xmark.octagon.fill"
+        case .unknown: "questionmark.circle"
+        }
+    }
+}
+
 extension ProductStatus {
     var color: Color {
         switch self {

@@ -1021,6 +1021,36 @@
         }
       }
     },
+    "Choose Key File (JSON)…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتخاب فایل کلید (⁨JSON⁩)…"
+          }
+        }
+      }
+    },
+    "Choose Key File (p8)…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتخاب فایل کلید (⁨p8⁩)…"
+          }
+        }
+      }
+    },
+    "Choose the JSON file here and save.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل ⁨JSON⁩ را این‌جا انتخاب و ذخیره کنید."
+          }
+        }
+      }
+    },
     "Close and reopen the app to apply the new language.": {
       "localizations": {
         "fa-AF": {
@@ -1227,6 +1257,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "شمار معلومات کلیدی، پلتفرم‌ها و پیوندهای مخزن که «تأییدشده» نیستند"
+          }
+        }
+      }
+    },
+    "Create a service account and download a JSON key for it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک ⁨service account⁩ بسازید و برایش کلید ⁨JSON⁩ دانلود کنید."
           }
         }
       }
@@ -1561,6 +1601,16 @@
         }
       }
     },
+    "Download the key file (Apple allows this only once) and copy the ⁨Issuer ID⁩ shown above the keys.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل کلید را دانلود کنید (Apple فقط یک بار اجازه می‌دهد) و ⁨Issuer ID⁩ را که بالای کلیدها آمده کپی کنید."
+          }
+        }
+      }
+    },
     "Draft": {
       "localizations": {
         "fa-AF": {
@@ -1647,6 +1697,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ویرایش…"
+          }
+        }
+      }
+    },
+    "Enter the Issuer ID here, choose the file, and save. The Key ID is filled in from the file name.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⁨Issuer ID⁩ را این‌جا وارد کنید، فایل را انتخاب و ذخیره کنید. ⁨Key ID⁩ از نام فایل خودکار پر می‌شود."
           }
         }
       }
@@ -1827,6 +1887,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "در جریان بررسی پیدا شدند، اما شواهد نشان نمی‌دهد که به لینومیک تعلق دارند یا نه. docs/product-discovery-report.md را ببینید."
+          }
+        }
+      }
+    },
+    "Free. Read-only. The key stays in this Mac's Keychain and is never uploaded.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رایگان و فقط‌خواندنی. کلید فقط در Keychain همین مک می‌ماند و هرگز آپلود نمی‌شود."
           }
         }
       }
@@ -2091,12 +2161,42 @@
         }
       }
     },
+    "In App Store Connect, open ⁨Users and Access › Integrations⁩.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در App Store Connect بخش ⁨Users and Access › Integrations⁩ را باز کنید."
+          }
+        }
+      }
+    },
     "In Development": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "در حال توسعه"
+          }
+        }
+      }
+    },
+    "In Google Cloud, create a project (free) and enable the ⁨Google Play Android Developer API⁩.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در Google Cloud یک پروژه (رایگان) بسازید و ⁨Google Play Android Developer API⁩ را فعال کنید."
+          }
+        }
+      }
+    },
+    "In Play Console, open ⁨Users and permissions⁩ and invite the service account's email with ⁨View app information (read-only)⁩.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در Play Console بخش ⁨Users and permissions⁩ را باز کنید و ایمیل ⁨service account⁩ را با اجازهٔ ⁨View app information (read-only)⁩ دعوت کنید."
           }
         }
       }
@@ -2377,6 +2477,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "آخرین تأیید %@"
+          }
+        }
+      }
+    },
+    "Later": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بعداً"
           }
         }
       }
@@ -3501,12 +3611,32 @@
         }
       }
     },
+    "Open App Store Connect": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن App Store Connect"
+          }
+        }
+      }
+    },
     "Open GitHub issues exist in %@, but their severity isn't known.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "در %@ مشکلات باز GitHub هست، اما شدت آن‌ها معلوم نیست."
+          }
+        }
+      }
+    },
+    "Open Google Cloud Console": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن Google Cloud Console"
           }
         }
       }
@@ -3637,6 +3767,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "متوقف"
+          }
+        }
+      }
+    },
+    "Pending review": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در انتظار بررسی"
           }
         }
       }
@@ -4241,6 +4381,16 @@
         }
       }
     },
+    "Rejected": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رد شده"
+          }
+        }
+      }
+    },
     "Related products": {
       "localizations": {
         "fa-AF": {
@@ -4507,6 +4657,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "وضعیت بازبینی"
+          }
+        }
+      }
+    },
+    "Review: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازبینی: %@"
           }
         }
       }
@@ -5231,6 +5391,16 @@
         }
       }
     },
+    "Testing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال تست"
+          }
+        }
+      }
+    },
     "Text": {
       "localizations": {
         "fa-AF": {
@@ -5487,6 +5657,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "آدرس"
+          }
+        }
+      }
+    },
+    "Under ⁨App Store Connect API › Team Keys⁩, create a key with the ⁨Developer⁩ role.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در ⁨App Store Connect API › Team Keys⁩ یک کلید با نقش ⁨Developer⁩ بسازید."
           }
         }
       }

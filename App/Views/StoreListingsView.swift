@@ -35,9 +35,19 @@ struct StoreListingsView: View {
                 TableColumn("Live") { Text($0.listing.productionVersion ?? String(localized: "Unknown")).monospacedDigit() }
                     .width(min: 60, ideal: 70)
                 TableColumn("Submitted") { Text($0.listing.latestSubmittedVersion ?? "—") }
-                TableColumn("Review") { Text($0.listing.reviewStatus ?? "—").lineLimit(2).help($0.listing.reviewStatus ?? "") }
-                TableColumn("Storefront") { Text($0.listing.storefront ?? "—") }
-                    .width(min: 70, ideal: 90)
+                TableColumn("Review") { row in
+                    VStack(alignment: .leading, spacing: 2) {
+                        ReviewPhaseBadge(phase: row.listing.reviewPhase)
+                        if let text = row.listing.reviewStatus {
+                            Text(text).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                        }
+                    }
+                    .help(row.listing.reviewStatus ?? "")
+                }
+                if store == .appStore {
+                    TableColumn("Storefront") { Text($0.listing.storefront ?? "—") }
+                        .width(min: 70, ideal: 90)
+                }
                 TableColumn("Evidence") { EvidenceButton(verification: $0.listing.verification) }
                     .width(min: 150, ideal: 170)
             }
