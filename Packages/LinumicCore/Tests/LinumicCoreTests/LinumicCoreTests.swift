@@ -324,7 +324,8 @@ struct DashboardSummaryTests {
         let now = Date(timeIntervalSince1970: 1_000_000)
         let products = [
             Product(id: "a", name: "SAMPLE A", status: Fact(.active, verified()),
-                    storeListings: [StoreListing(store: .appStore, verification: verified()), StoreListing(store: .googlePlay, verification: .unknown)],
+                    storeListings: [StoreListing(store: .appStore, productionVersion: "1.0", verification: verified()), StoreListing(store: .googlePlay, verification: .unknown),
+                                    StoreListing(store: .googlePlay, latestSubmittedVersion: "2.0", reviewStatus: "Closed testing", verification: verified())],
                     issues: [IssueRecord(title: "crash", severity: .critical), IssueRecord(title: "closed", severity: .critical, isOpen: false)],
                     releases: [Release(version: "2.0", platform: .iOS, stage: .blocked, releaseDate: now),
                                Release(version: "1.0", platform: .iOS, stage: .released, releaseDate: now)]),
@@ -346,5 +347,20 @@ struct DashboardSummaryTests {
         #expect(s.productsWithAppStoreListing == 1)
         #expect(s.productsWithGooglePlayListing == 0)
         #expect(s.countsByVerification[.unknown] == 1)
+    }
+}
+
+@Suite("Play Console evidence")
+struct PlayConsoleSeedTests {
+    @Test func liveAndTestingListingsAreDistinguished() throws {
+        let seed = try SeedInventory.load()
+        func play(_ id: String) -> [StoreListing] { seed.products.first { $0.id == id }!.listings(on: .googlePlay) }
+        #expect(play("safe-beauty").first?.productionVersion == "2.1.5")
+        #expect(play("nerkhtimes").first?.productionVersion == "1.0.10")
+        #expect(play("namazia").first?.productionVersion == nil)
+        #expect(play("namazia").first?.latestSubmittedVersion == "1.1.0")
+        #expect(play("velro").count == 2)
+        #expect(play("velro").allSatisfy { $0.productionVersion == nil && $0.latestSubmittedVersion == "1.2.3" })
+        #expect(DashboardSummary(products: seed.products).productsWithGooglePlayListing == 2)
     }
 }

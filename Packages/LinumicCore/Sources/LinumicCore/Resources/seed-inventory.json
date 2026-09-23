@@ -510,17 +510,25 @@
           "appIdentifier": "com.security.stealthapp",
           "appName": "SafeBeauty",
           "id": "2FDAFBA6-B0FB-58D2-A346-94F9E63C1203",
+          "productionVersion": "2.1.5",
+          "reviewStatus": "Available on Google Play (production)",
           "seller": "Aminullah Hashemi",
           "store": "googlePlay",
           "url": "https://play.google.com/store/apps/details?id=com.security.stealthapp",
           "verification": {
-            "notes": "The production version isn't exposed on the public page. The latest local commit says Android 2.1.5 is staged as a draft on Play.",
+            "notes": "Also: closed testing 1.9 (code 14) in 1 country; internal testing 1.0 (code 3); an open-testing draft.",
             "sources": [
               {
                 "detail": "og:title \"SafeBeauty - Apps on Google Play\"; developer Aminullah Hashemi",
                 "kind": "googlePlay",
                 "observedAt": "2026-09-23T07:00:00Z",
                 "reference": "https://play.google.com/store/apps/details?id=com.security.stealthapp"
+              },
+              {
+                "detail": "Production: 2.1.5 (version code 22), Available on Google Play, full rollout, 177/177 countries, updated Sep 23, 2026; 12 installed audience",
+                "kind": "googlePlay",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "Google Play Console, owner's developer account (read-only view, 2026-09-23)"
               }
             ],
             "status": "verified",
@@ -697,7 +705,7 @@
           "identifier": "af.velro.passenger",
           "platform": "android",
           "verification": {
-            "notes": "Distributed as an APK from api.velro.linumic.com/app. No public Google Play listing was found (HTTP 404) on 2026-09-23.",
+            "notes": "Distributed as an APK from api.velro.linumic.com/app, and in Google Play closed testing (1.2.3, code 6). There is no public Play listing yet.",
             "sources": [
               {
                 "detail": "applicationId af.velro.passenger",
@@ -728,7 +736,7 @@
           "identifier": "af.velro.driver",
           "platform": "android",
           "verification": {
-            "notes": "Distributed as an APK from api.velro.linumic.com/app. No public Google Play listing was found (HTTP 404) on 2026-09-23.",
+            "notes": "Distributed as an APK from api.velro.linumic.com/app, and in Google Play closed testing (1.2.3, code 6). There is no public Play listing yet.",
             "sources": [
               {
                 "detail": "applicationId af.velro.driver",
@@ -1027,6 +1035,50 @@
         {
           "appIdentifier": "af.velro.passenger",
           "appName": "VELRO Ride",
+          "id": "1036B45A-5D55-5205-8FBE-C37A9434D00C",
+          "latestSubmittedVersion": "1.2.3",
+          "reviewStatus": "Closed testing only (no production release)",
+          "seller": "Aminullah Hashemi",
+          "store": "googlePlay",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Closed testing (Alpha) and internal testing: 1.2.3 (version code 6), Sep 14, 2026. No production release. 13 installed audience.",
+                "kind": "googlePlay",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "Google Play Console, owner's developer account (read-only view, 2026-09-23)"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "appIdentifier": "af.velro.driver",
+          "appName": "VELRO Driver",
+          "id": "9155BF21-C295-5F46-80F2-3EE5908F10FA",
+          "latestSubmittedVersion": "1.2.3",
+          "reviewStatus": "Closed testing only (no production release)",
+          "seller": "Aminullah Hashemi",
+          "store": "googlePlay",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Closed testing (Alpha) and internal testing: 1.2.3 (version code 6), Sep 14, 2026. No production release. 13 installed audience.",
+                "kind": "googlePlay",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "Google Play Console, owner's developer account (read-only view, 2026-09-23)"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "appIdentifier": "af.velro.passenger",
+          "appName": "VELRO Ride",
           "id": "91812FF7-0536-5509-82A6-A7D40313D9E4",
           "latestSubmittedVersion": "1.0.1",
           "productionVersion": "1.0.0",
@@ -1269,7 +1321,7 @@
           "platform": "android",
           "sourceVersion": "1.2.0",
           "verification": {
-            "notes": "No public Google Play listing was found (HTTP 404) on 2026-09-23.",
+            "notes": "Google Play closed testing 1.2.0 (code 4). There is no production release, so no public listing.",
             "sources": [
               {
                 "detail": "applicationId app.worktrack, versionName 1.2.0",
@@ -1480,6 +1532,28 @@
         }
       },
       "storeListings": [
+        {
+          "appIdentifier": "app.worktrack",
+          "appName": "Linumic WorkTrack",
+          "id": "CB17A8EA-8277-5C47-AA03-16294C3770F4",
+          "latestSubmittedVersion": "1.2.0",
+          "reviewStatus": "Closed testing only (no production release)",
+          "seller": "Aminullah Hashemi",
+          "store": "googlePlay",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Closed testing (Alpha): 1.2.0 (version code 4), available to testers, 177 countries, Sep 16, 2026. No production release. 13 installed audience.",
+                "kind": "googlePlay",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "Google Play Console, owner's developer account (read-only view, 2026-09-23)"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
         {
           "appIdentifier": "app.worktrack",
           "appName": "Linumic WorkTrack",
@@ -2649,17 +2723,25 @@
           "appIdentifier": "af.market.nerkhtimes",
           "appName": "NerkhTimes",
           "id": "47B6A6E5-78BF-58F5-9BAA-472D281FD402",
+          "productionVersion": "1.0.10",
+          "reviewStatus": "Available on Google Play (production)",
           "seller": "Aminullah Hashemi",
           "store": "googlePlay",
           "url": "https://play.google.com/store/apps/details?id=af.market.nerkhtimes",
           "verification": {
-            "notes": "The production version isn't exposed on the public page.",
+            "notes": "The local build config is already at 1.0.11 (code 11), which isn't uploaded. There's also a closed-testing draft.",
             "sources": [
               {
                 "detail": "og:title \"NerkhTimes - Apps on Google Play\"; developer Aminullah Hashemi",
                 "kind": "googlePlay",
                 "observedAt": "2026-09-23T07:00:00Z",
                 "reference": "https://play.google.com/store/apps/details?id=af.market.nerkhtimes"
+              },
+              {
+                "detail": "Production: 1.0.10 (version code 10), Available on Google Play, full rollout, 177/177 countries, updated Aug 27, 2026; 14 installed audience",
+                "kind": "googlePlay",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "Google Play Console, owner's developer account (read-only view, 2026-09-23)"
               }
             ],
             "status": "verified",
@@ -2802,13 +2884,19 @@
           "platform": "android",
           "sourceVersion": "1.1.0",
           "verification": {
-            "notes": "No public Google Play listing was found (HTTP 404) on 2026-09-23.",
+            "notes": "1.1.0 is in Google Play production review. Closed testing has 1.0.1.",
             "sources": [
               {
                 "detail": "applicationId af.namazia.app, versionName 1.1.0, versionCode 4",
                 "kind": "localRepository",
                 "observedAt": "2026-09-23T07:00:00Z",
                 "reference": "~/Projects/Android/-Namazia/app/build.gradle"
+              },
+              {
+                "detail": "Production 1.1.0 (code 4) in review",
+                "kind": "googlePlay",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "Google Play Console, owner's developer account (read-only view, 2026-09-23)"
               }
             ],
             "status": "verified",
@@ -2940,6 +3028,28 @@
         }
       },
       "storeListings": [
+        {
+          "appIdentifier": "af.namazia.app",
+          "appName": "Afghan Prayer Times",
+          "id": "3E2AD07E-BD8F-58AF-9409-8A1E2BB6C145",
+          "latestSubmittedVersion": "1.1.0",
+          "reviewStatus": "In review (production)",
+          "seller": "Aminullah Hashemi",
+          "store": "googlePlay",
+          "verification": {
+            "notes": "Not public yet. The public listing page returned 404 on 2026-09-23, which is consistent with the review.",
+            "sources": [
+              {
+                "detail": "Production: 1.1.0 (version code 4) In review since Sep 16, 2026, full rollout to 177 countries. Closed testing (Alpha): 1.0.1 (code 2), available to testers. 15 installed audience.",
+                "kind": "googlePlay",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "Google Play Console, owner's developer account (read-only view, 2026-09-23)"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
         {
           "appIdentifier": "af.namazia.app",
           "appName": "Afghan Prayer Times",
@@ -4530,7 +4640,7 @@
     }
   ],
   "schemaVersion": 2,
-  "seedRevision": 2,
+  "seedRevision": 3,
   "unresolved": [
     {
       "findings": "Private repository created 2026-07-28 with a single \"Initial commit\" containing only README.md (\"# Radar-system\"). No local working copy.",

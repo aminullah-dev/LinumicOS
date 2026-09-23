@@ -32,7 +32,7 @@ public struct DashboardSummary: Equatable, Sendable {
     public var openCriticalIssues: [IssueRef]
     public var deploymentsByStatus: [DeploymentStatus: Int]
     public var productsWithRepositories: Int
-    /// Products with at least one App Store listing backed by evidence.
+    /// Products with at least one live App Store version backed by evidence.
     public var productsWithAppStoreListing: Int
     public var productsWithGooglePlayListing: Int
 
@@ -67,8 +67,11 @@ public struct DashboardSummary: Equatable, Sendable {
 
         deploymentsByStatus = Dictionary(grouping: products.flatMap(\.deployments), by: \.status).mapValues(\.count)
         productsWithRepositories = products.count { !$0.repositories.isEmpty }
+        // Only a live (production) version counts. Apps in review or closed testing aren't "on" the store yet.
         func hasEvidencedListing(_ p: Product, _ store: AppStore) -> Bool {
-            p.listings(on: store).contains { $0.verification.status == .verified || $0.verification.status == .partiallyVerified }
+            p.listings(on: store).contains {
+                $0.productionVersion != nil && ($0.verification.status == .verified || $0.verification.status == .partiallyVerified)
+            }
         }
         productsWithAppStoreListing = products.count { hasEvidencedListing($0, .appStore) }
         productsWithGooglePlayListing = products.count { hasEvidencedListing($0, .googlePlay) }

@@ -15,7 +15,8 @@ cd "$(dirname "$0")/../.."
 PROFILE=LinumicCommandCenter
 OUT=build/Release
 VERSION=$(grep -m1 'MARKETING_VERSION' project.yml | sed -E 's/.*"([^"]+)".*/\1/')
-rm -rf "$OUT" && mkdir -p "$OUT"
+# Remove only this script's own outputs. A copy of the app you've unzipped here (and may be running) is left alone.
+mkdir -p "$OUT" && rm -rf "$OUT/LinumicCommandCenter.xcarchive" "$OUT/export" "$OUT"/LinumicCommandCenter-*.zip
 
 xcodegen generate >/dev/null
 swift test --package-path Packages/LinumicCore >/dev/null

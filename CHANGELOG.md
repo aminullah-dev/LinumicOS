@@ -5,6 +5,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Google Play Console data (seed revision 3)
+- Read in the owner's Chrome, view only: production versions for SafeBeauty (2.1.5) and NerkhTimes (1.0.10), Afghan
+  Prayer Times 1.1.0 in production review, and WorkTrack and VELRO Driver/Ride in closed testing. Each is recorded with
+  a Play Console source.
+- The dashboard's "Products on the App Store / Google Play" now counts only live (production) versions.
+
 ### Added
 - Owner answers applied (seed revision 2): AfghanJama = KhayatYar = Tailor ERP; Darzi sidelined;
   Gul-E-Lala removed; Radar-system and Explore Afghanistan sidelined; MediFlow medical and high priority;

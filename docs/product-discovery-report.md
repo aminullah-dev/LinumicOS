@@ -61,6 +61,26 @@ The yellow clock is recorded only as "pending". The screenshot doesn't show whic
 No App Store record exists for DukanPro, Talar, KhayatYar (the site says "iPhone — in preparation"), MediFlow, SODER-HAKEM or the Pashto project.
 Every App Store listing names the seller as the individual account **"AMINULLAH HASHEMI"**, not Linumic.
 
+### Focus: Google Play Console (read in the owner's Chrome, 2026-09-23, view only)
+
+Personal developer account "Aminullah Hashemi" with **6 apps**:
+
+| App | Package | Production | Testing | Installed audience |
+|---|---|---|---|---|
+| SafeBeauty | com.security.stealthapp | **2.1.5** (code 22), live, 177 countries, Sep 23 | closed 1.9 (14), internal 1.0 (3) | 12 |
+| NerkhTimes | af.market.nerkhtimes | **1.0.10** (code 10), live, 177 countries, Aug 27 | closed draft | 14 |
+| Afghan Prayer Times (Namazia) | af.namazia.app | **1.1.0 (code 4) in review** since Sep 16 | closed 1.0.1 (2) | 15 |
+| Linumic WorkTrack | app.worktrack | none | closed 1.2.0 (4), Sep 16 | 13 |
+| VELRO Driver | af.velro.driver | none | closed and internal 1.2.3 (6), Sep 14 | 13 |
+| VELRO Ride | af.velro.passenger | none | closed and internal 1.2.3 (6), Sep 14 | 13 |
+
+**Account notices seen (critical):**
+- "Ensure your apps are registered for Android developer verification by Sep 30, 2026."
+- "Update your target API level by August 31, 2026 to release updates to your app" (2 apps; which ones wasn't recorded).
+- SafeBeauty: "One deep link may be failing because your web domains aren't associated with your app."
+
+Nothing was changed in Play Console.
+
 ### Focus: MediFlow
 
 - **What it is:** an offline clinic and hospital management system for one machine: Python 3.13, PySide6, SQLite, Dari/Pashto/English with right-to-left support, 16 modules (README table; the linumic.com page says the same).

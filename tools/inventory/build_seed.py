@@ -69,6 +69,13 @@ def owner(detail):
 LEGAL_OWNER = None  # set below, once fact() exists
 
 
+PLAY_CONSOLE = "Google Play Console, owner's developer account (read-only view, 2026-09-23)"
+
+
+def console(detail):
+    return src("googlePlay", PLAY_CONSOLE, detail)
+
+
 def gh(repo, detail=None):
     return src("gitHub", f"https://api.github.com/repos/aminullah-dev/{repo}", detail)
 
@@ -278,9 +285,11 @@ products.append(product(
                 [appstore("https://itunes.apple.com/lookup?bundleId=com.safebeauty.app&country=af", "v1.0.1, current version released 2026-09-23, first released 2026-09-21"),
                  asc("SafeBeauty — iOS 1.0.1, green check")],
                 storefront="Afghanistan", review="Green check in App Store Connect (live)", seller="AMINULLAH HASHEMI", notes=SELLER_NOTE + " No US storefront listing was found."),
-        listing("sb-play", "googlePlay", "SafeBeauty", "com.security.stealthapp", "https://play.google.com/store/apps/details?id=com.security.stealthapp", None,
-                [play("com.security.stealthapp", "og:title \"SafeBeauty - Apps on Google Play\"; developer Aminullah Hashemi")],
-                seller="Aminullah Hashemi", notes="The production version isn't exposed on the public page. The latest local commit says Android 2.1.5 is staged as a draft on Play."),
+        listing("sb-play", "googlePlay", "SafeBeauty", "com.security.stealthapp", "https://play.google.com/store/apps/details?id=com.security.stealthapp", "2.1.5",
+                [play("com.security.stealthapp", "og:title \"SafeBeauty - Apps on Google Play\"; developer Aminullah Hashemi"),
+                 console("Production: 2.1.5 (version code 22), Available on Google Play, full rollout, 177/177 countries, updated Sep 23, 2026; 12 installed audience")],
+                seller="Aminullah Hashemi", review="Available on Google Play (production)",
+                notes="Also: closed testing 1.9 (code 14) in 1 country; internal testing 1.0 (code 3); an open-testing draft."),
     ],
     documentation=[{"id": uid("doc", "sb-privacy"), "title": "SafeBeauty privacy policy", "url": "https://linumic.com/safebeauty-privacy-policy/"}],
 ))
@@ -309,10 +318,10 @@ products.append(product(
     platforms=[
         platform("vl-android-p", "android", "Passenger app", "af.velro.passenger", None, "verified", [local(f"{VL}/mobile/app-passenger/build.gradle.kts", "applicationId af.velro.passenger"),
                   web("https://api.velro.linumic.com/app", "Download page (HTTP 200) links /app/velro-passenger.apk"), web("https://linumic.com/what-we-do/velro/", "\"Download the passenger app\" → api.velro.linumic.com/app")],
-                 "Distributed as an APK from api.velro.linumic.com/app. No public Google Play listing was found (HTTP 404) on 2026-09-23."),
+                 "Distributed as an APK from api.velro.linumic.com/app, and in Google Play closed testing (1.2.3, code 6). There is no public Play listing yet."),
         platform("vl-android-d", "android", "Driver app", "af.velro.driver", None, "verified", [local(f"{VL}/mobile/app-driver/build.gradle.kts", "applicationId af.velro.driver"),
                   web("https://api.velro.linumic.com/app", "Download page (HTTP 200) links /app/velro-driver.apk"), web("https://linumic.com/what-we-do/velro/", "\"Download the driver app\" → api.velro.linumic.com/app")],
-                 "Distributed as an APK from api.velro.linumic.com/app. No public Google Play listing was found (HTTP 404) on 2026-09-23."),
+                 "Distributed as an APK from api.velro.linumic.com/app, and in Google Play closed testing (1.2.3, code 6). There is no public Play listing yet."),
         platform("vl-ios-p", "iOS", "VELRO Ride (passenger)", "af.velro.passenger", "1.0.0", "verified", [appstore("https://apps.apple.com/us/app/velro-ride/id6810899663"), local(f"{VL}/ios/project.yml")]),
         platform("vl-ios-d", "iOS", "VELRO Driver", "af.velro.driver", "1.0.0", "verified", [appstore("https://apps.apple.com/us/app/velro-driver/id6811925434"), local(f"{VL}/ios/project.yml")]),
         platform("vl-ios-ops", "iOS", "VELRO Ops", "af.velro.ops", "1.0", "verified",
@@ -324,6 +333,12 @@ products.append(product(
         platform("vl-backend", "backend", "FastAPI API", None, "0.1.0", "verified", [local(f"{VL}/backend/pyproject.toml")]),
     ],
     storeListings=[
+        listing("vl-play-ride", "googlePlay", "VELRO Ride", "af.velro.passenger", None, None,
+                [console("Closed testing (Alpha) and internal testing: 1.2.3 (version code 6), Sep 14, 2026. No production release. 13 installed audience.")],
+                seller="Aminullah Hashemi", submitted="1.2.3", review="Closed testing only (no production release)"),
+        listing("vl-play-driver", "googlePlay", "VELRO Driver", "af.velro.driver", None, None,
+                [console("Closed testing (Alpha) and internal testing: 1.2.3 (version code 6), Sep 14, 2026. No production release. 13 installed audience.")],
+                seller="Aminullah Hashemi", submitted="1.2.3", review="Closed testing only (no production release)"),
         listing("vl-as-ride", "appStore", "VELRO Ride", "af.velro.passenger", "https://apps.apple.com/us/app/velro-ride/id6810899663", "1.0.0",
                 [appstore("https://itunes.apple.com/lookup?bundleId=af.velro.passenger", "v1.0.0, released 2026-09-13"), asc("VELRO Ride — iOS 1.0.1, yellow clock")],
                 storefront="United States", seller="AMINULLAH HASHEMI", submitted="1.0.1",
@@ -364,14 +379,17 @@ products.append(product(
                        notes="~/Projects/_Archive/Downloads has a downloaded zip and an extracted copy of this branch (not a Git working copy).")],
     platforms=[
         platform("wt-android", "android", "Employee app", "app.worktrack", "1.2.0", "verified", [local(f"{WT}/app/build.gradle.kts", "applicationId app.worktrack, versionName 1.2.0")],
-                 "No public Google Play listing was found (HTTP 404) on 2026-09-23."),
+                 "Google Play closed testing 1.2.0 (code 4). There is no production release, so no public listing."),
         platform("wt-ios", "iOS", "Employee app", "app.worktrack", "1.0", "verified", [appstore("https://apps.apple.com/us/app/linumic-worktrack/id6810004398"), local(f"{WT}/ios/project.yml")]),
         platform("wt-web", "web", "Company console", None, "1.0.0", "verified", [local(f"{WT}/web/package.json", "worktrack-admin"), web("https://worktrack-prod.web.app/", "Live: WorkTrack — پورتال مدیر")]),
         platform("wt-backend", "backend", "Firebase Cloud Functions", None, None, "verified", [local(f"{WT}/backend/functions/package.json")]),
         platform("wt-desktop", "desktop", "Electron shell for the company console", None, "1.0.0", "partiallyVerified",
                  [local(f"{WT}/desktop/package.json", "\"desktop shell for the manager web portal\", electron ^33")], "No desktop release was found, and the target operating systems aren't confirmed."),
     ],
-    storeListings=[listing("wt-as", "appStore", "Linumic WorkTrack", "app.worktrack", "https://apps.apple.com/us/app/linumic-worktrack/id6810004398", "1.0",
+    storeListings=[listing("wt-play", "googlePlay", "Linumic WorkTrack", "app.worktrack", None, None,
+                           [console("Closed testing (Alpha): 1.2.0 (version code 4), available to testers, 177 countries, Sep 16, 2026. No production release. 13 installed audience.")],
+                           seller="Aminullah Hashemi", submitted="1.2.0", review="Closed testing only (no production release)"),
+                   listing("wt-as", "appStore", "Linumic WorkTrack", "app.worktrack", "https://apps.apple.com/us/app/linumic-worktrack/id6810004398", "1.0",
                            [appstore("https://itunes.apple.com/lookup?bundleId=app.worktrack", "v1.0, released 2026-09-21"), asc("Linumic WorkTrack — iOS 1.0, green check")], storefront="United States", review="Green check in App Store Connect (live)", seller="AMINULLAH HASHEMI", notes=SELLER_NOTE)],
 ))
 
@@ -475,9 +493,11 @@ products.append(product(
                 [appstore("https://itunes.apple.com/lookup?bundleId=af.market.nerkhtimes", "v1.0, current version released 2026-09-15, first released 2026-09-14"),
                  asc("Nerkh Times - نرخ تایمز — iOS 1.0, green check")],
                 storefront="United States", review="Green check in App Store Connect (live)", seller="AMINULLAH HASHEMI", notes=SELLER_NOTE),
-        listing("nt-play", "googlePlay", "NerkhTimes", "af.market.nerkhtimes", "https://play.google.com/store/apps/details?id=af.market.nerkhtimes", None,
-                [play("af.market.nerkhtimes", "og:title \"NerkhTimes - Apps on Google Play\"; developer Aminullah Hashemi")],
-                seller="Aminullah Hashemi", notes="The production version isn't exposed on the public page."),
+        listing("nt-play", "googlePlay", "NerkhTimes", "af.market.nerkhtimes", "https://play.google.com/store/apps/details?id=af.market.nerkhtimes", "1.0.10",
+                [play("af.market.nerkhtimes", "og:title \"NerkhTimes - Apps on Google Play\"; developer Aminullah Hashemi"),
+                 console("Production: 1.0.10 (version code 10), Available on Google Play, full rollout, 177/177 countries, updated Aug 27, 2026; 14 installed audience")],
+                seller="Aminullah Hashemi", review="Available on Google Play (production)",
+                notes="The local build config is already at 1.0.11 (code 11), which isn't uploaded. There's also a closed-testing draft."),
     ],
     documentation=[{"id": uid("doc", "nt-privacy"), "title": "NerkhTimes privacy policy & support (linumic.com)", "url": "https://linumic.com/nerkhtimes-privacy-policy/"}],
 ))
@@ -502,12 +522,17 @@ products.append(product(
                                  "chore: harden .gitignore (ignore app/build, keystores, .env, firebase config)",
                                  "The app code is on this branch. GitHub main has only \"Initial commit\" and PR #1 is open.")])],
     platforms=[
-        platform("nz-android", "android", "Android app", "af.namazia.app", "1.1.0", "verified", [local(f"{NZ}/app/build.gradle", "applicationId af.namazia.app, versionName 1.1.0, versionCode 4")],
-                 "No public Google Play listing was found (HTTP 404) on 2026-09-23."),
+        platform("nz-android", "android", "Android app", "af.namazia.app", "1.1.0", "verified", [local(f"{NZ}/app/build.gradle", "applicationId af.namazia.app, versionName 1.1.0, versionCode 4"),
+                  console("Production 1.1.0 (code 4) in review")],
+                 "1.1.0 is in Google Play production review. Closed testing has 1.0.1."),
         platform("nz-ios", "iOS", "iOS app + widget", "af.namazia.app", "1.0", "verified",
                  [local(f"{NZ}/ios/Namazia.xcodeproj", "SDKROOT iphoneos"), appstore("https://apps.apple.com/us/app/afghan-prayer-times/id6810537640")]),
     ],
-    storeListings=[listing("nz-as", "appStore", "Afghan Prayer Times", "af.namazia.app", "https://apps.apple.com/us/app/afghan-prayer-times/id6810537640", "1.0",
+    storeListings=[listing("nz-play", "googlePlay", "Afghan Prayer Times", "af.namazia.app", None, None,
+                           [console("Production: 1.1.0 (version code 4) In review since Sep 16, 2026, full rollout to 177 countries. Closed testing (Alpha): 1.0.1 (code 2), available to testers. 15 installed audience.")],
+                           seller="Aminullah Hashemi", submitted="1.1.0", review="In review (production)",
+                           notes="Not public yet. The public listing page returned 404 on 2026-09-23, which is consistent with the review."),
+                   listing("nz-as", "appStore", "Afghan Prayer Times", "af.namazia.app", "https://apps.apple.com/us/app/afghan-prayer-times/id6810537640", "1.0",
                            [appstore("https://itunes.apple.com/lookup?bundleId=af.namazia.app", "v1.0, released 2026-09-14"), asc("Afghan Prayer Times — iOS 1.0, green check")], storefront="United States", review="Green check in App Store Connect (live)", seller="AMINULLAH HASHEMI", notes=SELLER_NOTE)],
 ))
 
@@ -669,6 +694,6 @@ unresolved = [
                          owner("\"Explore Afghanistan: sideline.\"")], "Sidelined by the owner.")},
 ]
 
-inventory = {"schemaVersion": 2, "seedRevision": 2, "products": products, "unresolved": unresolved}
+inventory = {"schemaVersion": 2, "seedRevision": 3, "products": products, "unresolved": unresolved}
 OUT.write_text(json.dumps(inventory, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
 print(f"wrote {OUT.relative_to(ROOT)}: {len(products)} products, {len(unresolved)} unresolved items")
