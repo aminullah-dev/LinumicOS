@@ -67,7 +67,7 @@ struct VerificationDraft {
             result.append(Source(kind: newKind, reference: ref, detail: newDetail.isEmpty ? nil : newDetail))
         }
         if recordOwnerConfirmation {
-            result.append(Source(kind: .ownerStatement, reference: "Confirmed by the owner in Linumic Command Center"))
+            result.append(Source(kind: .ownerStatement, reference: Source.ownerConfirmationReference))
         }
         return result
     }
@@ -159,6 +159,11 @@ struct FactEditor: View {
                     Picker("Development status", selection: $text) {
                         Text("Unknown — to be verified").tag("")
                         ForEach(ProductStatus.allCases) { Text($0.title).tag($0.title) }
+                    }
+                case .priority:
+                    Picker("Priority", selection: $text) {
+                        Text("Unknown — to be verified").tag("")
+                        ForEach(ProductPriority.allCases) { Text($0.title).tag($0.title) }
                     }
                 case .isLinumicProduct:
                     Picker("Linumic product", selection: $text) {

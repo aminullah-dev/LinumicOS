@@ -65,7 +65,7 @@ struct VerificationView: View {
                             HStack(alignment: .firstTextBaseline, spacing: 12) {
                                 EvidenceButton(verification: row.verification).frame(width: 170, alignment: .leading)
                                 Button(row.productName) { router.open(productID: row.productID) }
-                                    .buttonStyle(.link)
+                                    .buttonStyle(.borderless).foregroundStyle(.tint)
                                     .frame(width: 180, alignment: .leading)
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(row.item).fontWeight(.medium)

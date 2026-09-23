@@ -102,6 +102,22 @@
           "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
+      "legalOwner": {
+        "value": "Aminullah Hashemi",
+        "verification": {
+          "notes": "Linumic is the umbrella brand for the projects, not the legal owner.",
+          "sources": [
+            {
+              "detail": "\"The owner is me; Linumic is only the mother (umbrella) of the projects.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "name": "Safe Beauty",
       "platforms": [
         {
@@ -651,6 +667,22 @@
               "kind": "website",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "https://linumic.com/what-we-do/velro/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "legalOwner": {
+        "value": "Aminullah Hashemi",
+        "verification": {
+          "notes": "Linumic is the umbrella brand for the projects, not the legal owner.",
+          "sources": [
+            {
+              "detail": "\"The owner is me; Linumic is only the mother (umbrella) of the projects.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
             }
           ],
           "status": "verified",
@@ -1212,6 +1244,22 @@
           "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
+      "legalOwner": {
+        "value": "Aminullah Hashemi",
+        "verification": {
+          "notes": "Linumic is the umbrella brand for the projects, not the legal owner.",
+          "sources": [
+            {
+              "detail": "\"The owner is me; Linumic is only the mother (umbrella) of the projects.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "name": "WorkTrack",
       "platforms": [
         {
@@ -1569,6 +1617,22 @@
           "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
+      "legalOwner": {
+        "value": "Aminullah Hashemi",
+        "verification": {
+          "notes": "Linumic is the umbrella brand for the projects, not the legal owner.",
+          "sources": [
+            {
+              "detail": "\"The owner is me; Linumic is only the mother (umbrella) of the projects.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "name": "DukanPro",
       "platforms": [
         {
@@ -1899,6 +1963,22 @@
               "kind": "website",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "https://linumic.com/what-we-do/talar/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "legalOwner": {
+        "value": "Aminullah Hashemi",
+        "verification": {
+          "notes": "Linumic is the umbrella brand for the projects, not the legal owner.",
+          "sources": [
+            {
+              "detail": "\"The owner is me; Linumic is only the mother (umbrella) of the projects.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
             }
           ],
           "status": "verified",
@@ -2277,6 +2357,22 @@
               "kind": "website",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "https://linumic.com/nerkhtimes-privacy-policy/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "legalOwner": {
+        "value": "Aminullah Hashemi",
+        "verification": {
+          "notes": "Linumic is the umbrella brand for the projects, not the legal owner.",
+          "sources": [
+            {
+              "detail": "\"The owner is me; Linumic is only the mother (umbrella) of the projects.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
             }
           ],
           "status": "verified",
@@ -2681,6 +2777,22 @@
           "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
+      "legalOwner": {
+        "value": "Aminullah Hashemi",
+        "verification": {
+          "notes": "Linumic is the umbrella brand for the projects, not the legal owner.",
+          "sources": [
+            {
+              "detail": "\"The owner is me; Linumic is only the mother (umbrella) of the projects.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "name": "Namazia",
       "platforms": [
         {
@@ -2895,6 +3007,12 @@
               "kind": "website",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "https://linumic.com/what-we-do/tailor-erp/"
+            },
+            {
+              "detail": "\"KhayatYar is the same as AfghanJama.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
             }
           ],
           "status": "verified",
@@ -2977,6 +3095,22 @@
               "kind": "website",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "https://linumic.com/what-we-do/tailor-erp/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "legalOwner": {
+        "value": "Aminullah Hashemi",
+        "verification": {
+          "notes": "Linumic is the umbrella brand for the projects, not the legal owner.",
+          "sources": [
+            {
+              "detail": "\"The owner is me; Linumic is only the mother (umbrella) of the projects.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
             }
           ],
           "status": "verified",
@@ -3305,7 +3439,7 @@
         }
       },
       "category": {
-        "value": "Book reader (Pashto)",
+        "value": "Book: reader app for the owner's Pashto book",
         "verification": {
           "notes": "",
           "sources": [
@@ -3313,9 +3447,15 @@
               "kind": "localRepository",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "~/Projects/Android/SODER-HAKEM/README.md"
+            },
+            {
+              "detail": "\"SODER-HAKEM is a book.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
             }
           ],
-          "status": "partiallyVerified",
+          "status": "verified",
           "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
@@ -3351,6 +3491,22 @@
               "kind": "ownerStatement",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "legalOwner": {
+        "value": "Aminullah Hashemi",
+        "verification": {
+          "notes": "Linumic is the umbrella brand for the projects, not the legal owner.",
+          "sources": [
+            {
+              "detail": "\"The owner is me; Linumic is only the mother (umbrella) of the projects.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
             }
           ],
           "status": "verified",
@@ -3513,7 +3669,7 @@
         }
       },
       "category": {
-        "value": "Clinic and hospital management",
+        "value": "Medical: clinic and hospital management",
         "verification": {
           "notes": "",
           "sources": [
@@ -3521,9 +3677,15 @@
               "kind": "gitHub",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "https://api.github.com/repos/aminullah-dev/MediFlow"
+            },
+            {
+              "detail": "\"MediFlow is a medical system.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
             }
           ],
-          "status": "partiallyVerified",
+          "status": "verified",
           "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
@@ -3565,6 +3727,22 @@
               "kind": "website",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "https://linumic.com/what-we-do/mediflow/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "legalOwner": {
+        "value": "Aminullah Hashemi",
+        "verification": {
+          "notes": "Linumic is the umbrella brand for the projects, not the legal owner.",
+          "sources": [
+            {
+              "detail": "\"The owner is me; Linumic is only the mother (umbrella) of the projects.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
             }
           ],
           "status": "verified",
@@ -3628,6 +3806,22 @@
           }
         }
       ],
+      "priority": {
+        "value": "high",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "\"MediFlow is a medical system; it matters.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "projectType": {
         "value": "Offline desktop application (Python 3.13, PySide6, SQLite) with a local web UI; 16 modules",
         "verification": {
@@ -3901,6 +4095,22 @@
           "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
+      "legalOwner": {
+        "value": "Aminullah Hashemi",
+        "verification": {
+          "notes": "Linumic is the umbrella brand for the projects, not the legal owner.",
+          "sources": [
+            {
+              "detail": "\"The owner is me; Linumic is only the mother (umbrella) of the projects.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "name": "Tailoring Workshop ERP",
       "platforms": [
         {
@@ -3940,6 +4150,22 @@
           }
         }
       ],
+      "priority": {
+        "value": "sidelined",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "\"Move Darzi to the sidelines for now.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "projectType": {
         "value": "Web application: React web client + Express/Drizzle/PostgreSQL API",
         "verification": {
@@ -4059,23 +4285,9 @@
       },
       "website": {
         "verification": {
-          "notes": "The owner's list names this product \"Tailoring Workshop ERP\", but linumic.com's Tailor ERP page is the AfghanJama/KhayatYar codebase. This Darzi codebase doesn't appear on linumic.com.",
-          "sources": [
-            {
-              "detail": "\"Tailor ERP\" page: an offline Android/Windows/macOS app whose downloads are AfghanJama's KhayatYar-1.8.0 release",
-              "kind": "website",
-              "observedAt": "2026-09-23T07:00:00Z",
-              "reference": "https://linumic.com/what-we-do/tailor-erp/"
-            },
-            {
-              "detail": "Darzi: a React web client + Express/PostgreSQL API, not offline Android/desktop",
-              "kind": "localRepository",
-              "observedAt": "2026-09-23T07:00:00Z",
-              "reference": "~/Projects/Web/Tailoring Workshop ERP/README.md"
-            }
-          ],
-          "status": "conflicting",
-          "verifiedAt": "2026-09-23T07:00:00Z"
+          "notes": "No website. The owner confirmed that linumic.com's Tailor ERP page is KhayatYar (the AfghanJama repository), not this codebase.",
+          "sources": [],
+          "status": "unknown"
         }
       }
     },
@@ -4159,6 +4371,22 @@
               "kind": "ownerStatement",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "legalOwner": {
+        "value": "Aminullah Hashemi",
+        "verification": {
+          "notes": "Linumic is the umbrella brand for the projects, not the legal owner.",
+          "sources": [
+            {
+              "detail": "\"The owner is me; Linumic is only the mother (umbrella) of the projects.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
             }
           ],
           "status": "verified",
@@ -4302,61 +4530,42 @@
     }
   ],
   "schemaVersion": 2,
+  "seedRevision": 2,
   "unresolved": [
-    {
-      "findings": "Remotion motion-graphics project (package gul-e-lala-motion 1.0.0; compositions TitleCard, LogoReveal, LowerThird, CornerBug, KineticText, TransparentBadge; a Logo/ image). It isn't a Git repository and has no remote. No Linumic reference found.",
-      "id": "gul-e-lala",
-      "kind": "possibleProduct",
-      "location": "~/Projects/Web/Gul -E- Lala",
-      "name": "Gul-E-Lala",
-      "question": "Is Gul-E-Lala a Linumic product, a client project, or internal video tooling?",
-      "verification": {
-        "notes": "",
-        "sources": [
-          {
-            "kind": "localRepository",
-            "observedAt": "2026-09-23T07:00:00Z",
-            "reference": "~/Projects/Web/Gul -E- Lala/package.json"
-          },
-          {
-            "detail": "# Motion Graphics — Remotion Starter",
-            "kind": "localRepository",
-            "observedAt": "2026-09-23T07:00:00Z",
-            "reference": "~/Projects/Web/Gul -E- Lala/README.md"
-          }
-        ],
-        "status": "unknown"
-      }
-    },
     {
       "findings": "Private repository created 2026-07-28 with a single \"Initial commit\" containing only README.md (\"# Radar-system\"). No local working copy.",
       "id": "radar-system",
-      "kind": "unresolvedRepository",
+      "kind": "sidelined",
       "location": "https://github.com/aminullah-dev/Radar-system",
       "name": "Radar-system",
-      "question": "What is Radar-system for, and does it belong to any product?",
       "verification": {
-        "notes": "",
+        "notes": "Sidelined by the owner.",
         "sources": [
           {
             "detail": "Contents: README.md only",
             "kind": "gitHub",
             "observedAt": "2026-09-23T07:00:00Z",
             "reference": "https://api.github.com/repos/aminullah-dev/Radar-system"
+          },
+          {
+            "detail": "\"Radar-system: sideline.\"",
+            "kind": "ownerStatement",
+            "observedAt": "2026-09-23T07:00:00Z",
+            "reference": "Owner's answers in the Command Center working session, 2026-09-23"
           }
         ],
-        "status": "unknown"
+        "status": "verified",
+        "verifiedAt": "2026-09-23T07:00:00Z"
       }
     },
     {
       "findings": "Explore_Afghanistan (private, 2025-08-03) holds a static website (index.html, js, stylesheet, images). Explore-Afghanistan (public, same day) is empty. Both predate every known product repository. No Linumic reference found (contents not read in depth).",
       "id": "explore-afghanistan",
-      "kind": "unresolvedRepository",
+      "kind": "sidelined",
       "location": "https://github.com/aminullah-dev/Explore_Afghanistan",
       "name": "Explore_Afghanistan / Explore-Afghanistan",
-      "question": "Are the Explore Afghanistan repositories related to Linumic, or personal projects?",
       "verification": {
-        "notes": "",
+        "notes": "Sidelined by the owner.",
         "sources": [
           {
             "detail": "Contents: .gitignore, images, index.html, js, stylesheet",
@@ -4369,9 +4578,16 @@
             "kind": "gitHub",
             "observedAt": "2026-09-23T07:00:00Z",
             "reference": "https://api.github.com/repos/aminullah-dev/Explore-Afghanistan"
+          },
+          {
+            "detail": "\"Explore Afghanistan: sideline.\"",
+            "kind": "ownerStatement",
+            "observedAt": "2026-09-23T07:00:00Z",
+            "reference": "Owner's answers in the Command Center working session, 2026-09-23"
           }
         ],
-        "status": "unknown"
+        "status": "verified",
+        "verifiedAt": "2026-09-23T07:00:00Z"
       }
     }
   ]

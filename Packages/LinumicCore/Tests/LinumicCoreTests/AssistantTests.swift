@@ -132,6 +132,8 @@ struct AssistantTests {
         #expect(a.answer("What features are currently planned?").statements.allSatisfy { $0.kind == .unknown })
         #expect(a.answer("What market needs are emerging in Afghanistan?").statements.allSatisfy { $0.kind == .unknown })
         let tailoring = a.answer("Tailoring Workshop ERP").statements
-        #expect(tailoring.contains { $0.text.hasPrefix("Website: sources conflict") })
+        #expect(tailoring.contains { $0.text.hasPrefix("Website: unknown") }, "the owner resolved the conflict")
+        // Sidelined products are left out of the attention list.
+        #expect(!a.answer("Which products need attention?").statements.contains { $0.productID == "tailoring-workshop-erp" })
     }
 }

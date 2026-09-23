@@ -1,4 +1,6 @@
+#if os(macOS)
 import AppKit
+#endif
 import LinumicCore
 import SwiftUI
 
@@ -182,11 +184,15 @@ struct AccountSettingsView: View {
                 }
                 .onChange(of: language) { language.apply(); needsRelaunch = true }
                 if needsRelaunch {
+                    #if os(macOS)
                     HStack {
                         Text("Relaunch to apply the new language.")
                         Spacer()
                         Button("Relaunch Now") { relaunch() }
                     }
+                    #else
+                    Text("Close and reopen the app to apply the new language.")
+                    #endif
                 }
             } header: {
                 Text("Language")
@@ -204,6 +210,7 @@ struct AccountSettingsView: View {
         .navigationTitle("Account")
     }
 
+    #if os(macOS)
     private func relaunch() {
         let config = NSWorkspace.OpenConfiguration()
         config.createsNewApplicationInstance = true
@@ -211,4 +218,5 @@ struct AccountSettingsView: View {
             DispatchQueue.main.async { NSApp.terminate(nil) }
         }
     }
+    #endif
 }

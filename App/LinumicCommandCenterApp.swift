@@ -28,7 +28,9 @@ struct LinumicCommandCenterApp: App {
                 .environment(\.layoutDirection, Self.layoutDirection)
                 .environment(model)
                 .environment(router)
+                #if os(macOS)
                 .frame(minWidth: 960, minHeight: 600)
+                #endif
                 .task { await model.load() }
         }
         .commands {

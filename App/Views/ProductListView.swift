@@ -30,7 +30,8 @@ struct ProductListView: View {
                 || ($0.alsoKnownAs.value ?? []).contains { $0.localizedStandardContains(search) }
                 || $0.repositories.contains { $0.name.localizedStandardContains(search) }
         }
-        return filtered.sorted(using: sortOrder)
+        // Sidelined products always sink to the bottom. Otherwise the chosen sort order applies.
+        return filtered.sorted(using: sortOrder).sorted { ($0.priority.value == .sidelined ? 1 : 0) < ($1.priority.value == .sidelined ? 1 : 0) }
     }
 
     var body: some View {
@@ -54,6 +55,14 @@ struct ProductListView: View {
                     .accessibilityLabel(n == 0 ? "Nothing to confirm" : "\(n) items need your confirmation")
             }
             .width(min: 60, ideal: 70)
+            TableColumn("Priority") { p in
+                if let pr = p.priority.value {
+                    StatusBadge(text: pr.title, color: pr.color)
+                } else {
+                    Text("—").foregroundStyle(.secondary)
+                }
+            }
+            .width(min: 80, ideal: 100)
             TableColumn("Status") { p in
                 if let s = p.status.value {
                     HStack(spacing: 4) {
@@ -160,7 +169,9 @@ struct QuickOpenView: View {
         }
         .frame(width: 480, height: 360)
         .onAppear { focused = true }
+        #if os(macOS)
         .onExitCommand { dismiss() }
+        #endif
     }
 
     private func open(_ product: Product) {

@@ -117,6 +117,7 @@ struct VerificationTests {
         for field in ProductField.allCases where field.isKey {
             switch field {
             case .isLinumicProduct: p.isLinumicProduct = Fact(true, verified())
+            case .legalOwner: p.legalOwner = Fact("SAMPLE OWNER", verified())
             case .summary: p.summary = Fact("x", verified())
             case .category: p.category = Fact("x", verified())
             case .projectType: p.projectType = Fact("x", verified())
@@ -124,7 +125,7 @@ struct VerificationTests {
             case .currentVersion: p.currentVersion = Fact("1.0", verified())
             case .backend: p.backend = Fact("x", verified())
             case .website: p.website = Fact(URL(string: "https://example.com"), verified())
-            case .alsoKnownAs, .nextVersion: break
+            case .alsoKnownAs, .nextVersion, .priority: break
             }
         }
         p.platforms = [PlatformRecord(platform: .android, identifier: "sample.app", verification: verified())]
@@ -281,11 +282,39 @@ struct SeedTests {
         #expect(names.count == Set(names).count)
     }
 
-    @Test func knownConflictIsSurfaced() throws {
+    @Test func ownerAnswersAreRecorded() throws {
+        #expect(seed.seedRevision >= 2)
         let tailoring = try #require(seed.products.first { $0.id == "tailoring-workshop-erp" })
-        #expect(tailoring.website.status == .conflicting)
-        #expect(tailoring.website.value == nil)
-        #expect(tailoring.overallVerification == .conflicting)
+        #expect(tailoring.priority.value == .sidelined)
+        #expect(tailoring.website.status == .unknown, "the website conflict was resolved by the owner")
+        #expect(tailoring.overallVerification != .conflicting)
+        let mediflow = try #require(seed.products.first { $0.id == "mediflow" })
+        #expect(mediflow.priority.value == .high)
+        for p in seed.products {
+            #expect(p.legalOwner.value == "Aminullah Hashemi", "\(p.name)")
+            #expect(p.legalOwner.verification.sources.contains { $0.kind == .ownerStatement })
+        }
+        #expect(!seed.unresolved.contains { $0.name.contains("Gul") })
+        #expect(seed.unresolved.allSatisfy { $0.kind == .sidelined && $0.question == nil })
+        #expect(!seed.hasUserEdits)
+    }
+}
+
+@Suite("Seed upgrades")
+struct SeedUpgradeTests {
+    @Test func detectsUserEdits() throws {
+        var inv = try SeedInventory.load()
+        #expect(!inv.hasUserEdits)
+        inv.products[0].releases.append(Release(version: "9", platform: .android))
+        #expect(inv.hasUserEdits)
+
+        var confirmed = try SeedInventory.load()
+        confirmed.products[0].summary.verification.sources.append(Source(kind: .ownerStatement, reference: Source.ownerConfirmationReference))
+        #expect(confirmed.hasUserEdits)
+
+        var withContent = try SeedInventory.load()
+        withContent.content.append(ContentItem(title: "SAMPLE"))
+        #expect(withContent.hasUserEdits)
     }
 }
 

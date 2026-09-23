@@ -27,12 +27,12 @@ Not installed: Docker, pnpm, Supabase CLI, AWS/Azure CLIs.
 
 | Layer | Choice | Reason |
 |---|---|---|
-| Mac client | SwiftUI, macOS 15+ deployment target | Native conventions, sidebar, tables, dark mode and keyboard support built in |
+| Clients | One SwiftUI target for **macOS 15+ and iOS/iPadOS 18+** (the owner chose Mac + iOS for now; no web) | Native conventions on each platform; shared LinumicCore |
 | Shared core | `LinumicCore` Swift package, no third-party dependencies | Reusable by iOS/iPadOS without changes; `swift test` runs without Xcode UI |
 | Persistence (MVP) | Codable JSON file behind `InventoryStore` | Portable, inspectable, and the same DTO shape a future REST API returns. SwiftData was avoided so the domain model isn't tied to Apple persistence. |
 | Project generation | XcodeGen (`project.yml`) | Reviewable project definition, no merge conflicts in `.pbxproj` |
 | Secrets | macOS Keychain via `SecretStore` | See [docs/security.md](docs/security.md) |
-| Cloud backend | **Deferred at the owner's instruction.** Plan and API contract: [docs/backend-plan.md](docs/backend-plan.md) | Supabase (Postgres + auth + RLS + Vault) is the leading candidate once multi-user, multi-device or server-held credentials are needed |
+| Cloud backend | **Later: Supabase or Firebase** (owner, 2026-09-23). Plan and API contract: [docs/backend-plan.md](docs/backend-plan.md) | Needed for multi-user, multi-device and server-held credentials |
 
 ## Modules
 
@@ -78,8 +78,8 @@ can later be added for phrasing, but it may only restate these grounded statemen
    stated) or **Unknown**.
 3. It is read-only by default. Any action (creating an issue, drafting a post)
    produces a proposal that a person must approve.
-4. Model API keys live server-side once a backend exists. Until then they go in
-   the Keychain, never in source.
+4. The owner will buy an **Anthropic API key** later, for optional phrasing only. It goes in the
+   Keychain (or on the backend once one exists), never in source. It isn't wired up yet, deliberately.
 
 ## Client rules
 

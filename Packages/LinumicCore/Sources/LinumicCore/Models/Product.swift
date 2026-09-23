@@ -7,6 +7,10 @@ public struct Product: Codable, Hashable, Sendable, Identifiable {
     public var name: String
     /// Whether this is a Linumic product at all.
     public var isLinumicProduct: Fact<Bool>
+    /// Who legally owns the product. Linumic is the umbrella brand, not necessarily the owner.
+    public var legalOwner: Fact<String>
+    /// The owner's priority for the product.
+    public var priority: Fact<ProductPriority>
     /// Other names the product appears under (store names, app titles, working names).
     public var alsoKnownAs: Fact<[String]>
     public var summary: Fact<String>
@@ -33,7 +37,8 @@ public struct Product: Codable, Hashable, Sendable, Identifiable {
 
     public init(
         id: String, name: String,
-        isLinumicProduct: Fact<Bool> = .unknown, alsoKnownAs: Fact<[String]> = .unknown,
+        isLinumicProduct: Fact<Bool> = .unknown, legalOwner: Fact<String> = .unknown, priority: Fact<ProductPriority> = .unknown,
+        alsoKnownAs: Fact<[String]> = .unknown,
         summary: Fact<String> = .unknown, category: Fact<String> = .unknown, projectType: Fact<String> = .unknown,
         status: Fact<ProductStatus> = .unknown, currentVersion: Fact<String> = .unknown, nextVersion: Fact<String> = .unknown,
         backend: Fact<String> = .unknown, website: Fact<URL> = .unknown,
@@ -45,6 +50,8 @@ public struct Product: Codable, Hashable, Sendable, Identifiable {
         self.id = id
         self.name = name
         self.isLinumicProduct = isLinumicProduct
+        self.legalOwner = legalOwner
+        self.priority = priority
         self.alsoKnownAs = alsoKnownAs
         self.summary = summary
         self.category = category
@@ -99,13 +106,15 @@ public struct Product: Codable, Hashable, Sendable, Identifiable {
 
 /// The product fields that carry verification, in display order.
 public enum ProductField: String, CaseIterable, Sendable, Identifiable {
-    case isLinumicProduct, alsoKnownAs, summary, category, projectType, status, currentVersion, nextVersion, backend, website
+    case isLinumicProduct, legalOwner, priority, alsoKnownAs, summary, category, projectType, status, currentVersion, nextVersion, backend, website
 
     public var id: String { rawValue }
 
     public var title: String {
         switch self {
         case .isLinumicProduct: L("Linumic product")
+        case .legalOwner: L("Legal owner")
+        case .priority: L("Priority")
         case .alsoKnownAs: L("Also known as")
         case .summary: L("Description")
         case .category: L("Category")
@@ -119,7 +128,7 @@ public enum ProductField: String, CaseIterable, Sendable, Identifiable {
     }
 
     /// Fields that decide a product's overall verification. The next version is a plan, not a fact to verify.
-    public var isKey: Bool { self != .nextVersion && self != .alsoKnownAs }
+    public var isKey: Bool { ![.nextVersion, .alsoKnownAs, .priority].contains(self) }
 }
 
 /// A field's value rendered as text together with its verification, for display and roll-up.
@@ -134,6 +143,8 @@ extension Product {
     public func state(of field: ProductField) -> FieldState {
         switch field {
         case .isLinumicProduct: FieldState(field: field, displayValue: isLinumicProduct.value.map { $0 ? L("Yes") : L("No") }, verification: isLinumicProduct.verification)
+        case .legalOwner: FieldState(field: field, displayValue: legalOwner.value, verification: legalOwner.verification)
+        case .priority: FieldState(field: field, displayValue: priority.value?.title, verification: priority.verification)
         case .alsoKnownAs: FieldState(field: field, displayValue: alsoKnownAs.value.map { $0.joined(separator: ", ") }, verification: alsoKnownAs.verification)
         case .summary: FieldState(field: field, displayValue: summary.value, verification: summary.verification)
         case .category: FieldState(field: field, displayValue: category.value, verification: category.verification)
@@ -203,7 +214,7 @@ extension Product {
 
 extension Product {
     private enum CodingKeys: String, CodingKey {
-        case id, name, isLinumicProduct, alsoKnownAs, summary, category, projectType, status, currentVersion, nextVersion,
+        case id, name, isLinumicProduct, legalOwner, priority, alsoKnownAs, summary, category, projectType, status, currentVersion, nextVersion,
              backend, website, repositories, platforms, storeListings, roadmap, issues, releases, deployments,
              documentation, socialAccounts, analytics, notes, provenance
     }
@@ -216,6 +227,8 @@ extension Product {
         id = try c.decode(String.self, forKey: .id)
         name = try c.decode(String.self, forKey: .name)
         isLinumicProduct = try fact(.isLinumicProduct)
+        legalOwner = try fact(.legalOwner)
+        priority = try fact(.priority)
         alsoKnownAs = try fact(.alsoKnownAs)
         summary = try fact(.summary)
         category = try fact(.category)
@@ -245,7 +258,16 @@ extension Product {
 public struct UnresolvedItem: Codable, Hashable, Sendable, Identifiable {
     public enum Kind: String, Codable, CaseIterable, Sendable {
         case possibleProduct, unresolvedRepository
-        public var title: String { self == .possibleProduct ? L("Possible product") : L("Unresolved repository") }
+        /// The owner set it aside for now ("در حاشیه"). No question is pending.
+        case sidelined
+
+        public var title: String {
+            switch self {
+            case .possibleProduct: L("Possible product")
+            case .unresolvedRepository: L("Unresolved repository")
+            case .sidelined: L("Sidelined")
+            }
+        }
     }
 
     public var id: String
@@ -274,31 +296,52 @@ public struct Inventory: Codable, Hashable, Sendable {
     public static let currentSchemaVersion = 2
 
     public var schemaVersion: Int
+    /// Version of the bundled seed this inventory was built from. It's raised when owner-confirmed facts change.
+    public var seedRevision: Int
     public var products: [Product]
     public var unresolved: [UnresolvedItem]
     public var market: MarketIntelligence
     public var content: [ContentItem]
 
-    public init(schemaVersion: Int = Inventory.currentSchemaVersion, products: [Product] = [], unresolved: [UnresolvedItem] = [],
+    public init(schemaVersion: Int = Inventory.currentSchemaVersion, seedRevision: Int = 1, products: [Product] = [], unresolved: [UnresolvedItem] = [],
                 market: MarketIntelligence = MarketIntelligence(), content: [ContentItem] = []) {
         self.schemaVersion = schemaVersion
+        self.seedRevision = seedRevision
         self.products = products
         self.unresolved = unresolved
         self.market = market
         self.content = content
     }
 
-    private enum CodingKeys: String, CodingKey { case schemaVersion, products, unresolved, market, content }
+    private enum CodingKeys: String, CodingKey { case schemaVersion, seedRevision, products, unresolved, market, content }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         schemaVersion = try c.decode(Int.self, forKey: .schemaVersion)
+        seedRevision = try c.decodeIfPresent(Int.self, forKey: .seedRevision) ?? 1
         products = try c.decodeIfPresent([Product].self, forKey: .products) ?? []
         unresolved = try c.decodeIfPresent([UnresolvedItem].self, forKey: .unresolved) ?? []
         market = try c.decodeIfPresent(MarketIntelligence.self, forKey: .market) ?? MarketIntelligence()
         content = try c.decodeIfPresent([ContentItem].self, forKey: .content) ?? []
     }
 }
+// MARK: - Seed upgrades
+
+extension Inventory {
+    /// True if anything in this inventory came from a person using the app rather than from the
+    /// bundled seed. Such an inventory is never replaced automatically.
+    public var hasUserEdits: Bool {
+        if !market.sources.isEmpty || !content.isEmpty { return true }
+        for p in products {
+            if p.provenance.source == Provenance.manualEntry().source { return true }
+            if !p.releases.isEmpty || !p.roadmap.isEmpty || !p.issues.isEmpty || !p.deployments.isEmpty { return true }
+            let sources = p.allVerifications.flatMap(\.sources) + p.fieldStates.flatMap(\.verification.sources)
+            if sources.contains(where: { $0.reference == Source.ownerConfirmationReference }) { return true }
+        }
+        return false
+    }
+}
+
 // MARK: - Editing
 
 extension Product {
@@ -318,6 +361,11 @@ extension Product {
             guard yes.contains(answer) || no.contains(answer) else { return false }
             let flag = yes.contains(answer)
             isLinumicProduct = Fact(flag, verification)
+        case .legalOwner: legalOwner = Fact(value, verification)
+        case .priority:
+            guard let value else { priority = Fact(nil, verification); return true }
+            guard let parsed = ProductPriority(rawValue: value) ?? ProductPriority.allCases.first(where: { $0.title == value }) else { return false }
+            priority = Fact(parsed, verification)
         case .alsoKnownAs:
             let names = value?.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
             alsoKnownAs = Fact(names?.isEmpty == false ? names : nil, verification)

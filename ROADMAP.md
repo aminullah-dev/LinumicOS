@@ -13,7 +13,7 @@ the app.
 - [x] Manual version, release, repository and roadmap records
 - [x] Keychain `SecretStore`, `RepositoryHostClient` interface
 - [x] Verified product inventory: evidence model, discovery report, verification UI
-- [ ] Owner answers the questions in docs/product-discovery-report.md
+- [x] Owner answered the main questions (2026-09-23); a few remain in docs/product-discovery-report.md
 
 ## Phase 2: GitHub (read-only) (done except local status)
 
@@ -45,7 +45,8 @@ the app.
 - [x] AI assistant with verified/derived/unknown labelling (local engine, no language model)
 - [ ] Optional language model for phrasing, restating grounded statements only (needs a provider key)
 
-## Later clients
+## Clients
 
-- [ ] iOS/iPadOS client reusing LinumicCore
-- [ ] Web client on the backend API
+- [x] iOS/iPadOS from the same target (builds for the Simulator; device install needs a provisioning run in Xcode)
+- [ ] Notarised macOS release (needs the one-time notarytool profile)
+- Web client: not planned for now (owner: Mac + iOS)

@@ -59,6 +59,16 @@ ASC_ABSENT = ("Not present in the owner's App Store Connect app list (screenshot
               "Linumic WorkTrack, VELRO Ops, Nerkh Times, Afghan Prayer Times.")
 
 
+OWNER_ANSWERS = "Owner's answers in the Command Center working session, 2026-09-23"
+
+
+def owner(detail):
+    return src("ownerStatement", OWNER_ANSWERS, detail)
+
+
+LEGAL_OWNER = None  # set below, once fact() exists
+
+
 def gh(repo, detail=None):
     return src("gitHub", f"https://api.github.com/repos/aminullah-dev/{repo}", detail)
 
@@ -196,6 +206,9 @@ SELLER_NOTE = "The App Store lists the seller as the individual account \"AMINUL
 
 
 def product(pid, name, **fields):
+    fields.setdefault("legalOwner", fact("Aminullah Hashemi", "verified",
+                                         [owner("\"The owner is me; Linumic is only the mother (umbrella) of the projects.\"")],
+                                         "Linumic is the umbrella brand for the projects, not the legal owner."))
     p = {"id": pid, "name": name,
          "provenance": {"source": "Command Center verified inventory, built by tools/inventory/build_seed.py", "recordedAt": OBS}}
     p.update(fields)
@@ -504,8 +517,10 @@ products.append(product(
     "afghanjama", "AfghanJama",
     isLinumicProduct=owner_listed([web("https://linumic.com/what-we-do/tailor-erp/", "Tailor ERP page download links point to github.com/aminullah-dev/AfghanJama/releases/download/v1.8.0/KhayatYar-1.8.0.{apk,msi,dmg}")]),
     alsoKnownAs=fact(["KhayatYar", "خیاط‌یار", "Tailor ERP"], "verified",
-                     [gh("AfghanJama", "Description: KhayatYar / خیاط‌یار — Tailor ERP"), web("https://linumic.com/what-we-do/tailor-erp/", "Title: Tailor ERP — Orders, Production & Accounts")],
+                     [gh("AfghanJama", "Description: KhayatYar / خیاط‌یار — Tailor ERP"), web("https://linumic.com/what-we-do/tailor-erp/", "Title: Tailor ERP — Orders, Production & Accounts"),
+                      owner("\"KhayatYar is the same as AfghanJama.\"")],
                      "The repository, the app and the website call this product KhayatYar / Tailor ERP. \"AfghanJama\" appears only as the repository and package name."),
+    # The owner confirmed: KhayatYar is AfghanJama.
     summary=fact(EVIDENCE["AfghanJama"]["description"], "verified", [gh("AfghanJama", "Repository description")]),
     category=fact("Tailoring workshop management (ERP)", "verified",
                   [gh("AfghanJama", "KhayatYar — Tailor ERP"), web("https://linumic.com/what-we-do/tailor-erp/", "Category \"Manufacturing\": Workshop management for tailoring businesses")],
@@ -544,7 +559,7 @@ products.append(product(
     alsoKnownAs=fact(["سوډر حاکم", "SoderHakim"], "verified", [local(f"{SH}/README.md", "# سوډر حاکم — Android reader; dist/SoderHakim-1.0.apk")]),
     summary=fact("Offline Android reading app for the book «سوډر حاکم — د بې‌واکه حاکمیت فلسفه» by امین‌الله هاشمي, with the full text bundled.", "verified",
                  [local(f"{SH}/README.md", "Opening paragraph")]),
-    category=fact("Book reader (Pashto)", "partiallyVerified", [local(f"{SH}/README.md")]),
+    category=fact("Book: reader app for the owner's Pashto book", "verified", [local(f"{SH}/README.md"), owner("\"SODER-HAKEM is a book.\"")]),
     projectType=fact("Android app (Kotlin + Jetpack Compose)", "verified", [local(f"{SH}/app/build.gradle.kts"), local(f"{SH}/README.md")]),
     status=unknown("The first commit to GitHub was on 2026-09-22. The README describes sideloading an APK from dist/."),
     currentVersion=fact("1.0", "partiallyVerified", [local(f"{SH}/app/build.gradle.kts", "versionName 1.0"), local(f"{SH}/README.md", "dist/SoderHakim-1.0.apk")],
@@ -564,7 +579,8 @@ products.append(product(
     isLinumicProduct=owner_listed([web("https://linumic.com/what-we-do/mediflow/", "Product page on linumic.com (HTTP 200); listed first on the products index under Healthcare")],
                                   "The LICENSE names \"Copyright (c) 2026 Aminullah Hashemi\" as a proprietary licence, not Linumic."),
     summary=fact(EVIDENCE["MediFlow"]["description"], "verified", [gh("MediFlow", "Repository description")]),
-    category=fact("Clinic and hospital management", "partiallyVerified", [gh("MediFlow")]),
+    category=fact("Medical: clinic and hospital management", "verified", [gh("MediFlow"), owner("\"MediFlow is a medical system.\"")]),
+    priority=fact("high", "verified", [owner("\"MediFlow is a medical system; it matters.\"")]),
     projectType=fact("Offline desktop application (Python 3.13, PySide6, SQLite) with a local web UI; 16 modules", "verified",
                      [local(f"{MF}/README.md", "Module table (16 modules), start.command / start.bat web UI launchers"), local(f"{MF}/pyproject.toml")]),
     status=fact("development", "partiallyVerified",
@@ -601,14 +617,12 @@ products.append(product(
     summary=fact("Tailoring workshop ERP: a production management platform for garment manufacturing, from the customer's measurements to the delivered, invoiced and costed order.", "verified",
                  [local(f"{TW}/README.md", "Opening paragraph")]),
     category=fact("Garment production ERP", "partiallyVerified", [local(f"{TW}/README.md", "\"A production management platform for garment manufacturing\"")]),
+    priority=fact("sidelined", "verified", [owner("\"Move Darzi to the sidelines for now.\"")]),
     projectType=fact("Web application: React web client + Express/Drizzle/PostgreSQL API", "verified", [local(f"{TW}/README.md", "Layout table")]),
     status=fact("development", "partiallyVerified", [local(f"{TW}/README.md", "\"Increment 1 — foundation and the order-intake slice\"")]),
     currentVersion=unknown("package.json declares 0.1.0. No release was found."),
     backend=fact("Express 5 + Drizzle + PostgreSQL (api/)", "verified", [local(f"{TW}/README.md", "Layout table")]),
-    website=fact(None, "conflicting",
-                 [web("https://linumic.com/what-we-do/tailor-erp/", "\"Tailor ERP\" page: an offline Android/Windows/macOS app whose downloads are AfghanJama's KhayatYar-1.8.0 release"),
-                  local(f"{TW}/README.md", "Darzi: a React web client + Express/PostgreSQL API, not offline Android/desktop")],
-                 "The owner's list names this product \"Tailoring Workshop ERP\", but linumic.com's Tailor ERP page is the AfghanJama/KhayatYar codebase. This Darzi codebase doesn't appear on linumic.com."),
+    website=unknown("No website. The owner confirmed that linumic.com's Tailor ERP page is KhayatYar (the AfghanJama repository), not this codebase."),
     repositories=[repo("Tailoring-Workshop-ERP", "application",
                        ver("verified", [gh("Tailoring-Workshop-ERP", "Description: Tailoring Workshop ERP"), OWNER_LIST]),
                        [checkout(TW, "feat/finished-goods-warehouse", "6321d175af3d4e5ae5a1421f4c6a91b74a3cee5c", "2026-08-02T21:28:41-04:00",
@@ -642,23 +656,19 @@ products.append(product(
 
 # ================================================================= unresolved
 
+# Gul-E-Lala: removed at the owner's instruction (2026-09-23).
 # Kabul Signal (kabulsignal.com and aminullah-dev/kabul-signal-android) is deliberately excluded:
 # it is a separate organization, and the owner asked on 2026-09-23 for it to be removed from the Command Center.
 unresolved = [
-    {"id": "gul-e-lala", "kind": "possibleProduct", "name": "Gul-E-Lala", "location": "~/Projects/Web/Gul -E- Lala",
-     "findings": "Remotion motion-graphics project (package gul-e-lala-motion 1.0.0; compositions TitleCard, LogoReveal, LowerThird, CornerBug, KineticText, TransparentBadge; a Logo/ image). It isn't a Git repository and has no remote. No Linumic reference found.",
-     "question": "Is Gul-E-Lala a Linumic product, a client project, or internal video tooling?",
-     "verification": ver("unknown", [local("Web/Gul -E- Lala/package.json"), local("Web/Gul -E- Lala/README.md", "# Motion Graphics — Remotion Starter")])},
-    {"id": "radar-system", "kind": "unresolvedRepository", "name": "Radar-system", "location": "https://github.com/aminullah-dev/Radar-system",
+    {"id": "radar-system", "kind": "sidelined", "name": "Radar-system", "location": "https://github.com/aminullah-dev/Radar-system",
      "findings": "Private repository created 2026-07-28 with a single \"Initial commit\" containing only README.md (\"# Radar-system\"). No local working copy.",
-     "question": "What is Radar-system for, and does it belong to any product?",
-     "verification": ver("unknown", [gh("Radar-system", "Contents: README.md only")])},
-    {"id": "explore-afghanistan", "kind": "unresolvedRepository", "name": "Explore_Afghanistan / Explore-Afghanistan", "location": "https://github.com/aminullah-dev/Explore_Afghanistan",
+     "verification": ver("verified", [gh("Radar-system", "Contents: README.md only"), owner("\"Radar-system: sideline.\"")], "Sidelined by the owner.")},
+    {"id": "explore-afghanistan", "kind": "sidelined", "name": "Explore_Afghanistan / Explore-Afghanistan", "location": "https://github.com/aminullah-dev/Explore_Afghanistan",
      "findings": "Explore_Afghanistan (private, 2025-08-03) holds a static website (index.html, js, stylesheet, images). Explore-Afghanistan (public, same day) is empty. Both predate every known product repository. No Linumic reference found (contents not read in depth).",
-     "question": "Are the Explore Afghanistan repositories related to Linumic, or personal projects?",
-     "verification": ver("unknown", [gh("Explore_Afghanistan", "Contents: .gitignore, images, index.html, js, stylesheet"), gh("Explore-Afghanistan", "Empty repository")])},
+     "verification": ver("verified", [gh("Explore_Afghanistan", "Contents: .gitignore, images, index.html, js, stylesheet"), gh("Explore-Afghanistan", "Empty repository"),
+                         owner("\"Explore Afghanistan: sideline.\"")], "Sidelined by the owner.")},
 ]
 
-inventory = {"schemaVersion": 2, "products": products, "unresolved": unresolved}
+inventory = {"schemaVersion": 2, "seedRevision": 2, "products": products, "unresolved": unresolved}
 OUT.write_text(json.dumps(inventory, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
 print(f"wrote {OUT.relative_to(ROOT)}: {len(products)} products, {len(unresolved)} unresolved items")

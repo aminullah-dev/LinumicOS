@@ -5,6 +5,18 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- Owner answers applied (seed revision 2): AfghanJama = KhayatYar = Tailor ERP; Darzi sidelined;
+  Gul-E-Lala removed; Radar-system and Explore Afghanistan sidelined; MediFlow medical and high priority;
+  SODER-HAKEM is a book; legal owner Aminullah Hashemi, with Linumic as the umbrella brand.
+- New product fields: **Legal owner** and **Priority** (high / normal / low / sidelined). Sidelined
+  products sink to the bottom of lists and are left out of the assistant's attention answers.
+- Seed upgrades: an inventory nobody has edited is rebuilt from a newer seed (and archived first).
+  An edited inventory is kept, and the user is told.
+- **iOS / iPadOS**: the same target now builds for iOS 18+ (the App Sandbox entitlements are macOS-only).
+- Signing with team 27RXPRW77S. `tools/release/build-release.sh` produces a Developer ID–signed build and
+  notarises it once a `LinumicCommandCenter` notarytool profile exists.
+
 ### Added: Dari (دری) language
 - A complete Dari UI (`fa-AF`): 527 strings, including enum titles, errors, empty states and
   every assistant answer template. Settings → Account → Language (System / English / دری) with relaunch.

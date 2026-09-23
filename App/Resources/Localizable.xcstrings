@@ -421,6 +421,16 @@
         }
       }
     },
+    "A newer verified inventory is bundled with this version. Your edits were kept, so it wasn't applied automatically.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست تأییدشدهٔ تازه‌تری همراه این نسخه آمده است. ویرایش‌های شما حفظ شد، بنابراین خودکار اعمال نشد."
+          }
+        }
+      }
+    },
     "A value marked Unknown would look like a fact. Choose a status and a source, or clear the value.": {
       "localizations": {
         "fa-AF": {
@@ -897,6 +907,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "دسته"
+          }
+        }
+      }
+    },
+    "Close and reopen the app to apply the new language.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای اعمال زبان تازه، برنامه را ببندید و دوباره باز کنید."
           }
         }
       }
@@ -1821,6 +1841,16 @@
         }
       }
     },
+    "High priority": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اولویت بالا"
+          }
+        }
+      }
+    },
     "Host": {
       "localizations": {
         "fa-AF": {
@@ -2131,6 +2161,16 @@
         }
       }
     },
+    "Legal owner": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مالک حقوقی"
+          }
+        }
+      }
+    },
     "Link": {
       "localizations": {
         "fa-AF": {
@@ -2287,6 +2327,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "پایین"
+          }
+        }
+      }
+    },
+    "Low priority": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اولویت پایین"
           }
         }
       }
@@ -2951,6 +3001,16 @@
         }
       }
     },
+    "Normal priority": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اولویت عادی"
+          }
+        }
+      }
+    },
     "Not connected": {
       "localizations": {
         "fa-AF": {
@@ -3357,6 +3417,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "برای افزودن محصول ⌘N را فشار دهید."
+          }
+        }
+      }
+    },
+    "Priority": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اولویت"
           }
         }
       }
@@ -4191,6 +4261,16 @@
         }
       }
     },
+    "Sidelined": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حاشیه"
+          }
+        }
+      }
+    },
     "Sign-in and role-based access will be added with the cloud backend.": {
       "localizations": {
         "fa-AF": {
@@ -4607,6 +4687,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "فهرست محصولات از دادهٔ اولیهٔ تأییدشده (نسخهٔ ساختار %1$lld) دوباره ساخته شد. فایل قبلی (نسخهٔ ساختار %2$lld) در %3$@ نگه داشته شد."
+          }
+        }
+      }
+    },
+    "The inventory was updated with newly confirmed facts. The previous file was kept at %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست محصولات با معلومات تازه‌تأییدشده به‌روز شد. فایل قبلی در %@ نگه داشته شد."
           }
         }
       }

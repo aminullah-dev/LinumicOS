@@ -75,6 +75,9 @@ public struct Source: Codable, Hashable, Sendable, Identifiable {
 
     public var id: String { "\(kind.rawValue)|\(reference)|\(observedAt.timeIntervalSince1970)" }
 
+    /// Reference used when the owner confirms something inside the app.
+    public static let ownerConfirmationReference = "Confirmed by the owner in Linumic Command Center"
+
     public init(kind: SourceKind, reference: String, observedAt: Date = .now, detail: String? = nil) {
         self.kind = kind
         self.reference = reference

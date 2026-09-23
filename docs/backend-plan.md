@@ -1,6 +1,6 @@
 # Backend Plan
 
-**Status:** planned, not built. On 2026-09-23 the owner said not to start the cloud backend yet.
+**Status:** planned, not built. On 2026-09-23 the owner decided: the server comes later, on **Supabase or Firebase** (to be bought then).
 Until then the Mac app stores everything locally (sandboxed JSON file plus Keychain).
 
 ## When to build it
@@ -18,7 +18,7 @@ Any one of these makes the backend worth building:
 | Concern | Recommendation | Why |
 |---|---|---|
 | Database | PostgreSQL | The schema is relational: products → repositories/platforms/listings → evidence |
-| Hosting | Managed Postgres + a small API service (Supabase is the leading candidate: Postgres, auth, row-level security, Vault) | Least operations for a small team; RLS gives server-side role checks |
+| Hosting | **Supabase** (Postgres, auth, row-level security, Vault) **or Firebase** (Firestore, Auth, Functions), as the owner decides | Both are managed. Supabase fits the relational schema. Firebase is already used by SafeBeauty, WorkTrack and Talar. |
 | Auth | Sign in with Apple / passkeys; short-lived tokens; refresh token in the Mac Keychain | See [security.md](security.md) |
 | Secrets | Server-side secret store (Supabase Vault or GCP Secret Manager) | Integration credentials leave the laptop |
 | Sync jobs | Scheduled functions calling the same read-only clients (`GitHubClient`, `AppStoreLookupClient`) | The logic already exists in LinumicCore and is tested |

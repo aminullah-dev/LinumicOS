@@ -12,6 +12,8 @@ final class InventoryModel {
     private(set) var unresolved: [UnresolvedItem] = []
     private(set) var market = MarketIntelligence()
     private(set) var content: [ContentItem] = []
+    /// Seed revision of the current data. It has to be saved back, or every launch would look outdated.
+    private var seedRevision = 1
     private(set) var isLoaded = false
     var errorMessage: String?
     /// One-time information for the user, e.g. that an older inventory file was archived.
@@ -85,6 +87,7 @@ final class InventoryModel {
         do {
             if let inventory = try await store.load() {
                 apply(inventory)
+                try await upgradeSeedIfUntouched(inventory)
             } else {
                 try seed()
             }
@@ -103,6 +106,23 @@ final class InventoryModel {
         isLoaded = true
     }
 
+    /// The bundled seed gets new owner-confirmed facts over time (`seedRevision`). An inventory
+    /// nobody has edited is archived and rebuilt from the newer seed. An edited one is kept,
+    /// because edits are never overwritten, and the user is told a newer seed exists.
+    private func upgradeSeedIfUntouched(_ stored: Inventory) async throws {
+        let bundled = try SeedInventory.load()
+        guard stored.seedRevision < bundled.seedRevision else { return }
+        if stored.hasUserEdits {
+            notice = String(localized: "A newer verified inventory is bundled with this version. Your edits were kept, so it wasn't applied automatically.")
+            return
+        }
+        let archived = try await store.archive()
+        apply(bundled)
+        persist()
+        let kept = archived?.path(percentEncoded: false) ?? String(localized: "its original location")
+        notice = String(localized: "The inventory was updated with newly confirmed facts. The previous file was kept at \(kept).")
+    }
+
     private func seed() throws {
         apply(try SeedInventory.load())
         persist()
@@ -113,6 +133,7 @@ final class InventoryModel {
         unresolved = inventory.unresolved
         market = inventory.market
         content = inventory.content
+        seedRevision = inventory.seedRevision
     }
 
     /// Applies a change to market intelligence. It's refused (returns the issues) if it would break the evidence rules.
@@ -172,7 +193,7 @@ final class InventoryModel {
 
     /// Saves are chained so they reach the store in the same order as the mutations.
     private func persist() {
-        let snapshot = Inventory(products: products, unresolved: unresolved, market: market, content: content)
+        let snapshot = Inventory(seedRevision: seedRevision, products: products, unresolved: unresolved, market: market, content: content)
         let previous = saveTask
         saveTask = Task { [store] in
             await previous?.value

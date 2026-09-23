@@ -126,7 +126,7 @@ public struct Assistant: Sendable {
     func needsAttention() -> [AssistantStatement] {
         let rule = L("Rule: a product needs attention if it has conflicting facts, failing CI, a blocked release, an open critical issue, or an unknown development status.")
         var result: [AssistantStatement] = []
-        for p in inventory.products {
+        for p in inventory.products where p.priority.value != .sidelined {
             var reasons: [String] = []
             let conflicts = p.needsConfirmation.filter { $0.verification.status == .conflicting }.map(\.label)
             if !conflicts.isEmpty { reasons.append(LF("conflicting: %@", conflicts.joined(separator: L(", ")))) }

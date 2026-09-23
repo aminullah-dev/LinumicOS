@@ -53,6 +53,17 @@ extension ProductStatus {
     }
 }
 
+extension ProductPriority {
+    var color: Color {
+        switch self {
+        case .high: .red
+        case .normal: .blue
+        case .low: .gray
+        case .sidelined: .secondary
+        }
+    }
+}
+
 extension VerificationStatus {
     var color: Color {
         switch self {

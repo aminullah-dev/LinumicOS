@@ -17,6 +17,23 @@ public enum ProductStatus: String, Codable, CaseIterable, Sendable, Identifiable
     }
 }
 
+/// How much attention a product gets. The owner decides this, and evidence can't.
+public enum ProductPriority: String, Codable, CaseIterable, Sendable, Identifiable {
+    case high, normal, low
+    /// Parked for now ("در حاشیه"): kept in the inventory, left out of attention lists.
+    case sidelined
+    public var id: String { rawValue }
+
+    public var title: String {
+        switch self {
+        case .high: L("High priority")
+        case .normal: L("Normal priority")
+        case .low: L("Low priority")
+        case .sidelined: L("Sidelined")
+        }
+    }
+}
+
 /// A platform a product ships on. Each product/platform link is a `PlatformRecord` with its own evidence.
 public enum Platform: String, Codable, CaseIterable, Sendable, Identifiable {
     case android, iOS, macOS, windows, web, backend, desktop, watchOS, research, unknown

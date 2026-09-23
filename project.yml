@@ -3,11 +3,13 @@ options:
   bundleIdPrefix: com.linumic
   deploymentTarget:
     macOS: "15.0"
+    iOS: "18.0"
   createIntermediateGroups: true
   developmentLanguage: en
 settings:
   base:
     SWIFT_VERSION: "6.0"
+    DEVELOPMENT_TEAM: 27RXPRW77S
     SWIFT_EMIT_LOC_STRINGS: YES
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
     MARKETING_VERSION: "0.1.0"
@@ -18,7 +20,8 @@ packages:
 targets:
   LinumicCommandCenter:
     type: application
-    platform: macOS
+    platform: auto
+    supportedDestinations: [macOS, iOS]
     sources:
       - App
     dependencies:
@@ -30,6 +33,10 @@ targets:
         CFBundleDevelopmentRegion: en
         CFBundleLocalizations: [en, fa-AF]
         LSApplicationCategoryType: public.app-category.developer-tools
+        UILaunchScreen: {}
+        UIApplicationSupportsIndirectInputEvents: true
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         NSHumanReadableCopyright: © Linumic
     entitlements:
       path: App/Support/LinumicCommandCenter.entitlements
@@ -41,8 +48,11 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.linumic.commandcenter
         PRODUCT_NAME: LinumicCommandCenter
-        CODE_SIGN_IDENTITY: "-"
-        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_STYLE: Automatic
+        # App Sandbox entitlements are macOS-only; iOS apps are sandboxed by the OS.
+        CODE_SIGN_ENTITLEMENTS: ""
+        "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]": App/Support/LinumicCommandCenter.entitlements
+        TARGETED_DEVICE_FAMILY: "1,2"
         ENABLE_HARDENED_RUNTIME: YES
         GENERATE_INFOPLIST_FILE: NO
         ASSETCATALOG_COMPILER_APPICON_NAME: ""

@@ -83,11 +83,7 @@ Every App Store listing names the seller as the individual account **"AMINULLAH 
 
 ## Possible Products
 
-Projects that may belong to Linumic but that the evidence can't settle.
-
-| Project | Location | Findings |
-|---|---|---|
-| **Gul-E-Lala** | `~/Projects/Web/Gul -E- Lala` | A Remotion motion-graphics project (`gul-e-lala-motion` 1.0.0; compositions TitleCard, LogoReveal, LowerThird, CornerBug, KineticText, TransparentBadge). No Git and no remote. No Linumic reference. |
+None. Gul-E-Lala (`~/Projects/Web/Gul -E- Lala`, a Remotion motion-graphics project) was **removed at the owner's instruction** on 2026-09-23.
 
 ## Related Repositories
 
@@ -95,8 +91,8 @@ Repositories whose relationship to a product is unclear.
 
 | Repository | Findings |
 |---|---|
-| `Radar-system` (private) | Created 2026-07-28. One "Initial commit" containing only `README.md` ("# Radar-system"). No local copy. |
-| `Explore_Afghanistan` (private) / `Explore-Afghanistan` (public, empty) | 2025-08-03. A static website (index.html, js, stylesheet, images). Predates every product repository. No Linumic reference. Contents not read in depth. |
+| `Radar-system` (private), **sidelined by the owner** | Created 2026-07-28. One "Initial commit" containing only `README.md` ("# Radar-system"). No local copy. |
+| `Explore_Afghanistan` (private) / `Explore-Afghanistan` (public, empty), **sidelined by the owner** | 2025-08-03. A static website (index.html, js, stylesheet, images). Predates every product repository. No Linumic reference. Contents not read in depth. |
 
 Resolved during discovery, so they are no longer open questions:
 
@@ -118,15 +114,23 @@ Resolved during discovery, so they are no longer open questions:
 
 ---
 
-## Questions Requiring Owner Confirmation
+## Owner answers (2026-09-23)
 
-Only questions the available evidence cannot answer.
+| Question | Answer | Recorded as |
+|---|---|---|
+| Tailor ERP identity | "KhayatYar is the same as AfghanJama." | AfghanJama = Tailor ERP (owner-confirmed). The website conflict is resolved. |
+| Darzi (Tailoring-Workshop-ERP) | "Move Darzi to the sidelines for now." | Priority: Sidelined. It's left out of attention lists. |
+| Legal owner | "The owner is me; Linumic is only the mother (umbrella) of the projects." | Legal owner: Aminullah Hashemi, on every product |
+| Gul-E-Lala | "Remove." | Removed from the Command Center |
+| Radar-system, Explore Afghanistan | "Sideline." | Sidelined. No question pending. |
+| MediFlow | "A medical system; it matters." | Category: Medical. Priority: High. |
+| SODER-HAKEM | "It's a book." | Category: book (reader app for the owner's Pashto book) |
 
-1. **Tailor ERP identity (CONFLICTING).** linumic.com sells "Tailor ERP", and its downloads are the **AfghanJama/KhayatYar** app. Your list also names **"Tailoring Workshop ERP"**, whose repository is a different codebase, **Darzi** (a web app plus a PostgreSQL API) that doesn't appear on the site. Are these two separate products? Is Darzi the successor to KhayatYar, or a different product?
-2. **Product names.** Should the Command Center use "AfghanJama", or the name the app and site use ("KhayatYar" / "Tailor ERP")? Likewise "Namazia" vs its App Store name "Afghan Prayer Times".
-3. **Legal owner.** App Store listings name the individual "AMINULLAH HASHEMI" as seller, MediFlow's licence is held personally, and linumic.com presents the products as Linumic's. Which entity owns the products?
-4. **Development status.** "Active" is inferred from live listings or releases for SafeBeauty, VELRO, WorkTrack, Talar, NerkhTimes, Namazia and AfghanJama. Please confirm, and give the status for MediFlow, SODER-HAKEM and the Pashto project.
-5. **Gul-E-Lala.** Is it a Linumic product, a client project, or internal video tooling?
-6. **Radar-system** and **Explore Afghanistan.** Do they belong to anything?
-7. **NerkhTimes backend.** Is the production data source the Google Apps Script plus Sheet described in `admin/README.md`?
-8. **Namazia and Pashto project branches.** On GitHub, `main` holds only "Initial commit"; the real code is on a feature branch (Namazia PR #1 is open). Is that intended?
+## Questions Requiring Owner Confirmation (still open)
+
+1. **Development status.** "Active" is inferred from live listings or releases for SafeBeauty, VELRO, WorkTrack, Talar,
+   NerkhTimes, Namazia and AfghanJama. Please confirm, and give the status for SODER-HAKEM and the Pashto project.
+2. **Product names.** Keep "AfghanJama" and "Namazia" as the record names, or use "KhayatYar" and "Afghan Prayer Times"?
+3. **NerkhTimes backend.** Is the production data source the Google Apps Script plus Sheet in `admin/README.md`?
+4. **Namazia and Pashto project branches.** GitHub `main` holds only "Initial commit"; the code is on a feature branch.
+5. **Google Play Console.** Not read yet: the Chrome extension wasn't connected. Play production versions stay unknown until then.

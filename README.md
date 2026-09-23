@@ -21,7 +21,8 @@ LinumicCommandCenter/
 
 ## Requirements
 
-- macOS 27 SDK / Xcode 27 or newer (Swift 6.4)
+- macOS 27 SDK / Xcode 27 or newer (Swift 6.4); targets macOS 15+ and iOS/iPadOS 18+
+- Signing: team `27RXPRW77S` (Apple Developer Program, individual). Development builds use Apple Development, releases use Developer ID Application.
 - [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`brew install xcodegen`)
 
 ## Development
@@ -32,6 +33,13 @@ swift test --package-path Packages/LinumicCore
 
 # Generate the Xcode project and open it
 xcodegen generate && open LinumicCommandCenter.xcodeproj
+
+# iOS / iPadOS (Simulator)
+xcodegen generate && xcodebuild -project LinumicCommandCenter.xcodeproj -scheme LinumicCommandCenter \
+  -destination 'generic/platform=iOS Simulator' build
+
+# Signed, notarised macOS release (see the script header for the one-time notarytool profile)
+tools/release/build-release.sh
 
 # Or build from the command line
 xcodegen generate && xcodebuild -project LinumicCommandCenter.xcodeproj \

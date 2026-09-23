@@ -77,7 +77,7 @@ private struct AnswerCard: View {
                     }
                     Spacer()
                     if let id = s.productID {
-                        Button("Open") { openProduct(id) }.buttonStyle(.link).font(.caption)
+                        Button("Open") { openProduct(id) }.buttonStyle(.borderless).foregroundStyle(.tint).font(.caption)
                     }
                 }
                 .accessibilityElement(children: .combine)
