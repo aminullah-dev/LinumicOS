@@ -43,8 +43,8 @@ Not installed: Docker, pnpm, Supabase CLI, AWS/Azure CLIs.
 | 3 | Version & release management | Implemented (manual records) |
 | 4 | Repository management | Typed repositories with verified links, and read-only GitHub sync (`GitHubClient`) |
 | 5 | App Store / Google Play | Listings with evidence, plus the public App Store lookup refresh. Store consoles aren't connected. |
-| 6 | Social media | Data fields only, no integration |
-| 7 | Market intelligence | Design only ([docs/market-intelligence.md](docs/market-intelligence.md)) |
+| 6 | Social media | Content calendar with approval workflow. Networks aren't connected. |
+| 7 | Market intelligence | Source → evidence → finding register with enforced citations ([docs/market-intelligence.md](docs/market-intelligence.md)) |
 | 8 | AI assistant | Design only (see below) |
 
 ## Core concepts (LinumicCore)

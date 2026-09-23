@@ -73,12 +73,9 @@ struct ContentView: View {
             NotIntegratedView(item: item, message: "Build status will come from CI (GitHub Actions) once the read-only GitHub integration is connected.")
         case .appStore: StoreListingsView(store: .appStore)
         case .googlePlay: StoreListingsView(store: .googlePlay)
-        case .socialMedia:
-            NotIntegratedView(item: item, message: "LinkedIn, Facebook, Instagram, X and YouTube will be managed here. Publishing will always require approval.")
-        case .contentCalendar:
-            NotIntegratedView(item: item, message: "The content calendar, drafts and campaigns are planned for the Marketing phase.")
-        case .marketIntelligence:
-            NotIntegratedView(item: item, message: "Afghanistan market intelligence is at the design stage. Every finding will carry a source and timestamp. See docs/market-intelligence.md.")
+        case .socialMedia: SocialAccountsView()
+        case .contentCalendar: ContentCalendarView()
+        case .marketIntelligence: MarketIntelligenceView()
         case .aiAssistant:
             NotIntegratedView(item: item, message: "The assistant will answer only from recorded data and will label each answer as verified, derived or unknown.")
         case .integrations: IntegrationsSettingsView()

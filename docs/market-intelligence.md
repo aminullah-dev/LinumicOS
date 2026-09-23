@@ -1,7 +1,8 @@
 # Market Intelligence (design)
 
-**Status:** architecture only. Nothing is collected and no conclusions about
-the Afghan market are made in this repository.
+**Status:** the source → evidence → finding register is implemented (Intelligence → Market
+Intelligence). It's empty until a person records sources. Nothing is collected
+automatically and no conclusions about the Afghan market are made here.
 
 ## Purpose
 
@@ -35,6 +36,15 @@ Finding         id, statement, kind (verified | derived), evidenceIds[],
                 method, createdAt, createdBy (person | assistant), confidence note
 ProductSignal   id, productId?, findingIds[], suggestion, status
 ```
+
+## Implemented (2026-09-23)
+
+- `MarketSource`, `MarketEvidence` and `MarketFinding` in `Models/Intelligence.swift`, stored in the
+  inventory under `market`.
+- Enforced rules (`MarketIntelligence.issues`, applied before every save): evidence must reference
+  an existing source and can't be empty; a finding must cite at least one existing evidence item;
+  a derived finding must state its method. A source or evidence item still referenced can't be deleted.
+- Findings have a review state (draft/reviewed) and can be linked to products.
 
 ## Pipeline (planned)
 

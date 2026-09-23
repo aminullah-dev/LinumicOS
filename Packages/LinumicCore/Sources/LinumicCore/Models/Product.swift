@@ -268,6 +268,7 @@ public struct UnresolvedItem: Codable, Hashable, Sendable, Identifiable {
 }
 
 /// The whole persisted inventory. `schemaVersion` allows future migrations.
+/// Newer optional sections (market intelligence, content) decode as empty when absent.
 public struct Inventory: Codable, Hashable, Sendable {
     /// v2: facts with verification, multiple typed repositories, platform records, store listings.
     public static let currentSchemaVersion = 2
@@ -275,23 +276,29 @@ public struct Inventory: Codable, Hashable, Sendable {
     public var schemaVersion: Int
     public var products: [Product]
     public var unresolved: [UnresolvedItem]
+    public var market: MarketIntelligence
+    public var content: [ContentItem]
 
-    public init(schemaVersion: Int = Inventory.currentSchemaVersion, products: [Product] = [], unresolved: [UnresolvedItem] = []) {
+    public init(schemaVersion: Int = Inventory.currentSchemaVersion, products: [Product] = [], unresolved: [UnresolvedItem] = [],
+                market: MarketIntelligence = MarketIntelligence(), content: [ContentItem] = []) {
         self.schemaVersion = schemaVersion
         self.products = products
         self.unresolved = unresolved
+        self.market = market
+        self.content = content
     }
 
-    private enum CodingKeys: String, CodingKey { case schemaVersion, products, unresolved }
+    private enum CodingKeys: String, CodingKey { case schemaVersion, products, unresolved, market, content }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         schemaVersion = try c.decode(Int.self, forKey: .schemaVersion)
         products = try c.decodeIfPresent([Product].self, forKey: .products) ?? []
         unresolved = try c.decodeIfPresent([UnresolvedItem].self, forKey: .unresolved) ?? []
+        market = try c.decodeIfPresent(MarketIntelligence.self, forKey: .market) ?? MarketIntelligence()
+        content = try c.decodeIfPresent([ContentItem].self, forKey: .content) ?? []
     }
 }
-
 // MARK: - Editing
 
 extension Product {

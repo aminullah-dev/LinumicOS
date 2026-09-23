@@ -5,6 +5,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Market intelligence and marketing
+- Market Intelligence screen: sources, evidence (with source and dates) and findings (citing
+  evidence; derived findings state their method). Changes that would break these rules are refused.
+- Content Calendar: posts with networks, product, campaign and language, plus a workflow with
+  approval tracking. Publishing is recorded by hand with the post's link, and nothing is posted.
+- Social Media screen lists recorded accounts. No network is connected.
+
 ### Added: Stores
 - App Store and Google Play screens list every recorded listing with its evidence.
 - Public App Store refresh (`AppStoreLookupClient`, `StoreSync`): live version, seller and

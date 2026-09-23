@@ -10,6 +10,8 @@ final class InventoryModel {
     private(set) var products: [Product] = []
     /// Possible products, unresolved repositories and separate organizations found during discovery.
     private(set) var unresolved: [UnresolvedItem] = []
+    private(set) var market = MarketIntelligence()
+    private(set) var content: [ContentItem] = []
     private(set) var isLoaded = false
     var errorMessage: String?
     /// One-time information for the user, e.g. that an older inventory file was archived.
@@ -109,6 +111,30 @@ final class InventoryModel {
     private func apply(_ inventory: Inventory) {
         products = inventory.products
         unresolved = inventory.unresolved
+        market = inventory.market
+        content = inventory.content
+    }
+
+    /// Applies a change to market intelligence. It's refused (returns the issues) if it would break the evidence rules.
+    @discardableResult
+    func updateMarket(_ change: (inout MarketIntelligence) -> Void) -> [String] {
+        var next = market
+        change(&next)
+        let issues = next.issues
+        guard issues.isEmpty else { return issues }
+        market = next
+        persist()
+        return []
+    }
+
+    func upsertContent(_ item: ContentItem) {
+        content.upsert(item)
+        persist()
+    }
+
+    func deleteContent(_ id: ContentItem.ID) {
+        content.removeAll { $0.id == id }
+        persist()
     }
 
     /// Adds a product, or replaces the existing product with the same ID.
@@ -146,7 +172,7 @@ final class InventoryModel {
 
     /// Saves are chained so they reach the store in the same order as the mutations.
     private func persist() {
-        let snapshot = Inventory(products: products, unresolved: unresolved)
+        let snapshot = Inventory(products: products, unresolved: unresolved, market: market, content: content)
         let previous = saveTask
         saveTask = Task { [store] in
             await previous?.value

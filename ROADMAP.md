@@ -35,12 +35,13 @@ the app.
 
 ## Phase 5: Marketing
 
-- [ ] Content calendar, drafts, approval workflow
+- [x] Content calendar, drafts, approval workflow (idea → draft → review → approved → scheduled → published, recorded by hand)
 - [ ] Publishing to social networks, gated by per-post approval
 
 ## Phase 6: Intelligence
 
-- [ ] Market intelligence source registry (see docs/market-intelligence.md)
+- [x] Market intelligence source → evidence → finding register with enforced citation rules
+- [ ] Collectors for specific sources (after the terms of use are checked)
 - [ ] AI assistant with verified/derived/unknown labelling
 
 ## Later clients
