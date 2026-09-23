@@ -1,0 +1,221 @@
+{
+  "products": [
+    {
+      "id": "safe-beauty",
+      "name": "Safe Beauty",
+      "notes": "Top-level directories (unverified platform indicators): app, ios, desktop, functions, app-store, play-store. Repository name differs from product name; canonical repo UNKNOWN — TO BE VERIFIED.",
+      "provenance": {
+        "recordedAt": "2026-09-23T00:00:00Z",
+        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+      },
+      "repositories": [
+        {
+          "host": "github",
+          "id": "2B6C7B1E-C7AF-5643-9BC5-F01B6D3D0C84",
+          "name": "stealth-service-vault-",
+          "url": "https://github.com/aminullah-dev/stealth-service-vault-"
+        }
+      ],
+      "status": "unknown"
+    },
+    {
+      "id": "velro",
+      "name": "Velro",
+      "notes": "Top-level directories (unverified platform indicators): mobile, ios, admin, backend.",
+      "provenance": {
+        "recordedAt": "2026-09-23T00:00:00Z",
+        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+      },
+      "repositories": [
+        {
+          "host": "github",
+          "id": "000FC328-4F8A-54FF-B47B-DB2FFDBE1503",
+          "name": "velro",
+          "url": "https://github.com/aminullah-dev/velro"
+        }
+      ],
+      "status": "unknown"
+    },
+    {
+      "id": "worktrack",
+      "name": "WorkTrack",
+      "notes": "Top-level directories (unverified platform indicators): app, ios, desktop, web, backend.",
+      "provenance": {
+        "recordedAt": "2026-09-23T00:00:00Z",
+        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+      },
+      "repositories": [
+        {
+          "host": "github",
+          "id": "9774F77E-70CA-551F-9030-FC483C377CFA",
+          "name": "WorkTrack",
+          "url": "https://github.com/aminullah-dev/WorkTrack"
+        }
+      ],
+      "status": "unknown"
+    },
+    {
+      "id": "dukanpro",
+      "name": "DukanPro",
+      "notes": "Top-level directories (unverified platform indicators): app, server, melos.yaml.",
+      "provenance": {
+        "recordedAt": "2026-09-23T00:00:00Z",
+        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+      },
+      "repositories": [
+        {
+          "host": "github",
+          "id": "ECD203DB-C1F6-5011-B59C-9D122907FF81",
+          "name": "DukanPro",
+          "url": "https://github.com/aminullah-dev/DukanPro"
+        }
+      ],
+      "status": "unknown"
+    },
+    {
+      "id": "talar",
+      "name": "Talar",
+      "notes": "Top-level directories (unverified platform indicators): android, desktop, web, backend. A public repo aminullah-dev/talar-releases also exists; relationship UNKNOWN — TO BE VERIFIED.",
+      "provenance": {
+        "recordedAt": "2026-09-23T00:00:00Z",
+        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+      },
+      "repositories": [
+        {
+          "host": "github",
+          "id": "7F40A3C1-CB31-5D12-B0B1-DC195886037E",
+          "name": "talar",
+          "url": "https://github.com/aminullah-dev/talar"
+        }
+      ],
+      "status": "unknown"
+    },
+    {
+      "id": "nerkhtimes",
+      "name": "NerkhTimes",
+      "notes": "Top-level directories (unverified platform indicators): app, ios, admin. A public repo aminullah-dev/nerkhtimes.github.io also exists; relationship UNKNOWN — TO BE VERIFIED.",
+      "provenance": {
+        "recordedAt": "2026-09-23T00:00:00Z",
+        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+      },
+      "repositories": [
+        {
+          "host": "github",
+          "id": "A006B880-B92F-57C2-841F-DE3D6D55E7CC",
+          "name": "NerkhTimes",
+          "url": "https://github.com/aminullah-dev/NerkhTimes"
+        }
+      ],
+      "status": "unknown"
+    },
+    {
+      "id": "namazia",
+      "name": "Namazia",
+      "notes": "Top-level directories (unverified platform indicators): app, ios, store.",
+      "provenance": {
+        "recordedAt": "2026-09-23T00:00:00Z",
+        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+      },
+      "repositories": [
+        {
+          "host": "github",
+          "id": "61114EA6-5EA8-5FDC-94E7-D0D64665EC55",
+          "name": "-Namazia",
+          "url": "https://github.com/aminullah-dev/-Namazia"
+        }
+      ],
+      "status": "unknown"
+    },
+    {
+      "id": "afghanjama",
+      "name": "AfghanJama",
+      "notes": "Top-level directories (unverified platform indicators): app, iosApp, desktop.",
+      "provenance": {
+        "recordedAt": "2026-09-23T00:00:00Z",
+        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+      },
+      "repositories": [
+        {
+          "host": "github",
+          "id": "8F2B79A4-C988-58B2-82DD-FF35EAB73789",
+          "name": "AfghanJama",
+          "url": "https://github.com/aminullah-dev/AfghanJama"
+        }
+      ],
+      "status": "unknown"
+    },
+    {
+      "id": "soder-hakem",
+      "name": "SODER-HAKEM",
+      "notes": "Top-level directories (unverified platform indicators): app.",
+      "provenance": {
+        "recordedAt": "2026-09-23T00:00:00Z",
+        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+      },
+      "repositories": [
+        {
+          "host": "github",
+          "id": "904C3D48-314E-52C3-A710-A72D64BDDA5E",
+          "name": "SODER-HAKEM",
+          "url": "https://github.com/aminullah-dev/SODER-HAKEM"
+        }
+      ],
+      "status": "unknown"
+    },
+    {
+      "id": "mediflow",
+      "name": "MediFlow",
+      "notes": "Python desktop application (pyproject.toml, packaging/).",
+      "provenance": {
+        "recordedAt": "2026-09-23T00:00:00Z",
+        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+      },
+      "repositories": [
+        {
+          "host": "github",
+          "id": "62878FFE-898A-5666-8291-B958264B894C",
+          "name": "MediFlow",
+          "url": "https://github.com/aminullah-dev/MediFlow"
+        }
+      ],
+      "status": "unknown"
+    },
+    {
+      "id": "tailoring-workshop-erp",
+      "name": "Tailoring Workshop ERP",
+      "notes": "Top-level directories (unverified platform indicators): api, web.",
+      "provenance": {
+        "recordedAt": "2026-09-23T00:00:00Z",
+        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+      },
+      "repositories": [
+        {
+          "host": "github",
+          "id": "34E73D12-D92F-5EFF-BF5C-B7881BF3AC5B",
+          "name": "Tailoring-Workshop-ERP",
+          "url": "https://github.com/aminullah-dev/Tailoring-Workshop-ERP"
+        }
+      ],
+      "status": "unknown"
+    },
+    {
+      "id": "the-digital-infrastructure-of-the-pashto-language",
+      "name": "The Digital Infrastructure of the Pashto Language",
+      "notes": "Top-level directories: app, data, hunspell, src.",
+      "provenance": {
+        "recordedAt": "2026-09-23T00:00:00Z",
+        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+      },
+      "repositories": [
+        {
+          "host": "github",
+          "id": "2172C4EF-57E0-5129-9A03-A6C116B0FED9",
+          "name": "The-Digital-Infrastructure-of-the-Pashto-Language",
+          "url": "https://github.com/aminullah-dev/The-Digital-Infrastructure-of-the-Pashto-Language"
+        }
+      ],
+      "status": "unknown"
+    }
+  ],
+  "schemaVersion": 1
+}
