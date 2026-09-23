@@ -5,6 +5,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: verified product registry
+- Evidence kinds for local files: Git repository, project configuration, Xcode project, package manifest and Gradle
+  configuration, plus `other`. The seed (revision 4) classifies each local source by the file it read. Unknown kinds
+  decode as `other` instead of failing the load.
+- Derived registry accessors: product `verificationState`, `verificationBreakdown` by area and `sources`; repository
+  `localPath`, `latestCommit`, `verificationState`, `source`, and the platforms evidenced by each repository.
+- A Verification tab in product detail: overall state, per-area counts, items needing confirmation and every source.
+- `RegistryTests`: 8 focused tests (74 in total).
+
 ### Changed: renamed to Linumic OS
 - The product, app display name, Xcode project, target, scheme and product (`LinumicOS.app`), UI text, Dari
   translations, release script and docs. The GitHub repository was renamed to `aminullah-dev/LinumicOS`.

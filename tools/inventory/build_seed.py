@@ -80,8 +80,28 @@ def gh(repo, detail=None):
     return src("gitHub", f"https://api.github.com/repos/aminullah-dev/{repo}", detail)
 
 
+MANIFESTS = ("package.json", "pyproject.toml", "pubspec.yaml", "Package.swift", "Cargo.toml", "composer.json", "requirements.txt", "go.mod", "melos.yaml")
+PROJECT_CONFIG = (".firebaserc", "firebase.json", "app.json", "vercel.json", "netlify.toml", "docker-compose.yml", "Dockerfile", "fly.toml")
+
+
+def local_kind(path):
+    """The evidence kind of a local file: build configs state facts directly, other files only claim them."""
+    name = path.rstrip("/").split("/")[-1]
+    if name.startswith("build.gradle") or name.startswith("settings.gradle") or name == "gradle.properties" or name == "AndroidManifest.xml":
+        return "gradleConfiguration"
+    if name.endswith((".xcodeproj", ".pbxproj", ".xcworkspace")) or name == "project.yml":
+        return "xcodeProject"
+    if name in MANIFESTS:
+        return "packageManifest"
+    if name in PROJECT_CONFIG:
+        return "projectConfiguration"
+    if name == ".git" or "/.git/" in path:
+        return "gitRepository"
+    return "localRepository"
+
+
 def local(path, detail=None):
-    return src("localRepository", f"~/Projects/{path}", detail)
+    return src(local_kind(path), f"~/Projects/{path}", detail)
 
 
 def web(url, detail=None):
@@ -217,7 +237,7 @@ def product(pid, name, **fields):
                                          [owner("\"The owner is me; Linumic is only the mother (umbrella) of the projects.\"")],
                                          "Linumic is the umbrella brand for the projects, not the legal owner."))
     p = {"id": pid, "name": name,
-         "provenance": {"source": "Command Center verified inventory, built by tools/inventory/build_seed.py", "recordedAt": OBS}}
+         "provenance": {"source": "Linumic OS verified inventory, built by tools/inventory/build_seed.py", "recordedAt": OBS}}
     p.update(fields)
     return p
 
@@ -694,6 +714,6 @@ unresolved = [
                          owner("\"Explore Afghanistan: sideline.\"")], "Sidelined by the owner.")},
 ]
 
-inventory = {"schemaVersion": 2, "seedRevision": 3, "products": products, "unresolved": unresolved}
+inventory = {"schemaVersion": 2, "seedRevision": 4, "products": products, "unresolved": unresolved}
 OUT.write_text(json.dumps(inventory, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
 print(f"wrote {OUT.relative_to(ROOT)}: {len(products)} products, {len(unresolved)} unresolved items")

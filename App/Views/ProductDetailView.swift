@@ -3,7 +3,8 @@ import SwiftUI
 
 enum ProductTab: String, CaseIterable, Identifiable {
     case overview = "Overview", platforms = "Platforms", repositories = "Repos", stores = "Stores",
-         releases = "Releases", roadmap = "Roadmap", issues = "Issues", deployments = "Deploys", links = "Links"
+         releases = "Releases", roadmap = "Roadmap", issues = "Issues", deployments = "Deploys", links = "Links",
+         verification = "Verification"
     var id: String { rawValue }
 }
 
@@ -110,7 +111,7 @@ struct ProductDetailView: View {
             RecordSection(title: "Repositories", items: p.repositories, empty: "No repositories recorded.",
                           onAdd: { editing = .repository(nil) }, onEdit: { editing = .repository($0.id) },
                           onDelete: { r in model.update(p.id) { $0.repositories.removeAll { $0.id == r.id } } }) { r in
-                RepositoryRow(repository: r)
+                RepositoryRow(repository: r, platforms: p.platforms(for: r))
             }
         case .stores:
             RecordSection(title: "Store listings", items: p.storeListings,
@@ -178,6 +179,8 @@ struct ProductDetailView: View {
             }
         case .links:
             LinksTab(product: p)
+        case .verification:
+            VerificationTab(product: p)
         }
     }
 
@@ -271,6 +274,8 @@ private struct OverviewTab: View {
 
 private struct RepositoryRow: View {
     let repository: RepositoryRecord
+    /// Platforms whose evidence is a file in this repository.
+    let platforms: [PlatformRecord]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -323,8 +328,103 @@ private struct RepositoryRow: View {
                     if !c.notes.isEmpty { Text(c.notes).font(.caption).foregroundStyle(.orange) }
                 }
             }
+            if !platforms.isEmpty {
+                let names = Array(Set(platforms.map(\.platform))).sorted { $0.rawValue < $1.rawValue }.map(\.title)
+                Label("Platforms from this repository: \(names.joined(separator: " · "))", systemImage: "square.stack.3d.up")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
             if !repository.notes.isEmpty { Text(repository.notes).font(.caption).foregroundStyle(.secondary) }
         }
+    }
+}
+
+/// How the product's verification state is derived: per-area counts, open questions and every source.
+private struct VerificationTab: View {
+    let product: Product
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(spacing: 10) {
+                VerificationBadge(status: product.verificationState)
+                if let at = product.lastVerifiedAt {
+                    Text("Last verified \(at.shortDate)").font(.callout).foregroundStyle(.secondary)
+                } else {
+                    Text("Never verified").font(.callout).foregroundStyle(.secondary)
+                }
+                Spacer()
+                Text("\(product.sources.count) sources").font(.callout).foregroundStyle(.secondary)
+            }
+            Text("Derived from the evidence below. It can't be set by hand: add or confirm evidence instead.")
+                .font(.caption).foregroundStyle(.secondary)
+
+            GroupBox("By area") {
+                Grid(alignment: .leadingFirstTextBaseline, horizontalSpacing: 14, verticalSpacing: 10) {
+                    ForEach(product.verificationBreakdown) { area in
+                        GridRow {
+                            Text(area.area.title).bold()
+                            VerificationBadge(status: area.status, compact: true)
+                            Text(area.total == 0 ? String(localized: "None recorded") : summary(area))
+                                .font(.callout.monospacedDigit()).foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(4)
+            }
+
+            let open = product.needsConfirmation
+            if !open.isEmpty {
+                GroupBox("Needs confirmation") {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(open.indices, id: \.self) { i in
+                            HStack {
+                                Text(open[i].label)
+                                Spacer()
+                                EvidenceButton(verification: open[i].verification)
+                            }
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(4)
+                }
+            }
+
+            GroupBox("Evidence") {
+                if product.sources.isEmpty {
+                    Text("No sources recorded.").foregroundStyle(.secondary).frame(maxWidth: .infinity, alignment: .leading).padding(4)
+                } else {
+                    VStack(alignment: .leading, spacing: 10) {
+                        ForEach(product.sources) { s in
+                            VStack(alignment: .leading, spacing: 2) {
+                                HStack(alignment: .firstTextBaseline) {
+                                    StatusBadge(text: s.sourceType.title, color: s.sourceType.isLocal ? .indigo : .teal)
+                                    Text(s.sourceReference).font(.caption.monospaced()).textSelection(.enabled)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                    Text(s.verifiedAt.shortDate).font(.caption).foregroundStyle(.secondary)
+                                }
+                                if let value = s.observedValue {
+                                    Text(value).font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                            }
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(4)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func summary(_ area: AreaVerification) -> String {
+        VerificationStatus.allCases.compactMap { status in
+            let n = area.count(status)
+            return n == 0 ? nil : "\(n.formatted()) \(status.title)"
+        }.joined(separator: " · ")
     }
 }
 

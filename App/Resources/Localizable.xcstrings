@@ -351,6 +351,16 @@
         }
       }
     },
+    "%lld sources": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld منبع"
+          }
+        }
+      }
+    },
     "(%@)": {
       "localizations": {
         "fa-AF": {
@@ -827,6 +837,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "شناسهٔ برنامه (Bundle ID)"
+          }
+        }
+      }
+    },
+    "By area": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بر اساس بخش"
           }
         }
       }
@@ -1341,6 +1361,16 @@
         }
       }
     },
+    "Derived from the evidence below. It can't be set by hand: add or confirm evidence instead.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این وضعیت از شواهد زیر به دست می‌آید و دستی تنظیم نمی‌شود. به جای آن شاهد اضافه یا تأیید کنید."
+          }
+        }
+      }
+    },
     "Description": {
       "localizations": {
         "fa-AF": {
@@ -1711,6 +1741,16 @@
         }
       }
     },
+    "Git repository": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخزن Git"
+          }
+        }
+      }
+    },
     "GitHub": {
       "localizations": {
         "fa-AF": {
@@ -1857,6 +1897,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Google Play رابط عمومی ندارد. لیست‌ها از صفحه‌های عمومی بررسی شده‌اند. نسخه‌های فعال به Google Play Developer API و یک حساب سرویس نیاز دارند که وصل نیست."
+          }
+        }
+      }
+    },
+    "Gradle configuration": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیکربندی Gradle"
           }
         }
       }
@@ -2351,6 +2401,16 @@
         }
       }
     },
+    "Local file": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل محلی"
+          }
+        }
+      }
+    },
     "Local only. Sign in to keep the inventory on the Linumic server (Supabase) and use it on Mac and iPhone.": {
       "localizations": {
         "fa-AF": {
@@ -2547,6 +2607,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نام‌ها، جداشده با کامه"
+          }
+        }
+      }
+    },
+    "Needs confirmation": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نیاز به تأیید"
           }
         }
       }
@@ -3041,6 +3111,16 @@
         }
       }
     },
+    "None recorded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ موردی ثبت نشده"
+          }
+        }
+      }
+    },
     "None recorded.": {
       "localizations": {
         "fa-AF": {
@@ -3301,6 +3381,16 @@
         }
       }
     },
+    "Package manifest": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مانیفست بسته"
+          }
+        }
+      }
+    },
     "Partial": {
       "localizations": {
         "fa-AF": {
@@ -3461,6 +3551,16 @@
         }
       }
     },
+    "Platforms from this repository: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پلتفرم‌های این مخزن: %@"
+          }
+        }
+      }
+    },
     "Platforms with evidence: %@": {
       "localizations": {
         "fa-AF": {
@@ -3541,6 +3641,16 @@
         }
       }
     },
+    "Product facts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مشخصات محصول"
+          }
+        }
+      }
+    },
     "Product not found": {
       "localizations": {
         "fa-AF": {
@@ -3617,6 +3727,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "محصولات دارای مخزن"
+          }
+        }
+      }
+    },
+    "Project configuration": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیکربندی پروژه"
           }
         }
       }
@@ -5307,6 +5427,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ایکس"
+          }
+        }
+      }
+    },
+    "Xcode project": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پروژهٔ Xcode"
           }
         }
       }

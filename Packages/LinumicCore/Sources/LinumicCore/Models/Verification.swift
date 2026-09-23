@@ -36,31 +36,64 @@ public enum VerificationStatus: String, Codable, CaseIterable, Sendable, Identif
 }
 
 /// Where a piece of evidence came from.
+///
+/// Local evidence is split by what was read, because a Gradle file or an Xcode project states a
+/// platform directly while a README only claims it.
 public enum SourceKind: String, Codable, CaseIterable, Sendable, Identifiable {
     /// The Linumic owner said so (e.g. the initial product list, or a confirmation in the app).
     case ownerStatement
-    /// A file in a local working copy, read without modification.
+    /// Any other file on this Mac (README, docs), read without modification.
+    /// The raw value predates the finer kinds below and is kept for stored inventories.
     case localRepository
+    /// Git metadata of a local working copy (remote, branch, commits).
+    case gitRepository
+    /// Project configuration such as firebase.json, .firebaserc or deploy settings.
+    case projectConfiguration
+    /// An Xcode project or its XcodeGen spec.
+    case xcodeProject
+    /// A package manifest: package.json, pyproject.toml, pubspec.yaml, Package.swift…
+    case packageManifest
+    /// Android Gradle build configuration.
+    case gradleConfiguration
     /// GitHub REST API (read-only).
     case gitHub
     /// A public web page.
     case website
     /// Apple's public App Store lookup or listing page.
     case appStore
-    /// A public Google Play listing page.
+    /// A public Google Play listing page, or the owner's Play Console.
     case googlePlay
+    /// Anything that fits none of the above. Say what it is in the reference.
+    case other
 
     public var id: String { rawValue }
 
     public var title: String {
         switch self {
         case .ownerStatement: L("Owner")
-        case .localRepository: L("Local repository")
+        case .localRepository: L("Local file")
+        case .gitRepository: L("Git repository")
+        case .projectConfiguration: L("Project configuration")
+        case .xcodeProject: L("Xcode project")
+        case .packageManifest: L("Package manifest")
+        case .gradleConfiguration: L("Gradle configuration")
         case .gitHub: L("GitHub")
         case .website: L("Website")
         case .appStore: L("App Store")
         case .googlePlay: L("Google Play")
+        case .other: L("Other")
         }
+    }
+
+    /// Read from this Mac's filesystem.
+    public var isLocal: Bool {
+        [.localRepository, .gitRepository, .projectConfiguration, .xcodeProject, .packageManifest, .gradleConfiguration].contains(self)
+    }
+
+    /// A kind written by a newer version decodes as `.other` instead of failing the whole inventory.
+    public init(from decoder: Decoder) throws {
+        let raw = try decoder.singleValueContainer().decode(String.self)
+        self = SourceKind(rawValue: raw) ?? .other
     }
 }
 
@@ -74,6 +107,12 @@ public struct Source: Codable, Hashable, Sendable, Identifiable {
     public var detail: String?
 
     public var id: String { "\(kind.rawValue)|\(reference)|\(observedAt.timeIntervalSince1970)" }
+
+    // The registry's evidence vocabulary, over the stored fields.
+    public var sourceType: SourceKind { kind }
+    public var sourceReference: String { reference }
+    public var observedValue: String? { detail }
+    public var verifiedAt: Date { observedAt }
 
     /// Reference used when the owner confirms something inside the app.
     public static let ownerConfirmationReference = "Confirmed by the owner in Linumic OS"

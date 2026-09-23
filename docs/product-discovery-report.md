@@ -42,7 +42,7 @@ All 12 are on the owner's product list **and** have a repository with matching e
 | **AfghanJama** (KhayatYar / خیاط‌یار / Tailor ERP) | `AfghanJama` (application) | Android, macOS, Windows, iOS (partial, branch only) | GitHub release v1.8.0 (apk/dmg/msi), linked from linumic.com | Yes, as "Tailor ERP" |
 | **SODER-HAKEM** (سوډر حاکم) | `SODER-HAKEM` (application) | Android | Sideloaded APK 1.0 | **No** |
 | **MediFlow** | `MediFlow` (application), `Marketing/marketing` (local marketing folder) | Windows, macOS (partial) | GitHub release v0.2.0 (Windows zip), linked from linumic.com | Yes |
-| **Tailoring Workshop ERP** (Darzi / درزی) | `Tailoring-Workshop-ERP` (application) | Web, Backend | None | **No** (see conflict) |
+| **Tailoring Workshop ERP** (Darzi / درزی) | `Tailoring-Workshop-ERP` (application) | Web, Backend | None | **No** (the linumic.com Tailor ERP page is AfghanJama, owner-confirmed) |
 | **The Digital Infrastructure of the Pashto Language** (pashto-text) | `The-Digital-Infrastructure-of-the-Pashto-Language` (research) | Research | None | **No** |
 
 ### Focus: App Store Connect (owner's screenshot)
@@ -148,9 +148,12 @@ Resolved during discovery, so they are no longer open questions:
 
 ## Questions Requiring Owner Confirmation (still open)
 
+Per product, the app's Verification tab lists every item still awaiting confirmation, and
+[product-inventory.md](product-inventory.md#verification-by-area-seed-revision-4) summarises them by area.
+
 1. **Development status.** "Active" is inferred from live listings or releases for SafeBeauty, VELRO, WorkTrack, Talar,
    NerkhTimes, Namazia and AfghanJama. Please confirm, and give the status for SODER-HAKEM and the Pashto project.
 2. **Product names.** Keep "AfghanJama" and "Namazia" as the record names, or use "KhayatYar" and "Afghan Prayer Times"?
 3. **NerkhTimes backend.** Is the production data source the Google Apps Script plus Sheet in `admin/README.md`?
 4. **Namazia and Pashto project branches.** GitHub `main` holds only "Initial commit"; the code is on a feature branch.
-5. **Google Play Console.** Not read yet: the Chrome extension wasn't connected. Play production versions stay unknown until then.
+5. ~~**Google Play Console.**~~ Resolved: read on 2026-09-23 (view only), see "Focus: Google Play Console" above.
