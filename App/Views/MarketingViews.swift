@@ -141,7 +141,7 @@ private struct ContentEditor: View {
                 }
                 HStack {
                     ForEach(draft.status.next) { target in
-                        Button(actionTitle(target)) { move(to: target) }
+                        Button(LocalizedStringKey(actionTitle(target))) { move(to: target) }
                     }
                 }
                 if let error { Label(error, systemImage: "exclamationmark.circle").foregroundStyle(.orange) }

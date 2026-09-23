@@ -50,7 +50,7 @@ struct ProductListView: View {
             .width(min: 120, ideal: 150)
             TableColumn("Needs you") { p in
                 let n = p.needsConfirmation.count
-                Text(n == 0 ? "—" : "\(n)").monospacedDigit().fontWeight(n == 0 ? .regular : .semibold)
+                Text(n == 0 ? "—" : n.formatted()).monospacedDigit().fontWeight(n == 0 ? .regular : .semibold)
                     .accessibilityLabel(n == 0 ? "Nothing to confirm" : "\(n) items need your confirmation")
             }
             .width(min: 60, ideal: 70)
@@ -71,7 +71,7 @@ struct ProductListView: View {
             .width(min: 100, ideal: 130)
             TableColumn("Platforms") { p in
                 let platforms = p.evidencedPlatforms
-                Text(platforms.isEmpty ? "Unknown" : platforms.map(\.title).joined(separator: ", "))
+                Text(platforms.isEmpty ? String(localized: "Unknown") : platforms.map(\.title).joined(separator: String(localized: ", ")))
                     .foregroundStyle(platforms.isEmpty ? .secondary : .primary)
                     .lineLimit(1)
             }
@@ -86,7 +86,7 @@ struct ProductListView: View {
             }
             .width(55)
             TableColumn("Last verified") { p in
-                Text(p.lastVerifiedAt?.shortDate ?? "Never").foregroundStyle(.secondary)
+                Text(p.lastVerifiedAt?.shortDate ?? String(localized: "Never")).foregroundStyle(.secondary)
             }
             .width(min: 90, ideal: 100)
         }

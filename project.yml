@@ -4,9 +4,12 @@ options:
   deploymentTarget:
     macOS: "15.0"
   createIntermediateGroups: true
+  developmentLanguage: en
 settings:
   base:
     SWIFT_VERSION: "6.0"
+    SWIFT_EMIT_LOC_STRINGS: YES
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
     MARKETING_VERSION: "0.1.0"
     CURRENT_PROJECT_VERSION: "1"
 packages:
@@ -24,6 +27,8 @@ targets:
       path: App/Support/Info.plist
       properties:
         CFBundleDisplayName: Linumic Command Center
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, fa-AF]
         LSApplicationCategoryType: public.app-category.developer-tools
         NSHumanReadableCopyright: © Linumic
     entitlements:

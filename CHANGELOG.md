@@ -5,6 +5,19 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Dari (دری) language
+- A complete Dari UI (`fa-AF`): 527 strings, including enum titles, errors, empty states and
+  every assistant answer template. Settings → Account → Language (System / English / دری) with relaunch.
+- Right-to-left: SwiftUI content is mirrored through the environment, and AppKit (window controls,
+  split view, sheets, menus) through the app-only writing-direction defaults, because macOS has no
+  Persian system localization.
+- Persian digits and the Solar Hijri calendar with Afghan month names via the `fa_AF` locale.
+- The assistant understands Dari questions: matching removes the ZWNJ and maps Arabic ي/ك to ی/ک.
+- `tools/l10n/check_catalog.py` finds untranslated strings and mismatched format specifiers.
+
+### Fixed
+- A `[String: Bool]` literal in `Product.setField` could trap on duplicate keys when "Yes" had no translation.
+
 ### Added: AI assistant (local, grounded)
 - `Assistant` answers the suggested questions (attention, blocked, this week's changes, critical
   issues, readiness, planned features, market needs) and product-status questions only from

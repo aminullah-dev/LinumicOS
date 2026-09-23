@@ -1,0 +1,5276 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%@ %@ (%@) is blocked.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ (%3$@) مسدود است."
+          }
+        }
+      }
+    },
+    "%@ %@ (%@, %@) is a release candidate.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ (%3$@، %4$@) نامزد انتشار است."
+          }
+        }
+      }
+    },
+    "%@ %@ has been submitted and is pending in App Store Connect.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ ارسال شده و در App Store Connect در انتظار است."
+          }
+        }
+      }
+    },
+    "%@ %@ is pending in App Store Connect. That's awaiting Apple, not recorded as blocked.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ در App Store Connect در انتظار است. این منتظر اپل است و مسدود ثبت نشده است."
+          }
+        }
+      }
+    },
+    "%@ %@ — %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ — %3$@"
+          }
+        }
+      }
+    },
+    "%@ / %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ / %2$@"
+          }
+        }
+      }
+    },
+    "%@ is required.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ لازم است."
+          }
+        }
+      }
+    },
+    "%@ needs at least one source. Add one, or record your own confirmation.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«%@» دست‌کم به یک منبع نیاز دارد. یک منبع اضافه کنید یا تأیید خود را ثبت کنید."
+          }
+        }
+      }
+    },
+    "%@ · %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "%@: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@"
+          }
+        }
+      }
+    },
+    "%@: %@ (%@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@ (%3$@)"
+          }
+        }
+      }
+    },
+    "%@: %@ (%@, target %@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@ (%3$@، هدف %4$@)"
+          }
+        }
+      }
+    },
+    "%@: %@ (partially verified)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@ (نسبتاً تأییدشده)"
+          }
+        }
+      }
+    },
+    "%@: %@ live %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@ فعال در نسخهٔ %3$@"
+          }
+        }
+      }
+    },
+    "%@: %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@."
+          }
+        }
+      }
+    },
+    "%@: new commit on %@/%@ %@: “%@”.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: کامیت تازه در %2$@/%3$@ به تاریخ %4$@: «%5$@»."
+          }
+        }
+      }
+    },
+    "%@: overall %@. %ld item(s) await confirmation.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: وضعیت کلی %2$@. %3$ld مورد در انتظار تأیید است."
+          }
+        }
+      }
+    },
+    "%@: release %@ published on %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: انتشار %2$@ در %3$@ نشر شد."
+          }
+        }
+      }
+    },
+    "%@: sources conflict": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: منابع با هم متناقض‌اند"
+          }
+        }
+      }
+    },
+    "%@: unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: نامعلوم"
+          }
+        }
+      }
+    },
+    "%ld draft finding(s) haven't been reviewed and aren't reported.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld یافتهٔ پیش‌نویس هنوز بازبینی نشده و گزارش نمی‌شود."
+          }
+        }
+      }
+    },
+    "%ld facts across all products still await the owner's confirmation (see Verification).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld مورد در همهٔ محصولات هنوز منتظر تأیید مالک است (بخش تأیید را ببینید)."
+          }
+        }
+      }
+    },
+    "%ld open critical issue(s)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld مشکل بحرانی باز"
+          }
+        }
+      }
+    },
+    "%lld PRs": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld درخواست ادغام"
+          }
+        }
+      }
+    },
+    "%lld conflicting": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld متناقض"
+          }
+        }
+      }
+    },
+    "%lld facts need your confirmation, %lld of them conflicting. Open Verification →": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld مورد به تأیید شما نیاز دارد که %2$lld مورد آن متناقض است. بخش تأیید را باز کنید ←"
+          }
+        }
+      }
+    },
+    "%lld facts need your confirmation. Open Verification →": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مورد به تأیید شما نیاز دارد. بخش تأیید را باز کنید ←"
+          }
+        }
+      }
+    },
+    "%lld failed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ناکام"
+          }
+        }
+      }
+    },
+    "%lld failed:": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ناکام:"
+          }
+        }
+      }
+    },
+    "%lld issues": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مشکل"
+          }
+        }
+      }
+    },
+    "%lld items need your confirmation": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مورد به تأیید شما نیاز دارد"
+          }
+        }
+      }
+    },
+    "%lld products": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld محصول"
+          }
+        }
+      }
+    },
+    "%lld products %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld محصول %2$@"
+          }
+        }
+      }
+    },
+    "%lld releases": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld انتشار"
+          }
+        }
+      }
+    },
+    "%lld releases · latest %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld انتشار · آخرین %2$@"
+          }
+        }
+      }
+    },
+    "(%@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(%@)"
+          }
+        }
+      }
+    },
+    ", ": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "، "
+          }
+        }
+      }
+    },
+    ", failed: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "، ناکام: %@"
+          }
+        }
+      }
+    },
+    ", not public yet: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "، هنوز عمومی نیست: %@"
+          }
+        }
+      }
+    },
+    ", submitted %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "، ارسال‌شده %@"
+          }
+        }
+      }
+    },
+    "; ": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "؛ "
+          }
+        }
+      }
+    },
+    "A new product starts with every fact Unknown. Record facts from its Overview tab, each with its source.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصول تازه با همهٔ معلومات «نامعلوم» شروع می‌شود. معلومات را از بخش «نمای کلی» هر کدام با منبعش ثبت کنید."
+          }
+        }
+      }
+    },
+    "A value marked Unknown would look like a fact. Choose a status and a source, or clear the value.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مقداری که «نامعلوم» علامت خورده باشد مانند یک واقعیت به نظر می‌رسد. وضعیت و منبع را انتخاب کنید یا مقدار را پاک کنید."
+          }
+        }
+      }
+    },
+    "A verified fact needs a value. Leave it Unknown, or mark it Conflicting.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "معلومات تأییدشده باید مقدار داشته باشد. آن را «نامعلوم» بگذارید یا «متناقض» علامت بزنید."
+          }
+        }
+      }
+    },
+    "AI Assistant": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دستیار هوشمند"
+          }
+        }
+      }
+    },
+    "AI provider": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ارائه‌دهندهٔ هوش مصنوعی"
+          }
+        }
+      }
+    },
+    "Account": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب"
+          }
+        }
+      }
+    },
+    "Active": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فعال"
+          }
+        }
+      }
+    },
+    "Active (recorded)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فعال (ثبت‌شده)"
+          }
+        }
+      }
+    },
+    "Add": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افزودن"
+          }
+        }
+      }
+    },
+    "Add Source": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افزودن منبع"
+          }
+        }
+      }
+    },
+    "Add listings from a product's Stores tab.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لیست‌ها را از بخش «فروشگاه‌ها»ی هر محصول اضافه کنید."
+          }
+        }
+      }
+    },
+    "All": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همه"
+          }
+        }
+      }
+    },
+    "All Products": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همهٔ محصولات"
+          }
+        }
+      }
+    },
+    "All release records": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همهٔ سوابق انتشار"
+          }
+        }
+      }
+    },
+    "Also known as": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام‌های دیگر"
+          }
+        }
+      }
+    },
+    "An activity feed will come with the backend audit log.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست فعالیت‌ها همراه با سابقهٔ حسابرسی سرور اضافه می‌شود."
+          }
+        }
+      }
+    },
+    "Android": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اندروید"
+          }
+        }
+      }
+    },
+    "Answers come only from the records in this app: facts with their sources, GitHub and App Store snapshots, and releases, roadmap, issues and market evidence you've recorded. No language model is connected, and nothing comes from general knowledge.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاسخ‌ها فقط از سوابق همین برنامه می‌آیند: معلومات با منابعشان، تصویرهای GitHub و App Store، و انتشارها، نقشهٔ راه، مشکلات و شواهد بازار که ثبت کرده‌اید. هیچ مدل زبانی وصل نیست و هیچ چیزی از دانش عمومی گرفته نمی‌شود."
+          }
+        }
+      }
+    },
+    "App": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برنامه"
+          }
+        }
+      }
+    },
+    "App Sandbox": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محیط امن برنامه (Sandbox)"
+          }
+        }
+      }
+    },
+    "App Store": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App Store"
+          }
+        }
+      }
+    },
+    "App Store Connect": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App Store Connect"
+          }
+        }
+      }
+    },
+    "App name": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام برنامه"
+          }
+        }
+      }
+    },
+    "Application": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برنامه"
+          }
+        }
+      }
+    },
+    "Approve": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید"
+          }
+        }
+      }
+    },
+    "Approved": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأییدشده"
+          }
+        }
+      }
+    },
+    "Approved by %@, %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید توسط %1$@، %2$@"
+          }
+        }
+      }
+    },
+    "Ask": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بپرس"
+          }
+        }
+      }
+    },
+    "Ask about products, releases, issues, changes or market evidence… (English or Persian)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دربارهٔ محصولات، انتشارها، مشکلات، تغییرات یا شواهد بازار بپرسید… (دری یا انگلیسی)"
+          }
+        }
+      }
+    },
+    "Authentication, roles, audit logging and server-side secret management arrive with the backend phase. See docs/security.md.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "احراز هویت، نقش‌ها، سابقهٔ حسابرسی و مدیریت رمزها در سرور با مرحلهٔ سرور اضافه می‌شوند. docs/security.md را ببینید."
+          }
+        }
+      }
+    },
+    "Back to Draft": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برگشت به پیش‌نویس"
+          }
+        }
+      }
+    },
+    "Backend": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرور (بک‌اند)"
+          }
+        }
+      }
+    },
+    "Beta": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بتا"
+          }
+        }
+      }
+    },
+    "Blocked": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مسدود"
+          }
+        }
+      }
+    },
+    "Blocked releases": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشارهای مسدود"
+          }
+        }
+      }
+    },
+    "Build": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیلد"
+          }
+        }
+      }
+    },
+    "Build number": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شمارهٔ بیلد"
+          }
+        }
+      }
+    },
+    "Build status will come from CI (GitHub Actions) once the read-only GitHub integration is connected.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت بیلد پس از وصل شدن GitHub (فقط‌خواندنی) از CI (GitHub Actions) نشان داده می‌شود."
+          }
+        }
+      }
+    },
+    "Builds": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیلدها"
+          }
+        }
+      }
+    },
+    "Bundle / application ID": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شناسهٔ برنامه (Bundle ID)"
+          }
+        }
+      }
+    },
+    "CI": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI"
+          }
+        }
+      }
+    },
+    "CI failing in %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI در %@ ناکام است"
+          }
+        }
+      }
+    },
+    "CONFLICTING": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متناقض"
+          }
+        }
+      }
+    },
+    "Campaign": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کمپاین"
+          }
+        }
+      }
+    },
+    "Can't move from %@ to %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از «%1$@» به «%2$@» نمی‌توان رفت."
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لغو"
+          }
+        }
+      }
+    },
+    "Cancel Post": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لغو پست"
+          }
+        }
+      }
+    },
+    "Cancelled": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لغوشده"
+          }
+        }
+      }
+    },
+    "Category": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دسته"
+          }
+        }
+      }
+    },
+    "Closed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بسته"
+          }
+        }
+      }
+    },
+    "Collected": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ جمع‌آوری"
+          }
+        }
+      }
+    },
+    "Component (e.g. Passenger app)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بخش (مثلاً برنامهٔ مسافر)"
+          }
+        }
+      }
+    },
+    "Confirmed by the owner in Linumic Command Center": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأییدشده توسط مالک در مرکز فرمان لینومیک"
+          }
+        }
+      }
+    },
+    "Conflicting": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متناقض"
+          }
+        }
+      }
+    },
+    "Conflicting needs the conflicting sources or a note explaining the conflict.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای «متناقض» باید منابع متناقض یا یادداشتی که تناقض را توضیح دهد ثبت شود."
+          }
+        }
+      }
+    },
+    "Content Calendar": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تقویم محتوا"
+          }
+        }
+      }
+    },
+    "Could not load inventory: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست محصولات بارگذاری نشد: %@"
+          }
+        }
+      }
+    },
+    "Could not read the GitHub token from the Keychain: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توکن GitHub از Keychain خوانده نشد: %@"
+          }
+        }
+      }
+    },
+    "Could not remove: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حذف نشد: %@"
+          }
+        }
+      }
+    },
+    "Could not save inventory: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست محصولات ذخیره نشد: %@"
+          }
+        }
+      }
+    },
+    "Could not save: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ذخیره نشد: %@"
+          }
+        }
+      }
+    },
+    "Could not upgrade inventory: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست محصولات به‌روز نشد: %@"
+          }
+        }
+      }
+    },
+    "Count of key facts, platforms and repository links not marked Verified": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شمار معلومات کلیدی، پلتفرم‌ها و پیوندهای مخزن که «تأییدشده» نیستند"
+          }
+        }
+      }
+    },
+    "Credential storage": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محل نگهداری رمزها"
+          }
+        }
+      }
+    },
+    "Critical": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بحرانی"
+          }
+        }
+      }
+    },
+    "Critical issues": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مشکلات بحرانی"
+          }
+        }
+      }
+    },
+    "Current releases": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشارهای فعلی"
+          }
+        }
+      }
+    },
+    "Current version": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ فعلی"
+          }
+        }
+      }
+    },
+    "Customer": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مشتری"
+          }
+        }
+      }
+    },
+    "Customer feedback": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نظر مشتری"
+          }
+        }
+      }
+    },
+    "Dari uses right-to-left layout, Persian digits and the Solar Hijri calendar with Afghan month names. Recorded evidence (quotes, sources) stays in its original language.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دری از چیدمان راست به چپ، ارقام فارسی و تقویم هجری شمسی با نام ماه‌های افغانی (حمل، ثور…) استفاده می‌کند. شواهد ثبت‌شده (نقل‌قول‌ها و منابع) به زبان اصلی خود باقی می‌مانند."
+          }
+        }
+      }
+    },
+    "Dashboard": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "داشبورد"
+          }
+        }
+      }
+    },
+    "Dataset": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مجموعهٔ داده"
+          }
+        }
+      }
+    },
+    "Date": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ"
+          }
+        }
+      }
+    },
+    "Default branch": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاخهٔ اصلی"
+          }
+        }
+      }
+    },
+    "Degraded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دچار اختلال"
+          }
+        }
+      }
+    },
+    "Delete": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حذف"
+          }
+        }
+      }
+    },
+    "Delete %@?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«%@» حذف شود؟"
+          }
+        }
+      }
+    },
+    "Delete Post": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حذف پست"
+          }
+        }
+      }
+    },
+    "Delete…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حذف…"
+          }
+        }
+      }
+    },
+    "Deployed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ استقرار"
+          }
+        }
+      }
+    },
+    "Deployment": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استقرار"
+          }
+        }
+      }
+    },
+    "Deployment date known": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ استقرار معلوم است"
+          }
+        }
+      }
+    },
+    "Deployments": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استقرارها"
+          }
+        }
+      }
+    },
+    "Deploys": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استقرارها"
+          }
+        }
+      }
+    },
+    "Deprecated": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منسوخ"
+          }
+        }
+      }
+    },
+    "Derived": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استنتاجی"
+          }
+        }
+      }
+    },
+    "Description": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توضیحات"
+          }
+        }
+      }
+    },
+    "Desktop": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دسکتاپ"
+          }
+        }
+      }
+    },
+    "Detail": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جزئیات"
+          }
+        }
+      }
+    },
+    "Development": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توسعه"
+          }
+        }
+      }
+    },
+    "Development status": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت توسعه"
+          }
+        }
+      }
+    },
+    "Documentation": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مستندات"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انجام‌شده"
+          }
+        }
+      }
+    },
+    "Double-click a row to edit. Right-click for more actions. Click a badge to see its evidence.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای ویرایش روی ردیف دو بار کلیک کنید. برای گزینه‌های بیشتر کلیک راست کنید. برای دیدن شواهد روی نشان کلیک کنید."
+          }
+        }
+      }
+    },
+    "Draft": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیش‌نویس"
+          }
+        }
+      }
+    },
+    "Draft a product or release announcement, send it for review, and schedule it once approved.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعلان محصول یا انتشار را بنویسید، برای بازبینی بفرستید و پس از تأیید زمان‌بندی کنید."
+          }
+        }
+      }
+    },
+    "Dropped": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنارگذاشته‌شده"
+          }
+        }
+      }
+    },
+    "Edit %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ویرایش %@"
+          }
+        }
+      }
+    },
+    "Edit Name & Notes": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ویرایش نام و یادداشت‌ها"
+          }
+        }
+      }
+    },
+    "Edit each fact from its row on the Overview tab, so the change carries its own source and status.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر معلومات را از ردیف خودش در بخش «نمای کلی» ویرایش کنید تا تغییر، منبع و وضعیت خودش را داشته باشد."
+          }
+        }
+      }
+    },
+    "Edit name and notes (⌘E). Edit each fact from its row.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ویرایش نام و یادداشت‌ها (⌘E). هر معلومات را از ردیف خودش ویرایش کنید."
+          }
+        }
+      }
+    },
+    "Editing documentation, analytics and social links will come with the Marketing module.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ویرایش مستندات، تحلیل‌ها و پیوندهای اجتماعی با بخش بازاریابی اضافه می‌شود."
+          }
+        }
+      }
+    },
+    "Edit…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ویرایش…"
+          }
+        }
+      }
+    },
+    "Environment": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محیط"
+          }
+        }
+      }
+    },
+    "Error": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خطا"
+          }
+        }
+      }
+    },
+    "Evidence": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شواهد"
+          }
+        }
+      }
+    },
+    "Evidence cited": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شواهد استنادشده"
+          }
+        }
+      }
+    },
+    "Evidence should be a build file, a store listing or a release asset. A folder name isn't evidence.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاهد باید فایل بیلد، لیست فروشگاه یا فایل انتشار باشد. نام پوشه شاهد به حساب نمی‌آید."
+          }
+        }
+      }
+    },
+    "Evidence still comes from this source. Remove that evidence first.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز شواهدی از این منبع وجود دارد. اول آن شواهد را حذف کنید."
+          }
+        }
+      }
+    },
+    "Evidence that this repository belongs to the product:": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاهد اینکه این مخزن به محصول تعلق دارد:"
+          }
+        }
+      }
+    },
+    "Evidence:": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شواهد:"
+          }
+        }
+      }
+    },
+    "Evidence: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شواهد: %@"
+          }
+        }
+      }
+    },
+    "Facebook": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فیسبوک"
+          }
+        }
+      }
+    },
+    "Facts were recorded or re-verified this week for %ld products.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این هفته برای %ld محصول معلومات ثبت یا دوباره تأیید شد."
+          }
+        }
+      }
+    },
+    "Failed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ناکام"
+          }
+        }
+      }
+    },
+    "Failing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ناکام"
+          }
+        }
+      }
+    },
+    "Failing CI": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI ناکام"
+          }
+        }
+      }
+    },
+    "Fetched": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ دریافت"
+          }
+        }
+      }
+    },
+    "Finding": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یافته"
+          }
+        }
+      }
+    },
+    "Findings": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یافته‌ها"
+          }
+        }
+      }
+    },
+    "Found during discovery, but the evidence can't settle whether they belong to Linumic. See docs/product-discovery-report.md.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در جریان بررسی پیدا شدند، اما شواهد نشان نمی‌دهد که به لینومیک تعلق دارند یا نه. docs/product-discovery-report.md را ببینید."
+          }
+        }
+      }
+    },
+    "From public store pages and the owner's App Store Connect screenshot (2026-09-23). Live sync needs the store integrations, which aren't connected.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از صفحه‌های عمومی فروشگاه و تصویر App Store Connect مالک (۲۰۲۶-۰۹-۲۳). همگام‌سازی زنده به اتصال فروشگاه‌ها نیاز دارد که هنوز وصل نیستند."
+          }
+        }
+      }
+    },
+    "General": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عمومی"
+          }
+        }
+      }
+    },
+    "GitHub": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub"
+          }
+        }
+      }
+    },
+    "GitHub (read-only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub (فقط‌خواندنی)"
+          }
+        }
+      }
+    },
+    "GitHub doesn't carry severity. Label or record them as issues to classify them.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub شدت مشکل را نشان نمی‌دهد. برای دسته‌بندی، آن‌ها را برچسب بزنید یا به‌عنوان مشکل ثبت کنید."
+          }
+        }
+      }
+    },
+    "GitHub rate limit reached.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محدودیت درخواست GitHub پر شد."
+          }
+        }
+      }
+    },
+    "GitHub rate limit reached. Resets at %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محدودیت درخواست GitHub پر شد. در %@ دوباره باز می‌شود."
+          }
+        }
+      }
+    },
+    "GitHub rejected the token (401). Check it in Settings → Integrations.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub توکن را رد کرد (401). آن را در تنظیمات ← اتصال‌ها بررسی کنید."
+          }
+        }
+      }
+    },
+    "GitHub returned HTTP %d.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub کد HTTP %d برگرداند."
+          }
+        }
+      }
+    },
+    "GitHub snapshot %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تصویر GitHub %@"
+          }
+        }
+      }
+    },
+    "GitHub snapshot fetched %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تصویر GitHub دریافت‌شده در %@"
+          }
+        }
+      }
+    },
+    "GitHub snapshots": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تصویرهای GitHub"
+          }
+        }
+      }
+    },
+    "Go": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رفتن"
+          }
+        }
+      }
+    },
+    "Go to product…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رفتن به محصول…"
+          }
+        }
+      }
+    },
+    "Google Play": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Play"
+          }
+        }
+      }
+    },
+    "Google Play Console": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Play Console"
+          }
+        }
+      }
+    },
+    "Google Play has no public API. Listings here were checked on their public pages. Production versions need the Google Play Developer API, which needs a service account that isn't connected.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Play رابط عمومی ندارد. لیست‌ها از صفحه‌های عمومی بررسی شده‌اند. نسخه‌های فعال به Google Play Developer API و یک حساب سرویس نیاز دارند که وصل نیست."
+          }
+        }
+      }
+    },
+    "Healthy": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سالم"
+          }
+        }
+      }
+    },
+    "High": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بالا"
+          }
+        }
+      }
+    },
+    "Host": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "میزبان"
+          }
+        }
+      }
+    },
+    "I can only answer from Command Center records. Try one of: %@, or name a product.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "من فقط از سوابق مرکز فرمان پاسخ می‌دهم. یکی از این‌ها را امتحان کنید: %@، یا نام یک محصول را بنویسید."
+          }
+        }
+      }
+    },
+    "Idea": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ایده"
+          }
+        }
+      }
+    },
+    "In Development": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال توسعه"
+          }
+        }
+      }
+    },
+    "In Progress": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در جریان"
+          }
+        }
+      }
+    },
+    "In Review": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال بازبینی"
+          }
+        }
+      }
+    },
+    "In development (recorded)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال توسعه (ثبت‌شده)"
+          }
+        }
+      }
+    },
+    "Infrastructure": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زیرساخت"
+          }
+        }
+      }
+    },
+    "Instagram": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انستاگرام"
+          }
+        }
+      }
+    },
+    "Integrations": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اتصال‌ها"
+          }
+        }
+      }
+    },
+    "Intelligence": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هوشمندی"
+          }
+        }
+      }
+    },
+    "Internal": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "داخلی"
+          }
+        }
+      }
+    },
+    "Internal Testing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آزمایش داخلی"
+          }
+        }
+      }
+    },
+    "Interview": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مصاحبه"
+          }
+        }
+      }
+    },
+    "Inventory file": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل فهرست محصولات"
+          }
+        }
+      }
+    },
+    "Inventory updated": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست محصولات به‌روز شد"
+          }
+        }
+      }
+    },
+    "Issue": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مشکل"
+          }
+        }
+      }
+    },
+    "Issue record (manual entry)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سابقهٔ مشکل (ثبت دستی)"
+          }
+        }
+      }
+    },
+    "Issue records": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سوابق مشکلات"
+          }
+        }
+      }
+    },
+    "Issues": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مشکلات"
+          }
+        }
+      }
+    },
+    "Item": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مورد"
+          }
+        }
+      }
+    },
+    "Kind": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نوع"
+          }
+        }
+      }
+    },
+    "Language": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زبان"
+          }
+        }
+      }
+    },
+    "Language (e.g. Dari, Pashto, English)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زبان (مثلاً دری، پښتو، انگلیسی)"
+          }
+        }
+      }
+    },
+    "Last refresh %@: %lld updated": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین به‌روزرسانی %1$@: %2$lld مورد به‌روز شد"
+          }
+        }
+      }
+    },
+    "Last snapshot: %@. Refresh from Development → Repositories (read-only).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین تصویر: %@. از توسعه ← مخزن‌ها به‌روز کنید (فقط‌خواندنی)."
+          }
+        }
+      }
+    },
+    "Last verified": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین تأیید"
+          }
+        }
+      }
+    },
+    "Last verified %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین تأیید %@"
+          }
+        }
+      }
+    },
+    "Latest commit": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین کامیت"
+          }
+        }
+      }
+    },
+    "Latest submitted version": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین نسخهٔ ارسال‌شده"
+          }
+        }
+      }
+    },
+    "Leave it empty if the fact is unknown. Record where the value comes from below.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اگر معلوم نیست خالی بگذارید. در پایین ثبت کنید که مقدار از کجا آمده است."
+          }
+        }
+      }
+    },
+    "Link": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیوند"
+          }
+        }
+      }
+    },
+    "Link to the published post": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیوند پست نشرشده"
+          }
+        }
+      }
+    },
+    "LinkedIn": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لینکدین"
+          }
+        }
+      }
+    },
+    "LinkedIn, Facebook, Instagram, X and YouTube aren't connected: that needs OAuth credentials, which will live on the backend. Draft and approve posts in the Content Calendar.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لینکدین، فیسبوک، انستاگرام، ایکس و یوتیوب وصل نیستند؛ این کار به اعتبارنامه‌های OAuth نیاز دارد که در سرور نگهداری می‌شوند. پست‌ها را در تقویم محتوا بنویسید و تأیید کنید."
+          }
+        }
+      }
+    },
+    "Links": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیوندها"
+          }
+        }
+      }
+    },
+    "Linumic Command Center": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرکز فرمان لینومیک"
+          }
+        }
+      }
+    },
+    "Linumic product": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصول لینومیک"
+          }
+        }
+      }
+    },
+    "Listing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لیست"
+          }
+        }
+      }
+    },
+    "Listing URL": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آدرس لیست"
+          }
+        }
+      }
+    },
+    "Live": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فعال"
+          }
+        }
+      }
+    },
+    "Live (production) version": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ فعال (تولید)"
+          }
+        }
+      }
+    },
+    "Live versions come from Apple's public lookup (US, then Afghanistan storefront). Submitted versions and review states come from the owner's App Store Connect screenshot. App Store Connect itself isn't connected.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخه‌های فعال از جستجوی عمومی اپل (اول فروشگاه امریکا، بعد افغانستان) گرفته می‌شوند. نسخه‌های ارسال‌شده و وضعیت بازبینی از تصویر App Store Connect مالک است. خود App Store Connect وصل نیست."
+          }
+        }
+      }
+    },
+    "Live: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فعال: %@"
+          }
+        }
+      }
+    },
+    "Local data": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "معلومات محلی"
+          }
+        }
+      }
+    },
+    "Local repository": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخزن محلی"
+          }
+        }
+      }
+    },
+    "Low": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پایین"
+          }
+        }
+      }
+    },
+    "Maintenance": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نگهداری"
+          }
+        }
+      }
+    },
+    "Mark Published": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "علامت نشرشده"
+          }
+        }
+      }
+    },
+    "Mark a release as a release candidate to track it": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای پیگیری، انتشار را «نامزد انتشار» علامت بزنید"
+          }
+        }
+      }
+    },
+    "Market Intelligence": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هوشمندی بازار"
+          }
+        }
+      }
+    },
+    "Market Intelligence has %ld sources, %ld evidence items and %ld findings": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هوشمندی بازار %1$ld منبع، %2$ld شاهد و %3$ld یافته دارد"
+          }
+        }
+      }
+    },
+    "Market Source": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع بازار"
+          }
+        }
+      }
+    },
+    "Market intelligence for Afghanistan. Every evidence item names its source and collection date, every finding cites evidence, and derived findings state their method. Nothing here is generated.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هوشمندی بازار افغانستان. هر شاهد منبع و تاریخ جمع‌آوری خود را دارد، هر یافته به شواهد استناد می‌کند و یافته‌های استنتاجی روش خود را بیان می‌کنند. هیچ چیزی در این‌جا خودکار ساخته نمی‌شود."
+          }
+        }
+      }
+    },
+    "Marketing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازاریابی"
+          }
+        }
+      }
+    },
+    "Medium": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متوسط"
+          }
+        }
+      }
+    },
+    "Method (how the evidence leads to this)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روش (شواهد چگونه به این نتیجه می‌رسند)"
+          }
+        }
+      }
+    },
+    "Method: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روش: %@"
+          }
+        }
+      }
+    },
+    "Method: %@. ": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روش: %@. "
+          }
+        }
+      }
+    },
+    "Mode": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حالت"
+          }
+        }
+      }
+    },
+    "Monorepo": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخزن یکپارچه"
+          }
+        }
+      }
+    },
+    "Name": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام"
+          }
+        }
+      }
+    },
+    "Names, separated by commas": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام‌ها، جداشده با کامه"
+          }
+        }
+      }
+    },
+    "Needs you": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نیاز به شما"
+          }
+        }
+      }
+    },
+    "Needs your confirmation": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نیاز به تأیید شما"
+          }
+        }
+      }
+    },
+    "Network": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شبکه"
+          }
+        }
+      }
+    },
+    "Networks": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شبکه‌ها"
+          }
+        }
+      }
+    },
+    "Never": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هرگز"
+          }
+        }
+      }
+    },
+    "Never verified": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هرگز تأیید نشده"
+          }
+        }
+      }
+    },
+    "New Post": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پست تازه"
+          }
+        }
+      }
+    },
+    "New Product": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصول تازه"
+          }
+        }
+      }
+    },
+    "New Product (⌘N)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصول تازه (⌘N)"
+          }
+        }
+      }
+    },
+    "New Product…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصول تازه…"
+          }
+        }
+      }
+    },
+    "New source reference (URL, file path, or document)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع تازه (آدرس، مسیر فایل یا سند)"
+          }
+        }
+      }
+    },
+    "New source type": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نوع منبع تازه"
+          }
+        }
+      }
+    },
+    "News": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خبر"
+          }
+        }
+      }
+    },
+    "Next version": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ بعدی"
+          }
+        }
+      }
+    },
+    "No": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نخیر"
+          }
+        }
+      }
+    },
+    "No %@ listings recorded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ لیستی در %@ ثبت نشده"
+          }
+        }
+      }
+    },
+    "No GitHub description": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توضیحات GitHub ندارد"
+          }
+        }
+      }
+    },
+    "No commits or releases from the last 7 days appear in the GitHub snapshots.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در تصویرهای GitHub هیچ کامیت یا انتشاری از ۷ روز گذشته دیده نمی‌شود."
+          }
+        }
+      }
+    },
+    "No content yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز محتوایی نیست"
+          }
+        }
+      }
+    },
+    "No deployments recorded.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ استقراری ثبت نشده."
+          }
+        }
+      }
+    },
+    "No deployments recorded. Add them from a product's Deployments tab.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ استقراری ثبت نشده. آن‌ها را از بخش «استقرارها»ی هر محصول اضافه کنید."
+          }
+        }
+      }
+    },
+    "No evidence recorded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ شاهدی ثبت نشده"
+          }
+        }
+      }
+    },
+    "No issues recorded. GitHub issue sync is planned for Phase 2.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ مشکلی ثبت نشده. همگام‌سازی مشکلات GitHub برای مرحلهٔ ۲ برنامه‌ریزی شده است."
+          }
+        }
+      }
+    },
+    "No issues recorded. GitHub issue sync is planned.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ مشکلی ثبت نشده. همگام‌سازی مشکلات GitHub در برنامه است."
+          }
+        }
+      }
+    },
+    "No market evidence recorded yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز هیچ شاهد بازاری ثبت نشده"
+          }
+        }
+      }
+    },
+    "No matching question type": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نوع سؤال شناخته نشد"
+          }
+        }
+      }
+    },
+    "No open critical issues are recorded.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ مشکل بحرانی باز ثبت نشده است."
+          }
+        }
+      }
+    },
+    "No open critical issues recorded.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ مشکل بحرانی باز ثبت نشده."
+          }
+        }
+      }
+    },
+    "No planned features are recorded in any product roadmap.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در نقشهٔ راه هیچ محصولی ویژگی برنامه‌ریزی‌شده ثبت نشده است."
+          }
+        }
+      }
+    },
+    "No platforms recorded. Add one only with evidence such as a build file or a store listing, not a folder name.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ پلتفرمی ثبت نشده. پلتفرم را فقط با شاهد مانند فایل بیلد یا لیست فروشگاه اضافه کنید، نه نام پوشه."
+          }
+        }
+      }
+    },
+    "No product meets any attention rule in the current records.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در سوابق فعلی هیچ محصولی شامل قواعد توجه نمی‌شود."
+          }
+        }
+      }
+    },
+    "No products": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصولی نیست"
+          }
+        }
+      }
+    },
+    "No release candidates are recorded, so readiness is unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ نامزد انتشاری ثبت نشده، پس آمادگی نامعلوم است."
+          }
+        }
+      }
+    },
+    "No release is recorded as blocked.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ انتشاری مسدود ثبت نشده است."
+          }
+        }
+      }
+    },
+    "No release records exist for %ld products (%@), so their release state is unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای %1$ld محصول (%2$@) سابقهٔ انتشار نیست، پس وضعیت انتشار آن‌ها نامعلوم است."
+          }
+        }
+      }
+    },
+    "No released versions recorded.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ نسخهٔ نشرشده‌ای ثبت نشده."
+          }
+        }
+      }
+    },
+    "No releases recorded.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ انتشاری ثبت نشده."
+          }
+        }
+      }
+    },
+    "No releases recorded. Add them from a product's Releases tab.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ انتشاری ثبت نشده. آن‌ها را از بخش «انتشارها»ی هر محصول اضافه کنید."
+          }
+        }
+      }
+    },
+    "No repositories recorded.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ مخزنی ثبت نشده."
+          }
+        }
+      }
+    },
+    "No roadmap items recorded.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ موردی در نقشهٔ راه ثبت نشده."
+          }
+        }
+      }
+    },
+    "No roadmap items recorded. Add them from a product's Roadmap tab.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ موردی در نقشهٔ راه ثبت نشده. آن‌ها را از بخش «نقشهٔ راه» هر محصول اضافه کنید."
+          }
+        }
+      }
+    },
+    "No runs": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجرایی نیست"
+          }
+        }
+      }
+    },
+    "No social accounts recorded. None were found as verified evidence during discovery.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ حساب اجتماعی ثبت نشده. در جریان بررسی هیچ حسابی با شاهد تأییدشده پیدا نشد."
+          }
+        }
+      }
+    },
+    "No sourced market evidence has been recorded, so emerging needs in Afghanistan are unknown. I don't answer this from general knowledge.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ شاهد بازاری با منبع ثبت نشده، پس نیازهای تازهٔ بازار افغانستان نامعلوم است. من به این سؤال از دانش عمومی پاسخ نمی‌دهم."
+          }
+        }
+      }
+    },
+    "No sources recorded.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ منبعی ثبت نشده."
+          }
+        }
+      }
+    },
+    "No sources yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز منبعی نیست."
+          }
+        }
+      }
+    },
+    "No store listings recorded. Unknown whether this product is on the App Store or Google Play.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ لیست فروشگاهی ثبت نشده. معلوم نیست این محصول در App Store یا Google Play هست یا نه."
+          }
+        }
+      }
+    },
+    "No upcoming releases recorded.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ انتشار آینده‌ای ثبت نشده."
+          }
+        }
+      }
+    },
+    "None": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ"
+          }
+        }
+      }
+    },
+    "None recorded.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چیزی ثبت نشده."
+          }
+        }
+      }
+    },
+    "Not connected": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وصل نیست"
+          }
+        }
+      }
+    },
+    "Not connected. No data is shown until this integration is implemented and authorized.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وصل نیست. تا این اتصال ساخته و مجاز نشود هیچ معلوماتی نشان داده نمی‌شود."
+          }
+        }
+      }
+    },
+    "Not found on GitHub (404): %@. A private repository needs a token with access to it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در GitHub پیدا نشد (404): %@. مخزن خصوصی به توکنی با دسترسی نیاز دارد."
+          }
+        }
+      }
+    },
+    "Not removed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حذف نشد"
+          }
+        }
+      }
+    },
+    "Not yet confirmed as products": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز به‌عنوان محصول تأیید نشده"
+          }
+        }
+      }
+    },
+    "Notes": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یادداشت‌ها"
+          }
+        }
+      }
+    },
+    "Nothing is posted automatically. Publish on the network yourself, then record it here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ چیزی خودکار نشر نمی‌شود. خودتان در شبکه نشر کنید، بعد این‌جا ثبت کنید."
+          }
+        }
+      }
+    },
+    "Nothing to confirm": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چیزی برای تأیید نیست"
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوب"
+          }
+        }
+      }
+    },
+    "Only reviewed findings are answered": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط یافته‌های بازبینی‌شده پاسخ داده می‌شوند"
+          }
+        }
+      }
+    },
+    "Only you can settle these. Open a product and use Edit… on the row, or click a badge to see the evidence gathered so far.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط شما می‌توانید این‌ها را روشن کنید. محصول را باز کنید و از «ویرایش…» در ردیف استفاده کنید، یا برای دیدن شواهد جمع‌شده روی نشان کلیک کنید."
+          }
+        }
+      }
+    },
+    "Open": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن"
+          }
+        }
+      }
+    },
+    "Open GitHub issues exist in %@, but their severity isn't known.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در %@ مشکلات باز GitHub هست، اما شدت آن‌ها معلوم نیست."
+          }
+        }
+      }
+    },
+    "Open pull requests": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درخواست‌های ادغام باز"
+          }
+        }
+      }
+    },
+    "Open…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن…"
+          }
+        }
+      }
+    },
+    "Other": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دیگر"
+          }
+        }
+      }
+    },
+    "Overview": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نمای کلی"
+          }
+        }
+      }
+    },
+    "Owner": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مالک"
+          }
+        }
+      }
+    },
+    "Owner confirmation": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید مالک"
+          }
+        }
+      }
+    },
+    "PARTIALLY VERIFIED": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسبتاً تأییدشده"
+          }
+        }
+      }
+    },
+    "PRs / Issues": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درخواست ادغام / مشکل"
+          }
+        }
+      }
+    },
+    "Partial": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسبی"
+          }
+        }
+      }
+    },
+    "Partially Verified": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسبتاً تأییدشده"
+          }
+        }
+      }
+    },
+    "Passing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "موفق"
+          }
+        }
+      }
+    },
+    "Paused": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متوقف"
+          }
+        }
+      }
+    },
+    "Personal access token": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توکن دسترسی شخصی"
+          }
+        }
+      }
+    },
+    "Phase 4: read-only API key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرحلهٔ ۴: کلید API فقط‌خواندنی"
+          }
+        }
+      }
+    },
+    "Phase 4: read-only service account": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرحلهٔ ۴: حساب سرویس فقط‌خواندنی"
+          }
+        }
+      }
+    },
+    "Phase 5: OAuth, approval before publishing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرحلهٔ ۵: OAuth، تأیید پیش از نشر"
+          }
+        }
+      }
+    },
+    "Phase 6: key held on backend": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرحلهٔ ۶: کلید در سرور نگهداری می‌شود"
+          }
+        }
+      }
+    },
+    "Planned": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برنامه‌ریزی‌شده"
+          }
+        }
+      }
+    },
+    "Planning": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برنامه‌ریزی"
+          }
+        }
+      }
+    },
+    "Platform": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پلتفرم"
+          }
+        }
+      }
+    },
+    "Platform %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پلتفرم %@"
+          }
+        }
+      }
+    },
+    "Platform %@ (%@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پلتفرم %1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "Platform records": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سوابق پلتفرم"
+          }
+        }
+      }
+    },
+    "Platforms": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پلتفرم‌ها"
+          }
+        }
+      }
+    },
+    "Platforms with evidence: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پلتفرم‌های دارای شاهد: %@"
+          }
+        }
+      }
+    },
+    "Possible product": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصول احتمالی"
+          }
+        }
+      }
+    },
+    "Post": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پست"
+          }
+        }
+      }
+    },
+    "Press ⌘N to add a product.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای افزودن محصول ⌘N را فشار دهید."
+          }
+        }
+      }
+    },
+    "Private": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خصوصی"
+          }
+        }
+      }
+    },
+    "Product": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصول"
+          }
+        }
+      }
+    },
+    "Product announcement": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعلان محصول"
+          }
+        }
+      }
+    },
+    "Product not found": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصول پیدا نشد"
+          }
+        }
+      }
+    },
+    "Product request": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درخواست محصول"
+          }
+        }
+      }
+    },
+    "Production": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تولید"
+          }
+        }
+      }
+    },
+    "Products": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصولات"
+          }
+        }
+      }
+    },
+    "Products on Google Play": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصولات در Google Play"
+          }
+        }
+      }
+    },
+    "Products on the App Store": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصولات در App Store"
+          }
+        }
+      }
+    },
+    "Products with any verification dated in the last 7 days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصولاتی که در ۷ روز گذشته تأییدی داشته‌اند"
+          }
+        }
+      }
+    },
+    "Products with repositories": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصولات دارای مخزن"
+          }
+        }
+      }
+    },
+    "Project type": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نوع پروژه"
+          }
+        }
+      }
+    },
+    "Public": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عمومی"
+          }
+        }
+      }
+    },
+    "Public repositories only": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط مخزن‌های عمومی"
+          }
+        }
+      }
+    },
+    "Publication": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشریه"
+          }
+        }
+      }
+    },
+    "Publication date known": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ نشر معلوم است"
+          }
+        }
+      }
+    },
+    "Published": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشرشده"
+          }
+        }
+      }
+    },
+    "Publisher": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ناشر"
+          }
+        }
+      }
+    },
+    "Quick Open…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن سریع…"
+          }
+        }
+      }
+    },
+    "RC": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نامزد"
+          }
+        }
+      }
+    },
+    "Read the public App Store lookup for each bundle ID (no credentials)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جستجوی عمومی App Store برای هر شناسهٔ برنامه (بدون اعتبارنامه)"
+          }
+        }
+      }
+    },
+    "Read-only refresh of every GitHub repository (⌘R)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به‌روزرسانی فقط‌خواندنی همهٔ مخزن‌های GitHub (⌘R)"
+          }
+        }
+      }
+    },
+    "Reads repository metadata, commits, releases, PRs, issues and CI. It never writes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "معلومات مخزن، کامیت‌ها، انتشارها، درخواست‌های ادغام، مشکلات و CI را می‌خواند. هرگز چیزی نمی‌نویسد."
+          }
+        }
+      }
+    },
+    "Recent activity": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فعالیت‌های اخیر"
+          }
+        }
+      }
+    },
+    "Record evidence before adding findings.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیش از افزودن یافته، شواهد را ثبت کنید."
+          }
+        }
+      }
+    },
+    "Record my confirmation as a source": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید من به‌عنوان منبع ثبت شود"
+          }
+        }
+      }
+    },
+    "Record problems": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اشکالات سابقه"
+          }
+        }
+      }
+    },
+    "Refresh All Repositories": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به‌روزرسانی همهٔ مخزن‌ها"
+          }
+        }
+      }
+    },
+    "Refresh Public Status": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به‌روزرسانی وضعیت عمومی"
+          }
+        }
+      }
+    },
+    "Refresh from GitHub": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به‌روزرسانی از GitHub"
+          }
+        }
+      }
+    },
+    "Refreshed %lld repositories at %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld مخزن در %2$@ به‌روز شد."
+          }
+        }
+      }
+    },
+    "Region": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ساحه"
+          }
+        }
+      }
+    },
+    "Register a source before recording evidence.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیش از ثبت شواهد، یک منبع ثبت کنید."
+          }
+        }
+      }
+    },
+    "Related products": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصولات مرتبط"
+          }
+        }
+      }
+    },
+    "Relaunch": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دوباره باز کردن"
+          }
+        }
+      }
+    },
+    "Relaunch Now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اکنون دوباره باز کن"
+          }
+        }
+      }
+    },
+    "Relaunch to apply the new language.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای اعمال زبان تازه، برنامه را دوباره باز کنید."
+          }
+        }
+      }
+    },
+    "Release": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشار"
+          }
+        }
+      }
+    },
+    "Release announcement": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعلان انتشار"
+          }
+        }
+      }
+    },
+    "Release candidate": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نامزد انتشار"
+          }
+        }
+      }
+    },
+    "Release date known": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ انتشار معلوم است"
+          }
+        }
+      }
+    },
+    "Release record in the Command Center (manual entry)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سابقهٔ انتشار در مرکز فرمان (ثبت دستی)"
+          }
+        }
+      }
+    },
+    "Release repository": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخزن انتشار"
+          }
+        }
+      }
+    },
+    "Released": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشرشده"
+          }
+        }
+      }
+    },
+    "Releases": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشارها"
+          }
+        }
+      }
+    },
+    "Releases are recorded manually. There's no release tracking outside the Command Center yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشارها دستی ثبت می‌شوند. هنوز پیگیری انتشار بیرون از مرکز فرمان وجود ندارد."
+          }
+        }
+      }
+    },
+    "Reliability and terms of use": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعتبار و شرایط استفاده"
+          }
+        }
+      }
+    },
+    "Remove Token": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حذف توکن"
+          }
+        }
+      }
+    },
+    "Remove this source": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حذف این منبع"
+          }
+        }
+      }
+    },
+    "Repos": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخزن‌ها"
+          }
+        }
+      }
+    },
+    "Repositories": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخزن‌ها"
+          }
+        }
+      }
+    },
+    "Repository": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخزن"
+          }
+        }
+      }
+    },
+    "Repository %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخزن %@"
+          }
+        }
+      }
+    },
+    "Research": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تحقیق"
+          }
+        }
+      }
+    },
+    "Restore to Draft": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برگرداندن به پیش‌نویس"
+          }
+        }
+      }
+    },
+    "Retired": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازنشسته"
+          }
+        }
+      }
+    },
+    "Review": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازبینی"
+          }
+        }
+      }
+    },
+    "Review status": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت بازبینی"
+          }
+        }
+      }
+    },
+    "Reviewed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازبینی‌شده"
+          }
+        }
+      }
+    },
+    "Roadmap": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نقشهٔ راه"
+          }
+        }
+      }
+    },
+    "Roadmap Item": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مورد نقشهٔ راه"
+          }
+        }
+      }
+    },
+    "Roadmap record (manual entry)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سابقهٔ نقشهٔ راه (ثبت دستی)"
+          }
+        }
+      }
+    },
+    "Roadmaps in the product repositories (e.g. ROADMAP.md files) aren't imported. Add items on each product's Roadmap tab.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نقشه‌های راه داخل مخزن‌های محصولات (مثلاً فایل‌های ROADMAP.md) وارد نمی‌شوند. موارد را در بخش «نقشهٔ راه» هر محصول اضافه کنید."
+          }
+        }
+      }
+    },
+    "Roll-up of all fact, platform, repository and listing verifications": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جمع‌بندی همهٔ تأییدهای معلومات، پلتفرم‌ها، مخزن‌ها و لیست‌ها"
+          }
+        }
+      }
+    },
+    "Rule: a product needs attention if it has conflicting facts, failing CI, a blocked release, an open critical issue, or an unknown development status.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قاعده: محصولی به توجه نیاز دارد که معلومات متناقض، CI ناکام، انتشار مسدود، مشکل بحرانی باز یا وضعیت توسعهٔ نامعلوم داشته باشد."
+          }
+        }
+      }
+    },
+    "Rule: a release candidate in Internal Testing, Beta or Review that isn't blocked": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قاعده: نامزد انتشاری در آزمایش داخلی، بتا یا بازبینی که مسدود نباشد"
+          }
+        }
+      }
+    },
+    "Running": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال اجرا"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ذخیره"
+          }
+        }
+      }
+    },
+    "Save to Keychain": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ذخیره در Keychain"
+          }
+        }
+      }
+    },
+    "Schedule": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زمان‌بندی"
+          }
+        }
+      }
+    },
+    "Schedule for": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زمان‌بندی برای"
+          }
+        }
+      }
+    },
+    "Scheduled": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زمان‌بندی‌شده"
+          }
+        }
+      }
+    },
+    "Search products": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جستجوی محصولات"
+          }
+        }
+      }
+    },
+    "Section": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بخش"
+          }
+        }
+      }
+    },
+    "Sector": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سکتور"
+          }
+        }
+      }
+    },
+    "Security": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امنیت"
+          }
+        }
+      }
+    },
+    "Seller": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فروشنده"
+          }
+        }
+      }
+    },
+    "Seller: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فروشنده: %@"
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تنظیمات"
+          }
+        }
+      }
+    },
+    "Severity": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شدت"
+          }
+        }
+      }
+    },
+    "Show": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نمایش"
+          }
+        }
+      }
+    },
+    "Show evidence": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نمایش شواهد"
+          }
+        }
+      }
+    },
+    "Shows the sources, verification date and notes": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منابع، تاریخ تأیید و یادداشت‌ها را نشان می‌دهد"
+          }
+        }
+      }
+    },
+    "Sign-in and role-based access will be added with the cloud backend.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ورود و دسترسی بر اساس نقش همراه با سرور ابری اضافه می‌شود."
+          }
+        }
+      }
+    },
+    "Signed in": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "واردشده"
+          }
+        }
+      }
+    },
+    "Snapshot age": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عمر تصویر"
+          }
+        }
+      }
+    },
+    "Social Media": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رسانه‌های اجتماعی"
+          }
+        }
+      }
+    },
+    "Social accounts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب‌های اجتماعی"
+          }
+        }
+      }
+    },
+    "Social networks": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شبکه‌های اجتماعی"
+          }
+        }
+      }
+    },
+    "Some GitHub snapshots are older than a day (oldest %@). Refresh from Repositories for current data.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برخی تصویرهای GitHub بیش از یک روز عمر دارند (قدیمی‌ترین %@). برای معلومات تازه از بخش مخزن‌ها به‌روز کنید."
+          }
+        }
+      }
+    },
+    "Source": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع"
+          }
+        }
+      }
+    },
+    "Sources": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منابع"
+          }
+        }
+      }
+    },
+    "Stage": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرحله"
+          }
+        }
+      }
+    },
+    "Staging": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آزمایشی (Staging)"
+          }
+        }
+      }
+    },
+    "Start by registering a source, such as a dataset, survey, customer interview or product request. Then record what it says.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "با ثبت یک منبع شروع کنید؛ مانند مجموعهٔ داده، سروی، مصاحبه با مشتری یا درخواست محصول. بعد ثبت کنید که آن منبع چه می‌گوید."
+          }
+        }
+      }
+    },
+    "State": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت"
+          }
+        }
+      }
+    },
+    "Status": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت"
+          }
+        }
+      }
+    },
+    "Status is %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت %@ است"
+          }
+        }
+      }
+    },
+    "Status unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت نامعلوم"
+          }
+        }
+      }
+    },
+    "Status verification: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید وضعیت: %@"
+          }
+        }
+      }
+    },
+    "Store": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فروشگاه"
+          }
+        }
+      }
+    },
+    "Store Listing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لیست فروشگاه"
+          }
+        }
+      }
+    },
+    "Store listing record": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سابقهٔ لیست فروشگاه"
+          }
+        }
+      }
+    },
+    "Store listings": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لیست‌های فروشگاه"
+          }
+        }
+      }
+    },
+    "Store status": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت فروشگاه"
+          }
+        }
+      }
+    },
+    "Stored credentials": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعتبارنامه‌های ذخیره‌شده"
+          }
+        }
+      }
+    },
+    "Storefront": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فروشگاه کشور"
+          }
+        }
+      }
+    },
+    "Storefront: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فروشگاه کشور: %@"
+          }
+        }
+      }
+    },
+    "Stores": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فروشگاه‌ها"
+          }
+        }
+      }
+    },
+    "Submit for Review": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ارسال برای بازبینی"
+          }
+        }
+      }
+    },
+    "Submitted": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ارسال‌شده"
+          }
+        }
+      }
+    },
+    "Submitted: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ارسال‌شده: %@"
+          }
+        }
+      }
+    },
+    "Suggestions": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیشنهادها"
+          }
+        }
+      }
+    },
+    "Survey": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سروی"
+          }
+        }
+      }
+    },
+    "System": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سیستم"
+          }
+        }
+      }
+    },
+    "Tags, separated by commas": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برچسب‌ها، جداشده با کامه"
+          }
+        }
+      }
+    },
+    "Target": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هدف"
+          }
+        }
+      }
+    },
+    "Target (e.g. API server, website)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هدف (مثلاً سرور API، ویب‌سایت)"
+          }
+        }
+      }
+    },
+    "Target date": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ هدف"
+          }
+        }
+      }
+    },
+    "Target date known": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ هدف معلوم است"
+          }
+        }
+      }
+    },
+    "Target version": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ هدف"
+          }
+        }
+      }
+    },
+    "Text": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متن"
+          }
+        }
+      }
+    },
+    "That value isn't valid for %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این مقدار برای «%@» معتبر نیست."
+          }
+        }
+      }
+    },
+    "The inventory file contains no secrets.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل فهرست محصولات هیچ رمزی ندارد."
+          }
+        }
+      }
+    },
+    "The inventory was rebuilt from the verified seed (schema %lld). The previous schema-%lld file was kept at %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست محصولات از دادهٔ اولیهٔ تأییدشده (نسخهٔ ساختار %1$lld) دوباره ساخته شد. فایل قبلی (نسخهٔ ساختار %2$lld) در %3$@ نگه داشته شد."
+          }
+        }
+      }
+    },
+    "These need credentials and authorization before they can be added. See docs/integrations.md.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این‌ها پیش از افزوده شدن به اعتبارنامه و اجازه نیاز دارند. docs/integrations.md را ببینید."
+          }
+        }
+      }
+    },
+    "This app": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این برنامه"
+          }
+        }
+      }
+    },
+    "This evidence is cited by a finding. Remove or edit the finding first.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک یافته به این شاهد استناد می‌کند. اول آن یافته را حذف یا ویرایش کنید."
+          }
+        }
+      }
+    },
+    "This only records the repository. The Command Center never pushes, merges or deletes anything.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این فقط مخزن را ثبت می‌کند. مرکز فرمان هرگز چیزی را push، ادغام یا حذف نمی‌کند."
+          }
+        }
+      }
+    },
+    "This removes the product and all of its records from the Command Center. It does not touch any repository or store.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کار محصول و همهٔ سوابقش را از مرکز فرمان حذف می‌کند. به هیچ مخزن یا فروشگاهی دست نمی‌زند."
+          }
+        }
+      }
+    },
+    "Title": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عنوان"
+          }
+        }
+      }
+    },
+    "Title (internal)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عنوان (داخلی)"
+          }
+        }
+      }
+    },
+    "Token removed.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توکن حذف شد."
+          }
+        }
+      }
+    },
+    "Token saved": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توکن ذخیره شده"
+          }
+        }
+      }
+    },
+    "Token saved to the Keychain.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توکن در Keychain ذخیره شد."
+          }
+        }
+      }
+    },
+    "Total products": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مجموع محصولات"
+          }
+        }
+      }
+    },
+    "Try a question": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک سؤال امتحان کنید"
+          }
+        }
+      }
+    },
+    "Type": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نوع"
+          }
+        }
+      }
+    },
+    "UNKNOWN": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نامعلوم"
+          }
+        }
+      }
+    },
+    "URL": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آدرس"
+          }
+        }
+      }
+    },
+    "Unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نامعلوم"
+          }
+        }
+      }
+    },
+    "Unknown — to be verified": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نامعلوم — باید تأیید شود"
+          }
+        }
+      }
+    },
+    "Unnamed app": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برنامهٔ بی‌نام"
+          }
+        }
+      }
+    },
+    "Unresolved repository": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخزن نامشخص"
+          }
+        }
+      }
+    },
+    "Unschedule": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لغو زمان‌بندی"
+          }
+        }
+      }
+    },
+    "Upcoming releases": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشارهای آینده"
+          }
+        }
+      }
+    },
+    "Use a fine-grained token with read-only Metadata, Contents, Issues, Pull requests and Actions on the Linumic repositories. It's stored only in this Mac's Keychain.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از یک توکن محدود (fine-grained) با دسترسی فقط‌خواندنی Metadata، Contents، Issues، Pull requests و Actions روی مخزن‌های لینومیک استفاده کنید. فقط در Keychain همین مک ذخیره می‌شود."
+          }
+        }
+      }
+    },
+    "VERIFIED": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأییدشده"
+          }
+        }
+      }
+    },
+    "Value": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مقدار"
+          }
+        }
+      }
+    },
+    "Verification": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید"
+          }
+        }
+      }
+    },
+    "Verification: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید: %@"
+          }
+        }
+      }
+    },
+    "Verified": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأییدشده"
+          }
+        }
+      }
+    },
+    "Verified %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأییدشده در %@"
+          }
+        }
+      }
+    },
+    "Version": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخه"
+          }
+        }
+      }
+    },
+    "Version in build config": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخه در تنظیمات بیلد"
+          }
+        }
+      }
+    },
+    "View post": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دیدن پست"
+          }
+        }
+      }
+    },
+    "Web": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وب"
+          }
+        }
+      }
+    },
+    "Website": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ویب‌سایت"
+          }
+        }
+      }
+    },
+    "What changed this week?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این هفته چه تغییر کرد؟"
+          }
+        }
+      }
+    },
+    "What features are currently planned?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کدام ویژگی‌ها فعلاً برنامه‌ریزی شده‌اند؟"
+          }
+        }
+      }
+    },
+    "What market needs are emerging in Afghanistan?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چه نیازهای تازه‌ای در بازار افغانستان پیدا می‌شود؟"
+          }
+        }
+      }
+    },
+    "What the source says (optional)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع چه می‌گوید (اختیاری)"
+          }
+        }
+      }
+    },
+    "What the source says (quote or figure, as found)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع چه می‌گوید (نقل‌قول یا رقم، همان‌طور که پیدا شد)"
+          }
+        }
+      }
+    },
+    "Which products are ready for release?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کدام محصولات برای انتشار آماده‌اند؟"
+          }
+        }
+      }
+    },
+    "Which products need attention?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کدام محصولات به توجه نیاز دارند؟"
+          }
+        }
+      }
+    },
+    "Which projects have unresolved critical issues?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کدام پروژه‌ها مشکلات بحرانی حل‌نشده دارند؟"
+          }
+        }
+      }
+    },
+    "Which releases are blocked?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کدام انتشارها مسدود هستند؟"
+          }
+        }
+      }
+    },
+    "Windows": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ویندوز"
+          }
+        }
+      }
+    },
+    "Workflow: Idea → Draft → In Review → Approved → Scheduled → Published. Publishing is done by a person on the network, then recorded here with its link.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گردش کار: ایده ← پیش‌نویس ← در حال بازبینی ← تأییدشده ← زمان‌بندی‌شده ← نشرشده. نشر را یک شخص در شبکه انجام می‌دهد و بعد این‌جا با پیوندش ثبت می‌شود."
+          }
+        }
+      }
+    },
+    "Workflow: currently %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گردش کار: فعلاً %@"
+          }
+        }
+      }
+    },
+    "X": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ایکس"
+          }
+        }
+      }
+    },
+    "Yes": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بلی"
+          }
+        }
+      }
+    },
+    "YouTube": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یوتیوب"
+          }
+        }
+      }
+    },
+    "a blocked release": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک انتشار مسدود"
+          }
+        }
+      }
+    },
+    "app": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برنامه"
+          }
+        }
+      }
+    },
+    "build %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیلد %@"
+          }
+        }
+      }
+    },
+    "collected %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جمع‌آوری %@"
+          }
+        }
+      }
+    },
+    "conflicting: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متناقض: %@"
+          }
+        }
+      }
+    },
+    "development status unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت توسعه نامعلوم"
+          }
+        }
+      }
+    },
+    "iOS": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iOS"
+          }
+        }
+      }
+    },
+    "its original location": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محل اصلی آن"
+          }
+        }
+      }
+    },
+    "macOS": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS"
+          }
+        }
+      }
+    },
+    "never": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هرگز"
+          }
+        }
+      }
+    },
+    "on %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روی %@"
+          }
+        }
+      }
+    },
+    "products": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصول"
+          }
+        }
+      }
+    },
+    "published %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشر %@"
+          }
+        }
+      }
+    },
+    "unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نامعلوم"
+          }
+        }
+      }
+    },
+    "watchOS": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "watchOS"
+          }
+        }
+      }
+    },
+    "· %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· %@"
+          }
+        }
+      }
+    },
+    "“%@”": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«%@»"
+          }
+        }
+      }
+    },
+    "•••••••• (stored in Keychain)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "•••••••• (در Keychain ذخیره شده)"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

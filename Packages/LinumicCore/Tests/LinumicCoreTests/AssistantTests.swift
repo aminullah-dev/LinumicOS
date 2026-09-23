@@ -42,6 +42,29 @@ struct AssistantTests {
         #expect(assistant.intent(of: "Tell me a joke") == .unrecognized)
     }
 
+    /// The Dari translations of the suggested questions (App/Resources/Localizable.xcstrings)
+    /// must reach the same answers as the English ones.
+    @Test func dariSuggestedQuestionsRouteCorrectly() {
+        let dari: [(String, AssistantIntent)] = [
+            ("کدام محصولات به توجه نیاز دارند؟", .needsAttention),
+            ("کدام انتشارها مسدود هستند؟", .blockedReleases),
+            ("این هفته چه تغییر کرد؟", .changesThisWeek),
+            ("کدام پروژه‌ها مشکلات بحرانی حل‌نشده دارند؟", .criticalIssues),
+            ("کدام محصولات برای انتشار آماده‌اند؟", .readyForRelease),
+            ("کدام ویژگی‌ها فعلاً برنامه‌ریزی شده‌اند؟", .plannedFeatures),
+            ("چه نیازهای تازه‌ای در بازار افغانستان پیدا می‌شود؟", .marketNeeds),
+        ]
+        for (question, expected) in dari {
+            #expect(assistant.intent(of: question) == expected, "\(question)")
+        }
+    }
+
+    @Test func normalizationHandlesZWNJAndArabicLetters() {
+        #expect(Assistant.normalize("برنامه‌ریزی").contains(Assistant.normalize("برنامه")))
+        #expect(Assistant.normalize("كدام محصولات") == Assistant.normalize("کدام محصولات"))
+        #expect(Assistant.normalize("ويژگي") == "ویژگی")
+    }
+
     @Test func everyStatementHasABasis() {
         for q in Assistant.suggestedQuestions + ["Alpha", "Beta", "nonsense"] {
             for s in assistant.answer(q).statements {

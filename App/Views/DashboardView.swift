@@ -14,7 +14,11 @@ struct DashboardView: View {
                         HStack {
                             Image(systemName: s.conflictingItems > 0 ? "exclamationmark.triangle.fill" : "person.badge.clock")
                                 .foregroundStyle(s.conflictingItems > 0 ? .red : .orange)
-                            Text("\(s.pendingConfirmations) facts need your confirmation\(s.conflictingItems > 0 ? ", \(s.conflictingItems) of them conflicting" : ""). Open Verification →")
+                            if s.conflictingItems > 0 {
+                                Text("\(s.pendingConfirmations) facts need your confirmation, \(s.conflictingItems) of them conflicting. Open Verification →")
+                            } else {
+                                Text("\(s.pendingConfirmations) facts need your confirmation. Open Verification →")
+                            }
                             Spacer()
                         }
                         .padding(10)
@@ -102,16 +106,16 @@ struct DashboardView: View {
 
                 HStack(alignment: .top, spacing: 16) {
                     DashboardPanel(title: "Store status") {
-                        LabeledContent("Products on the App Store", value: "\(s.productsWithAppStoreListing)")
-                        LabeledContent("Products on Google Play", value: "\(s.productsWithGooglePlayListing)")
+                        LabeledContent("Products on the App Store") { Text(s.productsWithAppStoreListing, format: .number) }
+                        LabeledContent("Products on Google Play") { Text(s.productsWithGooglePlayListing, format: .number) }
                         Text("From public store pages and the owner's App Store Connect screenshot (2026-09-23). Live sync needs the store integrations, which aren't connected.")
                             .font(.caption).foregroundStyle(.secondary)
                     }
                     DashboardPanel(title: "GitHub") {
                         let repos = model.products.flatMap(\.repositories).compactMap(\.gitHub)
-                        LabeledContent("Products with repositories", value: "\(s.productsWithRepositories)")
-                        LabeledContent("Failing CI", value: "\(repos.count { $0.ciConclusion == .failure })")
-                        LabeledContent("Open pull requests", value: "\(repos.compactMap(\.openPullRequests).reduce(0, +))")
+                        LabeledContent("Products with repositories") { Text(s.productsWithRepositories, format: .number) }
+                        LabeledContent("Failing CI") { Text(repos.count { $0.ciConclusion == .failure }, format: .number) }
+                        LabeledContent("Open pull requests") { Text(repos.compactMap(\.openPullRequests).reduce(0, +), format: .number) }
                         Text("Last snapshot: \(repos.map(\.fetchedAt).max()?.formatted(date: .abbreviated, time: .shortened) ?? "never"). Refresh from Development → Repositories (read-only).")
                             .font(.caption).foregroundStyle(.secondary)
                     }
@@ -148,10 +152,10 @@ struct MetricTile: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Label(title, systemImage: symbol)
+            Label(LocalizedStringKey(title), systemImage: symbol)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-            Text("\(value)")
+            Text(value, format: .number)
                 .font(.title.weight(.semibold))
                 .monospacedDigit()
                 .foregroundStyle(tint)
@@ -169,7 +173,7 @@ struct DashboardPanel<Content: View>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title).font(.headline)
+            Text(LocalizedStringKey(title)).font(.headline)
             content
         }
         .padding(12)
@@ -181,5 +185,5 @@ struct DashboardPanel<Content: View>: View {
 struct EmptyPanelText: View {
     let text: String
     init(_ text: String) { self.text = text }
-    var body: some View { Text(text).foregroundStyle(.secondary) }
+    var body: some View { Text(LocalizedStringKey(text)).foregroundStyle(.secondary) }
 }

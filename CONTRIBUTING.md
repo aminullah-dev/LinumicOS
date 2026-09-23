@@ -25,6 +25,21 @@ Small, verifiable steps:
 5. Update docs and `CHANGELOG.md`.
 6. Commit with a meaningful message.
 
+## Localization (English + Dari)
+
+- Literal strings in SwiftUI views (`Text("…")`, `Button("…")`, `.help("…")`) are localizable
+  automatically.
+- A string that reaches the UI through a plain `String` must be localized explicitly:
+  - in the app, `String(localized: "…")` for messages, and `LocalizedStringKey(title)` inside
+    components that take a `String` title;
+  - in LinumicCore, `L("…")` for fixed text and `LF("… %@ …", arg)` for templates. These read
+    the app's catalog at runtime.
+- Record data and evidence are never translated.
+- Every new string needs a Dari translation in `App/Resources/Localizable.xcstrings`. Check with
+  `python3 tools/l10n/check_catalog.py`, which also checks that format specifiers match. Use
+  positional specifiers (`%1$@`) when Dari word order differs.
+- Afghan Dari terminology: معلومات (not اطلاعات), کمپاین, مخزن for repository, انتشار for release.
+
 ## Code layout
 
 - Domain logic belongs in `LinumicCore` and must not import SwiftUI or AppKit.

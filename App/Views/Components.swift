@@ -28,7 +28,7 @@ struct StatusBadge: View {
     let color: Color
 
     var body: some View {
-        Text(text)
+        Text(LocalizedStringKey(text))
             .font(.caption.weight(.medium))
             .foregroundStyle(.primary)
             .padding(.horizontal, 7)
@@ -75,10 +75,10 @@ extension VerificationStatus {
     /// Upper-case label used on badges: VERIFIED, PARTIALLY VERIFIED, UNKNOWN, CONFLICTING.
     var badgeText: String {
         switch self {
-        case .verified: "VERIFIED"
-        case .partiallyVerified: "PARTIALLY VERIFIED"
-        case .unknown: "UNKNOWN"
-        case .conflicting: "CONFLICTING"
+        case .verified: L("VERIFIED")
+        case .partiallyVerified: L("PARTIALLY VERIFIED")
+        case .unknown: L("UNKNOWN")
+        case .conflicting: L("CONFLICTING")
         }
     }
 }
@@ -102,7 +102,7 @@ struct VerificationBadge: View {
         .overlay(Capsule().strokeBorder(status.color.opacity(0.55), lineWidth: 1))
         .fixedSize()
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Verification: \(status.title)")
+        .accessibilityLabel(Text("Verification: \(status.title)"))
     }
 }
 
@@ -172,11 +172,11 @@ struct EvidenceView: View {
 extension RepositorySnapshot.CIConclusion {
     var title: String {
         switch self {
-        case .success: "Passing"
-        case .failure: "Failing"
-        case .cancelled: "Cancelled"
-        case .inProgress: "Running"
-        case .none: "No runs"
+        case .success: L("Passing")
+        case .failure: L("Failing")
+        case .cancelled: L("Cancelled")
+        case .inProgress: L("Running")
+        case .none: L("No runs")
         }
     }
     var symbol: String {
@@ -256,7 +256,7 @@ struct NotIntegratedView: View {
         ContentUnavailableView {
             Label(item.title, systemImage: item.symbol)
         } description: {
-            Text(message)
+            Text(LocalizedStringKey(message))
         } actions: {
             Text("Not connected. No data is shown until this integration is implemented and authorized.")
                 .font(.caption)
@@ -314,7 +314,7 @@ struct EditorSheet<Content: View>: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Text(title).font(.headline).padding()
+            Text(LocalizedStringKey(title)).font(.headline).padding()
             Form { content }
                 .formStyle(.grouped)
             HStack {

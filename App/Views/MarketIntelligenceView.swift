@@ -46,7 +46,7 @@ struct MarketIntelligenceView: View {
                                 StatusBadge(text: f.review.title, color: f.review == .reviewed ? .green : .orange)
                             }
                             if f.kind == .derived { Text("Method: \(f.method)").font(.caption).foregroundStyle(.secondary) }
-                            Text("Evidence: " + m.evidence(for: f).map { "“\($0.excerpt.prefix(60))” (\(m.source(for: $0)?.name ?? "?"), \($0.collectedAt.shortDate))" }.joined(separator: "; "))
+                            Text(verbatim: String(localized: "Evidence:") + " " + m.evidence(for: f).map { "“\($0.excerpt.prefix(60))” (\(m.source(for: $0)?.name ?? "?"), \($0.collectedAt.shortDate))" }.joined(separator: "; "))
                                 .font(.caption).foregroundStyle(.secondary)
                         }
                         .row { editing = .finding(f) } delete: {
@@ -60,14 +60,14 @@ struct MarketIntelligenceView: View {
                     ForEach(m.evidence.sorted { $0.collectedAt > $1.collectedAt }) { e in
                         VStack(alignment: .leading, spacing: 3) {
                             Text("“\(e.excerpt)”")
-                            Text([m.source(for: e)?.name, e.publishedAt.map { "published \($0.shortDate)" }, "collected \(e.collectedAt.shortDate)", e.region, e.sector]
+                            Text([m.source(for: e)?.name, e.publishedAt.map { String(localized: "published \($0.shortDate)") }, String(localized: "collected \(e.collectedAt.shortDate)"), e.region, e.sector]
                                 .compactMap { $0 }.joined(separator: " · "))
                                 .font(.caption).foregroundStyle(.secondary)
                         }
                         .row { editing = .evidence(e) } delete: {
                             var ok = false
                             model.updateMarket { ok = $0.removeEvidence(e.id) }
-                            if !ok { refusal = "This evidence is cited by a finding. Remove or edit the finding first." }
+                            if !ok { refusal = String(localized: "This evidence is cited by a finding. Remove or edit the finding first.") }
                         }
                     }
                 }
@@ -86,7 +86,7 @@ struct MarketIntelligenceView: View {
                         .row { editing = .source(src) } delete: {
                             var ok = false
                             model.updateMarket { ok = $0.removeSource(src.id) }
-                            if !ok { refusal = "Evidence still comes from this source. Remove that evidence first." }
+                            if !ok { refusal = String(localized: "Evidence still comes from this source. Remove that evidence first.") }
                         }
                     }
                 }
@@ -103,18 +103,18 @@ struct MarketIntelligenceView: View {
         }
         .alert("Not removed", isPresented: Binding(get: { refusal != nil }, set: { if !$0 { refusal = nil } })) {
             Button("OK") { refusal = nil }
-        } message: { Text(refusal ?? "") }
+        } message: { Text(verbatim: refusal ?? "") }
     }
 
     private func section<Content: View>(_ title: String, count: Int, add: (() -> Void)?, hint: String?, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text(title).font(.headline)
-                Text("\(count)").foregroundStyle(.secondary).monospacedDigit()
+                Text(LocalizedStringKey(title)).font(.headline)
+                Text(count, format: .number).foregroundStyle(.secondary).monospacedDigit()
                 Spacer()
                 if let add { Button(action: add) { Label("Add", systemImage: "plus") } }
             }
-            if let hint { Text(hint).font(.caption).foregroundStyle(.secondary) }
+            if let hint { Text(LocalizedStringKey(hint)).font(.caption).foregroundStyle(.secondary) }
             VStack(spacing: 0) { content() }
                 .background(.background.secondary, in: RoundedRectangle(cornerRadius: 8))
         }

@@ -53,7 +53,7 @@ struct VerificationView: View {
                         Spacer()
                         Picker("Show", selection: $filter) {
                             Text("All").tag(VerificationStatus?.none)
-                            ForEach([VerificationStatus.conflicting, .unknown, .partiallyVerified]) { Text($0 == .partiallyVerified ? "Partial" : $0.title).tag(VerificationStatus?.some($0)) }
+                            ForEach([VerificationStatus.conflicting, .unknown, .partiallyVerified]) { Text(verbatim: $0 == .partiallyVerified ? L("Partial") : $0.title).tag(VerificationStatus?.some($0)) }
                         }
                         .pickerStyle(.segmented)
                         .frame(width: 360)

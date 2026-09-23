@@ -40,7 +40,7 @@ struct ProductDetailView: View {
             VStack(alignment: .leading, spacing: 0) {
                 header(product)
                 Picker("Section", selection: $tab) {
-                    ForEach(ProductTab.allCases) { Text($0.rawValue).tag($0) }
+                    ForEach(ProductTab.allCases) { Text(LocalizedStringKey($0.rawValue)).tag($0) }
                 }
                 .pickerStyle(.segmented)
                 .labelsHidden()
@@ -77,9 +77,9 @@ struct ProductDetailView: View {
                 if conflicts > 0 {
                     Label("\(conflicts) conflicting", systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red)
                 }
-                Label("\(pending.count) item\(pending.count == 1 ? "" : "s") need your confirmation", systemImage: "person.badge.clock")
+                Label("\(pending.count) items need your confirmation", systemImage: "person.badge.clock")
                     .foregroundStyle(pending.isEmpty ? Color.secondary : Color.orange)
-                Text("Last verified \(p.lastVerifiedAt?.shortDate ?? "never")").foregroundStyle(.secondary)
+                Text("Last verified \(p.lastVerifiedAt?.shortDate ?? String(localized: "never"))").foregroundStyle(.secondary)
             }
             .font(.callout)
         }
@@ -288,16 +288,16 @@ private struct RepositoryRow: View {
                 EvidenceButton(verification: repository.link)
             }
             if let gh = repository.gitHub {
-                Text(gh.description ?? "No GitHub description").font(.callout).foregroundStyle(.secondary)
+                Text(gh.description ?? String(localized: "No GitHub description")).font(.callout).foregroundStyle(.secondary)
                 HStack(spacing: 14) {
                     Label(gh.defaultBranch, systemImage: "arrow.triangle.branch")
                     if let c = gh.latestCommit {
                         Label("\(String(c.sha.prefix(7))) \(c.date?.shortDate ?? "")", systemImage: "circle.dotted")
                             .help(c.message)
                     }
-                    Label("\(gh.releaseCount.map(String.init) ?? "?") releases\(gh.latestRelease.map { " · latest \($0.tag)" } ?? "")", systemImage: "tag")
-                    Label("\(gh.openPullRequests.map(String.init) ?? "?") PRs", systemImage: "arrow.triangle.pull")
-                    Label("\(gh.openIssues.map(String.init) ?? "?") issues", systemImage: "exclamationmark.circle")
+                    Label(gh.latestRelease.map { String(localized: "\(gh.releaseCount ?? 0) releases · latest \($0.tag)") } ?? String(localized: "\(gh.releaseCount ?? 0) releases"), systemImage: "tag")
+                    Label(String(localized: "\(gh.openPullRequests ?? 0) PRs"), systemImage: "arrow.triangle.pull")
+                    Label(String(localized: "\(gh.openIssues ?? 0) issues"), systemImage: "exclamationmark.circle")
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -335,13 +335,13 @@ private struct StoreListingRow: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .firstTextBaseline) {
                 Image(systemName: listing.store == .appStore ? "applelogo" : "play.rectangle")
-                Text(listing.appName ?? "Unnamed app").bold()
+                Text(listing.appName ?? String(localized: "Unnamed app")).bold()
                 if let id = listing.appIdentifier { Text(id).font(.caption.monospaced()).foregroundStyle(.secondary) }
                 Spacer()
                 EvidenceButton(verification: listing.verification)
             }
             HStack(spacing: 14) {
-                Text("Live: \(listing.productionVersion ?? "unknown")")
+                Text("Live: \(listing.productionVersion ?? String(localized: "unknown"))")
                 if let s = listing.latestSubmittedVersion { Text("Submitted: \(s)") }
                 if let r = listing.reviewStatus { Text(r) }
                 if let sf = listing.storefront { Text("Storefront: \(sf)") }
@@ -399,13 +399,13 @@ struct RecordSection<Item: Identifiable, Row: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text(title).font(.headline)
-                Text("\(items.count)").foregroundStyle(.secondary).monospacedDigit()
+                Text(LocalizedStringKey(title)).font(.headline)
+                Text(items.count, format: .number).foregroundStyle(.secondary).monospacedDigit()
                 Spacer()
                 Button(action: onAdd) { Label("Add", systemImage: "plus") }
             }
             if items.isEmpty {
-                Text(empty).foregroundStyle(.secondary)
+                Text(LocalizedStringKey(empty)).foregroundStyle(.secondary)
             } else {
                 VStack(spacing: 0) {
                     ForEach(items) { item in

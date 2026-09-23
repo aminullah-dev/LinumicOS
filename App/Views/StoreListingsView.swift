@@ -32,7 +32,7 @@ struct StoreListingsView: View {
                         Text(row.listing.appIdentifier ?? "").font(.caption.monospaced()).foregroundStyle(.secondary)
                     }
                 }
-                TableColumn("Live") { Text($0.listing.productionVersion ?? "Unknown").monospacedDigit() }
+                TableColumn("Live") { Text($0.listing.productionVersion ?? String(localized: "Unknown")).monospacedDigit() }
                     .width(min: 60, ideal: 70)
                 TableColumn("Submitted") { Text($0.listing.latestSubmittedVersion ?? "—") }
                 TableColumn("Review") { Text($0.listing.reviewStatus ?? "—").lineLimit(2).help($0.listing.reviewStatus ?? "") }
@@ -72,9 +72,9 @@ struct StoreListingsView: View {
             if store == .appStore {
                 Text("Live versions come from Apple's public lookup (US, then Afghanistan storefront). Submitted versions and review states come from the owner's App Store Connect screenshot. App Store Connect itself isn't connected.")
                 if let sync = model.lastAppStoreSync {
-                    Text("Last refresh \(sync.at.formatted(date: .omitted, time: .shortened)): \(sync.report.updated.count) updated"
-                         + (sync.report.notPublic.isEmpty ? "" : ", not public yet: \(sync.report.notPublic.joined(separator: ", "))")
-                         + (sync.report.failed.isEmpty ? "" : ", failed: \(sync.report.failed.keys.sorted().joined(separator: ", "))"))
+                    Text(verbatim: String(localized: "Last refresh \(sync.at.formatted(date: .omitted, time: .shortened)): \(sync.report.updated.count) updated")
+                         + (sync.report.notPublic.isEmpty ? "" : String(localized: ", not public yet: \(sync.report.notPublic.joined(separator: ", "))"))
+                         + (sync.report.failed.isEmpty ? "" : String(localized: ", failed: \(sync.report.failed.keys.sorted().joined(separator: ", "))")))
                         .foregroundStyle(.primary)
                 }
             } else {

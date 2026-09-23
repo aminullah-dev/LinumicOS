@@ -42,7 +42,7 @@ struct AssistantView: View {
                     .keyboardShortcut(.defaultAction)
                     .disabled(question.trimmingCharacters(in: .whitespaces).isEmpty)
                 if !answers.isEmpty {
-                    Menu("Suggestions") { ForEach(Assistant.suggestedQuestions, id: \.self) { q in Button(q) { ask(q) } } }
+                    Menu("Suggestions") { ForEach(Assistant.suggestedQuestions, id: \.self) { q in Button(L(q)) { ask(L(q)) } } }
                         .fixedSize()
                 }
             }
@@ -116,7 +116,7 @@ private struct FlowButtons: View {
     var body: some View {
         FlowLayout(spacing: 8) {
             ForEach(items, id: \.self) { item in
-                Button(item) { action(item) }.buttonStyle(.bordered)
+                Button(L(item)) { action(L(item)) }.buttonStyle(.bordered)
             }
         }
     }

@@ -12,13 +12,13 @@ public enum MarketSourceKind: String, Codable, CaseIterable, Sendable, Identifia
 
     public var title: String {
         switch self {
-        case .dataset: "Dataset"
-        case .publication: "Publication"
-        case .news: "News"
-        case .survey: "Survey"
-        case .interview: "Interview"
-        case .customerFeedback: "Customer feedback"
-        case .productRequest: "Product request"
+        case .dataset: L("Dataset")
+        case .publication: L("Publication")
+        case .news: L("News")
+        case .survey: L("Survey")
+        case .interview: L("Interview")
+        case .customerFeedback: L("Customer feedback")
+        case .productRequest: L("Product request")
         }
     }
 }
@@ -75,13 +75,13 @@ public enum FindingKind: String, Codable, CaseIterable, Sendable {
     case verified
     /// An interpretation of the evidence. The method must be stated.
     case derived
-    public var title: String { self == .verified ? "Verified" : "Derived" }
+    public var title: String { self == .verified ? L("Verified") : L("Derived") }
 }
 
 public struct MarketFinding: Codable, Hashable, Sendable, Identifiable {
     public enum Review: String, Codable, CaseIterable, Sendable {
         case draft, reviewed
-        public var title: String { rawValue.capitalized }
+        public var title: String { L(rawValue.capitalized) }
     }
 
     public var id: UUID
@@ -166,10 +166,10 @@ public enum ContentKind: String, Codable, CaseIterable, Sendable, Identifiable {
 
     public var title: String {
         switch self {
-        case .productAnnouncement: "Product announcement"
-        case .releaseAnnouncement: "Release announcement"
-        case .campaign: "Campaign"
-        case .general: "General"
+        case .productAnnouncement: L("Product announcement")
+        case .releaseAnnouncement: L("Release announcement")
+        case .campaign: L("Campaign")
+        case .general: L("General")
         }
     }
 }
@@ -182,13 +182,13 @@ public enum ContentStatus: String, Codable, CaseIterable, Sendable, Identifiable
 
     public var title: String {
         switch self {
-        case .idea: "Idea"
-        case .draft: "Draft"
-        case .inReview: "In Review"
-        case .approved: "Approved"
-        case .scheduled: "Scheduled"
-        case .published: "Published"
-        case .cancelled: "Cancelled"
+        case .idea: L("Idea")
+        case .draft: L("Draft")
+        case .inReview: L("In Review")
+        case .approved: L("Approved")
+        case .scheduled: L("Scheduled")
+        case .published: L("Published")
+        case .cancelled: L("Cancelled")
         }
     }
 
@@ -245,8 +245,8 @@ public struct ContentItem: Codable, Hashable, Sendable, Identifiable {
 
         public var errorDescription: String? {
             switch self {
-            case .notAllowed(let from, let to): "Can't move from \(from.title) to \(to.title)."
-            case .missing(let what): "\(what) is required."
+            case .notAllowed(let from, let to): LF("Can't move from %@ to %@.", from.title, to.title)
+            case .missing(let what): LF("%@ is required.", L(what))
             }
         }
     }

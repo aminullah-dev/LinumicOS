@@ -1,3 +1,4 @@
+import AppKit
 import LinumicCore
 import SwiftUI
 
@@ -38,7 +39,7 @@ struct IntegrationsSettingsView: View {
                     }
                     .disabled(model.isSyncingGitHub)
                 }
-                if let message { Text(message).font(.caption).foregroundStyle(.secondary) }
+                if let message { Text(verbatim: message).font(.caption).foregroundStyle(.secondary) }
             } header: {
                 Text("GitHub")
             } footer: {
@@ -49,8 +50,8 @@ struct IntegrationsSettingsView: View {
                     LabeledContent {
                         StatusBadge(text: "Not connected", color: .gray)
                     } label: {
-                        Label(i.name, systemImage: i.symbol)
-                        Text(i.plan)
+                        Label(LocalizedStringKey(i.name), systemImage: i.symbol)
+                        Text(LocalizedStringKey(i.plan))
                     }
                 }
             } header: {
@@ -69,9 +70,9 @@ struct IntegrationsSettingsView: View {
             try model.secrets.write(tokenInput.trimmingCharacters(in: .whitespacesAndNewlines), for: .gitHubToken)
             tokenInput = ""
             hasToken = true
-            message = "Token saved to the Keychain."
+            message = String(localized: "Token saved to the Keychain.")
         } catch {
-            message = "Could not save: \(error.localizedDescription)"
+            message = String(localized: "Could not save: \(error.localizedDescription)")
         }
     }
 
@@ -79,16 +80,16 @@ struct IntegrationsSettingsView: View {
         do {
             try model.secrets.delete(.gitHubToken)
             hasToken = false
-            message = "Token removed."
+            message = String(localized: "Token removed.")
         } catch {
-            message = "Could not remove: \(error.localizedDescription)"
+            message = String(localized: "Could not remove: \(error.localizedDescription)")
         }
     }
 
     private func syncSummary() -> String? {
         guard let sync = model.lastGitHubSync else { return nil }
-        var text = "Refreshed \(sync.report.updated.count) repositories at \(sync.at.formatted(date: .omitted, time: .shortened))."
-        if !sync.report.failed.isEmpty { text += " \(sync.report.failed.count) failed: " + sync.report.failed.map { "\($0.key) (\($0.value))" }.sorted().joined(separator: "; ") }
+        var text = String(localized: "Refreshed \(sync.report.updated.count) repositories at \(sync.at.formatted(date: .omitted, time: .shortened)).")
+        if !sync.report.failed.isEmpty { text += " " + String(localized: "\(sync.report.failed.count) failed:") + " " + sync.report.failed.map { "\($0.key) (\($0.value))" }.sorted().joined(separator: "; ") }
         return text
     }
 }
@@ -121,9 +122,77 @@ struct SecuritySettingsView: View {
     }
 }
 
+/// App language. macOS picks the language at launch, so a change applies after a relaunch.
+enum AppLanguage: String, CaseIterable, Identifiable {
+    case system, english = "en", dari = "fa-AF"
+    var id: String { rawValue }
+
+    /// Shown in its own language so it's recognisable whatever the current UI language is.
+    var nativeName: String {
+        switch self {
+        case .system: String(localized: "System")
+        case .english: "English"
+        case .dari: "دری"
+        }
+    }
+
+    static var current: AppLanguage {
+        guard let list = UserDefaults.standard.object(forKey: "AppleLanguages") as? [String],
+              UserDefaults.standard.persistentDomain(forName: Bundle.main.bundleIdentifier ?? "")?["AppleLanguages"] != nil,
+              let first = list.first else { return .system }
+        return first.hasPrefix("fa") ? .dari : .english
+    }
+
+    /// Sets the app's language, and for Dari also the formatting locale (Persian digits,
+    /// Solar Hijri calendar with Afghan month names). These are app-only settings.
+    func apply() {
+        let d = UserDefaults.standard
+        switch self {
+        case .system:
+            d.removeObject(forKey: "AppleLanguages")
+            d.removeObject(forKey: "AppleLocale")
+        case .english:
+            d.set(["en"], forKey: "AppleLanguages")
+            d.removeObject(forKey: "AppleLocale")
+        case .dari:
+            d.set(["fa-AF"], forKey: "AppleLanguages")
+            d.set("fa_AF", forKey: "AppleLocale")
+        }
+        Self.syncWritingDirection(rightToLeft: self == .dari)
+    }
+
+    /// Forces AppKit right-to-left for this app only (read at launch).
+    static func syncWritingDirection(rightToLeft: Bool) {
+        let d = UserDefaults.standard
+        for key in ["NSForceRightToLeftWritingDirection", "AppleTextDirection"] {
+            if rightToLeft { d.set(true, forKey: key) } else { d.removeObject(forKey: key) }
+        }
+    }
+}
+
 struct AccountSettingsView: View {
+    @State private var language = AppLanguage.current
+    @State private var needsRelaunch = false
+
     var body: some View {
         Form {
+            Section {
+                Picker("Language", selection: $language) {
+                    ForEach(AppLanguage.allCases) { Text(verbatim: $0.nativeName).tag($0) }
+                }
+                .onChange(of: language) { language.apply(); needsRelaunch = true }
+                if needsRelaunch {
+                    HStack {
+                        Text("Relaunch to apply the new language.")
+                        Spacer()
+                        Button("Relaunch Now") { relaunch() }
+                    }
+                }
+            } header: {
+                Text("Language")
+            } footer: {
+                Text("Dari uses right-to-left layout, Persian digits and the Solar Hijri calendar with Afghan month names. Recorded evidence (quotes, sources) stays in its original language.")
+            }
             Section {
                 LabeledContent("Mode", value: "Local only")
                 LabeledContent("Signed in", value: "No account. The backend is not built yet.")
@@ -133,5 +202,13 @@ struct AccountSettingsView: View {
         }
         .formStyle(.grouped)
         .navigationTitle("Account")
+    }
+
+    private func relaunch() {
+        let config = NSWorkspace.OpenConfiguration()
+        config.createsNewApplicationInstance = true
+        NSWorkspace.shared.openApplication(at: Bundle.main.bundleURL, configuration: config) { _, _ in
+            DispatchQueue.main.async { NSApp.terminate(nil) }
+        }
     }
 }

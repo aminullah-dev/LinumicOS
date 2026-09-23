@@ -15,10 +15,10 @@ public enum VerificationStatus: String, Codable, CaseIterable, Sendable, Identif
 
     public var title: String {
         switch self {
-        case .verified: "Verified"
-        case .partiallyVerified: "Partially Verified"
-        case .unknown: "Unknown"
-        case .conflicting: "Conflicting"
+        case .verified: L("Verified")
+        case .partiallyVerified: L("Partially Verified")
+        case .unknown: L("Unknown")
+        case .conflicting: L("Conflicting")
         }
     }
 
@@ -54,12 +54,12 @@ public enum SourceKind: String, Codable, CaseIterable, Sendable, Identifiable {
 
     public var title: String {
         switch self {
-        case .ownerStatement: "Owner"
-        case .localRepository: "Local repository"
-        case .gitHub: "GitHub"
-        case .website: "Website"
-        case .appStore: "App Store"
-        case .googlePlay: "Google Play"
+        case .ownerStatement: L("Owner")
+        case .localRepository: L("Local repository")
+        case .gitHub: L("GitHub")
+        case .website: L("Website")
+        case .appStore: L("App Store")
+        case .googlePlay: L("Google Play")
         }
     }
 }

@@ -7,12 +7,12 @@ public enum ProductStatus: String, Codable, CaseIterable, Sendable, Identifiable
 
     public var title: String {
         switch self {
-        case .idea: "Idea"
-        case .development: "In Development"
-        case .active: "Active"
-        case .maintenance: "Maintenance"
-        case .paused: "Paused"
-        case .retired: "Retired"
+        case .idea: L("Idea")
+        case .development: L("In Development")
+        case .active: L("Active")
+        case .maintenance: L("Maintenance")
+        case .paused: L("Paused")
+        case .retired: L("Retired")
         }
     }
 }
@@ -24,16 +24,16 @@ public enum Platform: String, Codable, CaseIterable, Sendable, Identifiable {
 
     public var title: String {
         switch self {
-        case .android: "Android"
-        case .iOS: "iOS"
-        case .macOS: "macOS"
-        case .windows: "Windows"
-        case .web: "Web"
-        case .backend: "Backend"
-        case .desktop: "Desktop"
-        case .watchOS: "watchOS"
-        case .research: "Research"
-        case .unknown: "Unknown"
+        case .android: L("Android")
+        case .iOS: L("iOS")
+        case .macOS: L("macOS")
+        case .windows: L("Windows")
+        case .web: L("Web")
+        case .backend: L("Backend")
+        case .desktop: L("Desktop")
+        case .watchOS: L("watchOS")
+        case .research: L("Research")
+        case .unknown: L("Unknown")
         }
     }
 
@@ -53,16 +53,16 @@ public enum RepositoryType: String, Codable, CaseIterable, Sendable, Identifiabl
 
     public var title: String {
         switch self {
-        case .monorepo: "Monorepo"
-        case .application: "Application"
-        case .backend: "Backend"
-        case .website: "Website"
-        case .releases: "Release repository"
-        case .documentation: "Documentation"
-        case .research: "Research"
-        case .infrastructure: "Infrastructure"
-        case .marketing: "Marketing"
-        case .unknown: "Unknown"
+        case .monorepo: L("Monorepo")
+        case .application: L("Application")
+        case .backend: L("Backend")
+        case .website: L("Website")
+        case .releases: L("Release repository")
+        case .documentation: L("Documentation")
+        case .research: L("Research")
+        case .infrastructure: L("Infrastructure")
+        case .marketing: L("Marketing")
+        case .unknown: L("Unknown")
         }
     }
 
@@ -74,13 +74,13 @@ public enum RepositoryType: String, Codable, CaseIterable, Sendable, Identifiabl
 
 public enum RepositoryVisibility: String, Codable, CaseIterable, Sendable {
     case `public`, `private`, `internal`
-    public var title: String { rawValue.capitalized }
+    public var title: String { L(rawValue.capitalized) }
 }
 
 public enum AppStore: String, Codable, CaseIterable, Sendable, Identifiable {
     case appStore, googlePlay
     public var id: String { rawValue }
-    public var title: String { self == .appStore ? "App Store" : "Google Play" }
+    public var title: String { self == .appStore ? L("App Store") : L("Google Play") }
 }
 
 /// Where a release sits in its lifecycle. Order matters: see `isUpcoming`.
@@ -90,14 +90,14 @@ public enum ReleaseStage: String, Codable, CaseIterable, Sendable, Identifiable 
 
     public var title: String {
         switch self {
-        case .planning: "Planning"
-        case .development: "Development"
-        case .internalTesting: "Internal Testing"
-        case .beta: "Beta"
-        case .review: "Review"
-        case .released: "Released"
-        case .deprecated: "Deprecated"
-        case .blocked: "Blocked"
+        case .planning: L("Planning")
+        case .development: L("Development")
+        case .internalTesting: L("Internal Testing")
+        case .beta: L("Beta")
+        case .review: L("Review")
+        case .released: L("Released")
+        case .deprecated: L("Deprecated")
+        case .blocked: L("Blocked")
         }
     }
 
@@ -113,7 +113,7 @@ public enum ReleaseStage: String, Codable, CaseIterable, Sendable, Identifiable 
 public enum DeploymentEnvironment: String, Codable, CaseIterable, Sendable, Identifiable {
     case development, staging, production
     public var id: String { rawValue }
-    public var title: String { rawValue.capitalized }
+    public var title: String { L(rawValue.capitalized) }
 }
 
 public enum DeploymentStatus: String, Codable, CaseIterable, Sendable, Identifiable {
@@ -122,11 +122,11 @@ public enum DeploymentStatus: String, Codable, CaseIterable, Sendable, Identifia
 
     public var title: String {
         switch self {
-        case .unknown: "Unknown"
-        case .healthy: "Healthy"
-        case .degraded: "Degraded"
-        case .failed: "Failed"
-        case .inProgress: "In Progress"
+        case .unknown: L("Unknown")
+        case .healthy: L("Healthy")
+        case .degraded: L("Degraded")
+        case .failed: L("Failed")
+        case .inProgress: L("In Progress")
         }
     }
 }
@@ -134,7 +134,7 @@ public enum DeploymentStatus: String, Codable, CaseIterable, Sendable, Identifia
 public enum IssueSeverity: String, Codable, CaseIterable, Sendable, Identifiable, Comparable {
     case low, medium, high, critical
     public var id: String { rawValue }
-    public var title: String { rawValue.capitalized }
+    public var title: String { L(rawValue.capitalized) }
 
     private var rank: Int { Self.allCases.firstIndex(of: self)! }
     public static func < (lhs: Self, rhs: Self) -> Bool { lhs.rank < rhs.rank }
@@ -146,11 +146,11 @@ public enum RoadmapStatus: String, Codable, CaseIterable, Sendable, Identifiable
 
     public var title: String {
         switch self {
-        case .idea: "Idea"
-        case .planned: "Planned"
-        case .inProgress: "In Progress"
-        case .done: "Done"
-        case .dropped: "Dropped"
+        case .idea: L("Idea")
+        case .planned: L("Planned")
+        case .inProgress: L("In Progress")
+        case .done: L("Done")
+        case .dropped: L("Dropped")
         }
     }
 }
@@ -165,11 +165,11 @@ public enum SocialNetwork: String, Codable, CaseIterable, Sendable, Identifiable
 
     public var title: String {
         switch self {
-        case .linkedIn: "LinkedIn"
-        case .facebook: "Facebook"
-        case .instagram: "Instagram"
-        case .x: "X"
-        case .youTube: "YouTube"
+        case .linkedIn: L("LinkedIn")
+        case .facebook: L("Facebook")
+        case .instagram: L("Instagram")
+        case .x: L("X")
+        case .youTube: L("YouTube")
         }
     }
 }

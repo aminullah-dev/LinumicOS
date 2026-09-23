@@ -105,16 +105,16 @@ public enum ProductField: String, CaseIterable, Sendable, Identifiable {
 
     public var title: String {
         switch self {
-        case .isLinumicProduct: "Linumic product"
-        case .alsoKnownAs: "Also known as"
-        case .summary: "Description"
-        case .category: "Category"
-        case .projectType: "Project type"
-        case .status: "Development status"
-        case .currentVersion: "Current version"
-        case .nextVersion: "Next version"
-        case .backend: "Backend"
-        case .website: "Website"
+        case .isLinumicProduct: L("Linumic product")
+        case .alsoKnownAs: L("Also known as")
+        case .summary: L("Description")
+        case .category: L("Category")
+        case .projectType: L("Project type")
+        case .status: L("Development status")
+        case .currentVersion: L("Current version")
+        case .nextVersion: L("Next version")
+        case .backend: L("Backend")
+        case .website: L("Website")
         }
     }
 
@@ -133,7 +133,7 @@ public struct FieldState: Hashable, Sendable, Identifiable {
 extension Product {
     public func state(of field: ProductField) -> FieldState {
         switch field {
-        case .isLinumicProduct: FieldState(field: field, displayValue: isLinumicProduct.value.map { $0 ? "Yes" : "No" }, verification: isLinumicProduct.verification)
+        case .isLinumicProduct: FieldState(field: field, displayValue: isLinumicProduct.value.map { $0 ? L("Yes") : L("No") }, verification: isLinumicProduct.verification)
         case .alsoKnownAs: FieldState(field: field, displayValue: alsoKnownAs.value.map { $0.joined(separator: ", ") }, verification: alsoKnownAs.verification)
         case .summary: FieldState(field: field, displayValue: summary.value, verification: summary.verification)
         case .category: FieldState(field: field, displayValue: category.value, verification: category.verification)
@@ -170,10 +170,10 @@ extension Product {
             items.append((s.field.title, s.verification))
         }
         for r in repositories where r.link.status != .verified {
-            items.append(("Repository \(r.name)", r.link))
+            items.append((LF("Repository %@", r.name), r.link))
         }
         for p in platforms where p.verification.status != .verified {
-            items.append(("Platform \(p.platform.title)\(p.component.map { " (\($0))" } ?? "")", p.verification))
+            items.append((p.component.map { LF("Platform %@ (%@)", p.platform.title, $0) } ?? LF("Platform %@", p.platform.title), p.verification))
         }
         return items.sorted { $0.1.status < $1.1.status }
     }
@@ -245,7 +245,7 @@ extension Product {
 public struct UnresolvedItem: Codable, Hashable, Sendable, Identifiable {
     public enum Kind: String, Codable, CaseIterable, Sendable {
         case possibleProduct, unresolvedRepository
-        public var title: String { self == .possibleProduct ? "Possible product" : "Unresolved repository" }
+        public var title: String { self == .possibleProduct ? L("Possible product") : L("Unresolved repository") }
     }
 
     public var id: String
@@ -312,7 +312,11 @@ extension Product {
         switch field {
         case .isLinumicProduct:
             guard let value else { isLinumicProduct = Fact(nil, verification); return true }
-            guard let flag = ["yes": true, "no": false][value.lowercased()] else { return false }
+            let answer = value.lowercased()
+            // Accept English and the localized word. Built without a dictionary literal, which would trap on duplicate keys when they're the same.
+            let yes: Set<String> = ["yes", L("Yes").lowercased()], no: Set<String> = ["no", L("No").lowercased()]
+            guard yes.contains(answer) || no.contains(answer) else { return false }
+            let flag = yes.contains(answer)
             isLinumicProduct = Fact(flag, verification)
         case .alsoKnownAs:
             let names = value?.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }

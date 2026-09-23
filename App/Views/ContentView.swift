@@ -17,7 +17,7 @@ struct ContentView: View {
             )) {
                 ForEach(SidebarSection.all) { section in
                     if let title = section.title {
-                        Section(title) { rows(section.items) }
+                        Section(LocalizedStringKey(title)) { rows(section.items) }
                     } else {
                         rows(section.items)
                     }
@@ -40,7 +40,7 @@ struct ContentView: View {
         )) {
             Button("OK") { model.errorMessage = nil }
         } message: {
-            Text(model.errorMessage ?? "")
+            Text(verbatim: model.errorMessage ?? "")
         }
         .alert("Inventory updated", isPresented: Binding(
             get: { model.notice != nil },
@@ -48,7 +48,7 @@ struct ContentView: View {
         )) {
             Button("OK") { model.notice = nil }
         } message: {
-            Text(model.notice ?? "")
+            Text(verbatim: model.notice ?? "")
         }
     }
 

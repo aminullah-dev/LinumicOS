@@ -11,9 +11,9 @@ public enum AnswerKind: String, Sendable, CaseIterable {
 
     public var title: String {
         switch self {
-        case .verified: "Verified"
-        case .derived: "Derived"
-        case .unknown: "Unknown"
+        case .verified: L("Verified")
+        case .derived: L("Derived")
+        case .unknown: L("Unknown")
         }
     }
 }
@@ -72,11 +72,11 @@ public struct Assistant: Sendable {
 
     /// Keyword matching in English and Persian (Dari). A product name or alias takes priority.
     public func intent(of question: String) -> AssistantIntent {
-        let q = question.lowercased()
-        func has(_ words: [String]) -> Bool { words.contains { q.contains($0) } }
+        let q = Self.normalize(question)
+        func has(_ words: [String]) -> Bool { words.contains { q.contains(Self.normalize($0)) } }
 
         if let product = inventory.products.first(where: { p in
-            ([p.name] + (p.alsoKnownAs.value ?? [])).contains { name in name.count > 2 && q.contains(name.lowercased()) }
+            ([p.name] + (p.alsoKnownAs.value ?? [])).contains { name in name.count > 2 && q.contains(Self.normalize(name)) }
         }) {
             return .productStatus(product.id)
         }
@@ -88,6 +88,17 @@ public struct Assistant: Sendable {
         if has(["planned", "roadmap", "feature", "plan", "برنامه", "ویژگی", "نقشه راه"]) { return .plannedFeatures }
         if has(["attention", "problem", "risk", "need", "توجه", "مشکل", "خطر", "نیاز"]) { return .needsAttention }
         return .unrecognized
+    }
+
+    /// Makes matching robust to how Dari/Persian is typed: removes the zero-width non-joiner and
+    /// joiner (Swift would otherwise merge them into the previous letter, so «برنامه‌ریزی» wouldn't
+    /// contain «برنامه»), maps Arabic yeh/kaf to Persian ی/ک, and lowercases Latin text.
+    static func normalize(_ text: String) -> String {
+        var t = text.lowercased()
+        for (from, to) in [("\u{200C}", ""), ("\u{200D}", ""), ("ي", "ی"), ("ى", "ی"), ("ك", "ک"), ("ة", "ه")] {
+            t = t.replacingOccurrences(of: from, with: to)
+        }
+        return t
     }
 
     public func answer(_ question: String) -> AssistantAnswer {
@@ -102,8 +113,8 @@ public struct Assistant: Sendable {
         case .marketNeeds: marketNeeds()
         case .productStatus(let id): productStatus(id)
         case .unrecognized:
-            [AssistantStatement("I can only answer from Command Center records. Try one of: " + Self.suggestedQuestions.joined(separator: " · ") + ", or name a product.",
-                                .unknown, basis: "No matching question type")]
+            [AssistantStatement(LF("I can only answer from Command Center records. Try one of: %@, or name a product.", Self.suggestedQuestions.map(L).joined(separator: " · ")),
+                                .unknown, basis: L("No matching question type"))]
         }
         return AssistantAnswer(question: question, intent: intent, statements: statements)
     }
@@ -113,27 +124,27 @@ public struct Assistant: Sendable {
     private var weekAgo: Date { now.addingTimeInterval(-7 * 24 * 3600) }
 
     func needsAttention() -> [AssistantStatement] {
-        let rule = "Rule: a product needs attention if it has conflicting facts, failing CI, a blocked release, an open critical issue, or an unknown development status."
+        let rule = L("Rule: a product needs attention if it has conflicting facts, failing CI, a blocked release, an open critical issue, or an unknown development status.")
         var result: [AssistantStatement] = []
         for p in inventory.products {
             var reasons: [String] = []
             let conflicts = p.needsConfirmation.filter { $0.verification.status == .conflicting }.map(\.label)
-            if !conflicts.isEmpty { reasons.append("conflicting: \(conflicts.joined(separator: ", "))") }
+            if !conflicts.isEmpty { reasons.append(LF("conflicting: %@", conflicts.joined(separator: L(", ")))) }
             let failing = p.repositories.filter { $0.gitHub?.ciConclusion == .failure }.map(\.name)
-            if !failing.isEmpty { reasons.append("CI failing in \(failing.joined(separator: ", "))") }
-            if p.releases.contains(where: { $0.stage == .blocked }) { reasons.append("a blocked release") }
-            if !p.openCriticalIssues.isEmpty { reasons.append("\(p.openCriticalIssues.count) open critical issue(s)") }
-            if p.status.value == nil { reasons.append("development status unknown") }
+            if !failing.isEmpty { reasons.append(LF("CI failing in %@", failing.joined(separator: L(", ")))) }
+            if p.releases.contains(where: { $0.stage == .blocked }) { reasons.append(L("a blocked release")) }
+            if !p.openCriticalIssues.isEmpty { reasons.append(LF("%ld open critical issue(s)", p.openCriticalIssues.count)) }
+            if p.status.value == nil { reasons.append(L("development status unknown")) }
             if !reasons.isEmpty {
-                result.append(AssistantStatement("\(p.name): \(reasons.joined(separator: "; ")).", .derived, productID: p.id, basis: rule))
+                result.append(AssistantStatement(LF("%@: %@.", p.name, reasons.joined(separator: L("; "))), .derived, productID: p.id, basis: rule))
             }
         }
         if result.isEmpty {
-            result.append(AssistantStatement("No product meets any attention rule in the current records.", .derived, basis: rule))
+            result.append(AssistantStatement(L("No product meets any attention rule in the current records."), .derived, basis: rule))
         }
         let pending = inventory.products.map { $0.needsConfirmation.count }.reduce(0, +)
-        result.append(AssistantStatement("\(pending) facts across all products still await the owner's confirmation (see Verification).", .derived,
-                                         basis: "Count of key facts, platforms and repository links not marked Verified"))
+        result.append(AssistantStatement(LF("%ld facts across all products still await the owner's confirmation (see Verification).", pending), .derived,
+                                         basis: L("Count of key facts, platforms and repository links not marked Verified")))
         return result
     }
 
@@ -141,21 +152,21 @@ public struct Assistant: Sendable {
         var result: [AssistantStatement] = []
         for p in inventory.products {
             for r in p.releases where r.stage == .blocked {
-                result.append(AssistantStatement("\(p.name) \(r.version) (\(r.platform.title)) is blocked.", .verified, productID: p.id,
-                                                 basis: "Release record in the Command Center (manual entry)" + (r.notes.isEmpty ? "" : ": \(r.notes)")))
+                result.append(AssistantStatement(LF("%@ %@ (%@) is blocked.", p.name, r.version, r.platform.title), .verified, productID: p.id,
+                                                 basis: L("Release record in the Command Center (manual entry)") + (r.notes.isEmpty ? "" : ": \(r.notes)")))
             }
             for l in p.storeListings where l.latestSubmittedVersion != nil && (l.reviewStatus ?? "").lowercased().contains("pending") {
-                result.append(AssistantStatement("\(l.appName ?? p.name) \(l.latestSubmittedVersion!) is pending in App Store Connect. That's awaiting Apple, not recorded as blocked.",
-                                                 .verified, productID: p.id, basis: l.verification.sources.map(\.reference).first ?? "Store listing record"))
+                result.append(AssistantStatement(LF("%@ %@ is pending in App Store Connect. That's awaiting Apple, not recorded as blocked.", l.appName ?? p.name, l.latestSubmittedVersion!),
+                                                 .verified, productID: p.id, basis: l.verification.sources.map(\.reference).first ?? L("Store listing record")))
             }
         }
-        if !result.contains(where: { $0.text.contains("is blocked") }) {
-            result.insert(AssistantStatement("No release is recorded as blocked.", .verified, basis: "All release records"), at: 0)
+        if !inventory.products.contains(where: { $0.releases.contains { $0.stage == .blocked } }) {
+            result.insert(AssistantStatement(L("No release is recorded as blocked."), .verified, basis: L("All release records")), at: 0)
         }
         let withoutReleases = inventory.products.filter { $0.releases.isEmpty }.map(\.name)
         if !withoutReleases.isEmpty {
-            result.append(AssistantStatement("No release records exist for \(withoutReleases.count) products (\(withoutReleases.joined(separator: ", "))), so their release state is unknown.",
-                                             .unknown, basis: "Releases are recorded manually. There's no release tracking outside the Command Center yet."))
+            result.append(AssistantStatement(LF("No release records exist for %ld products (%@), so their release state is unknown.", withoutReleases.count, withoutReleases.joined(separator: L(", "))),
+                                             .unknown, basis: L("Releases are recorded manually. There's no release tracking outside the Command Center yet.")))
         }
         return result
     }
@@ -168,24 +179,24 @@ public struct Assistant: Sendable {
                 guard let g = repo.gitHub else { continue }
                 oldestSnapshot = min(oldestSnapshot ?? g.fetchedAt, g.fetchedAt)
                 if let c = g.latestCommit, let d = c.date, d >= weekAgo {
-                    result.append(AssistantStatement("\(p.name): new commit on \(repo.name)/\(g.defaultBranch) \(d.formatted(date: .abbreviated, time: .omitted)): “\(c.message)”.",
-                                                     .verified, productID: p.id, basis: "GitHub snapshot fetched \(g.fetchedAt.formatted(date: .abbreviated, time: .shortened))"))
+                    result.append(AssistantStatement(LF("%@: new commit on %@/%@ %@: “%@”.", p.name, repo.name, g.defaultBranch, d.formatted(date: .abbreviated, time: .omitted), c.message),
+                                                     .verified, productID: p.id, basis: LF("GitHub snapshot fetched %@", g.fetchedAt.formatted(date: .abbreviated, time: .shortened))))
                 }
                 if let r = g.latestRelease, let d = r.publishedAt, d >= weekAgo {
-                    result.append(AssistantStatement("\(p.name): release \(r.tag) published on \(repo.name).", .verified, productID: p.id,
-                                                     basis: "GitHub snapshot fetched \(g.fetchedAt.formatted(date: .abbreviated, time: .shortened))"))
+                    result.append(AssistantStatement(LF("%@: release %@ published on %@.", p.name, r.tag, repo.name), .verified, productID: p.id,
+                                                     basis: LF("GitHub snapshot fetched %@", g.fetchedAt.formatted(date: .abbreviated, time: .shortened))))
                 }
             }
         }
         let reverified = inventory.products.filter { p in p.allVerifications.contains { ($0.verifiedAt ?? .distantPast) >= weekAgo } }.count
-        result.append(AssistantStatement("Facts were recorded or re-verified this week for \(reverified) products.", .derived,
-                                         basis: "Products with any verification dated in the last 7 days"))
+        result.append(AssistantStatement(LF("Facts were recorded or re-verified this week for %ld products.", reverified), .derived,
+                                         basis: L("Products with any verification dated in the last 7 days")))
         if result.count == 1 {
-            result.insert(AssistantStatement("No commits or releases from the last 7 days appear in the GitHub snapshots.", .verified, basis: "GitHub snapshots"), at: 0)
+            result.insert(AssistantStatement(L("No commits or releases from the last 7 days appear in the GitHub snapshots."), .verified, basis: L("GitHub snapshots")), at: 0)
         }
         if let oldest = oldestSnapshot, oldest < now.addingTimeInterval(-24 * 3600) {
-            result.append(AssistantStatement("Some GitHub snapshots are older than a day (oldest \(oldest.formatted(date: .abbreviated, time: .shortened))). Refresh from Repositories for current data.",
-                                             .unknown, basis: "Snapshot age"))
+            result.append(AssistantStatement(LF("Some GitHub snapshots are older than a day (oldest %@). Refresh from Repositories for current data.", oldest.formatted(date: .abbreviated, time: .shortened)),
+                                             .unknown, basis: L("Snapshot age")))
         }
         return result
     }
@@ -194,32 +205,32 @@ public struct Assistant: Sendable {
         var result: [AssistantStatement] = []
         for p in inventory.products {
             for i in p.openCriticalIssues {
-                result.append(AssistantStatement("\(p.name): \(i.title)", .verified, productID: p.id, basis: "Issue record (manual entry)" + (i.url.map { ", \($0.absoluteString)" } ?? "")))
+                result.append(AssistantStatement(LF("%@: %@", p.name, i.title), .verified, productID: p.id, basis: L("Issue record (manual entry)") + (i.url.map { ", \($0.absoluteString)" } ?? "")))
             }
         }
-        if result.isEmpty { result.append(AssistantStatement("No open critical issues are recorded.", .verified, basis: "Issue records")) }
+        if result.isEmpty { result.append(AssistantStatement(L("No open critical issues are recorded."), .verified, basis: L("Issue records"))) }
         let ghOpen = inventory.products.flatMap { p in p.repositories.compactMap { r in (r.gitHub?.openIssues ?? 0) > 0 ? "\(p.name)/\(r.name) (\(r.gitHub!.openIssues!))" : nil } }
         if !ghOpen.isEmpty {
-            result.append(AssistantStatement("Open GitHub issues exist in \(ghOpen.joined(separator: ", ")), but their severity isn't known.", .unknown,
-                                             basis: "GitHub doesn't carry severity. Label or record them as issues to classify them."))
+            result.append(AssistantStatement(LF("Open GitHub issues exist in %@, but their severity isn't known.", ghOpen.joined(separator: L(", "))), .unknown,
+                                             basis: L("GitHub doesn't carry severity. Label or record them as issues to classify them.")))
         }
         return result
     }
 
     func readyForRelease() -> [AssistantStatement] {
-        let rule = "Rule: a release candidate in Internal Testing, Beta or Review that isn't blocked"
+        let rule = L("Rule: a release candidate in Internal Testing, Beta or Review that isn't blocked")
         var result: [AssistantStatement] = []
         for p in inventory.products {
             for r in p.releases where r.isReleaseCandidate && [.internalTesting, .beta, .review].contains(r.stage) {
-                result.append(AssistantStatement("\(p.name) \(r.version) (\(r.platform.title), \(r.stage.title)) is a release candidate.", .derived, productID: p.id, basis: rule))
+                result.append(AssistantStatement(LF("%@ %@ (%@, %@) is a release candidate.", p.name, r.version, r.platform.title, r.stage.title), .derived, productID: p.id, basis: rule))
             }
             for l in p.storeListings where l.latestSubmittedVersion != nil && (l.reviewStatus ?? "").lowercased().contains("pending") {
-                result.append(AssistantStatement("\(l.appName ?? p.name) \(l.latestSubmittedVersion!) has been submitted and is pending in App Store Connect.", .verified, productID: p.id,
-                                                 basis: l.verification.sources.map(\.reference).first ?? "Store listing record"))
+                result.append(AssistantStatement(LF("%@ %@ has been submitted and is pending in App Store Connect.", l.appName ?? p.name, l.latestSubmittedVersion!), .verified, productID: p.id,
+                                                 basis: l.verification.sources.map(\.reference).first ?? L("Store listing record")))
             }
         }
         if result.isEmpty {
-            result.append(AssistantStatement("No release candidates are recorded, so readiness is unknown.", .unknown, basis: "Mark a release as a release candidate to track it"))
+            result.append(AssistantStatement(L("No release candidates are recorded, so readiness is unknown."), .unknown, basis: L("Mark a release as a release candidate to track it")))
         }
         return result
     }
@@ -228,13 +239,13 @@ public struct Assistant: Sendable {
         var result: [AssistantStatement] = []
         for p in inventory.products {
             for item in p.roadmap where item.status == .planned || item.status == .inProgress {
-                result.append(AssistantStatement("\(p.name): \(item.title) (\(item.status.title)\(item.targetVersion.map { ", target \($0)" } ?? ""))", .verified, productID: p.id,
-                                                 basis: "Roadmap record (manual entry)"))
+                result.append(AssistantStatement(item.targetVersion.map { LF("%@: %@ (%@, target %@)", p.name, item.title, item.status.title, $0) } ?? LF("%@: %@ (%@)", p.name, item.title, item.status.title), .verified, productID: p.id,
+                                                 basis: L("Roadmap record (manual entry)")))
             }
         }
         if result.isEmpty {
-            result.append(AssistantStatement("No planned features are recorded in any product roadmap.", .unknown,
-                                             basis: "Roadmaps in the product repositories (e.g. ROADMAP.md files) aren't imported. Add items on each product's Roadmap tab."))
+            result.append(AssistantStatement(L("No planned features are recorded in any product roadmap."), .unknown,
+                                             basis: L("Roadmaps in the product repositories (e.g. ROADMAP.md files) aren't imported. Add items on each product's Roadmap tab.")))
         }
         return result
     }
@@ -245,43 +256,43 @@ public struct Assistant: Sendable {
         for f in m.findings where f.review == .reviewed {
             let cites = m.evidence(for: f).map { "\(m.source(for: $0)?.name ?? "?") (\($0.collectedAt.formatted(date: .abbreviated, time: .omitted)))" }
             result.append(AssistantStatement(f.statement, f.kind == .verified ? .verified : .derived,
-                                             basis: (f.kind == .derived ? "Method: \(f.method). " : "") + "Evidence: " + cites.joined(separator: "; ")))
+                                             basis: (f.kind == .derived ? LF("Method: %@. ", f.method) : "") + LF("Evidence: %@", cites.joined(separator: L("; ")))))
         }
         let drafts = m.findings.filter { $0.review == .draft }.count
         if drafts > 0 {
-            result.append(AssistantStatement("\(drafts) draft finding(s) haven't been reviewed and aren't reported.", .unknown, basis: "Only reviewed findings are answered"))
+            result.append(AssistantStatement(LF("%ld draft finding(s) haven't been reviewed and aren't reported.", drafts), .unknown, basis: L("Only reviewed findings are answered")))
         }
         if result.isEmpty || m.findings.isEmpty {
-            result.insert(AssistantStatement("No sourced market evidence has been recorded, so emerging needs in Afghanistan are unknown. I don't answer this from general knowledge.",
-                                             .unknown, basis: "Market Intelligence has \(m.sources.count) sources, \(m.evidence.count) evidence items and \(m.findings.count) findings"), at: 0)
+            result.insert(AssistantStatement(L("No sourced market evidence has been recorded, so emerging needs in Afghanistan are unknown. I don't answer this from general knowledge."),
+                                             .unknown, basis: LF("Market Intelligence has %ld sources, %ld evidence items and %ld findings", m.sources.count, m.evidence.count, m.findings.count)), at: 0)
         }
         return result
     }
 
     func productStatus(_ id: String) -> [AssistantStatement] {
         guard let p = inventory.products.first(where: { $0.id == id }) else { return [] }
-        var result = [AssistantStatement("\(p.name): overall \(p.overallVerification.title.lowercased()). \(p.needsConfirmation.count) item(s) await confirmation.",
-                                         .derived, productID: p.id, basis: "Roll-up of all fact, platform, repository and listing verifications")]
+        var result = [AssistantStatement(LF("%@: overall %@. %ld item(s) await confirmation.", p.name, p.overallVerification.title.lowercased(), p.needsConfirmation.count),
+                                         .derived, productID: p.id, basis: L("Roll-up of all fact, platform, repository and listing verifications"))]
         for s in p.fieldStates where s.field.isKey || s.displayValue != nil {
             let v = s.verification
             switch v.status {
             case .verified:
-                result.append(AssistantStatement("\(s.field.title): \(s.displayValue ?? "")", .verified, productID: p.id, basis: v.sources.map { "\($0.kind.title): \($0.reference)" }.joined(separator: "; ")))
+                result.append(AssistantStatement(LF("%@: %@", s.field.title, s.displayValue ?? ""), .verified, productID: p.id, basis: v.sources.map { "\($0.kind.title): \($0.reference)" }.joined(separator: L("; "))))
             case .partiallyVerified:
-                result.append(AssistantStatement("\(s.field.title): \(s.displayValue ?? "") (partially verified)", .derived, productID: p.id,
+                result.append(AssistantStatement(LF("%@: %@ (partially verified)", s.field.title, s.displayValue ?? ""), .derived, productID: p.id,
                                                  basis: v.notes.isEmpty ? v.sources.map(\.reference).joined(separator: "; ") : v.notes))
             case .unknown:
-                result.append(AssistantStatement("\(s.field.title): unknown", .unknown, productID: p.id, basis: v.notes.isEmpty ? "No evidence recorded" : v.notes))
+                result.append(AssistantStatement(LF("%@: unknown", s.field.title), .unknown, productID: p.id, basis: v.notes.isEmpty ? L("No evidence recorded") : v.notes))
             case .conflicting:
-                result.append(AssistantStatement("\(s.field.title): sources conflict", .unknown, productID: p.id, basis: v.notes))
+                result.append(AssistantStatement(LF("%@: sources conflict", s.field.title), .unknown, productID: p.id, basis: v.notes))
             }
         }
         let platforms = p.evidencedPlatforms.map(\.title)
         if !platforms.isEmpty {
-            result.append(AssistantStatement("Platforms with evidence: \(platforms.joined(separator: ", "))", .verified, productID: p.id, basis: "Platform records"))
+            result.append(AssistantStatement(LF("Platforms with evidence: %@", platforms.joined(separator: L(", "))), .verified, productID: p.id, basis: L("Platform records")))
         }
         for l in p.storeListings {
-            result.append(AssistantStatement("\(l.store.title): \(l.appName ?? "app") live \(l.productionVersion ?? "unknown")" + (l.latestSubmittedVersion.map { ", submitted \($0)" } ?? ""),
+            result.append(AssistantStatement(LF("%@: %@ live %@", l.store.title, l.appName ?? L("app"), l.productionVersion ?? L("unknown")) + (l.latestSubmittedVersion.map { LF(", submitted %@", $0) } ?? ""),
                                              l.verification.status == .verified ? .verified : .unknown, productID: p.id,
                                              basis: l.verification.sources.map(\.reference).joined(separator: "; ")))
         }

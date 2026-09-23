@@ -37,12 +37,12 @@ where Record.ID == UUID, Columns.TableRowValue == Owned<Record> {
             .searchable(text: $search)
             .overlay {
                 if rows.isEmpty {
-                    ContentUnavailableView(title, systemImage: "tray", description: Text(emptyText))
+                    ContentUnavailableView(LocalizedStringKey(title), systemImage: "tray", description: Text(LocalizedStringKey(emptyText)))
                 } else if filtered.isEmpty {
                     ContentUnavailableView.search(text: search)
                 }
             }
-            .navigationTitle(title)
+            .navigationTitle(LocalizedStringKey(title))
     }
 }
 

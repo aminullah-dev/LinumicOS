@@ -56,7 +56,7 @@ final class InventoryModel {
         defer { isSyncingGitHub = false }
         let token: String?
         do { token = try secrets.read(.gitHubToken) } catch {
-            errorMessage = "Could not read the GitHub token from the Keychain: \(error.localizedDescription)"
+            errorMessage = String(localized: "Could not read the GitHub token from the Keychain: \(error.localizedDescription)")
             return
         }
         let (updated, report) = await RepositorySync.refresh(products, using: GitHubClient(token: token))
@@ -92,13 +92,13 @@ final class InventoryModel {
             do {
                 let archived = try await store.archive()
                 try seed()
-                notice = "The inventory was rebuilt from the verified seed (schema \(Inventory.currentSchemaVersion)). "
-                    + "The previous schema-\(version) file was kept at \(archived?.path(percentEncoded: false) ?? "its original location")."
+                let kept = archived?.path(percentEncoded: false) ?? String(localized: "its original location")
+                notice = String(localized: "The inventory was rebuilt from the verified seed (schema \(Inventory.currentSchemaVersion)). The previous schema-\(version) file was kept at \(kept).")
             } catch {
-                errorMessage = "Could not upgrade inventory: \(error.localizedDescription)"
+                errorMessage = String(localized: "Could not upgrade inventory: \(error.localizedDescription)")
             }
         } catch {
-            errorMessage = "Could not load inventory: \(error.localizedDescription)"
+            errorMessage = String(localized: "Could not load inventory: \(error.localizedDescription)")
         }
         isLoaded = true
     }
@@ -179,7 +179,7 @@ final class InventoryModel {
             do {
                 try await store.save(snapshot)
             } catch {
-                await MainActor.run { self.errorMessage = "Could not save inventory: \(error.localizedDescription)" }
+                await MainActor.run { self.errorMessage = String(localized: "Could not save inventory: \(error.localizedDescription)") }
             }
         }
     }

@@ -17,7 +17,7 @@ struct ProductEditor: View {
     }
 
     var body: some View {
-        EditorSheet(title: isNew ? "New Product" : "Edit \(draft.name)",
+        EditorSheet(title: isNew ? String(localized: "New Product") : String(localized: "Edit \(draft.name)"),
                     canSave: !draft.name.trimmingCharacters(in: .whitespaces).isEmpty,
                     onCancel: { dismiss() },
                     onSave: save) {
@@ -75,10 +75,10 @@ struct VerificationDraft {
     /// Why this can't be saved yet, or nil if it can.
     var blocker: String? {
         if (status == .verified || status == .partiallyVerified) && finalSources.isEmpty {
-            return "\(status.title) needs at least one source. Add one, or record your own confirmation."
+            return String(localized: "\(status.title) needs at least one source. Add one, or record your own confirmation.")
         }
         if status == .conflicting && finalSources.count < 2 && notes.trimmingCharacters(in: .whitespaces).isEmpty {
-            return "Conflicting needs the conflicting sources or a note explaining the conflict."
+            return String(localized: "Conflicting needs the conflicting sources or a note explaining the conflict.")
         }
         return nil
     }
@@ -108,7 +108,7 @@ struct VerificationSection: View {
             ForEach(draft.sources) { source in
                 HStack(alignment: .firstTextBaseline) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("\(source.kind.title) · \(source.observedAt.shortDate)").font(.caption.weight(.semibold))
+                        Text(verbatim: "\(source.kind.title) · \(source.observedAt.shortDate)").font(.caption.weight(.semibold))
                         Text(source.reference).font(.caption).lineLimit(2)
                     }
                     Spacer()
@@ -145,7 +145,9 @@ struct FactEditor: View {
         self.field = field
         self.state = state
         self.onSave = onSave
-        _text = State(initialValue: state.displayValue ?? "")
+        // Pickers use stable English tags for Yes/No, so map the localized display value back.
+        let shown = state.displayValue ?? ""
+        _text = State(initialValue: field == .isLinumicProduct ? (shown == L("Yes") ? "Yes" : shown == L("No") ? "No" : shown) : shown)
         _draft = State(initialValue: VerificationDraft(state.verification))
     }
 
@@ -183,17 +185,17 @@ struct FactEditor: View {
     private func save() {
         let isEmpty = text.trimmingCharacters(in: .whitespaces).isEmpty
         if isEmpty && (draft.status == .verified || draft.status == .partiallyVerified) {
-            parseError = "A verified fact needs a value. Leave it Unknown, or mark it Conflicting."
+            parseError = String(localized: "A verified fact needs a value. Leave it Unknown, or mark it Conflicting.")
             return
         }
         if !isEmpty && draft.status == .unknown {
-            parseError = "A value marked Unknown would look like a fact. Choose a status and a source, or clear the value."
+            parseError = String(localized: "A value marked Unknown would look like a fact. Choose a status and a source, or clear the value.")
             return
         }
         if onSave(isEmpty ? nil : text, draft.build(previous: state.verification)) {
             dismiss()
         } else {
-            parseError = "That value isn't valid for \(field.title)."
+            parseError = String(localized: "That value isn't valid for \(field.title).")
         }
     }
 }

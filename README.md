@@ -44,6 +44,16 @@ On first launch it is seeded from `seed-inventory.json`, which is generated from
 evidence. Every fact shows its verification state and sources, and anything without
 evidence shows as **Unknown — to be verified**.
 
+## Languages
+
+English and **Dari (دری, `fa-AF`)**. Switch in Settings → Account → Language and relaunch, or
+set it per app in System Settings → General → Language & Region → Applications. In Dari the whole
+app mirrors right-to-left (window, sidebar, sheets, menus), numbers use Persian digits and dates
+use the Solar Hijri calendar with Afghan month names (حمل، ثور، … میزان). Recorded evidence
+(quotes, sources, notes) keeps its original language. Translations live in
+`App/Resources/Localizable.xcstrings`. Run `python3 tools/l10n/check_catalog.py` after a build to
+find strings with no Dari translation.
+
 ## Documents
 
 - [ARCHITECTURE.md](ARCHITECTURE.md): system design and module boundaries

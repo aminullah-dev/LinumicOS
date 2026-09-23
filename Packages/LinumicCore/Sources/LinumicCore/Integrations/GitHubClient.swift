@@ -25,10 +25,10 @@ public enum GitHubError: Error, LocalizedError, Equatable {
 
     public var errorDescription: String? {
         switch self {
-        case .unauthorized: "GitHub rejected the token (401). Check it in Settings → Integrations."
-        case .notFound(let path): "Not found on GitHub (404): \(path). A private repository needs a token with access to it."
-        case .rateLimited(let reset): "GitHub rate limit reached\(reset.map { ". Resets at \($0.formatted(date: .omitted, time: .shortened))" } ?? "")."
-        case .http(let code): "GitHub returned HTTP \(code)."
+        case .unauthorized: L("GitHub rejected the token (401). Check it in Settings → Integrations.")
+        case .notFound(let path): LF("Not found on GitHub (404): %@. A private repository needs a token with access to it.", path)
+        case .rateLimited(let reset): reset.map { LF("GitHub rate limit reached. Resets at %@.", $0.formatted(date: .omitted, time: .shortened)) } ?? L("GitHub rate limit reached.")
+        case .http(let code): LF("GitHub returned HTTP %d.", code)
         case .invalidSlug(let s): "\"\(s)\" is not an owner/name repository slug."
         }
     }

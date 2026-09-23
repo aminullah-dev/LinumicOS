@@ -1,4 +1,5 @@
 import Foundation
+import LinumicCore
 import Observation
 
 enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
@@ -14,24 +15,24 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .dashboard: "Dashboard"
-        case .allProducts: "All Products"
-        case .verification: "Verification"
-        case .releases: "Releases"
-        case .roadmap: "Roadmap"
-        case .issues: "Issues"
-        case .repositories: "Repositories"
-        case .builds: "Builds"
-        case .deployments: "Deployments"
-        case .appStore: "App Store"
-        case .googlePlay: "Google Play"
-        case .socialMedia: "Social Media"
-        case .contentCalendar: "Content Calendar"
-        case .marketIntelligence: "Market Intelligence"
-        case .aiAssistant: "AI Assistant"
-        case .integrations: "Integrations"
-        case .security: "Security"
-        case .account: "Account"
+        case .dashboard: L("Dashboard")
+        case .allProducts: L("All Products")
+        case .verification: L("Verification")
+        case .releases: L("Releases")
+        case .roadmap: L("Roadmap")
+        case .issues: L("Issues")
+        case .repositories: L("Repositories")
+        case .builds: L("Builds")
+        case .deployments: L("Deployments")
+        case .appStore: L("App Store")
+        case .googlePlay: L("Google Play")
+        case .socialMedia: L("Social Media")
+        case .contentCalendar: L("Content Calendar")
+        case .marketIntelligence: L("Market Intelligence")
+        case .aiAssistant: L("AI Assistant")
+        case .integrations: L("Integrations")
+        case .security: L("Security")
+        case .account: L("Account")
         }
     }
 
