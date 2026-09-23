@@ -35,9 +35,10 @@ import/export are in place and tested. The app doesn't use it yet: the next step
 - Building a signed app with Sign in with Apple needs Xcode signed in to the owner's Apple ID
   (Settings → Accounts), so automatic signing can create the provisioning profile.
 
-### Next
-1. Owner: sign in to Xcode → Settings → Accounts, then run the app and Sign in with Apple.
-2. Add the owner's user ID to `app_admins` (one SQL insert), after which the first sync uploads the inventory.
+### Status (2026-09-23)
+- The owner signed in with Apple (a personal Apple ID, not the developer account). Supabase user
+  `f60cfcf6-2c35-4158-a270-8b084bb05e41` was added to `app_admins`.
+- Next: press **Sync Now** in Settings → Account → Cloud. The first sync uploads the local inventory.
 3. Later: scheduled GitHub and App Store syncs (Edge Functions + pg_cron); integration keys in Vault.
 
 ## When to build it
