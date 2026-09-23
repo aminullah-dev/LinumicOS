@@ -9,8 +9,8 @@ the app.
 - [x] `LinumicCore` domain model + tests
 - [x] Local JSON persistence behind `InventoryStore`
 - [x] Seed inventory with verified facts only
-- [ ] macOS app: sidebar navigation, dashboard, product list/detail/edit
-- [ ] Manual version, release, repository and roadmap records
+- [x] macOS app: sidebar navigation, dashboard, product list/detail/edit
+- [x] Manual version, release, repository and roadmap records
 - [x] Keychain `SecretStore`, `RepositoryHostClient` interface
 - [ ] Fill in the product facts marked UNKNOWN (owner: Linumic)
 

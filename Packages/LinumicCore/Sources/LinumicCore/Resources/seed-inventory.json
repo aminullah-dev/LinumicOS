@@ -5,7 +5,7 @@
       "name": "Safe Beauty",
       "notes": "Top-level directories (unverified platform indicators): app, ios, desktop, functions, app-store, play-store. Repository name differs from product name; canonical repo UNKNOWN — TO BE VERIFIED.",
       "provenance": {
-        "recordedAt": "2026-09-23T00:00:00Z",
+        "recordedAt": "2026-09-23T12:00:00Z",
         "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
       },
       "repositories": [
@@ -23,7 +23,7 @@
       "name": "Velro",
       "notes": "Top-level directories (unverified platform indicators): mobile, ios, admin, backend.",
       "provenance": {
-        "recordedAt": "2026-09-23T00:00:00Z",
+        "recordedAt": "2026-09-23T12:00:00Z",
         "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
       },
       "repositories": [
@@ -41,7 +41,7 @@
       "name": "WorkTrack",
       "notes": "Top-level directories (unverified platform indicators): app, ios, desktop, web, backend.",
       "provenance": {
-        "recordedAt": "2026-09-23T00:00:00Z",
+        "recordedAt": "2026-09-23T12:00:00Z",
         "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
       },
       "repositories": [
@@ -59,7 +59,7 @@
       "name": "DukanPro",
       "notes": "Top-level directories (unverified platform indicators): app, server, melos.yaml.",
       "provenance": {
-        "recordedAt": "2026-09-23T00:00:00Z",
+        "recordedAt": "2026-09-23T12:00:00Z",
         "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
       },
       "repositories": [
@@ -77,7 +77,7 @@
       "name": "Talar",
       "notes": "Top-level directories (unverified platform indicators): android, desktop, web, backend. A public repo aminullah-dev/talar-releases also exists; relationship UNKNOWN — TO BE VERIFIED.",
       "provenance": {
-        "recordedAt": "2026-09-23T00:00:00Z",
+        "recordedAt": "2026-09-23T12:00:00Z",
         "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
       },
       "repositories": [
@@ -95,7 +95,7 @@
       "name": "NerkhTimes",
       "notes": "Top-level directories (unverified platform indicators): app, ios, admin. A public repo aminullah-dev/nerkhtimes.github.io also exists; relationship UNKNOWN — TO BE VERIFIED.",
       "provenance": {
-        "recordedAt": "2026-09-23T00:00:00Z",
+        "recordedAt": "2026-09-23T12:00:00Z",
         "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
       },
       "repositories": [
@@ -113,7 +113,7 @@
       "name": "Namazia",
       "notes": "Top-level directories (unverified platform indicators): app, ios, store.",
       "provenance": {
-        "recordedAt": "2026-09-23T00:00:00Z",
+        "recordedAt": "2026-09-23T12:00:00Z",
         "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
       },
       "repositories": [
@@ -131,7 +131,7 @@
       "name": "AfghanJama",
       "notes": "Top-level directories (unverified platform indicators): app, iosApp, desktop.",
       "provenance": {
-        "recordedAt": "2026-09-23T00:00:00Z",
+        "recordedAt": "2026-09-23T12:00:00Z",
         "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
       },
       "repositories": [
@@ -149,7 +149,7 @@
       "name": "SODER-HAKEM",
       "notes": "Top-level directories (unverified platform indicators): app.",
       "provenance": {
-        "recordedAt": "2026-09-23T00:00:00Z",
+        "recordedAt": "2026-09-23T12:00:00Z",
         "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
       },
       "repositories": [
@@ -167,7 +167,7 @@
       "name": "MediFlow",
       "notes": "Python desktop application (pyproject.toml, packaging/).",
       "provenance": {
-        "recordedAt": "2026-09-23T00:00:00Z",
+        "recordedAt": "2026-09-23T12:00:00Z",
         "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
       },
       "repositories": [
@@ -185,7 +185,7 @@
       "name": "Tailoring Workshop ERP",
       "notes": "Top-level directories (unverified platform indicators): api, web.",
       "provenance": {
-        "recordedAt": "2026-09-23T00:00:00Z",
+        "recordedAt": "2026-09-23T12:00:00Z",
         "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
       },
       "repositories": [
@@ -203,7 +203,7 @@
       "name": "The Digital Infrastructure of the Pashto Language",
       "notes": "Top-level directories: app, data, hunspell, src.",
       "provenance": {
-        "recordedAt": "2026-09-23T00:00:00Z",
+        "recordedAt": "2026-09-23T12:00:00Z",
         "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
       },
       "repositories": [

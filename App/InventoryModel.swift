@@ -1,0 +1,88 @@
+import Foundation
+import LinumicCore
+import Observation
+
+/// Observable wrapper around the inventory store. Views read and mutate products
+/// only through this type, and every mutation is persisted.
+@MainActor
+@Observable
+final class InventoryModel {
+    private(set) var products: [Product] = []
+    private(set) var isLoaded = false
+    var errorMessage: String?
+
+    private let store: InventoryStore
+    private var saveTask: Task<Void, Never>?
+
+    init(store: InventoryStore) {
+        self.store = store
+    }
+
+    var summary: DashboardSummary { DashboardSummary(products: products) }
+
+    func product(id: Product.ID) -> Product? {
+        products.first { $0.id == id }
+    }
+
+    /// Loads the stored inventory. On first launch, seeds it from the verified-only seed file.
+    func load() async {
+        do {
+            if let inventory = try await store.load() {
+                products = inventory.products
+            } else {
+                products = try SeedInventory.load().products
+                persist()
+            }
+        } catch {
+            errorMessage = "Could not load inventory: \(error.localizedDescription)"
+        }
+        isLoaded = true
+    }
+
+    /// Adds a product, or replaces the existing product with the same ID.
+    func upsert(_ product: Product) {
+        if let index = products.firstIndex(where: { $0.id == product.id }) {
+            products[index] = product
+        } else {
+            products.append(product)
+        }
+        persist()
+    }
+
+    func update(_ id: Product.ID, _ mutate: (inout Product) -> Void) {
+        guard let index = products.firstIndex(where: { $0.id == id }) else { return }
+        mutate(&products[index])
+        persist()
+    }
+
+    func delete(_ id: Product.ID) {
+        products.removeAll { $0.id == id }
+        persist()
+    }
+
+    /// Returns a unique product ID for a name, adding a numeric suffix if the slug is taken.
+    func newProductID(for name: String) -> String {
+        let base = Product.slug(for: name).isEmpty ? "product" : Product.slug(for: name)
+        var candidate = base
+        var n = 2
+        while products.contains(where: { $0.id == candidate }) {
+            candidate = "\(base)-\(n)"
+            n += 1
+        }
+        return candidate
+    }
+
+    /// Saves are chained so they reach the store in the same order as the mutations.
+    private func persist() {
+        let snapshot = Inventory(products: products)
+        let previous = saveTask
+        saveTask = Task { [store] in
+            await previous?.value
+            do {
+                try await store.save(snapshot)
+            } catch {
+                await MainActor.run { self.errorMessage = "Could not save inventory: \(error.localizedDescription)" }
+            }
+        }
+    }
+}
