@@ -2,7 +2,8 @@ import Foundation
 
 /// Lifecycle status of a product. "Not known" is expressed as an unknown `Fact`, not as a case here.
 public enum ProductStatus: String, Codable, CaseIterable, Sendable, Identifiable {
-    case idea, development, active, maintenance, paused, retired
+    /// `completed`: finished work that isn't developed further, e.g. a published book.
+    case idea, development, active, maintenance, completed, paused, retired
     public var id: String { rawValue }
 
     public var title: String {
@@ -11,6 +12,7 @@ public enum ProductStatus: String, Codable, CaseIterable, Sendable, Identifiable
         case .development: L("In Development")
         case .active: L("Active")
         case .maintenance: L("Maintenance")
+        case .completed: L("Completed")
         case .paused: L("Paused")
         case .retired: L("Retired")
         }

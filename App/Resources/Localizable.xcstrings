@@ -1001,6 +1001,16 @@
         }
       }
     },
+    "Completed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تکمیل‌شده"
+          }
+        }
+      }
+    },
     "Component (e.g. Passenger app)": {
       "localizations": {
         "fa-AF": {

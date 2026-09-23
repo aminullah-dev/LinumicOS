@@ -47,6 +47,7 @@ extension ProductStatus {
         case .development: .blue
         case .active: .green
         case .maintenance: .teal
+        case .completed: .indigo
         case .paused: .orange
         case .retired: .secondary
         }

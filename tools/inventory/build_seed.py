@@ -623,8 +623,8 @@ products.append(product(
                  [local(f"{SH}/README.md", "Opening paragraph")]),
     category=fact("Book: reader app for the owner's Pashto book", "verified", [local(f"{SH}/README.md"), owner("\"SODER-HAKEM is a book.\"")]),
     projectType=fact("Android app (Kotlin + Jetpack Compose)", "verified", [local(f"{SH}/app/build.gradle.kts"), local(f"{SH}/README.md")]),
-    status=unknown("The owner answered \"SODER-HAKEM is a book\" (2026-09-23); its lifecycle status (e.g. finished, still being written) is not stated. "
-                   "The first commit to GitHub was on 2026-09-22. The README describes sideloading an APK from dist/."),
+    status=fact("completed", "verified", [owner("\"SODER-HAKEM is a book.\" Asked whether it is finished: \"finished\".")],
+                "The book is finished. The README describes sideloading the reader APK from dist/."),
     currentVersion=fact("1.0", "partiallyVerified", [local(f"{SH}/app/build.gradle.kts", "versionName 1.0"), local(f"{SH}/README.md", "dist/SoderHakim-1.0.apk")],
                         "Version from the build config and README. No GitHub release or store listing was found."),
     backend=fact("None: no network access", "verified", [local(f"{SH}/README.md", "\"no network access and no user-facing permissions\"")]),
@@ -706,7 +706,7 @@ products.append(product(
     summary=fact("Orthographic normalization, tokenization and stemming for Pashto. Pure Python standard library, MIT licensed.", "verified", [local(f"{PS}/README.md", "Opening lines")]),
     category=fact("Language technology research", "partiallyVerified", [local(f"{PS}/README.md")]),
     projectType=fact("Python library, with a local web viewer (app/)", "verified", [local(f"{PS}/pyproject.toml"), local(f"{PS}/app/server.py")]),
-    status=unknown(),
+    status=fact("development", "verified", [owner("\"In development.\"")]),
     currentVersion=fact("0.1.0", "partiallyVerified", [local(f"{PS}/pyproject.toml", "version 0.1.0")], "No release was found."),
     backend=fact("None: a library. app/ is a local viewer server.", "partiallyVerified", [local(f"{PS}/README.md"), local(f"{PS}/app/server.py")]),
     website=unknown(),
@@ -732,6 +732,6 @@ unresolved = [
                          owner("\"Explore Afghanistan: sideline.\"")], "Sidelined by the owner.")},
 ]
 
-inventory = {"schemaVersion": 2, "seedRevision": 6, "products": products, "unresolved": unresolved}
+inventory = {"schemaVersion": 2, "seedRevision": 7, "products": products, "unresolved": unresolved}
 OUT.write_text(json.dumps(inventory, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
 print(f"wrote {OUT.relative_to(ROOT)}: {len(products)} products, {len(unresolved)} unresolved items")

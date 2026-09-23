@@ -21,14 +21,14 @@ For the full findings, open questions and classification of every repository, se
 | NerkhTimes | NerkhTimes, nerkhtimes.github.io | per platform (iOS 1.0 / Android 1.0.11) | active (owner) | aminullah-dev.github.io/nerkhtimes.github.io |
 | Namazia | -Namazia | per platform (iOS 1.0 / Android 1.1.0) | active (owner) | UNKNOWN — TO BE VERIFIED |
 | AfghanJama (KhayatYar) | AfghanJama | 1.8.0 | active (owner) | linumic.com/what-we-do/tailor-erp |
-| SODER-HAKEM | SODER-HAKEM | 1.0 (partial) | UNKNOWN — TO BE VERIFIED | UNKNOWN — TO BE VERIFIED |
+| SODER-HAKEM | SODER-HAKEM | 1.0 (partial) | completed (owner) | UNKNOWN — TO BE VERIFIED |
 | MediFlow | MediFlow, Marketing/marketing | 0.2.0 | development (partial) | linumic.com/what-we-do/mediflow |
 | Tailoring Workshop ERP (Darzi) | Tailoring-Workshop-ERP | UNKNOWN — TO BE VERIFIED | development (partial) | none (owner: the linumic.com Tailor ERP page is AfghanJama) |
-| The Digital Infrastructure of the Pashto Language | The-Digital-Infrastructure-of-the-Pashto-Language | 0.1.0 (partial) | UNKNOWN — TO BE VERIFIED | UNKNOWN — TO BE VERIFIED |
+| The Digital Infrastructure of the Pashto Language | The-Digital-Infrastructure-of-the-Pashto-Language | 0.1.0 (partial) | development (owner) | UNKNOWN — TO BE VERIFIED |
 
 "(owner)" means confirmed by the owner. "(partial)" means PARTIALLY VERIFIED: supported by indirect evidence, awaiting owner confirmation.
 
-## Verification by area (seed revision 6)
+## Verification by area (seed revision 7)
 
 Derived, never stored: each product's state rolls up the areas below (the app's Verification
 tab shows the same breakdown with every source). Counts: V verified, P partially verified,
@@ -45,10 +45,10 @@ next version, priority and other names don't count.
 | NerkhTimes | PARTIALLY VERIFIED | 7V 1P 1U | 2V | 3V | 2V |
 | Namazia | PARTIALLY VERIFIED | 4V 1P 4U | 1V | 2V | 2V |
 | AfghanJama | PARTIALLY VERIFIED | 9V | 1V | 3V 1P | — |
-| SODER-HAKEM | PARTIALLY VERIFIED | 6V 1P 2U | 1V | 1V | — |
+| SODER-HAKEM | PARTIALLY VERIFIED | 7V 1P 1U | 1V | 1V | — |
 | MediFlow | PARTIALLY VERIFIED | 8V 1P | 2V | 1V 1P | — |
 | Tailoring Workshop ERP | PARTIALLY VERIFIED | 5V 2P 2U | 1V | 2V | — |
-| The Digital Infrastructure of the Pashto Language | PARTIALLY VERIFIED | 4V 3P 2U | 1V | 1V | — |
+| The Digital Infrastructure of the Pashto Language | PARTIALLY VERIFIED | 5V 3P 1U | 1V | 1V | — |
 
 No product is fully VERIFIED yet: each one still has at least one partially verified or
 unknown key fact. The open items are listed per product under "Needs confirmation".

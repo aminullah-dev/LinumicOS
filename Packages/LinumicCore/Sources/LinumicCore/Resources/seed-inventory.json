@@ -3832,10 +3832,19 @@
         }
       ],
       "status": {
+        "value": "completed",
         "verification": {
-          "notes": "The owner answered \"SODER-HAKEM is a book\" (2026-09-23); its lifecycle status (e.g. finished, still being written) is not stated. The first commit to GitHub was on 2026-09-22. The README describes sideloading an APK from dist/.",
-          "sources": [],
-          "status": "unknown"
+          "notes": "The book is finished. The README describes sideloading the reader APK from dist/.",
+          "sources": [
+            {
+              "detail": "\"SODER-HAKEM is a book.\" Asked whether it is finished: \"finished\".",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
       "summary": {
@@ -4709,10 +4718,19 @@
         }
       ],
       "status": {
+        "value": "development",
         "verification": {
           "notes": "",
-          "sources": [],
-          "status": "unknown"
+          "sources": [
+            {
+              "detail": "\"In development.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
       "summary": {
@@ -4741,7 +4759,7 @@
     }
   ],
   "schemaVersion": 2,
-  "seedRevision": 6,
+  "seedRevision": 7,
   "unresolved": [
     {
       "findings": "Private repository created 2026-07-28 with a single \"Initial commit\" containing only README.md (\"# Radar-system\"). No local working copy.",

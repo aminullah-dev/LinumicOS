@@ -61,7 +61,7 @@ evidence. The product table, dashboard tiles and Verification tab all read them.
 | `isLinumicProduct` | Fact<Bool> |
 | `alsoKnownAs` | Fact<[String]>: store names, app titles, working names |
 | `summary`, `category`, `projectType`, `backend` | Fact<String> |
-| `status` | Fact<ProductStatus>: idea, development, active, maintenance, paused, retired |
+| `status` | Fact<ProductStatus>: idea, development, active, maintenance, completed (finished, e.g. a book), paused, retired |
 | `currentVersion`, `nextVersion` | Fact<String> |
 | `website` | Fact<URL> |
 | `repositories` | [RepositoryRecord]: **many per product** |

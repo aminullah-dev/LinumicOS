@@ -149,11 +149,10 @@ Resolved during discovery, so they are no longer open questions:
 ## Questions Requiring Owner Confirmation (still open)
 
 Per product, the app's Verification tab lists every item still awaiting confirmation, and
-[product-inventory.md](product-inventory.md#verification-by-area-seed-revision-6) summarises them by area.
+[product-inventory.md](product-inventory.md#verification-by-area-seed-revision-7) summarises them by area.
 
-1. **Development status.** Confirmed by the owner on 2026-09-23: SafeBeauty, VELRO, WorkTrack, NerkhTimes, Namazia and
-   AfghanJama are active; Talar is still under development. Still open: SODER-HAKEM (the owner: "a book"; is it finished
-   or still being written?) and the Pashto project.
+1. ~~**Development status.**~~ Resolved by the owner on 2026-09-23: SafeBeauty, VELRO, WorkTrack, NerkhTimes, Namazia and
+   AfghanJama are active; Talar and the Pashto project are in development; SODER-HAKEM (a book) is completed.
 2. ~~**Product names.**~~ Resolved: keep "AfghanJama" and "Namazia" as the record names (owner, 2026-09-23).
 3. ~~**NerkhTimes backend.**~~ Resolved: Google Sheet via the Apps Script, plus CoinGecko for crypto prices (owner; `admin/Code.gs`).
 4. **Namazia and Pashto project branches.** Checked on GitHub 2026-09-23 (read-only): Namazia's
