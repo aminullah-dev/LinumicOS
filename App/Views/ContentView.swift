@@ -76,8 +76,7 @@ struct ContentView: View {
         case .socialMedia: SocialAccountsView()
         case .contentCalendar: ContentCalendarView()
         case .marketIntelligence: MarketIntelligenceView()
-        case .aiAssistant:
-            NotIntegratedView(item: item, message: "The assistant will answer only from recorded data and will label each answer as verified, derived or unknown.")
+        case .aiAssistant: AssistantView()
         case .integrations: IntegrationsSettingsView()
         case .security: SecuritySettingsView()
         case .account: AccountSettingsView()

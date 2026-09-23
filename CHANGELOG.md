@@ -5,6 +5,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: AI assistant (local, grounded)
+- `Assistant` answers the suggested questions (attention, blocked, this week's changes, critical
+  issues, readiness, planned features, market needs) and product-status questions only from
+  records. Every statement is labelled Verified, Derived (rule stated) or Unknown, with its basis.
+  It understands English and Persian keywords. No language model is involved.
+- AI Assistant screen with suggestions, answer cards and links to products. Go → AI Assistant (⌘8).
+- docs/backend-plan.md: when to build the backend, its recommended shape and a draft API contract.
+
+### Changed
+- Dashboard verification tiles stack the badge above the count so the number is never cut off.
+
 ### Added: Market intelligence and marketing
 - Market Intelligence screen: sources, evidence (with source and dates) and findings (citing
   evidence; derived findings state their method). Changes that would break these rules are refused.

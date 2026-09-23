@@ -46,6 +46,6 @@ struct LinumicCommandCenterApp: App {
     }
 
     private var goShortcuts: [SidebarItem] {
-        [.dashboard, .allProducts, .verification, .releases, .roadmap, .issues, .repositories]
+        [.dashboard, .allProducts, .verification, .releases, .roadmap, .issues, .repositories, .aiAssistant]
     }
 }

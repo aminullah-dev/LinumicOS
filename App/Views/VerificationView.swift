@@ -53,10 +53,10 @@ struct VerificationView: View {
                         Spacer()
                         Picker("Show", selection: $filter) {
                             Text("All").tag(VerificationStatus?.none)
-                            ForEach([VerificationStatus.conflicting, .unknown, .partiallyVerified]) { Text($0.title).tag(VerificationStatus?.some($0)) }
+                            ForEach([VerificationStatus.conflicting, .unknown, .partiallyVerified]) { Text($0 == .partiallyVerified ? "Partial" : $0.title).tag(VerificationStatus?.some($0)) }
                         }
                         .pickerStyle(.segmented)
-                        .frame(width: 380)
+                        .frame(width: 360)
                     }
                     Text("Only you can settle these. Open a product and use Edit… on the row, or click a badge to see the evidence gathered so far.")
                         .font(.caption).foregroundStyle(.secondary)

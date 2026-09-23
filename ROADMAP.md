@@ -21,7 +21,7 @@ the app.
 - [x] Read-only sync: default branch, last commit, open PRs/issues, latest release, CI status
 - [ ] Local working-copy status (branch, uncommitted changes), reading only. Needs a security-scoped folder bookmark in the sandbox.
 
-## Phase 3: Backend
+## Phase 3: Backend (deferred at the owner's instruction; see docs/backend-plan.md)
 
 - [ ] Choose a backend (see ARCHITECTURE.md), authentication, roles, audit log
 - [ ] `RemoteInventoryStore`, migrating local data up
@@ -42,7 +42,8 @@ the app.
 
 - [x] Market intelligence source → evidence → finding register with enforced citation rules
 - [ ] Collectors for specific sources (after the terms of use are checked)
-- [ ] AI assistant with verified/derived/unknown labelling
+- [x] AI assistant with verified/derived/unknown labelling (local engine, no language model)
+- [ ] Optional language model for phrasing, restating grounded statements only (needs a provider key)
 
 ## Later clients
 

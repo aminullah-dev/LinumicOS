@@ -25,13 +25,15 @@ struct DashboardView: View {
 
                 HStack(spacing: 12) {
                     ForEach([VerificationStatus.verified, .partiallyVerified, .unknown, .conflicting]) { status in
-                        HStack {
+                        VStack(alignment: .leading, spacing: 6) {
                             VerificationBadge(status: status)
-                            Spacer()
-                            Text("\(s.countsByVerification[status, default: 0])").font(.title3.weight(.semibold)).monospacedDigit()
+                            Text("\(s.countsByVerification[status, default: 0]) products").font(.title3.weight(.semibold)).monospacedDigit()
                         }
                         .padding(10)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("\(s.countsByVerification[status, default: 0]) products \(status.title)")
                     }
                 }
 

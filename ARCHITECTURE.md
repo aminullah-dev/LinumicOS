@@ -32,7 +32,7 @@ Not installed: Docker, pnpm, Supabase CLI, AWS/Azure CLIs.
 | Persistence (MVP) | Codable JSON file behind `InventoryStore` | Portable, inspectable, and the same DTO shape a future REST API returns. SwiftData was avoided so the domain model isn't tied to Apple persistence. |
 | Project generation | XcodeGen (`project.yml`) | Reviewable project definition, no merge conflicts in `.pbxproj` |
 | Secrets | macOS Keychain via `SecretStore` | See [docs/security.md](docs/security.md) |
-| Cloud backend | **Not yet chosen, decision deferred** | Options to evaluate: Supabase (Postgres + auth + RLS), a Swift (Vapor) or Node API on managed Postgres, Firebase. Pick when multi-user or multi-device access is actually needed. |
+| Cloud backend | **Deferred at the owner's instruction.** Plan and API contract: [docs/backend-plan.md](docs/backend-plan.md) | Supabase (Postgres + auth + RLS + Vault) is the leading candidate once multi-user, multi-device or server-held credentials are needed |
 
 ## Modules
 
@@ -45,7 +45,7 @@ Not installed: Docker, pnpm, Supabase CLI, AWS/Azure CLIs.
 | 5 | App Store / Google Play | Listings with evidence, plus the public App Store lookup refresh. Store consoles aren't connected. |
 | 6 | Social media | Content calendar with approval workflow. Networks aren't connected. |
 | 7 | Market intelligence | Source → evidence → finding register with enforced citations ([docs/market-intelligence.md](docs/market-intelligence.md)) |
-| 8 | AI assistant | Design only (see below) |
+| 8 | AI assistant | Local, grounded answer engine (`Assistant`): Verified / Derived / Unknown labels, English and Persian questions, no language model |
 
 ## Core concepts (LinumicCore)
 
@@ -64,10 +64,12 @@ Not installed: Docker, pnpm, Supabase CLI, AWS/Azure CLIs.
 - `SecretStore`: Keychain-backed credential storage.
 - `RepositoryHostClient`: read-only integration boundary for GitHub.
 
-## AI assistant (design)
+## AI assistant
 
-The assistant will answer over the inventory, integration snapshots and market
-data. Rules:
+Implemented as `Assistant` (LinumicCore/Services). It's deterministic: it classifies the
+question (English or Persian keywords, or a product name), then answers only from the
+inventory, GitHub and App Store snapshots, and reviewed market findings. A language model
+can later be added for phrasing, but it may only restate these grounded statements. Rules:
 
 1. It answers only from retrieved records, never from model memory, for
    anything about project status.
