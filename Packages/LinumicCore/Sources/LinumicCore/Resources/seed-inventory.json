@@ -456,7 +456,7 @@
       "status": {
         "value": "active",
         "verification": {
-          "notes": "Live store listings show a public release. Whether the product counts as \"active\" is inferred from them. Please confirm.",
+          "notes": "Confirmed active by the owner on 2026-09-23.",
           "sources": [
             {
               "detail": "Live, v1.0.1 released 2026-09-23",
@@ -469,9 +469,21 @@
               "kind": "googlePlay",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "https://play.google.com/store/apps/details?id=com.security.stealthapp"
+            },
+            {
+              "detail": "\"These are active\" (about the App Store Connect apps list, 2026-09-23)",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            },
+            {
+              "detail": "SafeBeauty: iOS 1.0.1, green check",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "App Store Connect iPhone app, Apps list, screenshot shared by the owner at 15:01 on 2026-09-23 (tools/inventory/evidence/app-store-connect-ios-2026-09-23-1501.png)"
             }
           ],
-          "status": "partiallyVerified",
+          "status": "verified",
           "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
@@ -1018,16 +1030,28 @@
       "status": {
         "value": "active",
         "verification": {
-          "notes": "Live App Store listings show a public release. Whether the product counts as \"active\" is inferred from them. Please confirm.",
+          "notes": "Confirmed active by the owner on 2026-09-23.",
           "sources": [
             {
               "detail": "Live, v1.0.0 released 2026-09-13",
               "kind": "appStore",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "https://apps.apple.com/us/app/velro-ride/id6810899663"
+            },
+            {
+              "detail": "\"These are active\" (about the App Store Connect apps list, 2026-09-23)",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            },
+            {
+              "detail": "VELRO Driver iOS 1.0.1 and VELRO Ride iOS 1.0.1 (yellow clock); VELRO Ops iOS 1.0 and macOS 1.0 (yellow clock)",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "App Store Connect iPhone app, Apps list, screenshot shared by the owner at 15:01 on 2026-09-23 (tools/inventory/evidence/app-store-connect-ios-2026-09-23-1501.png)"
             }
           ],
-          "status": "partiallyVerified",
+          "status": "verified",
           "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
@@ -1518,16 +1542,28 @@
       "status": {
         "value": "active",
         "verification": {
-          "notes": "A live App Store listing shows a public release. Whether the product counts as \"active\" is inferred from it. Please confirm.",
+          "notes": "Confirmed active by the owner on 2026-09-23.",
           "sources": [
             {
               "detail": "Live, v1.0 released 2026-09-21",
               "kind": "appStore",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "https://apps.apple.com/us/app/linumic-worktrack/id6810004398"
+            },
+            {
+              "detail": "\"These are active\" (about the App Store Connect apps list, 2026-09-23)",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            },
+            {
+              "detail": "Linumic WorkTrack: iOS 1.0, green check",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "App Store Connect iPhone app, Apps list, screenshot shared by the owner at 15:01 on 2026-09-23 (tools/inventory/evidence/app-store-connect-ios-2026-09-23-1501.png)"
             }
           ],
-          "status": "partiallyVerified",
+          "status": "verified",
           "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
@@ -2365,18 +2401,30 @@
         }
       },
       "backend": {
-        "value": "Google Apps Script web app over a Google Sheet (serves ?action=markets and ?action=candles)",
+        "value": "Google Apps Script web app over a Google Sheet (serves ?action=markets and ?action=candles); crypto prices from the CoinGecko API",
         "verification": {
-          "notes": "Inferred from the admin README. Please confirm the production data source.",
+          "notes": "",
           "sources": [
             {
               "detail": "Admin dashboard merged into the existing Apps Script",
               "kind": "localRepository",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "~/Projects/Android/NerkhTimes/admin/README.md"
+            },
+            {
+              "detail": "Fetches https://api.coingecko.com/api/v3/simple/price?ids=…&vs_currencies=usd",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/NerkhTimes/admin/Code.gs"
+            },
+            {
+              "detail": "\"Google Sheet, and an API for cryptocurrency.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
             }
           ],
-          "status": "partiallyVerified",
+          "status": "verified",
           "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
@@ -2517,9 +2565,20 @@
                 "kind": "localRepository",
                 "observedAt": "2026-09-23T07:00:00Z",
                 "reference": "~/Projects/Android/NerkhTimes/admin/README.md"
+              },
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Android/NerkhTimes/admin/Code.gs"
+              },
+              {
+                "detail": "\"Google Sheet, and an API for cryptocurrency.\"",
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "Owner's answers in the Command Center working session, 2026-09-23"
               }
             ],
-            "status": "partiallyVerified",
+            "status": "verified",
             "verifiedAt": "2026-09-23T07:00:00Z"
           }
         }
@@ -2669,7 +2728,7 @@
       "status": {
         "value": "active",
         "verification": {
-          "notes": "Live store listings show a public release. Whether the product counts as \"active\" is inferred from them. Please confirm.",
+          "notes": "Confirmed active by the owner on 2026-09-23.",
           "sources": [
             {
               "detail": "Live, v1.0",
@@ -2682,9 +2741,21 @@
               "kind": "googlePlay",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "https://play.google.com/store/apps/details?id=af.market.nerkhtimes"
+            },
+            {
+              "detail": "\"These are active\" (about the App Store Connect apps list, 2026-09-23)",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            },
+            {
+              "detail": "Nerkh Times - نرخ تایمز: iOS 1.0, green check",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "App Store Connect iPhone app, Apps list, screenshot shared by the owner at 15:01 on 2026-09-23 (tools/inventory/evidence/app-store-connect-ios-2026-09-23-1501.png)"
             }
           ],
-          "status": "partiallyVerified",
+          "status": "verified",
           "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
@@ -2801,6 +2872,12 @@
               "kind": "appStore",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "https://apps.apple.com/us/app/afghan-prayer-times/id6810537640"
+            },
+            {
+              "detail": "Keep \"Namazia\" and \"AfghanJama\" as the record names; the store names are the same products.",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
             }
           ],
           "status": "verified",
@@ -2999,7 +3076,7 @@
                 "message": "chore: harden .gitignore (ignore app/build, keystores, .env, firebase config)",
                 "sha": "95aa3fc120b604cd5ec4212f1c330b9d2dc3859c"
               },
-              "notes": "The app code is on this branch. GitHub main has only \"Initial commit\" and PR #1 is open.",
+              "notes": "The app code is on this branch. Checked on GitHub 2026-09-23: it is 73 commits ahead of main (which has only \"Initial commit\"), 0 behind; PR #1 into main is open, not merged.",
               "observedAt": "2026-09-23T07:00:00Z",
               "path": "~/Projects/Android/-Namazia"
             }
@@ -3014,16 +3091,28 @@
       "status": {
         "value": "active",
         "verification": {
-          "notes": "A live App Store listing shows a public release. Whether the product counts as \"active\" is inferred from it. Please confirm.",
+          "notes": "Confirmed active by the owner on 2026-09-23.",
           "sources": [
             {
               "detail": "Live, v1.0 released 2026-09-14",
               "kind": "appStore",
               "observedAt": "2026-09-23T07:00:00Z",
               "reference": "https://apps.apple.com/us/app/afghan-prayer-times/id6810537640"
+            },
+            {
+              "detail": "\"These are active\" (about the App Store Connect apps list, 2026-09-23)",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            },
+            {
+              "detail": "Afghan Prayer Times: iOS 1.0, green check",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "App Store Connect iPhone app, Apps list, screenshot shared by the owner at 15:01 on 2026-09-23 (tools/inventory/evidence/app-store-connect-ios-2026-09-23-1501.png)"
             }
           ],
-          "status": "partiallyVerified",
+          "status": "verified",
           "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
@@ -4595,7 +4684,7 @@
                 "message": "Add app/: a local web viewer over the library",
                 "sha": "bfd7bf60b0375f107a864447f60069711c9623fa"
               },
-              "notes": "The code is on this branch. GitHub main has only \"Initial commit\".",
+              "notes": "The code is on this branch. Checked on GitHub 2026-09-23: it is 2 commits ahead of main (which has only \"Initial commit\"), 0 behind; no pull request.",
               "observedAt": "2026-09-23T07:00:00Z",
               "path": "~/Projects/Research/The-Digital-Infrastructure-of-the-Pashto-Language"
             }
@@ -4640,7 +4729,7 @@
     }
   ],
   "schemaVersion": 2,
-  "seedRevision": 4,
+  "seedRevision": 5,
   "unresolved": [
     {
       "findings": "Private repository created 2026-07-28 with a single \"Initial commit\" containing only README.md (\"# Radar-system\"). No local working copy.",

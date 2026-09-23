@@ -28,7 +28,7 @@ For the full findings, open questions and classification of every repository, se
 
 "(partial)" means PARTIALLY VERIFIED: supported by indirect evidence, awaiting owner confirmation.
 
-## Verification by area (seed revision 4)
+## Verification by area (seed revision 5)
 
 Derived, never stored: each product's state rolls up the areas below (the app's Verification
 tab shows the same breakdown with every source). Counts: V verified, P partially verified,
@@ -37,13 +37,13 @@ next version, priority and other names don't count.
 
 | Product | Overall | Facts | Repositories | Platforms | Stores |
 |---|---|---|---|---|---|
-| Safe Beauty | PARTIALLY VERIFIED | 6V 2P 1U | 2V 1P | 6V | 2V |
-| Velro | PARTIALLY VERIFIED | 6V 3P | 1V | 9V | 5V |
-| WorkTrack | PARTIALLY VERIFIED | 6V 2P 1U | 1V | 4V 1P | 2V |
+| Safe Beauty | PARTIALLY VERIFIED | 7V 1P 1U | 2V 1P | 6V | 2V |
+| Velro | PARTIALLY VERIFIED | 7V 2P | 1V | 9V | 5V |
+| WorkTrack | PARTIALLY VERIFIED | 7V 1P 1U | 1V | 4V 1P | 2V |
 | DukanPro | PARTIALLY VERIFIED | 5V 2P 2U | 1V | 4V 1U | — |
 | Talar | PARTIALLY VERIFIED | 7V 2P | 2V | 3V 1P | — |
-| NerkhTimes | PARTIALLY VERIFIED | 5V 3P 1U | 2V | 2V 1P | 2V |
-| Namazia | PARTIALLY VERIFIED | 3V 2P 4U | 1V | 2V | 2V |
+| NerkhTimes | PARTIALLY VERIFIED | 7V 1P 1U | 2V | 3V | 2V |
+| Namazia | PARTIALLY VERIFIED | 4V 1P 4U | 1V | 2V | 2V |
 | AfghanJama | PARTIALLY VERIFIED | 8V 1P | 1V | 3V 1P | — |
 | SODER-HAKEM | PARTIALLY VERIFIED | 6V 1P 2U | 1V | 1V | — |
 | MediFlow | PARTIALLY VERIFIED | 8V 1P | 2V | 1V 1P | — |

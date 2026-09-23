@@ -149,11 +149,14 @@ Resolved during discovery, so they are no longer open questions:
 ## Questions Requiring Owner Confirmation (still open)
 
 Per product, the app's Verification tab lists every item still awaiting confirmation, and
-[product-inventory.md](product-inventory.md#verification-by-area-seed-revision-4) summarises them by area.
+[product-inventory.md](product-inventory.md#verification-by-area-seed-revision-5) summarises them by area.
 
-1. **Development status.** "Active" is inferred from live listings or releases for SafeBeauty, VELRO, WorkTrack, Talar,
-   NerkhTimes, Namazia and AfghanJama. Please confirm, and give the status for SODER-HAKEM and the Pashto project.
-2. **Product names.** Keep "AfghanJama" and "Namazia" as the record names, or use "KhayatYar" and "Afghan Prayer Times"?
-3. **NerkhTimes backend.** Is the production data source the Google Apps Script plus Sheet in `admin/README.md`?
-4. **Namazia and Pashto project branches.** GitHub `main` holds only "Initial commit"; the code is on a feature branch.
+1. **Development status.** ~~SafeBeauty, VELRO, WorkTrack, NerkhTimes, Namazia~~ confirmed active by the owner on 2026-09-23
+   (App Store Connect list). Still open: Talar and AfghanJama (active is inferred from releases), SODER-HAKEM and the Pashto project.
+2. ~~**Product names.**~~ Resolved: keep "AfghanJama" and "Namazia" as the record names (owner, 2026-09-23).
+3. ~~**NerkhTimes backend.**~~ Resolved: Google Sheet via the Apps Script, plus CoinGecko for crypto prices (owner; `admin/Code.gs`).
+4. **Namazia and Pashto project branches.** Checked on GitHub 2026-09-23 (read-only): Namazia's
+   `claude/android-prayer-times-app-yiqx6y` is 73 commits ahead of `main` with PR #1 open; the Pashto project's
+   `claude/new-session-cktx6n` is 2 commits ahead with no PR. Both `main` branches hold only "Initial commit".
+   Merging is the owner's decision; Linumic OS never merges.
 5. ~~**Google Play Console.**~~ Resolved: read on 2026-09-23 (view only), see "Focus: Google Play Console" above.

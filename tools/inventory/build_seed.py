@@ -62,6 +62,18 @@ ASC_ABSENT = ("Not present in the owner's App Store Connect app list (screenshot
 OWNER_ANSWERS = "Owner's answers in the Command Center working session, 2026-09-23"
 
 
+ASC_IOS = ("App Store Connect iPhone app, Apps list, screenshot shared by the owner at 15:01 on 2026-09-23 "
+           "(tools/inventory/evidence/app-store-connect-ios-2026-09-23-1501.png)")
+
+
+def active(app_line):
+    """The owner's answer that the apps in the App Store Connect list are active, with that app's row."""
+    return [owner("\"These are active\" (about the App Store Connect apps list, 2026-09-23)"), src("ownerStatement", ASC_IOS, app_line)]
+
+
+CONFIRMED_ACTIVE = "Confirmed active by the owner on 2026-09-23."
+
+
 def owner(detail):
     return src("ownerStatement", OWNER_ANSWERS, detail)
 
@@ -261,8 +273,8 @@ products.append(product(
     category=fact("Marketplace: beauty-salon booking", "partiallyVerified", [gh("stealth-service-vault-")], "Category wording derived from the repository description."),
     projectType=fact("Monorepo: Android app, iOS app, Firebase Cloud Functions, web admin/provider consoles, Electron desktop wrappers",
                      "verified", [local(f"{SB}/README.md", "\"What's inside\" table"), local(f"{SB}/app/build.gradle.kts"), local(f"{SB}/ios/project.yml")]),
-    status=fact("active", "partiallyVerified", [appstore("https://apps.apple.com/af/app/safebeauty/id6810050614", "Live, v1.0.1 released 2026-09-23"), play("com.security.stealthapp", "Listing page live")],
-                "Live store listings show a public release. Whether the product counts as \"active\" is inferred from them. Please confirm."),
+    status=fact("active", "verified", [appstore("https://apps.apple.com/af/app/safebeauty/id6810050614", "Live, v1.0.1 released 2026-09-23"), play("com.security.stealthapp", "Listing page live")]
+                + active("SafeBeauty: iOS 1.0.1, green check"), CONFIRMED_ACTIVE),
     currentVersion=unknown("Versions differ by platform: iOS 1.0.1 on the App Store, Android versionName 2.1.5 in the build config. The Google Play production version is not readable from the public page. See Platforms and Stores."),
     backend=fact("Firebase: Cloud Functions (Node 22), Firestore and Storage rules. Firebase projects safebeauty (prod) and safebeauty-staging.", "verified",
                  [local(f"{SB}/.firebaserc"), local(f"{SB}/functions/package.json", "name safebeauty-functions"), local(f"{SB}/README.md")]),
@@ -324,8 +336,8 @@ products.append(product(
     category=fact("Transport: intercity ride booking", "partiallyVerified", [gh("velro")], "Category wording derived from the repository description."),
     projectType=fact("Monorepo: FastAPI backend, React staff web panel, Android passenger and driver apps, iOS passenger/driver/ops apps, watchOS companion", "verified",
                      [local(f"{VL}/README.md", "\"one backend and four clients\""), local(f"{VL}/ios/project.yml"), local(f"{VL}/mobile/app-passenger/build.gradle.kts")]),
-    status=fact("active", "partiallyVerified", [appstore("https://apps.apple.com/us/app/velro-ride/id6810899663", "Live, v1.0.0 released 2026-09-13")],
-                "Live App Store listings show a public release. Whether the product counts as \"active\" is inferred from them. Please confirm."),
+    status=fact("active", "verified", [appstore("https://apps.apple.com/us/app/velro-ride/id6810899663", "Live, v1.0.0 released 2026-09-13")]
+                + active("VELRO Driver iOS 1.0.1 and VELRO Ride iOS 1.0.1 (yellow clock); VELRO Ops iOS 1.0 and macOS 1.0 (yellow clock)"), CONFIRMED_ACTIVE),
     currentVersion=fact("1.0.0", "partiallyVerified", [appstore("https://apps.apple.com/us/app/velro-ride/id6810899663", "VELRO Ride v1.0.0"), appstore("https://apps.apple.com/us/app/velro-driver/id6811925434", "VELRO Driver v1.0.0")],
                         "This is the iOS App Store version. Android versions come from Gradle properties and no Google Play listing was found."),
     backend=fact("FastAPI + SQLAlchemy + PostgreSQL, deployed on one VPS with docker-compose and Caddy", "verified",
@@ -385,8 +397,8 @@ products.append(product(
     category=fact("HR and workforce management (HRMS)", "partiallyVerified", [local(f"{WT}/README.md", "\"multi-tenant Workforce Management Platform (HRMS)\"")]),
     projectType=fact("Monorepo: web company console, Android and iOS employee apps, Firebase Cloud Functions backend, Electron desktop shell", "verified",
                      [local(f"{WT}/README.md", "\"Two products, one backend\""), local(f"{WT}/app/build.gradle.kts"), local(f"{WT}/desktop/package.json")]),
-    status=fact("active", "partiallyVerified", [appstore("https://apps.apple.com/us/app/linumic-worktrack/id6810004398", "Live, v1.0 released 2026-09-21")],
-                "A live App Store listing shows a public release. Whether the product counts as \"active\" is inferred from it. Please confirm."),
+    status=fact("active", "verified", [appstore("https://apps.apple.com/us/app/linumic-worktrack/id6810004398", "Live, v1.0 released 2026-09-21")]
+                + active("Linumic WorkTrack: iOS 1.0, green check"), CONFIRMED_ACTIVE),
     currentVersion=unknown("Versions differ by platform: iOS 1.0 on the App Store, Android versionName 1.2.0 in the build config (no Google Play listing found)."),
     backend=fact("Firebase: Cloud Functions in backend/functions. Firebase projects worktrack-prod and worktrack-demo-af.", "verified",
                  [local(f"{WT}/.firebaserc"), local(f"{WT}/backend/functions/package.json", "worktrack-functions")]),
@@ -485,11 +497,13 @@ products.append(product(
     category=fact("Market price information", "partiallyVerified", [gh("NerkhTimes")]),
     projectType=fact("Android app, iOS app, and a Google Apps Script admin dashboard", "verified",
                      [local(f"{NT}/app/build.gradle.kts"), local(f"{NT}/ios/project.yml"), local(f"{NT}/admin/README.md")]),
-    status=fact("active", "partiallyVerified", [appstore("https://apps.apple.com/us/app/%D9%86%D8%B1%D8%AE-%D8%AA%D8%A7%DB%8C%D9%85%D8%B2-nerkh-times/id6810293641", "Live, v1.0"), play("af.market.nerkhtimes", "Listing page live")],
-                "Live store listings show a public release. Whether the product counts as \"active\" is inferred from them. Please confirm."),
+    status=fact("active", "verified", [appstore("https://apps.apple.com/us/app/%D9%86%D8%B1%D8%AE-%D8%AA%D8%A7%DB%8C%D9%85%D8%B2-nerkh-times/id6810293641", "Live, v1.0"), play("af.market.nerkhtimes", "Listing page live")]
+                + active("Nerkh Times - نرخ تایمز: iOS 1.0, green check"), CONFIRMED_ACTIVE),
     currentVersion=unknown("Versions differ by platform: iOS 1.0 on the App Store, Android versionName 1.0.11 in the build config. The Google Play production version is not readable from the public page."),
-    backend=fact("Google Apps Script web app over a Google Sheet (serves ?action=markets and ?action=candles)", "partiallyVerified",
-                 [local(f"{NT}/admin/README.md", "Admin dashboard merged into the existing Apps Script")], "Inferred from the admin README. Please confirm the production data source."),
+    backend=fact("Google Apps Script web app over a Google Sheet (serves ?action=markets and ?action=candles); crypto prices from the CoinGecko API", "verified",
+                 [local(f"{NT}/admin/README.md", "Admin dashboard merged into the existing Apps Script"),
+                  local(f"{NT}/admin/Code.gs", "Fetches https://api.coingecko.com/api/v3/simple/price?ids=…&vs_currencies=usd"),
+                  owner("\"Google Sheet, and an API for cryptocurrency.\"")]),
     website=fact("https://aminullah-dev.github.io/nerkhtimes.github.io/", "verified",
                  [gh("nerkhtimes.github.io", "Landing and privacy-policy pages for the NerkhTimes app"), web("https://aminullah-dev.github.io/nerkhtimes.github.io/", "Title: NerkhTimes (HTTP 200)")],
                  "The GitHub homepage field of the NerkhTimes repo points to the Google Play listing. linumic.com also hosts a NerkhTimes privacy/support page."),
@@ -505,7 +519,8 @@ products.append(product(
                  [local(f"{NT}/app/build.gradle.kts", "applicationId af.market.nerkhtimes, versionName 1.0.11, versionCode 11"), play("af.market.nerkhtimes")]),
         platform("nt-ios", "iOS", "iOS app", "af.market.nerkhtimes", "1.0.0", "verified",
                  [local(f"{NT}/ios/NerkhTimes.xcodeproj", "MARKETING_VERSION 1.0.0"), appstore("https://itunes.apple.com/lookup?bundleId=af.market.nerkhtimes", "Store version 1.0")]),
-        platform("nt-backend", "backend", "Apps Script admin/API", None, None, "partiallyVerified", [local(f"{NT}/admin/README.md")]),
+        platform("nt-backend", "backend", "Apps Script admin/API", None, None, "verified",
+                 [local(f"{NT}/admin/README.md"), local(f"{NT}/admin/Code.gs"), owner("\"Google Sheet, and an API for cryptocurrency.\"")]),
     ],
     storeListings=[
         listing("nt-as", "appStore", "نرخ تایمز - Nerkh Times", "af.market.nerkhtimes",
@@ -527,20 +542,21 @@ NZ = "Android/-Namazia"
 products.append(product(
     "namazia", "Namazia",
     isLinumicProduct=owner_listed(notes="No Linumic reference found in the repository or on linumic.com (/what-we-do/namazia/ returned 404)."),
-    alsoKnownAs=fact(["Afghan Prayer Times"], "verified", [appstore("https://apps.apple.com/us/app/afghan-prayer-times/id6810537640", "Bundle af.namazia.app is listed as \"Afghan Prayer Times\"")]),
+    alsoKnownAs=fact(["Afghan Prayer Times"], "verified", [appstore("https://apps.apple.com/us/app/afghan-prayer-times/id6810537640", "Bundle af.namazia.app is listed as \"Afghan Prayer Times\""),
+                                                           owner("Keep \"Namazia\" and \"AfghanJama\" as the record names; the store names are the same products.")]),
     summary=unknown("The README contains only a title, and GitHub has no description."),
     category=fact("Prayer times", "partiallyVerified",
                   [appstore("https://apps.apple.com/us/app/afghan-prayer-times/id6810537640", "App name Afghan Prayer Times"), local(NZ, "Branch claude/android-prayer-times-app-yiqx6y")]),
     projectType=fact("Android app and iOS app (with widget extension)", "verified", [local(f"{NZ}/app/build.gradle"), local(f"{NZ}/ios/Namazia.xcodeproj")]),
-    status=fact("active", "partiallyVerified", [appstore("https://apps.apple.com/us/app/afghan-prayer-times/id6810537640", "Live, v1.0 released 2026-09-14")],
-                "A live App Store listing shows a public release. Whether the product counts as \"active\" is inferred from it. Please confirm."),
+    status=fact("active", "verified", [appstore("https://apps.apple.com/us/app/afghan-prayer-times/id6810537640", "Live, v1.0 released 2026-09-14")]
+                + active("Afghan Prayer Times: iOS 1.0, green check"), CONFIRMED_ACTIVE),
     currentVersion=unknown("Versions differ by platform: iOS 1.0 on the App Store, Android versionName 1.1.0 in the build config (no Google Play listing found)."),
     backend=unknown(),
     website=unknown("https://linumic.com/what-we-do/namazia/ returned 404. The repository contains a privacy-policy.html."),
     repositories=[repo("-Namazia", "application", ver("verified", [OWNER_LIST, local(f"{NZ}/app/build.gradle", "applicationId af.namazia.app")], "GitHub has no description."),
                        [checkout(NZ, "claude/android-prayer-times-app-yiqx6y", "95aa3fc120b604cd5ec4212f1c330b9d2dc3859c", "2026-09-22T11:37:56-04:00",
                                  "chore: harden .gitignore (ignore app/build, keystores, .env, firebase config)",
-                                 "The app code is on this branch. GitHub main has only \"Initial commit\" and PR #1 is open.")])],
+                                 "The app code is on this branch. Checked on GitHub 2026-09-23: it is 73 commits ahead of main (which has only \"Initial commit\"), 0 behind; PR #1 into main is open, not merged.")])],
     platforms=[
         platform("nz-android", "android", "Android app", "af.namazia.app", "1.1.0", "verified", [local(f"{NZ}/app/build.gradle", "applicationId af.namazia.app, versionName 1.1.0, versionCode 4"),
                   console("Production 1.1.0 (code 4) in review")],
@@ -695,7 +711,7 @@ products.append(product(
     repositories=[repo("The-Digital-Infrastructure-of-the-Pashto-Language", "research",
                        ver("verified", [OWNER_LIST, local(f"{PS}/README.md", "*The Digital Infrastructure of the Pashto Language*")]),
                        [checkout(PS, "claude/new-session-cktx6n", "bfd7bf60b0375f107a864447f60069711c9623fa", "2026-07-27T06:54:17Z", "Add app/: a local web viewer over the library",
-                                 "The code is on this branch. GitHub main has only \"Initial commit\".")])],
+                                 "The code is on this branch. Checked on GitHub 2026-09-23: it is 2 commits ahead of main (which has only \"Initial commit\"), 0 behind; no pull request.")])],
     platforms=[platform("ps-research", "research", "Python library", "pashto-text", "0.1.0", "verified", [local(f"{PS}/pyproject.toml")])],
 ))
 
@@ -714,6 +730,6 @@ unresolved = [
                          owner("\"Explore Afghanistan: sideline.\"")], "Sidelined by the owner.")},
 ]
 
-inventory = {"schemaVersion": 2, "seedRevision": 4, "products": products, "unresolved": unresolved}
+inventory = {"schemaVersion": 2, "seedRevision": 5, "products": products, "unresolved": unresolved}
 OUT.write_text(json.dumps(inventory, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
 print(f"wrote {OUT.relative_to(ROOT)}: {len(products)} products, {len(unresolved)} unresolved items")
