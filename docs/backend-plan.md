@@ -25,12 +25,20 @@ import/export are in place and tested. The app doesn't use it yet: the next step
   that changed. Tested: two identical imports leave the audit log unchanged.
 - Supabase security advisor: **0 findings**.
 
+### App connection (implemented 2026-09-23)
+- The owner enabled the Apple provider (Client ID `com.linumic.commandcenter`).
+- LinumicCore: `SupabaseSessionManager` (native Sign in with Apple via the `id_token` grant with a hashed nonce,
+  Keychain session, auto-refresh), `RemoteInventoryStore` (export/import RPC), and `HybridInventoryStore`
+  (server + local offline cache; the first connection uploads local data; offline edits are pushed at the
+  next sync). No third-party dependency. Only the publishable key is in the app (Info.plist).
+- Settings → Account → Cloud: Sign in with Apple, user ID, sync status, Sync Now, Sign Out.
+- Building a signed app with Sign in with Apple needs Xcode signed in to the owner's Apple ID
+  (Settings → Accounts), so automatic signing can create the provisioning profile.
+
 ### Next
-1. Owner: enable the Apple provider (Authentication → Sign In / Providers → Apple). Client IDs: `com.linumic.commandcenter`.
-2. App: native Sign in with Apple → `auth/v1/token?grant_type=id_token`. Session stored in the Keychain.
-3. After the first sign-in: add the owner's user ID to `app_admins`.
-4. App: `RemoteInventoryStore` (export/import RPC) with the local file as an offline cache, then a first upload of the local inventory.
-5. Later: scheduled GitHub and App Store syncs (Edge Functions + pg_cron); integration keys in Vault.
+1. Owner: sign in to Xcode → Settings → Accounts, then run the app and Sign in with Apple.
+2. Add the owner's user ID to `app_admins` (one SQL insert), after which the first sync uploads the inventory.
+3. Later: scheduled GitHub and App Store syncs (Edge Functions + pg_cron); integration keys in Vault.
 
 ## When to build it
 

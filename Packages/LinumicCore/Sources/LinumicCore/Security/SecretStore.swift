@@ -4,6 +4,8 @@ import Security
 /// Names of stored credentials. Add a case for each new integration. Never store the secret values in code.
 public enum SecretKey: String, CaseIterable, Sendable {
     case gitHubToken = "github.token"
+    /// The signed-in Supabase session (access + refresh token), never written anywhere but the Keychain.
+    case supabaseSession = "supabase.session"
 }
 
 /// Credential storage. Values never appear in source, logs or the inventory file.

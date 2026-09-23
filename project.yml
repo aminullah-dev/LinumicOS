@@ -33,6 +33,9 @@ targets:
         CFBundleDevelopmentRegion: en
         CFBundleLocalizations: [en, fa-AF]
         LSApplicationCategoryType: public.app-category.developer-tools
+        # Supabase backend. The publishable key is designed to ship in apps: row-level security grants nothing without an admin session.
+        LCCSupabaseURL: https://mczuclgfqxffcbiwvecf.supabase.co
+        LCCSupabasePublishableKey: sb_publishable_VET1GRNWjn6DGk6wK5dsOA_-kiGu63k
         UILaunchScreen: {}
         UIApplicationSupportsIndirectInputEvents: true
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
@@ -44,6 +47,7 @@ targets:
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true
         com.apple.security.files.user-selected.read-only: true
+        com.apple.developer.applesignin: [Default]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.linumic.commandcenter
@@ -52,6 +56,7 @@ targets:
         # App Sandbox entitlements are macOS-only; iOS apps are sandboxed by the OS.
         CODE_SIGN_ENTITLEMENTS: ""
         "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]": App/Support/LinumicCommandCenter.entitlements
+        "CODE_SIGN_ENTITLEMENTS[sdk=iphone*]": App/Support/LinumicCommandCenter-iOS.entitlements
         TARGETED_DEVICE_FAMILY: "1,2"
         ENABLE_HARDENED_RUNTIME: YES
         GENERATE_INFOPLIST_FILE: NO

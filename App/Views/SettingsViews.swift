@@ -1,6 +1,7 @@
 #if os(macOS)
 import AppKit
 #endif
+import AuthenticationServices
 import LinumicCore
 import SwiftUI
 
@@ -172,6 +173,82 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     }
 }
 
+/// Sign in with Apple → Supabase. Shows who is signed in, the sync state, and the user ID
+/// that must be added to `app_admins` once.
+private struct CloudAccountSection: View {
+    @Environment(InventoryModel.self) private var model
+    @Environment(\.colorScheme) private var colorScheme
+    @State private var rawNonce = ""
+
+    var body: some View {
+        Section {
+            if !model.isCloudAvailable {
+                Text("Cloud sync isn't configured in this build.").foregroundStyle(.secondary)
+            } else if let user = model.cloudUser {
+                LabeledContent("Signed in") { Text(verbatim: user.email ?? "Apple ID") }
+                LabeledContent("User ID") {
+                    Text(verbatim: user.userID).font(.caption.monospaced()).textSelection(.enabled)
+                }
+                statusRow
+                HStack {
+                    Button {
+                        Task { await model.syncNow() }
+                    } label: {
+                        if model.isSyncing { ProgressView().controlSize(.small) } else { Text("Sync Now") }
+                    }
+                    .disabled(model.isSyncing)
+                    Spacer()
+                    Button("Sign Out", role: .destructive) { Task { await model.signOut() } }
+                }
+            } else {
+                Text("Local only. Sign in to keep the inventory on the Linumic server (Supabase) and use it on Mac and iPhone.")
+                    .foregroundStyle(.secondary)
+                SignInWithAppleButton(.signIn) { request in
+                    rawNonce = AppleSignInNonce.make()
+                    request.requestedScopes = [.email]
+                    request.nonce = AppleSignInNonce.sha256(rawNonce)
+                } onCompletion: { result in
+                    switch result {
+                    case .success(let authorization):
+                        guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
+                              let token = credential.identityToken.flatMap({ String(data: $0, encoding: .utf8) }) else {
+                            model.errorMessage = String(localized: "Apple didn't return an identity token.")
+                            return
+                        }
+                        let nonce = rawNonce
+                        Task { await model.signInWithApple(idToken: token, rawNonce: nonce) }
+                    case .failure(let error):
+                        if (error as? ASAuthorizationError)?.code != .canceled {
+                            model.errorMessage = String(localized: "Sign in failed: \(error.localizedDescription)")
+                        }
+                    }
+                }
+                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                .frame(height: 34)
+            }
+        } header: {
+            Text("Cloud")
+        } footer: {
+            Text("Only accounts added as admins on the server can read or change data. Everything is also kept on this device, so it works offline.")
+        }
+    }
+
+    @ViewBuilder
+    private var statusRow: some View {
+        switch model.cloudStatus {
+        case .synced(let at)?:
+            Label(String(localized: "Synced \(at.formatted(date: .omitted, time: .shortened))"), systemImage: "checkmark.icloud")
+                .foregroundStyle(.green)
+        case .offline(let reason)?:
+            Label(reason, systemImage: "icloud.slash").foregroundStyle(.orange)
+        case .pendingUpload(let reason)?:
+            Label(String(localized: "Changes waiting to upload: \(reason)"), systemImage: "arrow.clockwise.icloud").foregroundStyle(.orange)
+        case nil:
+            Label("Not synced yet", systemImage: "icloud").foregroundStyle(.secondary)
+        }
+    }
+}
+
 struct AccountSettingsView: View {
     @State private var language = AppLanguage.current
     @State private var needsRelaunch = false
@@ -199,12 +276,7 @@ struct AccountSettingsView: View {
             } footer: {
                 Text("Dari uses right-to-left layout, Persian digits and the Solar Hijri calendar with Afghan month names. Recorded evidence (quotes, sources) stays in its original language.")
             }
-            Section {
-                LabeledContent("Mode", value: "Local only")
-                LabeledContent("Signed in", value: "No account. The backend is not built yet.")
-            } footer: {
-                Text("Sign-in and role-based access will be added with the cloud backend.")
-            }
+            CloudAccountSection()
         }
         .formStyle(.grouped)
         .navigationTitle("Account")

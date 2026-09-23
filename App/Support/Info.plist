@@ -25,6 +25,10 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LCCSupabasePublishableKey</key>
+	<string>sb_publishable_VET1GRNWjn6DGk6wK5dsOA_-kiGu63k</string>
+	<key>LCCSupabaseURL</key>
+	<string>https://mczuclgfqxffcbiwvecf.supabase.co</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.developer-tools</string>
 	<key>NSHumanReadableCopyright</key>

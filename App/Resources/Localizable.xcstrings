@@ -651,6 +651,16 @@
         }
       }
     },
+    "Apple didn't return an identity token.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپل توکن هویت برنگرداند."
+          }
+        }
+      }
+    },
     "Application": {
       "localizations": {
         "fa-AF": {
@@ -911,6 +921,16 @@
         }
       }
     },
+    "Changes waiting to upload: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تغییرات در انتظار بارگذاری: %@"
+          }
+        }
+      }
+    },
     "Close and reopen the app to apply the new language.": {
       "localizations": {
         "fa-AF": {
@@ -927,6 +947,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "بسته"
+          }
+        }
+      }
+    },
+    "Cloud": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ابر (سرور)"
+          }
+        }
+      }
+    },
+    "Cloud sync isn't configured in this build.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همگام‌سازی ابری در این نسخه تنظیم نشده است."
           }
         }
       }
@@ -2311,6 +2351,16 @@
         }
       }
     },
+    "Local only. Sign in to keep the inventory on the Linumic server (Supabase) and use it on Mac and iPhone.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط محلی. وارد شوید تا فهرست محصولات روی سرور لینومیک (Supabase) نگهداری شود و در مک و آیفون از آن استفاده کنید."
+          }
+        }
+      }
+    },
     "Local repository": {
       "localizations": {
         "fa-AF": {
@@ -3051,6 +3101,26 @@
         }
       }
     },
+    "Not signed in.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وارد نشده‌اید."
+          }
+        }
+      }
+    },
+    "Not synced yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز همگام نشده"
+          }
+        }
+      }
+    },
     "Not yet confirmed as products": {
       "localizations": {
         "fa-AF": {
@@ -3097,6 +3167,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "خوب"
+          }
+        }
+      }
+    },
+    "Only accounts added as admins on the server can read or change data. Everything is also kept on this device, so it works offline.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط حساب‌هایی که به‌عنوان مدیر در سرور ثبت شده‌اند می‌توانند معلومات را ببینند یا تغییر دهند. همه‌چیز روی همین دستگاه هم نگهداری می‌شود، پس بدون اینترنت هم کار می‌کند."
           }
         }
       }
@@ -4211,6 +4291,16 @@
         }
       }
     },
+    "Server error %ld: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خطای سرور %1$ld: %2$@"
+          }
+        }
+      }
+    },
     "Settings": {
       "localizations": {
         "fa-AF": {
@@ -4271,6 +4361,26 @@
         }
       }
     },
+    "Sign Out": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خروج"
+          }
+        }
+      }
+    },
+    "Sign in failed: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ورود ناکام شد: %@"
+          }
+        }
+      }
+    },
     "Sign-in and role-based access will be added with the cloud backend.": {
       "localizations": {
         "fa-AF": {
@@ -4287,6 +4397,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "واردشده"
+          }
+        }
+      }
+    },
+    "Signed in, but this account doesn't have admin access to the Command Center yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وارد شده‌اید، اما این حساب هنوز دسترسی مدیر به مرکز فرمان ندارد."
           }
         }
       }
@@ -4577,6 +4697,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "سروی"
+          }
+        }
+      }
+    },
+    "Sync Now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اکنون همگام کن"
+          }
+        }
+      }
+    },
+    "Synced %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همگام‌شده %@"
           }
         }
       }
@@ -4917,6 +5057,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "از یک توکن محدود (fine-grained) با دسترسی فقط‌خواندنی Metadata، Contents، Issues، Pull requests و Actions روی مخزن‌های لینومیک استفاده کنید. فقط در Keychain همین مک ذخیره می‌شود."
+          }
+        }
+      }
+    },
+    "User ID": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شناسهٔ کاربر"
           }
         }
       }

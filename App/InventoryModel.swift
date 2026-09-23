@@ -23,13 +23,72 @@ final class InventoryModel {
     private(set) var isSyncingGitHub = false
     private(set) var lastGitHubSync: (at: Date, report: RepositorySync.Report)?
 
-    private let store: InventoryStore
+    /// The active store: the local file, or cloud-plus-local-cache when signed in to Supabase.
+    private var store: InventoryStore
+    private let localStore: InventoryStore
     let secrets: SecretStore
     private var saveTask: Task<Void, Never>?
 
+    // MARK: Cloud (Supabase)
+    static let supabaseConfig: SupabaseConfig? = {
+        guard let url = (Bundle.main.object(forInfoDictionaryKey: "LCCSupabaseURL") as? String).flatMap(URL.init(string:)),
+              let key = Bundle.main.object(forInfoDictionaryKey: "LCCSupabasePublishableKey") as? String, !key.isEmpty
+        else { return nil }
+        return SupabaseConfig(url: url, publishableKey: key)
+    }()
+    private let sessionManager: SupabaseSessionManager?
+    private var hybrid: HybridInventoryStore?
+    private(set) var cloudUser: SupabaseSession?
+    private(set) var cloudStatus: HybridInventoryStore.Status?
+    private(set) var isSyncing = false
+    var isCloudAvailable: Bool { sessionManager != nil }
+
     init(store: InventoryStore, secrets: SecretStore = KeychainSecretStore()) {
         self.store = store
+        self.localStore = store
         self.secrets = secrets
+        self.sessionManager = Self.supabaseConfig.map { SupabaseSessionManager(config: $0, secrets: secrets) }
+    }
+
+    private func useCloud(_ manager: SupabaseSessionManager, config: SupabaseConfig) {
+        let remote = RemoteInventoryStore(config: config, token: { try await manager.accessToken() })
+        let base = (try? JSONFileInventoryStore.defaultFileURL().deletingLastPathComponent()) ?? FileManager.default.temporaryDirectory
+        let h = HybridInventoryStore(local: localStore, remote: remote, pendingFlag: base.appending(path: "pending-upload"))
+        hybrid = h
+        store = h
+    }
+
+    /// Exchanges Apple's identity token for a Supabase session, then syncs. On first connection the local inventory is uploaded.
+    func signInWithApple(idToken: String, rawNonce: String) async {
+        guard let sessionManager, let config = Self.supabaseConfig else { return }
+        do {
+            cloudUser = try await sessionManager.signInWithApple(idToken: idToken, rawNonce: rawNonce)
+            useCloud(sessionManager, config: config)
+            await syncNow()
+        } catch {
+            errorMessage = String(localized: "Sign in failed: \(error.localizedDescription)")
+        }
+    }
+
+    /// Pulls from the server (pushing any pending local edits first) and refreshes the screen.
+    func syncNow() async {
+        guard let hybrid, !isSyncing else { return }
+        isSyncing = true
+        defer { isSyncing = false }
+        do {
+            if let inventory = try await hybrid.load() { apply(inventory) }
+        } catch {
+            errorMessage = String(localized: "Could not load inventory: \(error.localizedDescription)")
+        }
+        cloudStatus = await hybrid.status
+    }
+
+    func signOut() async {
+        await sessionManager?.signOut()
+        cloudUser = nil
+        hybrid = nil
+        cloudStatus = nil
+        store = localStore
     }
 
     private(set) var isSyncingAppStore = false
@@ -84,6 +143,11 @@ final class InventoryModel {
     /// Loads the stored inventory. On first launch it seeds from the verified seed file.
     /// A file from an older schema is archived (never deleted) and replaced by the current seed.
     func load() async {
+        if let sessionManager, let config = Self.supabaseConfig, let session = await sessionManager.current {
+            cloudUser = session
+            useCloud(sessionManager, config: config)
+        }
+        defer { Task { if let hybrid { cloudStatus = await hybrid.status } } }
         do {
             if let inventory = try await store.load() {
                 apply(inventory)
@@ -195,10 +259,14 @@ final class InventoryModel {
     private func persist() {
         let snapshot = Inventory(seedRevision: seedRevision, products: products, unresolved: unresolved, market: market, content: content)
         let previous = saveTask
-        saveTask = Task { [store] in
+        saveTask = Task { [store, hybrid] in
             await previous?.value
             do {
                 try await store.save(snapshot)
+                if let hybrid {
+                    let status = await hybrid.status
+                    await MainActor.run { self.cloudStatus = status }
+                }
             } catch {
                 await MainActor.run { self.errorMessage = String(localized: "Could not save inventory: \(error.localizedDescription)") }
             }

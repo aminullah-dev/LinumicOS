@@ -5,6 +5,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: cloud sign-in and sync (Supabase)
+- Sign in with Apple (native, nonce-protected) → Supabase session in the Keychain with auto-refresh.
+- `RemoteInventoryStore` + `HybridInventoryStore`: the server is the source of truth with a local offline cache.
+  The first connection uploads the local inventory, and offline edits upload at the next sync.
+- Settings → Account → Cloud section (English + Dari). 11 new tests (66 total).
+
 ### Added: Supabase backend foundation
 - Project `linumic-command-center` (ca-central-1, Free). Migrations in `supabase/migrations/`.
 - Schema mirroring the model, with the evidence rules as database constraints, admin-only row-level security,
