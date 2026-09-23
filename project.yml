@@ -1,4 +1,4 @@
-name: LinumicCommandCenter
+name: LinumicOS
 options:
   bundleIdPrefix: com.linumic
   deploymentTarget:
@@ -18,7 +18,7 @@ packages:
   LinumicCore:
     path: Packages/LinumicCore
 targets:
-  LinumicCommandCenter:
+  LinumicOS:
     type: application
     platform: auto
     supportedDestinations: [macOS, iOS]
@@ -29,7 +29,8 @@ targets:
     info:
       path: App/Support/Info.plist
       properties:
-        CFBundleDisplayName: Linumic Command Center
+        CFBundleDisplayName: Linumic OS
+        CFBundleName: Linumic OS
         CFBundleDevelopmentRegion: en
         CFBundleLocalizations: [en, fa-AF]
         LSApplicationCategoryType: public.app-category.developer-tools
@@ -42,7 +43,7 @@ targets:
         UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         NSHumanReadableCopyright: © Linumic
     entitlements:
-      path: App/Support/LinumicCommandCenter.entitlements
+      path: App/Support/LinumicOS.entitlements
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true
@@ -51,12 +52,12 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.linumic.commandcenter
-        PRODUCT_NAME: LinumicCommandCenter
+        PRODUCT_NAME: LinumicOS
         CODE_SIGN_STYLE: Automatic
         # App Sandbox entitlements are macOS-only; iOS apps are sandboxed by the OS.
         CODE_SIGN_ENTITLEMENTS: ""
-        "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]": App/Support/LinumicCommandCenter.entitlements
-        "CODE_SIGN_ENTITLEMENTS[sdk=iphone*]": App/Support/LinumicCommandCenter-iOS.entitlements
+        "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]": App/Support/LinumicOS.entitlements
+        "CODE_SIGN_ENTITLEMENTS[sdk=iphone*]": App/Support/LinumicOS-iOS.entitlements
         TARGETED_DEVICE_FAMILY: "1,2"
         ENABLE_HARDENED_RUNTIME: YES
         GENERATE_INFOPLIST_FILE: NO

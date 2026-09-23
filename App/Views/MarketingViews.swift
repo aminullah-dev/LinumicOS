@@ -1,7 +1,7 @@
 import LinumicCore
 import SwiftUI
 
-/// Drafts, approval and schedule for social posts. The Command Center never posts anything.
+/// Drafts, approval and schedule for social posts. Linumic OS never posts anything.
 /// "Published" is recorded by a person, with the link to the live post.
 struct ContentCalendarView: View {
     @Environment(InventoryModel.self) private var model

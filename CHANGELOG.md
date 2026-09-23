@@ -5,6 +5,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed: renamed to Linumic OS
+- The product, app display name, Xcode project, target, scheme and product (`LinumicOS.app`), UI text, Dari
+  translations, release script and docs. The GitHub repository was renamed to `aminullah-dev/LinumicOS`.
+- Kept stable on purpose: bundle ID `com.linumic.commandcenter` (signing, Sign in with Apple, sandbox data), the
+  Keychain service, the `Application Support/LinumicCommandCenter` folder, applied Supabase migrations, and evidence text
+  recorded before the rename. In-app owner confirmations recorded under the old name are still recognised.
+
 ### Added: cloud sign-in and sync (Supabase)
 - Sign in with Apple (native, nonce-protected) → Supabase session in the Keychain with auto-refresh.
 - `RemoteInventoryStore` + `HybridInventoryStore`: the server is the source of truth with a local offline cache.

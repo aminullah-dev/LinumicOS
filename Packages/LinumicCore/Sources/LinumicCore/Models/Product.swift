@@ -336,7 +336,7 @@ extension Inventory {
             if p.provenance.source == Provenance.manualEntry().source { return true }
             if !p.releases.isEmpty || !p.roadmap.isEmpty || !p.issues.isEmpty || !p.deployments.isEmpty { return true }
             let sources = p.allVerifications.flatMap(\.sources) + p.fieldStates.flatMap(\.verification.sources)
-            if sources.contains(where: { $0.reference == Source.ownerConfirmationReference }) { return true }
+            if sources.contains(where: { $0.reference == Source.ownerConfirmationReference || Source.legacyOwnerConfirmationReferences.contains($0.reference) }) { return true }
         }
         return false
     }

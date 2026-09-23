@@ -128,7 +128,7 @@ struct ProductListView: View {
         ) { product in
             Button("Delete", role: .destructive) { model.delete(product.id) }
         } message: { _ in
-            Text("This removes the product and all of its records from the Command Center. It does not touch any repository or store.")
+            Text("This removes the product and all of its records from Linumic OS. It does not touch any repository or store.")
         }
     }
 }

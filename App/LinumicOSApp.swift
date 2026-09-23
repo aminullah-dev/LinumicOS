@@ -2,7 +2,7 @@ import LinumicCore
 import SwiftUI
 
 @main
-struct LinumicCommandCenterApp: App {
+struct LinumicOSApp: App {
     @State private var model: InventoryModel
     @State private var router = Router()
 
@@ -23,7 +23,7 @@ struct LinumicCommandCenterApp: App {
     }
 
     var body: some Scene {
-        WindowGroup("Linumic Command Center") {
+        WindowGroup("Linumic OS") {
             ContentView()
                 .environment(\.layoutDirection, Self.layoutDirection)
                 .environment(model)

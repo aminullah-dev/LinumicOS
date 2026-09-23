@@ -1,7 +1,7 @@
 import LinumicCore
 import SwiftUI
 
-/// Question answering over Command Center records only. Each statement is labelled
+/// Question answering over Linumic OS records only. Each statement is labelled
 /// Verified, Derived or Unknown and shows its basis. No language model is connected.
 struct AssistantView: View {
     @Environment(InventoryModel.self) private var model

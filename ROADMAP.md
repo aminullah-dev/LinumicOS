@@ -1,6 +1,6 @@
-# Command Center Roadmap
+# Linumic OS Roadmap
 
-This is the roadmap for the Command Center itself. Product roadmaps live inside
+This is the roadmap for Linumic OS itself. Product roadmaps live inside
 the app.
 
 ## Phase 1: MVP foundation (in progress)

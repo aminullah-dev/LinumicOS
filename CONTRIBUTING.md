@@ -21,7 +21,7 @@ Small, verifiable steps:
 1. Describe the change.
 2. Implement it.
 3. `swift test --package-path Packages/LinumicCore`
-4. `xcodegen generate && xcodebuild -project LinumicCommandCenter.xcodeproj -scheme LinumicCommandCenter build`
+4. `xcodegen generate && xcodebuild -project LinumicOS.xcodeproj -scheme LinumicOS build`
 5. Update docs and `CHANGELOG.md`.
 6. Commit with a meaningful message.
 

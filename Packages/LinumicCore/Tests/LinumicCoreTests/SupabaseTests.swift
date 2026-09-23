@@ -99,7 +99,7 @@ struct RemoteInventoryStoreTests {
     }
 
     @Test func nonAdminIsReportedAsNotAuthorized() async {
-        let t = Recorder { _ in (403, #"{"code":"42501","message":"Not authorised: Linumic Command Center admins only"}"#) }
+        let t = Recorder { _ in (403, #"{"code":"42501","message":"Not authorised: Linumic OS admins only"}"#) }
         await #expect(throws: SupabaseError.notAuthorized) {
             try await RemoteInventoryStore(config: config, transport: t, token: { "x" }).load()
         }

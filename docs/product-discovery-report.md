@@ -12,7 +12,7 @@
 | App Store Connect | The owner's app-list screenshot (`tools/inventory/evidence/app-store-connect-apps-2026-09-23.png`) |
 | Google Play | Public listing pages by application ID |
 
-Every fact in the Command Center carries its source and date, and can be regenerated with `python3 tools/inventory/build_seed.py`. Folder names were **not** used as evidence for platforms: platforms come from build configuration, store listings or release assets.
+Every fact in Linumic OS carries its source and date, and can be regenerated with `python3 tools/inventory/build_seed.py`. Folder names were **not** used as evidence for platforms: platforms come from build configuration, store listings or release assets.
 
 Verification states used throughout:
 
@@ -130,7 +130,7 @@ Resolved during discovery, so they are no longer open questions:
 | Project | Why |
 |---|---|
 | Coursework and learning repositories (`The-Tech-Academy*`, `python-1-to-30`, `HTML-and-CSS-Projects`, `CSS-Bootstrap`, `JavaScript-Projects`, `bootstrap4_project`, `basic-html-website`, `project`, `Six-Part-Assignment`, `myConsoleProject`, `FinalProjectModule`, `CodeFirstStudentDemo`, `Student-Portal`, `My-College`, `MyMusicSite`, `Portfolio`, `virtual_dr`, `Insurance`, `Sm_p`, `queue-appointments-en-fr`, `HTML-documents`) | Created 2025-06 → 2026-01, before any product repository. Descriptions where present say so ("HTML & CSS Course…", "About The Tech Academy"). Not inspected in depth. |
-| **Kabul Signal** (kabulsignal.com, `kabul-signal-android`) | A separate organization (Kabul Signal Media Organization, a Canadian not-for-profit, per its own About and Masthead pages). **Removed from the Command Center at the owner's instruction on 2026-09-23.** |
+| **Kabul Signal** (kabulsignal.com, `kabul-signal-android`) | A separate organization (Kabul Signal Media Organization, a Canadian not-for-profit, per its own About and Masthead pages). **Removed from Linumic OS at the owner's instruction on 2026-09-23.** |
 
 ---
 
@@ -141,7 +141,7 @@ Resolved during discovery, so they are no longer open questions:
 | Tailor ERP identity | "KhayatYar is the same as AfghanJama." | AfghanJama = Tailor ERP (owner-confirmed). The website conflict is resolved. |
 | Darzi (Tailoring-Workshop-ERP) | "Move Darzi to the sidelines for now." | Priority: Sidelined. It's left out of attention lists. |
 | Legal owner | "The owner is me; Linumic is only the mother (umbrella) of the projects." | Legal owner: Aminullah Hashemi, on every product |
-| Gul-E-Lala | "Remove." | Removed from the Command Center |
+| Gul-E-Lala | "Remove." | Removed from Linumic OS |
 | Radar-system, Explore Afghanistan | "Sideline." | Sidelined. No question pending. |
 | MediFlow | "A medical system; it matters." | Category: Medical. Priority: High. |
 | SODER-HAKEM | "It's a book." | Category: book (reader app for the owner's Pashto book) |

@@ -1,4 +1,8 @@
-# Linumic Command Center
+# Linumic OS
+
+*Formerly "Linumic Command Center" (renamed 2026-09-23). Stable identifiers kept on purpose: bundle ID
+`com.linumic.commandcenter`, the Keychain service, the `Application Support/LinumicCommandCenter` data folder,
+and this local folder.*
 
 Private management system for the Linumic software ecosystem: products,
 repositories, platforms, versions, releases, roadmap, issues, deployments,
@@ -32,18 +36,18 @@ LinumicCommandCenter/
 swift test --package-path Packages/LinumicCore
 
 # Generate the Xcode project and open it
-xcodegen generate && open LinumicCommandCenter.xcodeproj
+xcodegen generate && open LinumicOS.xcodeproj
 
 # iOS / iPadOS (Simulator)
-xcodegen generate && xcodebuild -project LinumicCommandCenter.xcodeproj -scheme LinumicCommandCenter \
+xcodegen generate && xcodebuild -project LinumicOS.xcodeproj -scheme LinumicOS \
   -destination 'generic/platform=iOS Simulator' build
 
 # Signed, notarised macOS release (see the script header for the one-time notarytool profile)
 tools/release/build-release.sh
 
 # Or build from the command line
-xcodegen generate && xcodebuild -project LinumicCommandCenter.xcodeproj \
-  -scheme LinumicCommandCenter -configuration Debug build
+xcodegen generate && xcodebuild -project LinumicOS.xcodeproj \
+  -scheme LinumicOS -configuration Debug build
 ```
 
 The app stores its data at
@@ -66,7 +70,7 @@ find strings with no Dari translation.
 
 - [ARCHITECTURE.md](ARCHITECTURE.md): system design and module boundaries
 - [PRODUCTS.md](PRODUCTS.md): product data model
-- [ROADMAP.md](ROADMAP.md): Command Center roadmap
+- [ROADMAP.md](ROADMAP.md): Linumic OS roadmap
 - [CHANGELOG.md](CHANGELOG.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md): working rules
 - [docs/product-inventory.md](docs/product-inventory.md): current inventory with sources

@@ -45,7 +45,7 @@ import/export are in place and tested. The app doesn't use it yet: the next step
 
 Any one of these makes the backend worth building:
 
-1. More than one person needs the Command Center (roles, audit log).
+1. More than one person needs Linumic OS (roles, audit log).
 2. The inventory is needed on a second device (iPhone/iPad or web).
 3. Integrations need credentials that shouldn't live on one laptop (App Store Connect `.p8`,
    Google Play service account, social OAuth, AI provider keys).

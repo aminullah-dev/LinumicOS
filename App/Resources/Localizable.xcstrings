@@ -991,12 +991,12 @@
         }
       }
     },
-    "Confirmed by the owner in Linumic Command Center": {
+    "Confirmed by the owner in Linumic OS": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "تأییدشده توسط مالک در مرکز فرمان لینومیک"
+            "value": "تأییدشده توسط مالک در Linumic OS"
           }
         }
       }
@@ -1901,12 +1901,12 @@
         }
       }
     },
-    "I can only answer from Command Center records. Try one of: %@, or name a product.": {
+    "I can only answer from Linumic OS records. Try one of: %@, or name a product.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "من فقط از سوابق مرکز فرمان پاسخ می‌دهم. یکی از این‌ها را امتحان کنید: %@، یا نام یک محصول را بنویسید."
+            "value": "من فقط از سوابق Linumic OS پاسخ می‌دهم. یکی از این‌ها را امتحان کنید: %@، یا نام یک محصول را بنویسید."
           }
         }
       }
@@ -2261,12 +2261,12 @@
         }
       }
     },
-    "Linumic Command Center": {
+    "Linumic OS": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "مرکز فرمان لینومیک"
+            "value": "Linumic OS"
           }
         }
       }
@@ -3921,12 +3921,12 @@
         }
       }
     },
-    "Release record in the Command Center (manual entry)": {
+    "Release record in Linumic OS (manual entry)": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "سابقهٔ انتشار در مرکز فرمان (ثبت دستی)"
+            "value": "سابقهٔ انتشار در Linumic OS (ثبت دستی)"
           }
         }
       }
@@ -3961,12 +3961,12 @@
         }
       }
     },
-    "Releases are recorded manually. There's no release tracking outside the Command Center yet.": {
+    "Releases are recorded manually. There's no release tracking outside Linumic OS yet.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "انتشارها دستی ثبت می‌شوند. هنوز پیگیری انتشار بیرون از مرکز فرمان وجود ندارد."
+            "value": "انتشارها دستی ثبت می‌شوند. هنوز پیگیری انتشار بیرون از Linumic OS وجود ندارد."
           }
         }
       }
@@ -4401,12 +4401,12 @@
         }
       }
     },
-    "Signed in, but this account doesn't have admin access to the Command Center yet.": {
+    "Signed in, but this account doesn't have admin access to Linumic OS yet.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "وارد شده‌اید، اما این حساب هنوز دسترسی مدیر به مرکز فرمان ندارد."
+            "value": "وارد شده‌اید، اما این حساب هنوز دسترسی مدیر به Linumic OS ندارد."
           }
         }
       }
@@ -4871,22 +4871,22 @@
         }
       }
     },
-    "This only records the repository. The Command Center never pushes, merges or deletes anything.": {
+    "This only records the repository. Linumic OS never pushes, merges or deletes anything.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "این فقط مخزن را ثبت می‌کند. مرکز فرمان هرگز چیزی را push، ادغام یا حذف نمی‌کند."
+            "value": "این فقط مخزن را ثبت می‌کند. Linumic OS هرگز چیزی را push، ادغام یا حذف نمی‌کند."
           }
         }
       }
     },
-    "This removes the product and all of its records from the Command Center. It does not touch any repository or store.": {
+    "This removes the product and all of its records from Linumic OS. It does not touch any repository or store.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "این کار محصول و همهٔ سوابقش را از مرکز فرمان حذف می‌کند. به هیچ مخزن یا فروشگاهی دست نمی‌زند."
+            "value": "این کار محصول و همهٔ سوابقش را از Linumic OS حذف می‌کند. به هیچ مخزن یا فروشگاهی دست نمی‌زند."
           }
         }
       }

@@ -1,7 +1,7 @@
 import CryptoKit
 import Foundation
 
-// Minimal Supabase client for the Command Center: native Sign in with Apple (GoTrue id_token
+// Minimal Supabase client for Linumic OS: native Sign in with Apple (GoTrue id_token
 // grant), session refresh, and the two inventory RPCs. No third-party dependency.
 // Only the *publishable* key is used here. The service-role key never belongs in the app.
 
@@ -39,7 +39,7 @@ public enum SupabaseError: Error, LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .notSignedIn: L("Not signed in.")
-        case .notAuthorized: L("Signed in, but this account doesn't have admin access to the Command Center yet.")
+        case .notAuthorized: L("Signed in, but this account doesn't have admin access to Linumic OS yet.")
         case .server(let status, let message): LF("Server error %ld: %@", status, message)
         }
     }

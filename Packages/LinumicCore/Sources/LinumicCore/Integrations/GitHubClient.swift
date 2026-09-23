@@ -100,7 +100,7 @@ public struct GitHubClient: RepositoryHostClient {
         request.httpMethod = "GET"
         request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
         request.setValue("2022-11-28", forHTTPHeaderField: "X-GitHub-Api-Version")
-        request.setValue("LinumicCommandCenter", forHTTPHeaderField: "User-Agent")
+        request.setValue("LinumicOS", forHTTPHeaderField: "User-Agent")
         if let token { request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization") }
 
         let (data, response) = try await transport.send(request)

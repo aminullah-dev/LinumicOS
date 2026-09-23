@@ -174,7 +174,7 @@ public enum ContentKind: String, Codable, CaseIterable, Sendable, Identifiable {
     }
 }
 
-/// Publishing workflow. Nothing is posted by the Command Center: "published" is recorded by a
+/// Publishing workflow. Nothing is posted by Linumic OS: "published" is recorded by a
 /// person after they publish, and only once the post was approved.
 public enum ContentStatus: String, Codable, CaseIterable, Sendable, Identifiable {
     case idea, draft, inReview, approved, scheduled, published, cancelled

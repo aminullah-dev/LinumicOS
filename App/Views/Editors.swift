@@ -50,7 +50,7 @@ struct VerificationDraft {
     var newKind: SourceKind = .ownerStatement
     var newReference = ""
     var newDetail = ""
-    /// Adds "confirmed by the owner in the Command Center" as a source on save.
+    /// Adds "confirmed by the owner in Linumic OS" as a source on save.
     var recordOwnerConfirmation = false
 
     init(_ v: Verification) {
@@ -307,7 +307,7 @@ struct RepositoryEditor: View {
                     ForEach(RepositoryType.allCases) { Text($0.title).tag($0) }
                 }
                 TextField("Notes", text: $draft.notes, axis: .vertical).lineLimit(1...4)
-                Text("This only records the repository. The Command Center never pushes, merges or deletes anything.")
+                Text("This only records the repository. Linumic OS never pushes, merges or deletes anything.")
                     .font(.caption).foregroundStyle(.secondary)
             }
             Text("Evidence that this repository belongs to the product:").font(.caption).foregroundStyle(.secondary)

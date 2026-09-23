@@ -1,6 +1,6 @@
 # Security Architecture
 
-The Command Center will hold credentials that can publish apps, push code and
+Linumic OS will hold credentials that can publish apps, push code and
 post as Linumic, so it is treated as a production system.
 
 ## Threat model (summary)

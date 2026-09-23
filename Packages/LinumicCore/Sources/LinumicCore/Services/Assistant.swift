@@ -46,7 +46,7 @@ public struct AssistantAnswer: Sendable {
     public var statements: [AssistantStatement]
 }
 
-/// Answers questions about Linumic **only** from the Command Center's records. It never uses
+/// Answers questions about Linumic **only** from Linumic OS's records. It never uses
 /// general knowledge, never guesses, and labels every statement Verified, Derived or Unknown.
 /// It's a deterministic engine: no language model is involved.
 public struct Assistant: Sendable {
@@ -113,7 +113,7 @@ public struct Assistant: Sendable {
         case .marketNeeds: marketNeeds()
         case .productStatus(let id): productStatus(id)
         case .unrecognized:
-            [AssistantStatement(LF("I can only answer from Command Center records. Try one of: %@, or name a product.", Self.suggestedQuestions.map(L).joined(separator: " · ")),
+            [AssistantStatement(LF("I can only answer from Linumic OS records. Try one of: %@, or name a product.", Self.suggestedQuestions.map(L).joined(separator: " · ")),
                                 .unknown, basis: L("No matching question type"))]
         }
         return AssistantAnswer(question: question, intent: intent, statements: statements)
@@ -153,7 +153,7 @@ public struct Assistant: Sendable {
         for p in inventory.products {
             for r in p.releases where r.stage == .blocked {
                 result.append(AssistantStatement(LF("%@ %@ (%@) is blocked.", p.name, r.version, r.platform.title), .verified, productID: p.id,
-                                                 basis: L("Release record in the Command Center (manual entry)") + (r.notes.isEmpty ? "" : ": \(r.notes)")))
+                                                 basis: L("Release record in Linumic OS (manual entry)") + (r.notes.isEmpty ? "" : ": \(r.notes)")))
             }
             for l in p.storeListings where l.latestSubmittedVersion != nil && (l.reviewStatus ?? "").lowercased().contains("pending") {
                 result.append(AssistantStatement(LF("%@ %@ is pending in App Store Connect. That's awaiting Apple, not recorded as blocked.", l.appName ?? p.name, l.latestSubmittedVersion!),
@@ -166,7 +166,7 @@ public struct Assistant: Sendable {
         let withoutReleases = inventory.products.filter { $0.releases.isEmpty }.map(\.name)
         if !withoutReleases.isEmpty {
             result.append(AssistantStatement(LF("No release records exist for %ld products (%@), so their release state is unknown.", withoutReleases.count, withoutReleases.joined(separator: L(", "))),
-                                             .unknown, basis: L("Releases are recorded manually. There's no release tracking outside the Command Center yet.")))
+                                             .unknown, basis: L("Releases are recorded manually. There's no release tracking outside Linumic OS yet.")))
         }
         return result
     }

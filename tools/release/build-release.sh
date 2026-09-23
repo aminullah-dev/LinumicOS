@@ -1,32 +1,32 @@
 #!/bin/zsh
-# Builds a Developer ID–signed, notarised release of Linumic Command Center for macOS.
+# Builds a Developer ID–signed, notarised release of Linumic OS for macOS.
 #
 #   tools/release/build-release.sh
 #
-# Notarisation needs a stored notarytool profile named "LinumicCommandCenter". Create it once
+# Notarisation needs a stored notarytool profile named "LinumicOS". Create it once
 # (your Apple ID and an app-specific password from appleid.apple.com; they're stored in your Keychain, not here):
 #
-#   xcrun notarytool store-credentials LinumicCommandCenter --apple-id <your Apple ID> --team-id 27RXPRW77S
+#   xcrun notarytool store-credentials LinumicOS --apple-id <your Apple ID> --team-id 27RXPRW77S
 #
 # Without the profile the script still produces a signed zip and says it isn't notarised.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
-PROFILE=LinumicCommandCenter
+PROFILE=LinumicOS
 OUT=build/Release
 VERSION=$(grep -m1 'MARKETING_VERSION' project.yml | sed -E 's/.*"([^"]+)".*/\1/')
 # Remove only this script's own outputs. A copy of the app you've unzipped here (and may be running) is left alone.
-mkdir -p "$OUT" && rm -rf "$OUT/LinumicCommandCenter.xcarchive" "$OUT/export" "$OUT"/LinumicCommandCenter-*.zip
+mkdir -p "$OUT" && rm -rf "$OUT/LinumicOS.xcarchive" "$OUT/export" "$OUT"/LinumicOS-*.zip
 
 xcodegen generate >/dev/null
 swift test --package-path Packages/LinumicCore >/dev/null
-xcodebuild -project LinumicCommandCenter.xcodeproj -scheme LinumicCommandCenter -configuration Release -destination 'generic/platform=macOS' \
-  -archivePath "$OUT/LinumicCommandCenter.xcarchive" -allowProvisioningUpdates archive | tail -1
-xcodebuild -exportArchive -archivePath "$OUT/LinumicCommandCenter.xcarchive" -exportPath "$OUT/export" \
+xcodebuild -project LinumicOS.xcodeproj -scheme LinumicOS -configuration Release -destination 'generic/platform=macOS' \
+  -archivePath "$OUT/LinumicOS.xcarchive" -allowProvisioningUpdates archive | tail -1
+xcodebuild -exportArchive -archivePath "$OUT/LinumicOS.xcarchive" -exportPath "$OUT/export" \
   -exportOptionsPlist tools/release/ExportOptions.plist -allowProvisioningUpdates | tail -1
 
-APP="$OUT/export/LinumicCommandCenter.app"
-ZIP="$OUT/LinumicCommandCenter-$VERSION.zip"
+APP="$OUT/export/LinumicOS.app"
+ZIP="$OUT/LinumicOS-$VERSION.zip"
 codesign --verify --deep --strict "$APP"
 ditto -c -k --keepParent "$APP" "$ZIP"
 
