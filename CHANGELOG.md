@@ -5,6 +5,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Stores
+- App Store and Google Play screens list every recorded listing with its evidence.
+- Public App Store refresh (`AppStoreLookupClient`, `StoreSync`): live version, seller and
+  storefront from Apple's public lookup, with no credentials. Unpublished apps are reported
+  and never overwritten.
+
 ### Added: GitHub integration (read-only)
 - `GitHubClient` (GET only) and `RepositorySync`: repository metadata, latest commit,
   releases, open PRs and issues, languages and CI conclusion, stamped with `fetchedAt`.

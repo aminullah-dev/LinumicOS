@@ -1,6 +1,7 @@
 # Integrations
 
-**Connected:** GitHub (read-only). **Not connected:** everything else. Each one is added
+**Connected:** GitHub (read-only) and the public App Store lookup (read-only, no credentials).
+**Not connected:** App Store Connect, Google Play Console, social networks, AI providers. Each one is added
 only when explicit credentials and authorization are provided.
 
 ## Principles
@@ -43,7 +44,19 @@ only when explicit credentials and authorization are provided.
 - **Forbidden without explicit per-action approval:** push, merge, delete branch, close issue,
   edit settings. None of these exist in the code.
 
-## Apple App Store Connect (Phase 4)
+## App Store public lookup (implemented, read-only)
+
+- `AppStoreLookupClient` + `StoreSync.refreshAppStore` call
+  `https://itunes.apple.com/lookup?bundleId=…&country=…` (US first, then AF) for each App
+  Store listing's bundle ID. They update the live version, app name, URL, seller and
+  storefront, and add a dated App Store source. Owner evidence is kept.
+- An app missing from the public store (for example, still in review) is **reported, never
+  written as a fact**, and its record is left unchanged.
+- In the app: Stores → App Store → **Refresh Public Status** (⌘R).
+- Limits: public data only. There are no review states, no pending versions and no TestFlight;
+  those need App Store Connect.
+
+## Apple App Store Connect (Phase 4, not connected)
 
 - App Store Connect API with an API key (`.p8`). The key is never committed
   (`*.p8` is in `.gitignore`). It is stored in the Keychain, later on the backend.
@@ -51,7 +64,7 @@ only when explicit credentials and authorization are provided.
 - Data: production version, latest submitted build, review state, TestFlight
   build state.
 
-## Google Play Console (Phase 4)
+## Google Play Console (Phase 4, not connected)
 
 - Google Play Developer API through a service account with read-only access
   to the listed apps. The JSON key is never committed.

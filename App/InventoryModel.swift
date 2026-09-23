@@ -28,6 +28,25 @@ final class InventoryModel {
         self.secrets = secrets
     }
 
+    private(set) var isSyncingAppStore = false
+    private(set) var lastAppStoreSync: (at: Date, report: StoreSync.Report)?
+
+    /// Refreshes public App Store data (version, seller, URL) for every App Store listing. No credentials are used.
+    func refreshAppStore() async {
+        guard !isSyncingAppStore else { return }
+        isSyncingAppStore = true
+        defer { isSyncingAppStore = false }
+        let (updated, report) = await StoreSync.refreshAppStore(products, using: AppStoreLookupClient())
+        for product in updated {
+            update(product.id) { current in
+                for listing in product.storeListings where listing.store == .appStore {
+                    if let i = current.storeListings.firstIndex(where: { $0.id == listing.id }) { current.storeListings[i] = listing }
+                }
+            }
+        }
+        lastAppStoreSync = (.now, report)
+    }
+
     /// Refreshes every GitHub repository snapshot, read-only. Without a token only public repositories succeed.
     func refreshGitHub() async {
         guard !isSyncingGitHub else { return }

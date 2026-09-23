@@ -29,8 +29,9 @@ the app.
 
 ## Phase 4: Stores
 
-- [ ] App Store Connect API (read-only status)
-- [ ] Google Play Developer API (read-only status)
+- [x] Store listings screens and the public App Store lookup refresh (no credentials)
+- [ ] App Store Connect API (read-only status). Needs an API key (.p8) from the owner.
+- [ ] Google Play Developer API (read-only status). Needs a service account from the owner.
 
 ## Phase 5: Marketing
 

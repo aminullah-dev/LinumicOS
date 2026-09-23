@@ -71,10 +71,8 @@ struct ContentView: View {
         case .deployments: AllDeploymentsView()
         case .builds:
             NotIntegratedView(item: item, message: "Build status will come from CI (GitHub Actions) once the read-only GitHub integration is connected.")
-        case .appStore:
-            NotIntegratedView(item: item, message: "App Store Connect integration is planned (read-only). Store fields can be recorded manually on each product's Stores tab.")
-        case .googlePlay:
-            NotIntegratedView(item: item, message: "Google Play Developer API integration is planned (read-only). Store fields can be recorded manually on each product's Stores tab.")
+        case .appStore: StoreListingsView(store: .appStore)
+        case .googlePlay: StoreListingsView(store: .googlePlay)
         case .socialMedia:
             NotIntegratedView(item: item, message: "LinkedIn, Facebook, Instagram, X and YouTube will be managed here. Publishing will always require approval.")
         case .contentCalendar:

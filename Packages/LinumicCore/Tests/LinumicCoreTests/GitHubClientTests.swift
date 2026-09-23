@@ -116,3 +116,53 @@ struct GitHubClientTests {
         print("LIVE \(snap.slug): \(snap.visibility?.rawValue ?? "?") branch=\(snap.defaultBranch) commit=\(snap.latestCommit?.sha.prefix(7) ?? "-") releases=\(snap.releaseCount ?? -1) PRs=\(snap.openPullRequests ?? -1) issues=\(snap.openIssues ?? -1) CI=\(snap.ciConclusion?.rawValue ?? "-") langs=\(snap.languages.prefix(3))")
     }
 }
+
+// MARK: - App Store public lookup (TEST FIXTURES only)
+
+private final class LookupStub: HTTPTransport, @unchecked Sendable {
+    let bodies: [String: String]  // "bundle|country" -> JSON
+    init(_ bodies: [String: String]) { self.bodies = bodies }
+    func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        let items = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)!.queryItems!
+        let key = "\(items.first { $0.name == "bundleId" }!.value!)|\(items.first { $0.name == "country" }!.value!)"
+        let body = bodies[key] ?? #"{"resultCount":0,"results":[]}"#
+        return (Data(body.utf8), HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!)
+    }
+}
+
+@Suite("App Store public lookup")
+struct AppStoreLookupTests {
+    @Test func refreshUpdatesListingAndFallsBackToAfghanStorefront() async {
+        let owner = Source(kind: .ownerStatement, reference: "screenshot")
+        let products = [Product(id: "s", name: "SAMPLE", storeListings: [
+            StoreListing(store: .appStore, appIdentifier: "sample.af.only", verification: Verification(status: .partiallyVerified, sources: [owner], verifiedAt: Date(timeIntervalSince1970: 0))),
+            StoreListing(store: .appStore, appIdentifier: "sample.pending"),
+            StoreListing(store: .googlePlay, appIdentifier: "sample.android"),
+        ])]
+        let stub = LookupStub(["sample.af.only|af": #"{"resultCount":1,"results":[{"trackName":"Sample","version":"1.2","currentVersionReleaseDate":"2026-09-20T07:00:00Z","trackViewUrl":"https://apps.apple.com/af/app/sample/id1?uo=4","sellerName":"SAMPLE SELLER"}]}"#])
+        let now = Date(timeIntervalSince1970: 1_790_000_000)
+        let (updated, report) = await StoreSync.refreshAppStore(products, using: AppStoreLookupClient(transport: stub), now: now)
+        #expect(report.updated == ["sample.af.only"])
+        #expect(report.notPublic == ["sample.pending"])
+        let l = updated[0].storeListings[0]
+        #expect(l.productionVersion == "1.2")
+        #expect(l.storefront == "AF")
+        #expect(l.url?.absoluteString == "https://apps.apple.com/af/app/sample/id1")
+        #expect(l.verification.status == .verified)
+        #expect(l.verification.sources.contains(owner), "owner evidence is kept")
+        #expect(l.verification.sources.count { $0.kind == .appStore } == 1)
+        // A not-public listing is left exactly as it was.
+        #expect(updated[0].storeListings[1] == products[0].storeListings[1])
+        #expect(updated[0].storeListings[2] == products[0].storeListings[2])
+    }
+
+    /// Live check against Apple's public lookup. Runs only when LCC_LIVE_APPSTORE=1.
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["LCC_LIVE_APPSTORE"] == "1"))
+    func liveLookup() async throws {
+        let client = AppStoreLookupClient()
+        for (bundle, country) in [("app.worktrack", "us"), ("com.safebeauty.app", "af"), ("af.velro.ops", "us")] {
+            let r = try await client.lookup(bundleID: bundle, country: country)
+            print("LIVE \(bundle) [\(country)]: \(r.map { "\($0.trackName) v\($0.version) seller=\($0.seller ?? "-")" } ?? "not public")")
+        }
+    }
+}
