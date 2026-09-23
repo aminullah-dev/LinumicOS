@@ -1,7 +1,36 @@
 # Backend Plan
 
-**Status:** planned, not built. On 2026-09-23 the owner decided: the server comes later, on **Supabase or Firebase** (to be bought then).
-Until then the Mac app stores everything locally (sandboxed JSON file plus Keychain).
+**Status (2026-09-23):** the owner chose **Supabase**. The project is created, and the schema, security and
+import/export are in place and tested. The app doesn't use it yet: the next step is Sign in with Apple, then
+`RemoteInventoryStore`.
+
+| | |
+|---|---|
+| Organization | `mjkdmjrjalelcmqwdwok` (Free plan) |
+| Project | `linumic-command-center`, ref `mczuclgfqxffcbiwvecf`, region **ca-central-1** |
+| API URL | `https://mczuclgfqxffcbiwvecf.supabase.co` |
+| Migrations | `supabase/migrations/` (applied: core_schema, inventory_import_export, private_is_admin) |
+
+### What's built
+- Tables mirroring the model: products (facts as JSON, validated), repositories, platforms, store_listings, releases,
+  roadmap_items, issues, deployments, unresolved_items, market_sources/evidence/findings (plus the join table),
+  content_items, inventory_meta.
+- **Evidence rules enforced by the database:** a VERIFIED / PARTIALLY VERIFIED fact needs a source and a date; a
+  derived finding needs a method; evidence needs a source and a collection date; a published or scheduled post
+  needs approval (and a link, if published). Tested: every violation is rejected.
+- **Row-level security** on every table. Only users listed in `app_admins` can read or write. Tested: the anon
+  key and signed-in non-admins see 0 rows, and export is refused. `private.is_admin()` isn't exposed through the API.
+- **Append-only `audit_events`**, written by trigger: who, what, when, before and after.
+- `export_inventory()` / `import_inventory(doc)` RPCs in the app's exact JSON shape. Import only touches rows
+  that changed. Tested: two identical imports leave the audit log unchanged.
+- Supabase security advisor: **0 findings**.
+
+### Next
+1. Owner: enable the Apple provider (Authentication → Sign In / Providers → Apple). Client IDs: `com.linumic.commandcenter`.
+2. App: native Sign in with Apple → `auth/v1/token?grant_type=id_token`. Session stored in the Keychain.
+3. After the first sign-in: add the owner's user ID to `app_admins`.
+4. App: `RemoteInventoryStore` (export/import RPC) with the local file as an offline cache, then a first upload of the local inventory.
+5. Later: scheduled GitHub and App Store syncs (Edge Functions + pg_cron); integration keys in Vault.
 
 ## When to build it
 

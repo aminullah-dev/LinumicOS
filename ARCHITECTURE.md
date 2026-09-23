@@ -32,7 +32,7 @@ Not installed: Docker, pnpm, Supabase CLI, AWS/Azure CLIs.
 | Persistence (MVP) | Codable JSON file behind `InventoryStore` | Portable, inspectable, and the same DTO shape a future REST API returns. SwiftData was avoided so the domain model isn't tied to Apple persistence. |
 | Project generation | XcodeGen (`project.yml`) | Reviewable project definition, no merge conflicts in `.pbxproj` |
 | Secrets | macOS Keychain via `SecretStore` | See [docs/security.md](docs/security.md) |
-| Cloud backend | **Later: Supabase or Firebase** (owner, 2026-09-23). Plan and API contract: [docs/backend-plan.md](docs/backend-plan.md) | Needed for multi-user, multi-device and server-held credentials |
+| Cloud backend | **Supabase** (Postgres, RLS, audit), project `mczuclgfqxffcbiwvecf`, ca-central-1. See [docs/backend-plan.md](docs/backend-plan.md) | Relational data, server-side rules and roles; the app will switch to it through `InventoryStore` |
 
 ## Modules
 

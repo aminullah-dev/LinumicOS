@@ -30,7 +30,16 @@ post as Linumic, so it is treated as a production system.
 - **Local data** (`inventory.json`) sits inside the sandbox container and is
   protected by FileVault at rest. It holds no secrets.
 
-## Backend phase
+## Backend (Supabase, created 2026-09-23)
+
+- Row-level security on every table. Only `app_admins` members can read or write. The admin check lives in the
+  non-exposed `private` schema.
+- Data rules are enforced in the database (see backend-plan.md). The client can't bypass them.
+- `audit_events` is append-only (no update/delete policies) and written by a security-definer trigger.
+- Keys: the app will use only the **publishable** key and the user's session. The service-role key is never put in
+  the app or the repository.
+
+## Backend phase (design)
 
 - **Authentication:** Sign in with Apple or passkeys for Linumic staff, with
   short-lived access tokens. The Mac client keeps its refresh token in the Keychain.

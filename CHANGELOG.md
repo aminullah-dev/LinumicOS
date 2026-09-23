@@ -5,6 +5,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Supabase backend foundation
+- Project `linumic-command-center` (ca-central-1, Free). Migrations in `supabase/migrations/`.
+- Schema mirroring the model, with the evidence rules as database constraints, admin-only row-level security,
+  an append-only audit log, and whole-inventory export/import RPCs in the app's JSON shape. All tested;
+  the security advisor is clean.
+- The app isn't connected yet (next: Sign in with Apple and RemoteInventoryStore).
+
 ### Added: Google Play Console data (seed revision 3)
 - Read in the owner's Chrome, view only: production versions for SafeBeauty (2.1.5) and NerkhTimes (1.0.10), Afghan
   Prayer Times 1.1.0 in production review, and WorkTrack and VELRO Driver/Ride in closed testing. Each is recorded with
