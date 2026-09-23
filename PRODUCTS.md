@@ -1,54 +1,84 @@
 # Product Data Model
 
-The current inventory (which products exist and what is known about them) is in
-[docs/product-inventory.md](docs/product-inventory.md). This file describes the
-**shape** of a product record, defined in
-`Packages/LinumicCore/Sources/LinumicCore/Models/`.
+The current inventory and its evidence are in [docs/product-inventory.md](docs/product-inventory.md)
+and [docs/product-discovery-report.md](docs/product-discovery-report.md). This file describes the
+**shape** of the records, defined in `Packages/LinumicCore/Sources/LinumicCore/Models/`.
+Schema version: **2**.
 
-The known product list is **not assumed to be complete**. Products are added
-through the app or the seed file, never hard-coded in Swift.
+The product list isn't assumed to be complete. Products are added in the app or in
+`tools/inventory/build_seed.py`, never hard-coded in Swift.
+
+## Evidence: `Fact`, `Verification`, `Source`
+
+Every important field is a `Fact<Value>`:
+
+```text
+Fact<Value>
+├── value          Value?        nil = unknown (never a guess)
+└── verification   Verification
+    ├── status     verified | partiallyVerified | unknown | conflicting
+    ├── sources    [Source]      kind + exact reference + observedAt + detail
+    ├── verifiedAt Date?
+    └── notes      String
+```
+
+`Source.kind` is one of `ownerStatement`, `localRepository`, `gitHub`, `website`, `appStore` or `googlePlay`.
+
+Integrity rules, enforced by `integrityIssues`, the tests and the editors:
+- VERIFIED or PARTIALLY VERIFIED requires at least one source and a verification date.
+- VERIFIED or PARTIALLY VERIFIED requires a value, and an UNKNOWN fact must not carry one.
+- CONFLICTING requires at least two sources, or a note explaining the conflict.
+
+A product's overall status rolls up its key fields, platforms, repository links and store
+listings: any CONFLICTING makes it conflicting, all VERIFIED makes it verified, nothing
+verified makes it unknown, and anything else is partially verified.
 
 ## Product
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | String (stable slug) | e.g. `safe-beauty` |
-| `name` | String | |
-| `summary` | String? | description, `nil` = unknown |
-| `category` | String? | free text until a taxonomy is agreed |
-| `status` | `ProductStatus` | `unknown`, `idea`, `development`, `active`, `maintenance`, `paused`, `retired` |
-| `repositories` | [`RepositoryRecord`] | |
-| `platforms` | [`Platform`] | `macOS`, `iOS`, `iPadOS`, `android`, `web`, `windows`, `linux`, `backend` |
-| `currentVersion` | String? | latest version released to production |
-| `nextVersion` | String? | |
-| `backend` | String? | free text description of backend/hosting |
-| `website` | URL? | |
-| `appStore` | `StoreListing`? | |
-| `googlePlay` | `StoreListing`? | |
-| `roadmap` | [`RoadmapItem`] | |
-| `issues` | [`IssueRecord`] | manual now, GitHub-synced later |
-| `releases` | [`Release`] | |
-| `deployments` | [`Deployment`] | |
-| `documentation` | [`DocumentLink`] | |
-| `socialAccounts` | [`SocialAccount`] | |
-| `analytics` | [`DocumentLink`] | links to analytics dashboards; metrics ingestion is later |
-| `notes` | String | |
-| `provenance` | `Provenance` | source and timestamp of the record |
+| Field | Type |
+|---|---|
+| `id`, `name` | String |
+| `isLinumicProduct` | Fact<Bool> |
+| `alsoKnownAs` | Fact<[String]>: store names, app titles, working names |
+| `summary`, `category`, `projectType`, `backend` | Fact<String> |
+| `status` | Fact<ProductStatus>: idea, development, active, maintenance, paused, retired |
+| `currentVersion`, `nextVersion` | Fact<String> |
+| `website` | Fact<URL> |
+| `repositories` | [RepositoryRecord]: **many per product** |
+| `platforms` | [PlatformRecord]: each with its own evidence |
+| `storeListings` | [StoreListing]: many per store (e.g. separate passenger and driver apps) |
+| `releases`, `roadmap`, `issues`, `deployments` | manual records |
+| `documentation`, `analytics`, `socialAccounts` | links |
+| `notes`, `provenance` | who created the record and when |
 
-## Release
+## RepositoryRecord
 
-`version`, `buildNumber?`, `platform`, `environment` (`development`, `staging`,
-`production`), `stage`, `isReleaseCandidate`, `releaseDate?`, `notes`.
+`name`, `owner`, `url`, `host` (github/other), **`type`**, **`link`** (a `Verification` that this
+repository belongs to the product), `gitHub` (read-only `RepositorySnapshot`: visibility,
+description, homepage, default branch, latest commit, release count and latest release,
+open PRs and issues, languages, `fetchedAt`), `localCheckouts` (path, branch, last commit,
+observed date) and `notes`.
 
-`ReleaseStage`: `planning → development → internalTesting → beta → review →
-released → deprecated`, plus `blocked` (a release that can't move forward).
+`RepositoryType`: `monorepo`, `application`, `backend`, `website`, `releases`, `documentation`,
+`research`, `infrastructure`, `marketing` or `unknown`. Unrecognised values decode as `unknown`.
 
-## Other records
+## PlatformRecord
 
-- **RepositoryRecord**: `name`, `url?`, `defaultBranch?`, `host` (`github`, `other`)
-- **RoadmapItem**: `title`, `detail`, `status` (`idea`, `planned`, `inProgress`, `done`, `dropped`), `targetVersion?`, `targetDate?`
-- **IssueRecord**: `title`, `severity` (`low`, `medium`, `high`, `critical`), `isOpen`, `url?`
-- **Deployment**: `environment`, `target`, `status` (`unknown`, `healthy`, `degraded`, `failed`, `inProgress`), `version?`, `deployedAt?`
-- **StoreListing**: `url?`, `productionVersion?`, `latestSubmittedVersion?`, `reviewStatus?`, `lastChecked?`
-- **SocialAccount**: `network`, `handle`, `url?`
-- **Provenance**: `source`, `recordedAt`
+`platform` (`android`, `iOS`, `macOS`, `windows`, `web`, `backend`, `desktop`, `watchOS`,
+`research`, `unknown`), `component`, `identifier` (bundle or application ID), `sourceVersion`
+(from the build config) and `verification`. Evidence must be a build file, a store listing or
+a release asset. A folder name doesn't count.
+
+## StoreListing
+
+`store` (appStore or googlePlay), `appName`, `appIdentifier`, `url`, `storefront`, `seller`,
+`productionVersion`, `latestSubmittedVersion`, `reviewStatus` and `verification`.
+
+## UnresolvedItem
+
+Projects found during discovery that aren't confirmed products: `kind` (possibleProduct or
+unresolvedRepository), `location`, `findings`, `question` and `verification`.
+
+## Release, RoadmapItem, IssueRecord, Deployment
+
+Unchanged from schema 1. See `Records.swift`.

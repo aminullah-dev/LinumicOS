@@ -12,7 +12,8 @@ the app.
 - [x] macOS app: sidebar navigation, dashboard, product list/detail/edit
 - [x] Manual version, release, repository and roadmap records
 - [x] Keychain `SecretStore`, `RepositoryHostClient` interface
-- [ ] Fill in the product facts marked UNKNOWN (owner: Linumic)
+- [x] Verified product inventory: evidence model, discovery report, verification UI
+- [ ] Owner answers the questions in docs/product-discovery-report.md
 
 ## Phase 2: GitHub (read-only)
 

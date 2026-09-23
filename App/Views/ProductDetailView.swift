@@ -2,27 +2,29 @@ import LinumicCore
 import SwiftUI
 
 enum ProductTab: String, CaseIterable, Identifiable {
-    case overview = "Overview", releases = "Releases", repositories = "Repos", roadmap = "Roadmap",
-         issues = "Issues", deployments = "Deploys", stores = "Stores", links = "Links"
+    case overview = "Overview", platforms = "Platforms", repositories = "Repos", stores = "Stores",
+         releases = "Releases", roadmap = "Roadmap", issues = "Issues", deployments = "Deploys", links = "Links"
     var id: String { rawValue }
 }
 
-/// Which record editor sheet is open. The ID is `nil` when adding a new record.
+/// Which editor sheet is open. A `nil` ID means adding a new record.
 enum RecordEditing: Identifiable {
     case product
-    case release(UUID?), repository(UUID?), roadmap(UUID?), issue(UUID?), deployment(UUID?)
-    case appStore, googlePlay
+    case field(ProductField)
+    case platform(UUID?), repository(UUID?), storeListing(UUID?)
+    case release(UUID?), roadmap(UUID?), issue(UUID?), deployment(UUID?)
 
     var id: String {
         switch self {
         case .product: "product"
-        case .release(let id): "release-\(id?.uuidString ?? "new")"
+        case .field(let f): "field-\(f.rawValue)"
+        case .platform(let id): "platform-\(id?.uuidString ?? "new")"
         case .repository(let id): "repo-\(id?.uuidString ?? "new")"
+        case .storeListing(let id): "listing-\(id?.uuidString ?? "new")"
+        case .release(let id): "release-\(id?.uuidString ?? "new")"
         case .roadmap(let id): "roadmap-\(id?.uuidString ?? "new")"
         case .issue(let id): "issue-\(id?.uuidString ?? "new")"
         case .deployment(let id): "deployment-\(id?.uuidString ?? "new")"
-        case .appStore: "appStore"
-        case .googlePlay: "googlePlay"
         }
     }
 }
@@ -53,9 +55,9 @@ struct ProductDetailView: View {
             }
             .navigationTitle(product.name)
             .toolbar {
-                Button { editing = .product } label: { Label("Edit", systemImage: "pencil") }
+                Button { editing = .product } label: { Label("Edit Name & Notes", systemImage: "pencil") }
                     .keyboardShortcut("e")
-                    .help("Edit product (⌘E)")
+                    .help("Edit name and notes (⌘E). Edit each fact from its row.")
             }
             .sheet(item: $editing) { editor(for: $0, product: product) }
         } else {
@@ -64,15 +66,22 @@ struct ProductDetailView: View {
     }
 
     private func header(_ p: Product) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .firstTextBaseline) {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Text(p.name).font(.largeTitle.weight(.semibold))
-                StatusBadge(text: p.status.title, color: p.status.color)
+                VerificationBadge(status: p.overallVerification)
             }
-            Text("Source: \(p.provenance.source) · recorded \(p.provenance.recordedAt.shortDate)")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .textSelection(.enabled)
+            HStack(spacing: 12) {
+                let pending = p.needsConfirmation
+                let conflicts = pending.filter { $0.verification.status == .conflicting }.count
+                if conflicts > 0 {
+                    Label("\(conflicts) conflicting", systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red)
+                }
+                Label("\(pending.count) item\(pending.count == 1 ? "" : "s") need your confirmation", systemImage: "person.badge.clock")
+                    .foregroundStyle(pending.isEmpty ? Color.secondary : Color.orange)
+                Text("Last verified \(p.lastVerifiedAt?.shortDate ?? "never")").foregroundStyle(.secondary)
+            }
+            .font(.callout)
         }
         .padding(20)
     }
@@ -80,7 +89,36 @@ struct ProductDetailView: View {
     @ViewBuilder
     private func tabContent(_ p: Product) -> some View {
         switch tab {
-        case .overview: OverviewTab(product: p)
+        case .overview: OverviewTab(product: p) { editing = .field($0) }
+        case .platforms:
+            RecordSection(title: "Platforms", items: p.platforms,
+                          empty: "No platforms recorded. Add one only with evidence such as a build file or a store listing, not a folder name.",
+                          onAdd: { editing = .platform(nil) }, onEdit: { editing = .platform($0.id) },
+                          onDelete: { r in model.update(p.id) { $0.platforms.removeAll { $0.id == r.id } } }) { pl in
+                HStack(alignment: .firstTextBaseline) {
+                    Text(pl.platform.title).bold().frame(width: 80, alignment: .leading)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(pl.component ?? "—")
+                        if let id = pl.identifier { Text(id).font(.caption.monospaced()).foregroundStyle(.secondary) }
+                    }
+                    Spacer()
+                    if let v = pl.sourceVersion { Text("build \(v)").font(.callout.monospacedDigit()).foregroundStyle(.secondary) }
+                    EvidenceButton(verification: pl.verification)
+                }
+            }
+        case .repositories:
+            RecordSection(title: "Repositories", items: p.repositories, empty: "No repositories recorded.",
+                          onAdd: { editing = .repository(nil) }, onEdit: { editing = .repository($0.id) },
+                          onDelete: { r in model.update(p.id) { $0.repositories.removeAll { $0.id == r.id } } }) { r in
+                RepositoryRow(repository: r)
+            }
+        case .stores:
+            RecordSection(title: "Store listings", items: p.storeListings,
+                          empty: "No store listings recorded. Unknown whether this product is on the App Store or Google Play.",
+                          onAdd: { editing = .storeListing(nil) }, onEdit: { editing = .storeListing($0.id) },
+                          onDelete: { r in model.update(p.id) { $0.storeListings.removeAll { $0.id == r.id } } }) { l in
+                StoreListingRow(listing: l)
+            }
         case .releases:
             RecordSection(title: "Releases", items: p.releases.sorted { ($0.releaseDate ?? .distantFuture) > ($1.releaseDate ?? .distantFuture) },
                           empty: "No releases recorded.", onAdd: { editing = .release(nil) },
@@ -95,18 +133,6 @@ struct ProductDetailView: View {
                     Spacer()
                     if let d = r.releaseDate { Text(d.shortDate).foregroundStyle(.secondary) }
                     StatusBadge(text: r.stage.title, color: r.stage.color)
-                }
-            }
-        case .repositories:
-            RecordSection(title: "Repositories", items: p.repositories, empty: "No repositories recorded.",
-                          onAdd: { editing = .repository(nil) }, onEdit: { editing = .repository($0.id) },
-                          onDelete: { r in model.update(p.id) { $0.repositories.removeAll { $0.id == r.id } } }) { r in
-                HStack {
-                    Image(systemName: "externaldrive.connected.to.line.below")
-                    Text(r.name).bold()
-                    if let url = r.url { Link(url.absoluteString, destination: url).font(.callout) }
-                    Spacer()
-                    Text(r.defaultBranch ?? "branch unknown").foregroundStyle(.secondary)
                 }
             }
         case .roadmap:
@@ -150,13 +176,6 @@ struct ProductDetailView: View {
                     StatusBadge(text: d.status.title, color: d.status.color)
                 }
             }
-        case .stores:
-            VStack(alignment: .leading, spacing: 16) {
-                StoreBox(title: "App Store", listing: p.appStore) { editing = .appStore }
-                StoreBox(title: "Google Play", listing: p.googlePlay) { editing = .googlePlay }
-                Text("Values here are entered by hand. Live store status needs the App Store Connect / Google Play integrations, which are not connected.")
-                    .font(.caption).foregroundStyle(.secondary)
-            }
         case .links:
             LinksTab(product: p)
         }
@@ -167,30 +186,29 @@ struct ProductDetailView: View {
         switch editing {
         case .product:
             ProductEditor(product: p) { model.upsert($0) }
+        case .field(let field):
+            FactEditor(field: field, state: p.state(of: field)) { text, verification in
+                var updated = p
+                guard updated.setField(field, text: text, verification: verification) else { return false }
+                model.upsert(updated)
+                return true
+            }
+        case .platform(let id):
+            PlatformEditor(record: p.platforms.first { $0.id == id }) { r in model.update(p.id) { $0.platforms.upsert(r) } }
+        case .repository(let id):
+            RepositoryEditor(repository: p.repositories.first { $0.id == id }) { r in model.update(p.id) { $0.repositories.upsert(r) } }
+        case .storeListing(let id):
+            StoreListingEditor(listing: p.storeListings.first { $0.id == id }) { l in model.update(p.id) { $0.storeListings.upsert(l) } }
         case .release(let id):
-            ReleaseEditor(release: p.releases.first { $0.id == id }, defaultPlatform: p.platforms.first ?? .macOS) { r in
+            ReleaseEditor(release: p.releases.first { $0.id == id }, defaultPlatform: p.platforms.first?.platform ?? .unknown) { r in
                 model.update(p.id) { $0.releases.upsert(r) }
             }
-        case .repository(let id):
-            RepositoryEditor(repository: p.repositories.first { $0.id == id }) { r in
-                model.update(p.id) { $0.repositories.upsert(r) }
-            }
         case .roadmap(let id):
-            RoadmapEditor(item: p.roadmap.first { $0.id == id }) { r in
-                model.update(p.id) { $0.roadmap.upsert(r) }
-            }
+            RoadmapEditor(item: p.roadmap.first { $0.id == id }) { r in model.update(p.id) { $0.roadmap.upsert(r) } }
         case .issue(let id):
-            IssueEditor(issue: p.issues.first { $0.id == id }) { r in
-                model.update(p.id) { $0.issues.upsert(r) }
-            }
+            IssueEditor(issue: p.issues.first { $0.id == id }) { r in model.update(p.id) { $0.issues.upsert(r) } }
         case .deployment(let id):
-            DeploymentEditor(deployment: p.deployments.first { $0.id == id }) { r in
-                model.update(p.id) { $0.deployments.upsert(r) }
-            }
-        case .appStore:
-            StoreListingEditor(title: "App Store", listing: p.appStore) { l in model.update(p.id) { $0.appStore = l } }
-        case .googlePlay:
-            StoreListingEditor(title: "Google Play", listing: p.googlePlay) { l in model.update(p.id) { $0.googlePlay = l } }
+            DeploymentEditor(deployment: p.deployments.first { $0.id == id }) { r in model.update(p.id) { $0.deployments.upsert(r) } }
         }
     }
 }
@@ -201,68 +219,137 @@ extension Array where Element: Identifiable {
     }
 }
 
+/// Every product fact on one row: label, value (or Unknown), verification badge with evidence, and Edit.
 private struct OverviewTab: View {
     let product: Product
+    let onEdit: (ProductField) -> Void
 
     var body: some View {
-        Grid(alignment: .leadingFirstTextBaseline, horizontalSpacing: 16, verticalSpacing: 10) {
-            row("Description") { ValueOrUnknown(value: product.summary) }
-            row("Category") { ValueOrUnknown(value: product.category) }
-            row("Platforms") {
-                ValueOrUnknown(value: product.platforms.isEmpty ? nil : product.platforms.map(\.title).joined(separator: ", "))
+        VStack(alignment: .leading, spacing: 16) {
+            Grid(alignment: .leadingFirstTextBaseline, horizontalSpacing: 14, verticalSpacing: 12) {
+                ForEach(product.fieldStates) { state in
+                    GridRow {
+                        Text(state.field.title).foregroundStyle(.secondary).gridColumnAlignment(.trailing)
+                        VStack(alignment: .leading, spacing: 3) {
+                            if state.field == .website, let text = state.displayValue, let url = URL(string: text) {
+                                Link(text, destination: url)
+                            } else {
+                                ValueOrUnknown(value: state.displayValue)
+                            }
+                            if !state.verification.notes.isEmpty {
+                                Text(state.verification.notes).font(.caption).foregroundStyle(.secondary)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                        EvidenceButton(verification: state.verification)
+                            .gridColumnAlignment(.leading)
+                        Button("Edit…") { onEdit(state.field) }
+                            .buttonStyle(.borderless)
+                    }
+                }
             }
-            row("Current version") { ValueOrUnknown(value: product.currentVersion) }
-            row("Next version") { ValueOrUnknown(value: product.nextVersion) }
-            row("Backend") { ValueOrUnknown(value: product.backend) }
-            row("Website") {
-                if let url = product.website { Link(url.absoluteString, destination: url) } else { UnknownLabel() }
+            if !product.notes.isEmpty {
+                GroupBox("Notes") {
+                    Text(product.notes).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
-            row("Notes") {
-                Text(product.notes.isEmpty ? "—" : product.notes)
-                    .textSelection(.enabled)
-                    .foregroundStyle(product.notes.isEmpty ? .secondary : .primary)
+            let issues = product.integrityIssues
+            if !issues.isEmpty {
+                GroupBox {
+                    VStack(alignment: .leading, spacing: 4) {
+                        ForEach(issues, id: \.self) { Text($0).font(.caption) }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                } label: {
+                    Label("Record problems", systemImage: "exclamationmark.octagon").foregroundStyle(.red)
+                }
             }
-        }
-    }
-
-    private func row<V: View>(_ label: String, @ViewBuilder value: () -> V) -> some View {
-        GridRow {
-            Text(label).foregroundStyle(.secondary).gridColumnAlignment(.trailing)
-            value()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
 
-private struct StoreBox: View {
-    let title: String
-    let listing: StoreListing?
-    let onEdit: () -> Void
+private struct RepositoryRow: View {
+    let repository: RepositoryRecord
 
     var body: some View {
-        GroupBox {
-            VStack(alignment: .leading, spacing: 6) {
-                if let l = listing {
-                    LabeledContent("Listing URL") {
-                        if let url = l.url { Link(url.absoluteString, destination: url) } else { UnknownLabel() }
-                    }
-                    LabeledContent("Production version") { ValueOrUnknown(value: l.productionVersion) }
-                    LabeledContent("Latest submitted") { ValueOrUnknown(value: l.latestSubmittedVersion) }
-                    LabeledContent("Review status") { ValueOrUnknown(value: l.reviewStatus) }
-                    LabeledContent("Last checked") { ValueOrUnknown(value: l.lastChecked?.shortDate) }
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .firstTextBaseline) {
+                Image(systemName: repository.host == .github ? "externaldrive.connected.to.line.below" : "folder")
+                if let url = repository.url {
+                    Link(repository.gitHubSlug ?? repository.name, destination: url).bold()
                 } else {
-                    Text("No listing recorded. Unknown whether this product is on \(title).")
-                        .foregroundStyle(.secondary)
+                    Text(repository.name).bold()
+                }
+                StatusBadge(text: repository.type.title, color: .indigo)
+                if let vis = repository.gitHub?.visibility { StatusBadge(text: vis.title, color: vis == .public ? .teal : .gray) }
+                Spacer()
+                Text("Link").font(.caption).foregroundStyle(.secondary)
+                EvidenceButton(verification: repository.link)
+            }
+            if let gh = repository.gitHub {
+                Text(gh.description ?? "No GitHub description").font(.callout).foregroundStyle(.secondary)
+                HStack(spacing: 14) {
+                    Label(gh.defaultBranch, systemImage: "arrow.triangle.branch")
+                    if let c = gh.latestCommit {
+                        Label("\(String(c.sha.prefix(7))) \(c.date?.shortDate ?? "")", systemImage: "circle.dotted")
+                            .help(c.message)
+                    }
+                    Label("\(gh.releaseCount.map(String.init) ?? "?") releases\(gh.latestRelease.map { " · latest \($0.tag)" } ?? "")", systemImage: "tag")
+                    Label("\(gh.openPullRequests.map(String.init) ?? "?") PRs", systemImage: "arrow.triangle.pull")
+                    Label("\(gh.openIssues.map(String.init) ?? "?") issues", systemImage: "exclamationmark.circle")
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                HStack {
+                    if !gh.languages.isEmpty {
+                        Text(gh.languages.prefix(5).joined(separator: " · ")).font(.caption)
+                    }
+                    Spacer()
+                    Text("GitHub snapshot \(gh.fetchedAt.shortDate)").font(.caption2).foregroundStyle(.tertiary)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        } label: {
-            HStack {
-                Text(title).font(.headline)
-                Spacer()
-                Button(listing == nil ? "Record listing…" : "Edit…", action: onEdit)
+            ForEach(repository.localCheckouts) { c in
+                VStack(alignment: .leading, spacing: 1) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "laptopcomputer").font(.caption)
+                        Text(c.path).font(.caption.monospaced()).textSelection(.enabled)
+                        if let b = c.branch { Text("on \(b)").font(.caption).foregroundStyle(.secondary) }
+                    }
+                    if let commit = c.lastCommit {
+                        Text("\(String(commit.sha.prefix(7))) \(commit.date?.shortDate ?? "") — \(commit.message)")
+                            .font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                    }
+                    if !c.notes.isEmpty { Text(c.notes).font(.caption).foregroundStyle(.orange) }
+                }
             }
+            if !repository.notes.isEmpty { Text(repository.notes).font(.caption).foregroundStyle(.secondary) }
+        }
+    }
+}
+
+private struct StoreListingRow: View {
+    let listing: StoreListing
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .firstTextBaseline) {
+                Image(systemName: listing.store == .appStore ? "applelogo" : "play.rectangle")
+                Text(listing.appName ?? "Unnamed app").bold()
+                if let id = listing.appIdentifier { Text(id).font(.caption.monospaced()).foregroundStyle(.secondary) }
+                Spacer()
+                EvidenceButton(verification: listing.verification)
+            }
+            HStack(spacing: 14) {
+                Text("Live: \(listing.productionVersion ?? "unknown")")
+                if let s = listing.latestSubmittedVersion { Text("Submitted: \(s)") }
+                if let r = listing.reviewStatus { Text(r) }
+                if let sf = listing.storefront { Text("Storefront: \(sf)") }
+                if let seller = listing.seller { Text("Seller: \(seller)") }
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            if let url = listing.url { Link(url.absoluteString, destination: url).font(.caption) }
         }
     }
 }
@@ -323,8 +410,8 @@ struct RecordSection<Item: Identifiable, Row: View>: View {
                 VStack(spacing: 0) {
                     ForEach(items) { item in
                         row(item)
-                            .padding(.vertical, 6)
-                            .padding(.horizontal, 8)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 10)
                             .contentShape(Rectangle())
                             .onTapGesture(count: 2) { onEdit(item) }
                             .contextMenu {
@@ -335,7 +422,8 @@ struct RecordSection<Item: Identifiable, Row: View>: View {
                     }
                 }
                 .background(.background.secondary, in: RoundedRectangle(cornerRadius: 8))
-                Text("Double-click a row to edit. Right-click for more actions.").font(.caption).foregroundStyle(.tertiary)
+                Text("Double-click a row to edit. Right-click for more actions. Click a badge to see its evidence.")
+                    .font(.caption).foregroundStyle(.tertiary)
             }
         }
     }

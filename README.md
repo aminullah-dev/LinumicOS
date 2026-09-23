@@ -15,7 +15,8 @@ LinumicCommandCenter/
 ├── App/                        SwiftUI macOS client (UI only, no business logic)
 ├── Packages/LinumicCore/       Platform-neutral domain models, persistence, services, tests
 │   └── Sources/LinumicCore/Resources/seed-inventory.json
-└── docs/                       Product inventory, integrations, security, market intelligence
+├── tools/inventory/            Seed generator + read-only evidence snapshots
+└── docs/                       Product inventory, discovery report, integrations, security, market intelligence
 ```
 
 ## Requirements
@@ -39,9 +40,9 @@ xcodegen generate && xcodebuild -project LinumicCommandCenter.xcodeproj \
 
 The app stores its data at
 `~/Library/Containers/com.linumic.commandcenter/Data/Library/Application Support/LinumicCommandCenter/inventory.json`.
-On first launch it is seeded from `seed-inventory.json`, which holds only
-verified facts (product names and GitHub repositories). Everything else shows
-as **Unknown — to be verified** until someone enters it.
+On first launch it is seeded from `seed-inventory.json`, which is generated from read-only
+evidence. Every fact shows its verification state and sources, and anything without
+evidence shows as **Unknown — to be verified**.
 
 ## Documents
 
@@ -51,6 +52,7 @@ as **Unknown — to be verified** until someone enters it.
 - [CHANGELOG.md](CHANGELOG.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md): working rules
 - [docs/product-inventory.md](docs/product-inventory.md): current inventory with sources
+- [docs/product-discovery-report.md](docs/product-discovery-report.md): what was found, how, and open questions
 - [docs/integrations.md](docs/integrations.md)
 - [docs/security.md](docs/security.md)
 - [docs/market-intelligence.md](docs/market-intelligence.md)

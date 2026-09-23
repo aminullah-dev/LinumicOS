@@ -1,221 +1,4378 @@
 {
   "products": [
     {
-      "id": "safe-beauty",
-      "name": "Safe Beauty",
-      "notes": "Top-level directories (unverified platform indicators): app, ios, desktop, functions, app-store, play-store. Repository name differs from product name; canonical repo UNKNOWN — TO BE VERIFIED.",
-      "provenance": {
-        "recordedAt": "2026-09-23T12:00:00Z",
-        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+      "alsoKnownAs": {
+        "value": [
+          "SafeBeauty"
+        ],
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Description begins \"SafeBeauty —\"",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/stealth-service-vault-"
+            },
+            {
+              "detail": "App name SafeBeauty",
+              "kind": "appStore",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://apps.apple.com/af/app/safebeauty/id6810050614"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
       },
-      "repositories": [
+      "backend": {
+        "value": "Firebase: Cloud Functions (Node 22), Firestore and Storage rules. Firebase projects safebeauty (prod) and safebeauty-staging.",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Safe beauty/.firebaserc"
+            },
+            {
+              "detail": "name safebeauty-functions",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Safe beauty/functions/package.json"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Safe beauty/README.md"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "category": {
+        "value": "Marketplace: beauty-salon booking",
+        "verification": {
+          "notes": "Category wording derived from the repository description.",
+          "sources": [
+            {
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/stealth-service-vault-"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "currentVersion": {
+        "verification": {
+          "notes": "Versions differ by platform: iOS 1.0.1 on the App Store, Android versionName 2.1.5 in the build config. The Google Play production version is not readable from the public page. See Platforms and Stores.",
+          "sources": [],
+          "status": "unknown"
+        }
+      },
+      "documentation": [
         {
-          "host": "github",
-          "id": "2B6C7B1E-C7AF-5643-9BC5-F01B6D3D0C84",
-          "name": "stealth-service-vault-",
-          "url": "https://github.com/aminullah-dev/stealth-service-vault-"
+          "id": "FED016CA-EF9C-5697-A80F-90E99ED1B797",
+          "title": "SafeBeauty privacy policy",
+          "url": "https://linumic.com/safebeauty-privacy-policy/"
         }
       ],
-      "status": "unknown"
-    },
-    {
-      "id": "velro",
-      "name": "Velro",
-      "notes": "Top-level directories (unverified platform indicators): mobile, ios, admin, backend.",
+      "id": "safe-beauty",
+      "isLinumicProduct": {
+        "value": true,
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+            },
+            {
+              "detail": "Product page on linumic.com (HTTP 200)",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/safebeauty/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "name": "Safe Beauty",
+      "platforms": [
+        {
+          "component": "Customer / provider / admin app",
+          "id": "A079BFE2-BC31-584B-B63B-1C46F801C625",
+          "identifier": "com.security.stealthapp",
+          "platform": "android",
+          "sourceVersion": "2.1.5",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "com.android.application, applicationId com.security.stealthapp, versionName 2.1.5, versionCode 22",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Safe beauty/app/build.gradle.kts"
+              },
+              {
+                "detail": "Listed as SafeBeauty",
+                "kind": "googlePlay",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://play.google.com/store/apps/details?id=com.security.stealthapp"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "iOS app",
+          "id": "B3513A79-990D-514E-BA1A-4035710281C8",
+          "identifier": "com.safebeauty.app",
+          "platform": "iOS",
+          "sourceVersion": "1.0.1",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "SDKROOT iphoneos, MARKETING_VERSION 1.0.1",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Safe beauty/ios/SafeBeauty.xcodeproj"
+              },
+              {
+                "kind": "appStore",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://apps.apple.com/af/app/safebeauty/id6810050614"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Firebase Cloud Functions",
+          "id": "FDA259A2-7878-53F7-B740-1B2C95FF0483",
+          "platform": "backend",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Safe beauty/functions/package.json"
+              },
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Safe beauty/firebase.json"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Admin and provider consoles (Firebase Hosting)",
+          "id": "61CA84FC-39BB-52DD-979D-273FB6F7BBF2",
+          "platform": "web",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Hosting targets safebeauty, safebeauty-admin, safebeauty-salon",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Safe beauty/.firebaserc"
+              },
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Safe beauty/README.md"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Salon desktop app (Electron)",
+          "id": "01745EF4-D95B-5B90-A83A-E6105192C295",
+          "platform": "macOS",
+          "sourceVersion": "1.0.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "safebeauty-salon 1.0.0",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Safe beauty/desktop-provider/package.json"
+              },
+              {
+                "detail": "Release salon-desktop has SafeBeauty-Salon-mac-arm64.dmg and mac-x64.dmg",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/stealth-service-vault-"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Salon desktop app (Electron)",
+          "id": "D18AD485-35E4-52E0-98B9-E984409A1783",
+          "platform": "windows",
+          "sourceVersion": "1.0.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Release salon-desktop has SafeBeauty-Salon-win-x64.exe",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/stealth-service-vault-"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        }
+      ],
+      "projectType": {
+        "value": "Monorepo: Android app, iOS app, Firebase Cloud Functions, web admin/provider consoles, Electron desktop wrappers",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "\"What's inside\" table",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Safe beauty/README.md"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Safe beauty/app/build.gradle.kts"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Safe beauty/ios/project.yml"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "provenance": {
-        "recordedAt": "2026-09-23T12:00:00Z",
-        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+        "recordedAt": "2026-09-23T07:00:00Z",
+        "source": "Command Center verified inventory, built by tools/inventory/build_seed.py"
       },
       "repositories": [
         {
+          "gitHub": {
+            "defaultBranch": "main",
+            "description": "SafeBeauty — a private, trilingual (EN/دری/پښتو) beauty-salon booking marketplace for women in Afghanistan. Android + Firebase, with web admin/provider consoles.",
+            "fetchedAt": "2026-09-23T07:00:00Z",
+            "homepage": "https://linumic.com/what-we-do/safebeauty/",
+            "languages": [
+              "Kotlin",
+              "Swift",
+              "JavaScript",
+              "HTML",
+              "Python",
+              "Shell",
+              "Makefile"
+            ],
+            "latestCommit": {
+              "date": "2026-09-23T04:25:38Z",
+              "message": "Android 22 (2.1.5): the robust Update button, staged as a draft on Play",
+              "sha": "93866a5f7b9b3ab82d2ec0875cc4bff0bcd2b1f7"
+            },
+            "latestRelease": {
+              "assets": [
+                "SafeBeauty.apk"
+              ],
+              "name": "SafeBeauty for Android",
+              "publishedAt": "2026-08-25T18:39:52Z",
+              "tag": "android-app"
+            },
+            "openIssues": 0,
+            "openPullRequests": 0,
+            "releaseCount": 2,
+            "slug": "aminullah-dev/stealth-service-vault-",
+            "visibility": "private"
+          },
           "host": "github",
-          "id": "000FC328-4F8A-54FF-B47B-DB2FFDBE1503",
+          "id": "88E3ABBD-D7D0-517D-9024-FEEF6CAF9877",
+          "link": {
+            "notes": "Canonical Safe Beauty repository. The name differs from the product name.",
+            "sources": [
+              {
+                "detail": "Description and homepage identify SafeBeauty",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/stealth-service-vault-"
+              },
+              {
+                "detail": "# SafeBeauty",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Safe beauty/README.md"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [
+            {
+              "branch": "claude/stealth-android-vault-4zr1d3",
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-09-23T04:25:38Z",
+                "message": "Android 22 (2.1.5): the robust Update button, staged as a draft on Play",
+                "sha": "93866a5f7b9b3ab82d2ec0875cc4bff0bcd2b1f7"
+              },
+              "notes": "",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/Multiplatform/Safe beauty"
+            },
+            {
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-09-04T00:00:00Z",
+                "message": "v2.1.0 (17) — the release that makes registration work",
+                "sha": "6753b44"
+              },
+              "notes": "Older copy in _Archive. Commit date only (no time) recorded.",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/_Archive/home/stealth-service-vault-"
+            },
+            {
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-08-23T00:00:00Z",
+                "message": "The dialogs the first sweep could not see",
+                "sha": "8004489"
+              },
+              "notes": "Older copy in _Archive. Commit date only (no time) recorded.",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/_Archive/StudioProjects/stealth-service-vault-"
+            }
+          ],
+          "name": "stealth-service-vault-",
+          "notes": "",
+          "owner": "aminullah-dev",
+          "type": "monorepo",
+          "url": "https://github.com/aminullah-dev/stealth-service-vault-"
+        },
+        {
+          "gitHub": {
+            "defaultBranch": "main",
+            "description": "Privacy policy pages for the SafeBeauty app.",
+            "fetchedAt": "2026-09-23T07:00:00Z",
+            "homepage": "https://linumic.com/safebeauty-privacy-policy/",
+            "languages": [
+              "HTML"
+            ],
+            "latestCommit": {
+              "date": "2026-06-22T03:55:53Z",
+              "message": "Add files via upload",
+              "sha": "554ea0048f346b3a052fef455443d378f8398599"
+            },
+            "openIssues": 0,
+            "openPullRequests": 0,
+            "releaseCount": 0,
+            "slug": "aminullah-dev/safebeauty-privacy",
+            "visibility": "public"
+          },
+          "host": "github",
+          "id": "48758EBA-9F11-5FB7-9274-7D6A63B8D0CF",
+          "link": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Description: Privacy policy pages for the SafeBeauty app.",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/safebeauty-privacy"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [],
+          "name": "safebeauty-privacy",
+          "notes": "",
+          "owner": "aminullah-dev",
+          "type": "website",
+          "url": "https://github.com/aminullah-dev/safebeauty-privacy"
+        },
+        {
+          "host": "other",
+          "id": "FB3CA778-E894-524F-BC46-1103D40C53CB",
+          "link": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Install steps run from ~/Documents/\"SafeBeauty Marketing\"",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Marketing/pipeline/README.md"
+              }
+            ],
+            "status": "partiallyVerified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [],
+          "name": "Marketing/pipeline (local folder, not a Git repository)",
+          "notes": "Image generator for marketing. It refers to a SafeBeauty Marketing folder, so the link to Safe Beauty is indirect.",
+          "type": "marketing"
+        }
+      ],
+      "status": {
+        "value": "active",
+        "verification": {
+          "notes": "Live store listings show a public release. Whether the product counts as \"active\" is inferred from them. Please confirm.",
+          "sources": [
+            {
+              "detail": "Live, v1.0.1 released 2026-09-23",
+              "kind": "appStore",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://apps.apple.com/af/app/safebeauty/id6810050614"
+            },
+            {
+              "detail": "Listing page live",
+              "kind": "googlePlay",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://play.google.com/store/apps/details?id=com.security.stealthapp"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "storeListings": [
+        {
+          "appIdentifier": "com.safebeauty.app",
+          "appName": "SafeBeauty",
+          "id": "5754F108-4A3D-58CE-B62D-BA4731B3C269",
+          "productionVersion": "1.0.1",
+          "reviewStatus": "Green check in App Store Connect (live)",
+          "seller": "AMINULLAH HASHEMI",
+          "store": "appStore",
+          "storefront": "Afghanistan",
+          "url": "https://apps.apple.com/af/app/safebeauty/id6810050614",
+          "verification": {
+            "notes": "The App Store lists the seller as the individual account \"AMINULLAH HASHEMI\", not \"Linumic\". No US storefront listing was found.",
+            "sources": [
+              {
+                "detail": "v1.0.1, current version released 2026-09-23, first released 2026-09-21",
+                "kind": "appStore",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://itunes.apple.com/lookup?bundleId=com.safebeauty.app&country=af"
+              },
+              {
+                "detail": "SafeBeauty — iOS 1.0.1, green check",
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "App Store Connect app list, screenshot shared by the owner at 03:01 on 2026-09-23 (tools/inventory/evidence/app-store-connect-apps-2026-09-23.png)"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "appIdentifier": "com.security.stealthapp",
+          "appName": "SafeBeauty",
+          "id": "2FDAFBA6-B0FB-58D2-A346-94F9E63C1203",
+          "seller": "Aminullah Hashemi",
+          "store": "googlePlay",
+          "url": "https://play.google.com/store/apps/details?id=com.security.stealthapp",
+          "verification": {
+            "notes": "The production version isn't exposed on the public page. The latest local commit says Android 2.1.5 is staged as a draft on Play.",
+            "sources": [
+              {
+                "detail": "og:title \"SafeBeauty - Apps on Google Play\"; developer Aminullah Hashemi",
+                "kind": "googlePlay",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://play.google.com/store/apps/details?id=com.security.stealthapp"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        }
+      ],
+      "summary": {
+        "value": "SafeBeauty — a private, trilingual (EN/دری/پښتو) beauty-salon booking marketplace for women in Afghanistan. Android + Firebase, with web admin/provider consoles.",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Repository description",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/stealth-service-vault-"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "website": {
+        "value": "https://linumic.com/what-we-do/safebeauty/",
+        "verification": {
+          "notes": "The page links Google Play for customers, the salon panel for macOS/Windows, and safebeauty.web.app/get (HTTP 200). It doesn't mention the live iOS app.",
+          "sources": [
+            {
+              "detail": "Repository homepage field",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/stealth-service-vault-"
+            },
+            {
+              "detail": "Title: SafeBeauty — Verified Salon Booking Marketplace",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/safebeauty/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      }
+    },
+    {
+      "alsoKnownAs": {
+        "value": [
+          "VELRO",
+          "VELRO Ride",
+          "VELRO Driver"
+        ],
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "appStore",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://apps.apple.com/us/app/velro-ride/id6810899663"
+            },
+            {
+              "kind": "appStore",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://apps.apple.com/us/app/velro-driver/id6811925434"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "backend": {
+        "value": "FastAPI + SQLAlchemy + PostgreSQL, deployed on one VPS with docker-compose and Caddy",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Repository table: backend/, deploy/",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Velro/README.md"
+            },
+            {
+              "detail": "velro-backend 0.1.0",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Velro/backend/pyproject.toml"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "category": {
+        "value": "Transport: intercity ride booking",
+        "verification": {
+          "notes": "Category wording derived from the repository description.",
+          "sources": [
+            {
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/velro"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "currentVersion": {
+        "value": "1.0.0",
+        "verification": {
+          "notes": "This is the iOS App Store version. Android versions come from Gradle properties and no Google Play listing was found.",
+          "sources": [
+            {
+              "detail": "VELRO Ride v1.0.0",
+              "kind": "appStore",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://apps.apple.com/us/app/velro-ride/id6810899663"
+            },
+            {
+              "detail": "VELRO Driver v1.0.0",
+              "kind": "appStore",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://apps.apple.com/us/app/velro-driver/id6811925434"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "id": "velro",
+      "isLinumicProduct": {
+        "value": true,
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+            },
+            {
+              "detail": "Product page on linumic.com (HTTP 200)",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/velro/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "name": "Velro",
+      "platforms": [
+        {
+          "component": "Passenger app",
+          "id": "6F89FFB7-E26D-5C2E-916B-AC2ADC70817D",
+          "identifier": "af.velro.passenger",
+          "platform": "android",
+          "verification": {
+            "notes": "Distributed as an APK from api.velro.linumic.com/app. No public Google Play listing was found (HTTP 404) on 2026-09-23.",
+            "sources": [
+              {
+                "detail": "applicationId af.velro.passenger",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Velro/mobile/app-passenger/build.gradle.kts"
+              },
+              {
+                "detail": "Download page (HTTP 200) links /app/velro-passenger.apk",
+                "kind": "website",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.velro.linumic.com/app"
+              },
+              {
+                "detail": "\"Download the passenger app\" → api.velro.linumic.com/app",
+                "kind": "website",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://linumic.com/what-we-do/velro/"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Driver app",
+          "id": "3E5B96B9-1340-5360-ADB7-D6F3CC8B2671",
+          "identifier": "af.velro.driver",
+          "platform": "android",
+          "verification": {
+            "notes": "Distributed as an APK from api.velro.linumic.com/app. No public Google Play listing was found (HTTP 404) on 2026-09-23.",
+            "sources": [
+              {
+                "detail": "applicationId af.velro.driver",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Velro/mobile/app-driver/build.gradle.kts"
+              },
+              {
+                "detail": "Download page (HTTP 200) links /app/velro-driver.apk",
+                "kind": "website",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.velro.linumic.com/app"
+              },
+              {
+                "detail": "\"Download the driver app\" → api.velro.linumic.com/app",
+                "kind": "website",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://linumic.com/what-we-do/velro/"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "VELRO Ride (passenger)",
+          "id": "669F4534-77A4-55B2-B93B-B89D351CB118",
+          "identifier": "af.velro.passenger",
+          "platform": "iOS",
+          "sourceVersion": "1.0.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "kind": "appStore",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://apps.apple.com/us/app/velro-ride/id6810899663"
+              },
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Velro/ios/project.yml"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "VELRO Driver",
+          "id": "5CA4EB93-1D24-5E9E-BF87-28C2025D3609",
+          "identifier": "af.velro.driver",
+          "platform": "iOS",
+          "sourceVersion": "1.0.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "kind": "appStore",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://apps.apple.com/us/app/velro-driver/id6811925434"
+              },
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Velro/ios/project.yml"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "VELRO Ops",
+          "id": "F52B6985-46EC-54AE-97DD-48F136539261",
+          "identifier": "af.velro.ops",
+          "platform": "iOS",
+          "sourceVersion": "1.0",
+          "verification": {
+            "notes": "Submitted, not yet public.",
+            "sources": [
+              {
+                "detail": "VelroOps supportedDestinations [iOS, macOS]",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Velro/ios/project.yml"
+              },
+              {
+                "detail": "VELRO Ops — iOS 1.0, macOS 1.0, yellow clock",
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "App Store Connect app list, screenshot shared by the owner at 03:01 on 2026-09-23 (tools/inventory/evidence/app-store-connect-apps-2026-09-23.png)"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "VELRO Ops",
+          "id": "994985D1-79BB-5178-909D-CA781B0B4F73",
+          "identifier": "af.velro.ops",
+          "platform": "macOS",
+          "sourceVersion": "1.0",
+          "verification": {
+            "notes": "Submitted, not yet public.",
+            "sources": [
+              {
+                "detail": "VelroOps supportedDestinations [iOS, macOS]",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Velro/ios/project.yml"
+              },
+              {
+                "detail": "VELRO Ops — iOS 1.0, macOS 1.0, yellow clock",
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "App Store Connect app list, screenshot shared by the owner at 03:01 on 2026-09-23 (tools/inventory/evidence/app-store-connect-apps-2026-09-23.png)"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "VELRO Ops watch app",
+          "id": "21B18DF9-D59B-563A-9EDA-ED19E9D80A7A",
+          "identifier": "af.velro.ops.watchkitapp",
+          "platform": "watchOS",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "platform: watchOS targets",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Velro/ios/project.yml"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Staff admin panel (React)",
+          "id": "0AE6466A-01FE-5739-8F03-4924E21A65B6",
+          "platform": "web",
+          "sourceVersion": "0.1.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "velro-admin 0.1.0",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Velro/admin/package.json"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "FastAPI API",
+          "id": "E2DB13CB-D3ED-568F-ABA1-AEBDC7C09433",
+          "platform": "backend",
+          "sourceVersion": "0.1.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Velro/backend/pyproject.toml"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        }
+      ],
+      "projectType": {
+        "value": "Monorepo: FastAPI backend, React staff web panel, Android passenger and driver apps, iOS passenger/driver/ops apps, watchOS companion",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "\"one backend and four clients\"",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Velro/README.md"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Velro/ios/project.yml"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Velro/mobile/app-passenger/build.gradle.kts"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "provenance": {
+        "recordedAt": "2026-09-23T07:00:00Z",
+        "source": "Command Center verified inventory, built by tools/inventory/build_seed.py"
+      },
+      "repositories": [
+        {
+          "gitHub": {
+            "defaultBranch": "main",
+            "description": "VELRO — intercity ride booking for Afghanistan: real seats at real stations, fares agreed before the trip.",
+            "fetchedAt": "2026-09-23T07:00:00Z",
+            "homepage": "https://linumic.com/what-we-do/velro/",
+            "languages": [
+              "Python",
+              "Swift",
+              "Kotlin",
+              "TypeScript",
+              "HTML",
+              "Shell",
+              "CSS",
+              "JavaScript",
+              "Makefile",
+              "Dockerfile",
+              "Mako"
+            ],
+            "latestCommit": {
+              "date": "2026-09-20T22:50:05Z",
+              "message": "motion: seat-fill, logo reveal, stats, day-to-night (fa+ps)",
+              "sha": "34c999ca965a2d00942d8ac39e290f21f3a69ed6"
+            },
+            "openIssues": 0,
+            "openPullRequests": 0,
+            "releaseCount": 0,
+            "slug": "aminullah-dev/velro",
+            "visibility": "private"
+          },
+          "host": "github",
+          "id": "AE2BD434-107D-58E6-80A2-5D33AC5951C5",
+          "link": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Description and homepage identify VELRO",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/velro"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [
+            {
+              "branch": "feat/gps-origin-places",
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-09-22T15:30:41Z",
+                "message": "Marketing: App Store posters, QR codes, Instagram posts, NowOnAppStore video",
+                "sha": "f4cd957fabde752fac17196c251ea89d3e7ec3ef"
+              },
+              "notes": "",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/Multiplatform/Velro"
+            }
+          ],
           "name": "velro",
+          "notes": "",
+          "owner": "aminullah-dev",
+          "type": "monorepo",
           "url": "https://github.com/aminullah-dev/velro"
         }
       ],
-      "status": "unknown"
+      "status": {
+        "value": "active",
+        "verification": {
+          "notes": "Live App Store listings show a public release. Whether the product counts as \"active\" is inferred from them. Please confirm.",
+          "sources": [
+            {
+              "detail": "Live, v1.0.0 released 2026-09-13",
+              "kind": "appStore",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://apps.apple.com/us/app/velro-ride/id6810899663"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "storeListings": [
+        {
+          "appIdentifier": "af.velro.passenger",
+          "appName": "VELRO Ride",
+          "id": "91812FF7-0536-5509-82A6-A7D40313D9E4",
+          "latestSubmittedVersion": "1.0.1",
+          "productionVersion": "1.0.0",
+          "reviewStatus": "Pending: yellow clock in App Store Connect (the screenshot doesn't say which state)",
+          "seller": "AMINULLAH HASHEMI",
+          "store": "appStore",
+          "storefront": "United States",
+          "url": "https://apps.apple.com/us/app/velro-ride/id6810899663",
+          "verification": {
+            "notes": "The App Store lists the seller as the individual account \"AMINULLAH HASHEMI\", not \"Linumic\". 1.0.0 is live publicly and 1.0.1 is pending in App Store Connect.",
+            "sources": [
+              {
+                "detail": "v1.0.0, released 2026-09-13",
+                "kind": "appStore",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://itunes.apple.com/lookup?bundleId=af.velro.passenger"
+              },
+              {
+                "detail": "VELRO Ride — iOS 1.0.1, yellow clock",
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "App Store Connect app list, screenshot shared by the owner at 03:01 on 2026-09-23 (tools/inventory/evidence/app-store-connect-apps-2026-09-23.png)"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "appIdentifier": "af.velro.driver",
+          "appName": "VELRO Driver",
+          "id": "0D5FB396-A488-5E48-B986-CA5D313F9E84",
+          "latestSubmittedVersion": "1.0.1",
+          "productionVersion": "1.0.0",
+          "reviewStatus": "Pending: yellow clock in App Store Connect (the screenshot doesn't say which state)",
+          "seller": "AMINULLAH HASHEMI",
+          "store": "appStore",
+          "storefront": "United States",
+          "url": "https://apps.apple.com/us/app/velro-driver/id6811925434",
+          "verification": {
+            "notes": "The App Store lists the seller as the individual account \"AMINULLAH HASHEMI\", not \"Linumic\". 1.0.0 is live publicly and 1.0.1 is pending in App Store Connect.",
+            "sources": [
+              {
+                "detail": "v1.0.0, released 2026-09-18",
+                "kind": "appStore",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://itunes.apple.com/lookup?bundleId=af.velro.driver"
+              },
+              {
+                "detail": "VELRO Driver — iOS 1.0.1, yellow clock",
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "App Store Connect app list, screenshot shared by the owner at 03:01 on 2026-09-23 (tools/inventory/evidence/app-store-connect-apps-2026-09-23.png)"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "appIdentifier": "af.velro.ops",
+          "appName": "VELRO Ops",
+          "id": "1EA32E5A-C7D3-540B-B614-8F2E62EFF34F",
+          "latestSubmittedVersion": "iOS 1.0, macOS 1.0",
+          "reviewStatus": "Pending: yellow clock in App Store Connect (the screenshot doesn't say which state)",
+          "seller": "AMINULLAH HASHEMI",
+          "store": "appStore",
+          "verification": {
+            "notes": "An App Store Connect record exists but isn't public yet.",
+            "sources": [
+              {
+                "detail": "VELRO Ops — iOS 1.0, macOS 1.0, yellow clock",
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "App Store Connect app list, screenshot shared by the owner at 03:01 on 2026-09-23 (tools/inventory/evidence/app-store-connect-apps-2026-09-23.png)"
+              },
+              {
+                "detail": "No public listing (US)",
+                "kind": "appStore",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://itunes.apple.com/lookup?bundleId=af.velro.ops"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        }
+      ],
+      "summary": {
+        "value": "VELRO — intercity ride booking for Afghanistan: real seats at real stations, fares agreed before the trip.",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Repository description",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/velro"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "website": {
+        "value": "https://linumic.com/what-we-do/velro/",
+        "verification": {
+          "notes": "The linumic.com page offers only the Android APK downloads and doesn't mention the live iOS apps.",
+          "sources": [
+            {
+              "detail": "Repository homepage field",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/velro"
+            },
+            {
+              "detail": "Title: VELRO — Intercity Ride Booking for Afghanistan",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/velro/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      }
     },
     {
+      "alsoKnownAs": {
+        "value": [
+          "Linumic WorkTrack"
+        ],
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "appStore",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://apps.apple.com/us/app/linumic-worktrack/id6810004398"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "backend": {
+        "value": "Firebase: Cloud Functions in backend/functions. Firebase projects worktrack-prod and worktrack-demo-af.",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/WorkTrack/.firebaserc"
+            },
+            {
+              "detail": "worktrack-functions",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/WorkTrack/backend/functions/package.json"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "category": {
+        "value": "HR and workforce management (HRMS)",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "\"multi-tenant Workforce Management Platform (HRMS)\"",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/WorkTrack/README.md"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "currentVersion": {
+        "verification": {
+          "notes": "Versions differ by platform: iOS 1.0 on the App Store, Android versionName 1.2.0 in the build config (no Google Play listing found).",
+          "sources": [],
+          "status": "unknown"
+        }
+      },
       "id": "worktrack",
+      "isLinumicProduct": {
+        "value": true,
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+            },
+            {
+              "detail": "Product page on linumic.com (HTTP 200)",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/worktrack/"
+            },
+            {
+              "detail": "App name \"Linumic WorkTrack\"",
+              "kind": "appStore",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://apps.apple.com/us/app/linumic-worktrack/id6810004398"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "name": "WorkTrack",
-      "notes": "Top-level directories (unverified platform indicators): app, ios, desktop, web, backend.",
+      "platforms": [
+        {
+          "component": "Employee app",
+          "id": "8E534083-13A5-520E-9FDB-2427D4827D13",
+          "identifier": "app.worktrack",
+          "platform": "android",
+          "sourceVersion": "1.2.0",
+          "verification": {
+            "notes": "No public Google Play listing was found (HTTP 404) on 2026-09-23.",
+            "sources": [
+              {
+                "detail": "applicationId app.worktrack, versionName 1.2.0",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/WorkTrack/app/build.gradle.kts"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Employee app",
+          "id": "3C96CAAF-DD1F-55AB-A7F3-9701335A9865",
+          "identifier": "app.worktrack",
+          "platform": "iOS",
+          "sourceVersion": "1.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "kind": "appStore",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://apps.apple.com/us/app/linumic-worktrack/id6810004398"
+              },
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/WorkTrack/ios/project.yml"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Company console",
+          "id": "FB74223A-7DA0-580E-B153-ED04D48804E3",
+          "platform": "web",
+          "sourceVersion": "1.0.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "worktrack-admin",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/WorkTrack/web/package.json"
+              },
+              {
+                "detail": "Live: WorkTrack — پورتال مدیر",
+                "kind": "website",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://worktrack-prod.web.app/"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Firebase Cloud Functions",
+          "id": "E4146404-72A7-5E45-9C57-163680407376",
+          "platform": "backend",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/WorkTrack/backend/functions/package.json"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Electron shell for the company console",
+          "id": "B9A6E7BA-E346-5826-AE66-83D2DB7D7A73",
+          "platform": "desktop",
+          "sourceVersion": "1.0.0",
+          "verification": {
+            "notes": "No desktop release was found, and the target operating systems aren't confirmed.",
+            "sources": [
+              {
+                "detail": "\"desktop shell for the manager web portal\", electron ^33",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/WorkTrack/desktop/package.json"
+              }
+            ],
+            "status": "partiallyVerified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        }
+      ],
+      "projectType": {
+        "value": "Monorepo: web company console, Android and iOS employee apps, Firebase Cloud Functions backend, Electron desktop shell",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "\"Two products, one backend\"",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/WorkTrack/README.md"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/WorkTrack/app/build.gradle.kts"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/WorkTrack/desktop/package.json"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "provenance": {
-        "recordedAt": "2026-09-23T12:00:00Z",
-        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+        "recordedAt": "2026-09-23T07:00:00Z",
+        "source": "Command Center verified inventory, built by tools/inventory/build_seed.py"
       },
       "repositories": [
         {
+          "gitHub": {
+            "defaultBranch": "main",
+            "description": "WorkTrack — attendance, shifts, leave and payroll on the Solar Hijri calendar. Dari, Pashto, English.",
+            "fetchedAt": "2026-09-23T07:00:00Z",
+            "homepage": "https://linumic.com/what-we-do/worktrack/",
+            "languages": [
+              "TypeScript",
+              "Kotlin",
+              "Swift",
+              "HTML",
+              "JavaScript",
+              "CSS",
+              "Shell",
+              "Python",
+              "Ruby"
+            ],
+            "latestCommit": {
+              "date": "2026-09-19T15:01:10Z",
+              "message": "Merge pull request #8 from aminullah-dev/claude/claude-md",
+              "sha": "cb194fd0f36f2ce9085bee0aff40c907355193d8"
+            },
+            "openIssues": 0,
+            "openPullRequests": 1,
+            "releaseCount": 0,
+            "slug": "aminullah-dev/WorkTrack",
+            "visibility": "private"
+          },
           "host": "github",
-          "id": "9774F77E-70CA-551F-9030-FC483C377CFA",
+          "id": "9B60DFBF-C9E3-50C3-A527-B834B45810B9",
+          "link": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Description and homepage identify WorkTrack",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/WorkTrack"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [
+            {
+              "branch": "claude/worktrack-hrms-platform-tlar35",
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-09-16T13:34:44Z",
+                "message": "Fix login button visibility across language switch",
+                "sha": "e698c12a51e5b329e38bcf7ede4fae91a4690fbf"
+              },
+              "notes": "The local branch isn't main. GitHub PR #1 \"Bring the WorkTrack platform onto main\" is open.",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/Multiplatform/WorkTrack"
+            }
+          ],
           "name": "WorkTrack",
+          "notes": "~/Projects/_Archive/Downloads has a downloaded zip and an extracted copy of this branch (not a Git working copy).",
+          "owner": "aminullah-dev",
+          "type": "monorepo",
           "url": "https://github.com/aminullah-dev/WorkTrack"
         }
       ],
-      "status": "unknown"
+      "status": {
+        "value": "active",
+        "verification": {
+          "notes": "A live App Store listing shows a public release. Whether the product counts as \"active\" is inferred from it. Please confirm.",
+          "sources": [
+            {
+              "detail": "Live, v1.0 released 2026-09-21",
+              "kind": "appStore",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://apps.apple.com/us/app/linumic-worktrack/id6810004398"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "storeListings": [
+        {
+          "appIdentifier": "app.worktrack",
+          "appName": "Linumic WorkTrack",
+          "id": "506678E9-5650-5F6B-8779-1FEDCDABF6D9",
+          "productionVersion": "1.0",
+          "reviewStatus": "Green check in App Store Connect (live)",
+          "seller": "AMINULLAH HASHEMI",
+          "store": "appStore",
+          "storefront": "United States",
+          "url": "https://apps.apple.com/us/app/linumic-worktrack/id6810004398",
+          "verification": {
+            "notes": "The App Store lists the seller as the individual account \"AMINULLAH HASHEMI\", not \"Linumic\".",
+            "sources": [
+              {
+                "detail": "v1.0, released 2026-09-21",
+                "kind": "appStore",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://itunes.apple.com/lookup?bundleId=app.worktrack"
+              },
+              {
+                "detail": "Linumic WorkTrack — iOS 1.0, green check",
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "App Store Connect app list, screenshot shared by the owner at 03:01 on 2026-09-23 (tools/inventory/evidence/app-store-connect-apps-2026-09-23.png)"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        }
+      ],
+      "summary": {
+        "value": "WorkTrack — attendance, shifts, leave and payroll on the Solar Hijri calendar. Dari, Pashto, English.",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Repository description",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/WorkTrack"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "website": {
+        "value": "https://linumic.com/what-we-do/worktrack/",
+        "verification": {
+          "notes": "The page describes \"an Android app for staff, a web portal for managers\" and a live demo at /what-we-do/worktrack/demo/ (HTTP 200). It doesn't mention the live iOS app.",
+          "sources": [
+            {
+              "detail": "Repository homepage field",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/WorkTrack"
+            },
+            {
+              "detail": "Title: WorkTrack — Attendance, Shifts, Leave & Payroll",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/worktrack/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      }
     },
     {
+      "backend": {
+        "value": "Optional Python FastAPI + SQLAlchemy + PostgreSQL sync server. A shop can also run on one device with no server.",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Stack section",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/DukanPro/README.md"
+            },
+            {
+              "detail": "dukanpro-server 0.1.0",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/DukanPro/server/pyproject.toml"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "category": {
+        "value": "Retail point of sale",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/DukanPro/README.md"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "currentVersion": {
+        "verification": {
+          "notes": "pubspec declares 1.0.0+1. No GitHub release or store listing was found.",
+          "sources": [],
+          "status": "unknown"
+        }
+      },
       "id": "dukanpro",
+      "isLinumicProduct": {
+        "value": true,
+        "verification": {
+          "notes": "No product page on linumic.com: /what-we-do/dukanpro/ returned 404, and DukanPro isn't on the products index.",
+          "sources": [
+            {
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+            },
+            {
+              "detail": "Default sync server https://api.linumic.com",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/DukanPro/README.md"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "name": "DukanPro",
-      "notes": "Top-level directories (unverified platform indicators): app, server, melos.yaml.",
+      "platforms": [
+        {
+          "component": "Flutter app",
+          "id": "7949509C-9669-5867-8BAE-87D6C7B8A0D9",
+          "identifier": "com.dukanpro.dukanpro",
+          "platform": "android",
+          "sourceVersion": "1.0.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "applicationId com.dukanpro.dukanpro",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/DukanPro/app/android/app/build.gradle.kts"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Flutter app",
+          "id": "8ECEC523-A64E-5B2E-B555-87FEE83BDBA7",
+          "identifier": "com.dukanpro.dukanpro",
+          "platform": "iOS",
+          "sourceVersion": "1.0.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "SDKROOT iphoneos",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/DukanPro/app/ios/Runner.xcodeproj"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Flutter app",
+          "id": "4A1210E7-F1AE-5EAC-A9F6-64D5129377DA",
+          "identifier": "com.dukanpro.dukanpro",
+          "platform": "macOS",
+          "sourceVersion": "1.0.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "SDKROOT macosx",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/DukanPro/app/macos/Runner.xcodeproj"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Sync server",
+          "id": "9A7794A3-9410-5E4B-8187-82C6E1C07E4E",
+          "platform": "backend",
+          "sourceVersion": "0.1.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/DukanPro/server/pyproject.toml"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Planned",
+          "id": "6C0D7123-E0A7-536B-93D1-85FAB5137A4C",
+          "platform": "windows",
+          "verification": {
+            "notes": "The README says \"Windows next\", so it's planned, not built.",
+            "sources": [],
+            "status": "unknown"
+          }
+        }
+      ],
+      "projectType": {
+        "value": "Monorepo: Flutter client (Android, iOS, macOS), Dart packages, Python FastAPI sync server",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/DukanPro/app/pubspec.yaml"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/DukanPro/melos.yaml"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/DukanPro/server/pyproject.toml"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "provenance": {
-        "recordedAt": "2026-09-23T12:00:00Z",
-        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+        "recordedAt": "2026-09-23T07:00:00Z",
+        "source": "Command Center verified inventory, built by tools/inventory/build_seed.py"
       },
       "repositories": [
         {
+          "gitHub": {
+            "defaultBranch": "main",
+            "fetchedAt": "2026-09-23T07:00:00Z",
+            "languages": [
+              "Dart",
+              "Python",
+              "C++",
+              "CMake",
+              "Swift",
+              "Shell",
+              "Dockerfile",
+              "C",
+              "Mako",
+              "Kotlin",
+              "Objective-C"
+            ],
+            "latestCommit": {
+              "date": "2026-09-20T07:35:55Z",
+              "message": "The repository says what stays out of it, and keeps the editor's own state out",
+              "sha": "41a3a4108be2756874ff7ca20ef8c4cfebba2dce"
+            },
+            "openIssues": 0,
+            "openPullRequests": 0,
+            "releaseCount": 0,
+            "slug": "aminullah-dev/DukanPro",
+            "visibility": "public"
+          },
           "host": "github",
-          "id": "ECD203DB-C1F6-5011-B59C-9D122907FF81",
+          "id": "279AA17C-5E79-5542-B6D2-513B3D4EB58B",
+          "link": {
+            "notes": "GitHub has no description or homepage.",
+            "sources": [
+              {
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+              },
+              {
+                "detail": "# DukanPro",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/DukanPro/README.md"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [
+            {
+              "branch": "main",
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-09-20T07:35:55Z",
+                "message": "The repository says what stays out of it, and keeps the editor's own state out",
+                "sha": "41a3a4108be2756874ff7ca20ef8c4cfebba2dce"
+              },
+              "notes": "",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/Multiplatform/DukanPro"
+            }
+          ],
           "name": "DukanPro",
+          "notes": "",
+          "owner": "aminullah-dev",
+          "type": "monorepo",
           "url": "https://github.com/aminullah-dev/DukanPro"
         }
       ],
-      "status": "unknown"
+      "status": {
+        "value": "development",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "\"all ten phases… are built\"; lists what is \"still missing before a real shop uses it\"",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/DukanPro/README.md"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "summary": {
+        "value": "Offline-first, cross-platform retail point-of-sale for the Afghan market (Dari / Pashto / English, AFN, Hijri Shamsi).",
+        "verification": {
+          "notes": "GitHub has no repository description.",
+          "sources": [
+            {
+              "detail": "Opening paragraph",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/DukanPro/README.md"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "website": {
+        "verification": {
+          "notes": "https://linumic.com/what-we-do/dukanpro/ returned 404 on 2026-09-23.",
+          "sources": [],
+          "status": "unknown"
+        }
+      }
     },
     {
+      "alsoKnownAs": {
+        "value": [
+          "تالار"
+        ],
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Description: Talar (تالار)",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/talar"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "backend": {
+        "value": "Firebase: Cloud Functions (backend/functions). The docs link to Firebase project talar-af-prod.",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "talar-functions",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Talar/backend/functions/package.json"
+            },
+            {
+              "detail": "Firebase console links for talar-af-prod",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Talar/README.md"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "category": {
+        "value": "Wedding-hall booking marketplace and hall ERP",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/talar"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "currentVersion": {
+        "value": "1.0.0",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Latest release v1.0.0",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/talar-releases"
+            },
+            {
+              "detail": "versionName 1.0.0",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Talar/android/app/build.gradle.kts"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "id": "talar",
+      "isLinumicProduct": {
+        "value": true,
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+            },
+            {
+              "detail": "\"Built by Linumic, Kabul.\"",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Talar/README.md"
+            },
+            {
+              "detail": "Product page on linumic.com (HTTP 200)",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/talar/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "name": "Talar",
-      "notes": "Top-level directories (unverified platform indicators): android, desktop, web, backend. A public repo aminullah-dev/talar-releases also exists; relationship UNKNOWN — TO BE VERIFIED.",
+      "platforms": [
+        {
+          "component": "Android app",
+          "id": "A215E2BA-B43B-52DA-ACE8-15D399256706",
+          "identifier": "af.talar",
+          "platform": "android",
+          "sourceVersion": "1.0.0",
+          "verification": {
+            "notes": "Distributed as an APK. No public Google Play listing was found (HTTP 404).",
+            "sources": [
+              {
+                "detail": "applicationId af.talar, versionName 1.0.0",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Talar/android/app/build.gradle.kts"
+              },
+              {
+                "detail": "Release asset Talar-1.0.0.apk",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/talar-releases"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Web app",
+          "id": "7437F730-71A7-5844-A265-5AFDA92A0CBF",
+          "platform": "web",
+          "sourceVersion": "1.0.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "talar-web 1.0.0",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Talar/web/package.json"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Hall-management panel (Electron)",
+          "id": "95DD7951-4CB0-5225-9E7E-917698439B1F",
+          "platform": "desktop",
+          "verification": {
+            "notes": "No desktop release was found, and the target operating systems aren't confirmed.",
+            "sources": [
+              {
+                "detail": "talar-panel, electron ^31",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Talar/desktop/package.json"
+              }
+            ],
+            "status": "partiallyVerified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Firebase Cloud Functions",
+          "id": "20A98B4D-C0F5-5F0D-823C-C7B7939C7013",
+          "platform": "backend",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Multiplatform/Talar/backend/functions/package.json"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        }
+      ],
+      "projectType": {
+        "value": "Monorepo: Android app, web app, Electron hall-management panel, Firebase Cloud Functions",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Talar/android/app/build.gradle.kts"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Talar/web/package.json"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Talar/desktop/package.json"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Talar/backend/functions/package.json"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "provenance": {
-        "recordedAt": "2026-09-23T12:00:00Z",
-        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+        "recordedAt": "2026-09-23T07:00:00Z",
+        "source": "Command Center verified inventory, built by tools/inventory/build_seed.py"
       },
       "repositories": [
         {
+          "gitHub": {
+            "defaultBranch": "main",
+            "description": "Talar (تالار) — Afghan Wedding Hall booking marketplace + ERP",
+            "fetchedAt": "2026-09-23T07:00:00Z",
+            "homepage": "https://linumic.com/what-we-do/talar/",
+            "languages": [
+              "TypeScript",
+              "Kotlin",
+              "JavaScript",
+              "HTML"
+            ],
+            "latestCommit": {
+              "date": "2026-09-20T07:52:42Z",
+              "message": "Merge pull request #4 from aminullah-dev/demo/sandbox-project",
+              "sha": "4dae3a022e1dfc6ff7294f6b62fc3e586daf9f36"
+            },
+            "openIssues": 0,
+            "openPullRequests": 0,
+            "releaseCount": 0,
+            "slug": "aminullah-dev/talar",
+            "visibility": "private"
+          },
           "host": "github",
-          "id": "7F40A3C1-CB31-5D12-B0B1-DC195886037E",
+          "id": "84741F15-E143-50C6-92BB-31D3B26B09D7",
+          "link": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Description and homepage identify Talar",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/talar"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [
+            {
+              "branch": "main",
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-09-20T07:52:42Z",
+                "message": "Merge pull request #4 from aminullah-dev/demo/sandbox-project",
+                "sha": "4dae3a022e1dfc6ff7294f6b62fc3e586daf9f36"
+              },
+              "notes": "",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/Multiplatform/Talar"
+            }
+          ],
           "name": "talar",
+          "notes": "",
+          "owner": "aminullah-dev",
+          "type": "monorepo",
           "url": "https://github.com/aminullah-dev/talar"
+        },
+        {
+          "gitHub": {
+            "defaultBranch": "main",
+            "description": "Installer downloads for Talar (تالار) — Afghan wedding-hall booking marketplace and ERP by Linumic. Release files only; source is private.",
+            "fetchedAt": "2026-09-23T07:00:00Z",
+            "homepage": "https://linumic.com/what-we-do/talar/",
+            "languages": [],
+            "latestCommit": {
+              "date": "2026-08-27T18:43:35Z",
+              "message": "Release downloads for Talar",
+              "sha": "72dd77f47d205a79a8208a43dbd9e8d40bac26f2"
+            },
+            "latestRelease": {
+              "assets": [
+                "Talar-1.0.0.apk"
+              ],
+              "name": "تالار ۱٫۰٫۰",
+              "publishedAt": "2026-08-27T18:44:11Z",
+              "tag": "v1.0.0"
+            },
+            "openIssues": 0,
+            "openPullRequests": 0,
+            "releaseCount": 1,
+            "slug": "aminullah-dev/talar-releases",
+            "visibility": "public"
+          },
+          "host": "github",
+          "id": "DC40C004-DE14-5BB3-8273-F1B3A0B105BD",
+          "link": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Description: Installer downloads for Talar (تالار) … by Linumic. Release files only; source is private.",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/talar-releases"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [],
+          "name": "talar-releases",
+          "notes": "",
+          "owner": "aminullah-dev",
+          "type": "releases",
+          "url": "https://github.com/aminullah-dev/talar-releases"
         }
       ],
-      "status": "unknown"
+      "status": {
+        "value": "active",
+        "verification": {
+          "notes": "A public installer release and demo show it's available. Whether it counts as \"active\" is inferred from them. Please confirm.",
+          "sources": [
+            {
+              "detail": "Public release v1.0.0 (Talar-1.0.0.apk), 2026-08-27",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/talar-releases"
+            },
+            {
+              "detail": "Public sandbox demo at linumic.com/what-we-do/talar/demo",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Multiplatform/Talar/README.md"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "summary": {
+        "value": "Talar (تالار) — Afghan Wedding Hall booking marketplace + ERP",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Repository description",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/talar"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "website": {
+        "value": "https://linumic.com/what-we-do/talar/",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Repository homepage field",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/talar"
+            },
+            {
+              "detail": "Title: Talar — Wedding Hall & Event Venue ERP",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/talar/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      }
     },
     {
+      "alsoKnownAs": {
+        "value": [
+          "نرخ تایمز",
+          "Nerkh Times"
+        ],
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "appStore",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://apps.apple.com/us/app/%D9%86%D8%B1%D8%AE-%D8%AA%D8%A7%DB%8C%D9%85%D8%B2-nerkh-times/id6810293641"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "backend": {
+        "value": "Google Apps Script web app over a Google Sheet (serves ?action=markets and ?action=candles)",
+        "verification": {
+          "notes": "Inferred from the admin README. Please confirm the production data source.",
+          "sources": [
+            {
+              "detail": "Admin dashboard merged into the existing Apps Script",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/NerkhTimes/admin/README.md"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "category": {
+        "value": "Market price information",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/NerkhTimes"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "currentVersion": {
+        "verification": {
+          "notes": "Versions differ by platform: iOS 1.0 on the App Store, Android versionName 1.0.11 in the build config. The Google Play production version is not readable from the public page.",
+          "sources": [],
+          "status": "unknown"
+        }
+      },
+      "documentation": [
+        {
+          "id": "EDC819D2-1EF0-5DAB-A3DA-F719A979F667",
+          "title": "NerkhTimes privacy policy & support (linumic.com)",
+          "url": "https://linumic.com/nerkhtimes-privacy-policy/"
+        }
+      ],
       "id": "nerkhtimes",
-      "name": "NerkhTimes",
-      "notes": "Top-level directories (unverified platform indicators): app, ios, admin. A public repo aminullah-dev/nerkhtimes.github.io also exists; relationship UNKNOWN — TO BE VERIFIED.",
-      "provenance": {
-        "recordedAt": "2026-09-23T12:00:00Z",
-        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+      "isLinumicProduct": {
+        "value": true,
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+            },
+            {
+              "detail": "Listed on the linumic.com products index (\"Daily market prices — NerkhTimes\")",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/"
+            },
+            {
+              "detail": "NerkhTimes Privacy Policy & Support — Linumic",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/nerkhtimes-privacy-policy/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
       },
-      "repositories": [
+      "name": "NerkhTimes",
+      "platforms": [
         {
-          "host": "github",
-          "id": "A006B880-B92F-57C2-841F-DE3D6D55E7CC",
-          "name": "NerkhTimes",
-          "url": "https://github.com/aminullah-dev/NerkhTimes"
+          "component": "Android app",
+          "id": "79644C7C-9D23-5B69-B63E-C684F0B884C8",
+          "identifier": "af.market.nerkhtimes",
+          "platform": "android",
+          "sourceVersion": "1.0.11",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "applicationId af.market.nerkhtimes, versionName 1.0.11, versionCode 11",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Android/NerkhTimes/app/build.gradle.kts"
+              },
+              {
+                "kind": "googlePlay",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://play.google.com/store/apps/details?id=af.market.nerkhtimes"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "iOS app",
+          "id": "60357D2E-1698-5DA0-9CCD-71590B9B57E5",
+          "identifier": "af.market.nerkhtimes",
+          "platform": "iOS",
+          "sourceVersion": "1.0.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "MARKETING_VERSION 1.0.0",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Android/NerkhTimes/ios/NerkhTimes.xcodeproj"
+              },
+              {
+                "detail": "Store version 1.0",
+                "kind": "appStore",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://itunes.apple.com/lookup?bundleId=af.market.nerkhtimes"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Apps Script admin/API",
+          "id": "3231687B-C9E8-5152-B80D-013C18D5492A",
+          "platform": "backend",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Android/NerkhTimes/admin/README.md"
+              }
+            ],
+            "status": "partiallyVerified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
         }
       ],
-      "status": "unknown"
-    },
-    {
-      "id": "namazia",
-      "name": "Namazia",
-      "notes": "Top-level directories (unverified platform indicators): app, ios, store.",
+      "projectType": {
+        "value": "Android app, iOS app, and a Google Apps Script admin dashboard",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/NerkhTimes/app/build.gradle.kts"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/NerkhTimes/ios/project.yml"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/NerkhTimes/admin/README.md"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "provenance": {
-        "recordedAt": "2026-09-23T12:00:00Z",
-        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+        "recordedAt": "2026-09-23T07:00:00Z",
+        "source": "Command Center verified inventory, built by tools/inventory/build_seed.py"
       },
       "repositories": [
         {
+          "gitHub": {
+            "defaultBranch": "main",
+            "description": "NerkhTimes — daily currency, fuel and staple food prices across Afghanistan, by city. No signup, no ads.",
+            "fetchedAt": "2026-09-23T07:00:00Z",
+            "homepage": "https://play.google.com/store/apps/details?id=af.market.nerkhtimes",
+            "languages": [
+              "Kotlin",
+              "Swift",
+              "JavaScript",
+              "HTML"
+            ],
+            "latestCommit": {
+              "date": "2026-09-20T07:39:03Z",
+              "message": "Add README, harden .gitignore, untrack IDE/local/generated files",
+              "sha": "df977c9438e50c858fb02ea048475696237a6719"
+            },
+            "openIssues": 0,
+            "openPullRequests": 0,
+            "releaseCount": 0,
+            "slug": "aminullah-dev/NerkhTimes",
+            "visibility": "private"
+          },
           "host": "github",
-          "id": "61114EA6-5EA8-5FDC-94E7-D0D64665EC55",
+          "id": "169BC5F7-CC7F-5801-982D-D1817DED832F",
+          "link": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Description identifies NerkhTimes",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/NerkhTimes"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [
+            {
+              "branch": "main",
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-09-20T07:39:03Z",
+                "message": "Add README, harden .gitignore, untrack IDE/local/generated files",
+                "sha": "df977c9438e50c858fb02ea048475696237a6719"
+              },
+              "notes": "",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/Android/NerkhTimes"
+            },
+            {
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-07-22T00:00:00Z",
+                "message": "feat: sanitize sheet text + support new assets (GBP/SAR/AED/silver/crypto)",
+                "sha": "93eb471"
+              },
+              "notes": "Older copy in _Archive. Commit date only (no time) recorded.",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/_Archive/StudioProjects/NerkhTimes"
+            }
+          ],
+          "name": "NerkhTimes",
+          "notes": "",
+          "owner": "aminullah-dev",
+          "type": "application",
+          "url": "https://github.com/aminullah-dev/NerkhTimes"
+        },
+        {
+          "gitHub": {
+            "defaultBranch": "main",
+            "description": "Landing and privacy-policy pages for the NerkhTimes app.",
+            "fetchedAt": "2026-09-23T07:00:00Z",
+            "homepage": "https://aminullah-dev.github.io/nerkhtimes.github.io/",
+            "languages": [
+              "HTML"
+            ],
+            "latestCommit": {
+              "date": "2026-02-03T18:29:27Z",
+              "message": "Add privacy policy",
+              "sha": "39f3038af76817fe6f7ca1728613331114e3005e"
+            },
+            "openIssues": 0,
+            "openPullRequests": 0,
+            "releaseCount": 0,
+            "slug": "aminullah-dev/nerkhtimes.github.io",
+            "visibility": "public"
+          },
+          "host": "github",
+          "id": "0B936E96-9CE3-5562-9DB6-035D9C0ED20A",
+          "link": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Description: Landing and privacy-policy pages for the NerkhTimes app.",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/nerkhtimes.github.io"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [],
+          "name": "nerkhtimes.github.io",
+          "notes": "",
+          "owner": "aminullah-dev",
+          "type": "website",
+          "url": "https://github.com/aminullah-dev/nerkhtimes.github.io"
+        }
+      ],
+      "status": {
+        "value": "active",
+        "verification": {
+          "notes": "Live store listings show a public release. Whether the product counts as \"active\" is inferred from them. Please confirm.",
+          "sources": [
+            {
+              "detail": "Live, v1.0",
+              "kind": "appStore",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://apps.apple.com/us/app/%D9%86%D8%B1%D8%AE-%D8%AA%D8%A7%DB%8C%D9%85%D8%B2-nerkh-times/id6810293641"
+            },
+            {
+              "detail": "Listing page live",
+              "kind": "googlePlay",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://play.google.com/store/apps/details?id=af.market.nerkhtimes"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "storeListings": [
+        {
+          "appIdentifier": "af.market.nerkhtimes",
+          "appName": "نرخ تایمز - Nerkh Times",
+          "id": "3B819159-165D-5D7D-815D-C782E32F3ED5",
+          "productionVersion": "1.0",
+          "reviewStatus": "Green check in App Store Connect (live)",
+          "seller": "AMINULLAH HASHEMI",
+          "store": "appStore",
+          "storefront": "United States",
+          "url": "https://apps.apple.com/us/app/%D9%86%D8%B1%D8%AE-%D8%AA%D8%A7%DB%8C%D9%85%D8%B2-nerkh-times/id6810293641",
+          "verification": {
+            "notes": "The App Store lists the seller as the individual account \"AMINULLAH HASHEMI\", not \"Linumic\".",
+            "sources": [
+              {
+                "detail": "v1.0, current version released 2026-09-15, first released 2026-09-14",
+                "kind": "appStore",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://itunes.apple.com/lookup?bundleId=af.market.nerkhtimes"
+              },
+              {
+                "detail": "Nerkh Times - نرخ تایمز — iOS 1.0, green check",
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "App Store Connect app list, screenshot shared by the owner at 03:01 on 2026-09-23 (tools/inventory/evidence/app-store-connect-apps-2026-09-23.png)"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "appIdentifier": "af.market.nerkhtimes",
+          "appName": "NerkhTimes",
+          "id": "47B6A6E5-78BF-58F5-9BAA-472D281FD402",
+          "seller": "Aminullah Hashemi",
+          "store": "googlePlay",
+          "url": "https://play.google.com/store/apps/details?id=af.market.nerkhtimes",
+          "verification": {
+            "notes": "The production version isn't exposed on the public page.",
+            "sources": [
+              {
+                "detail": "og:title \"NerkhTimes - Apps on Google Play\"; developer Aminullah Hashemi",
+                "kind": "googlePlay",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://play.google.com/store/apps/details?id=af.market.nerkhtimes"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        }
+      ],
+      "summary": {
+        "value": "NerkhTimes — daily currency, fuel and staple food prices across Afghanistan, by city. No signup, no ads.",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Repository description",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/NerkhTimes"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "website": {
+        "value": "https://aminullah-dev.github.io/nerkhtimes.github.io/",
+        "verification": {
+          "notes": "The GitHub homepage field of the NerkhTimes repo points to the Google Play listing. linumic.com also hosts a NerkhTimes privacy/support page.",
+          "sources": [
+            {
+              "detail": "Landing and privacy-policy pages for the NerkhTimes app",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/nerkhtimes.github.io"
+            },
+            {
+              "detail": "Title: NerkhTimes (HTTP 200)",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://aminullah-dev.github.io/nerkhtimes.github.io/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      }
+    },
+    {
+      "alsoKnownAs": {
+        "value": [
+          "Afghan Prayer Times"
+        ],
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Bundle af.namazia.app is listed as \"Afghan Prayer Times\"",
+              "kind": "appStore",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://apps.apple.com/us/app/afghan-prayer-times/id6810537640"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "backend": {
+        "verification": {
+          "notes": "",
+          "sources": [],
+          "status": "unknown"
+        }
+      },
+      "category": {
+        "value": "Prayer times",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "App name Afghan Prayer Times",
+              "kind": "appStore",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://apps.apple.com/us/app/afghan-prayer-times/id6810537640"
+            },
+            {
+              "detail": "Branch claude/android-prayer-times-app-yiqx6y",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/-Namazia"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "currentVersion": {
+        "verification": {
+          "notes": "Versions differ by platform: iOS 1.0 on the App Store, Android versionName 1.1.0 in the build config (no Google Play listing found).",
+          "sources": [],
+          "status": "unknown"
+        }
+      },
+      "id": "namazia",
+      "isLinumicProduct": {
+        "value": true,
+        "verification": {
+          "notes": "No Linumic reference found in the repository or on linumic.com (/what-we-do/namazia/ returned 404).",
+          "sources": [
+            {
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "name": "Namazia",
+      "platforms": [
+        {
+          "component": "Android app",
+          "id": "DBC516C3-4DC2-51E0-A913-25BE0B572297",
+          "identifier": "af.namazia.app",
+          "platform": "android",
+          "sourceVersion": "1.1.0",
+          "verification": {
+            "notes": "No public Google Play listing was found (HTTP 404) on 2026-09-23.",
+            "sources": [
+              {
+                "detail": "applicationId af.namazia.app, versionName 1.1.0, versionCode 4",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Android/-Namazia/app/build.gradle"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "iOS app + widget",
+          "id": "D8AFCD22-7506-550C-BE33-853C9ECAB127",
+          "identifier": "af.namazia.app",
+          "platform": "iOS",
+          "sourceVersion": "1.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "SDKROOT iphoneos",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Android/-Namazia/ios/Namazia.xcodeproj"
+              },
+              {
+                "kind": "appStore",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://apps.apple.com/us/app/afghan-prayer-times/id6810537640"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        }
+      ],
+      "projectType": {
+        "value": "Android app and iOS app (with widget extension)",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/-Namazia/app/build.gradle"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/-Namazia/ios/Namazia.xcodeproj"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "provenance": {
+        "recordedAt": "2026-09-23T07:00:00Z",
+        "source": "Command Center verified inventory, built by tools/inventory/build_seed.py"
+      },
+      "repositories": [
+        {
+          "gitHub": {
+            "defaultBranch": "main",
+            "fetchedAt": "2026-09-23T07:00:00Z",
+            "languages": [],
+            "latestCommit": {
+              "date": "2026-06-24T08:42:24Z",
+              "message": "Initial commit",
+              "sha": "9b3dba18941ab841b758a334fd6a67592a26312b"
+            },
+            "openIssues": 0,
+            "openPullRequests": 1,
+            "releaseCount": 0,
+            "slug": "aminullah-dev/-Namazia",
+            "visibility": "public"
+          },
+          "host": "github",
+          "id": "C3C2CFF4-6C61-5883-9E3E-3DF278DBF048",
+          "link": {
+            "notes": "GitHub has no description.",
+            "sources": [
+              {
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+              },
+              {
+                "detail": "applicationId af.namazia.app",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Android/-Namazia/app/build.gradle"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [
+            {
+              "branch": "claude/android-prayer-times-app-yiqx6y",
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-09-22T15:37:56Z",
+                "message": "chore: harden .gitignore (ignore app/build, keystores, .env, firebase config)",
+                "sha": "95aa3fc120b604cd5ec4212f1c330b9d2dc3859c"
+              },
+              "notes": "The app code is on this branch. GitHub main has only \"Initial commit\" and PR #1 is open.",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/Android/-Namazia"
+            }
+          ],
           "name": "-Namazia",
+          "notes": "",
+          "owner": "aminullah-dev",
+          "type": "application",
           "url": "https://github.com/aminullah-dev/-Namazia"
         }
       ],
-      "status": "unknown"
+      "status": {
+        "value": "active",
+        "verification": {
+          "notes": "A live App Store listing shows a public release. Whether the product counts as \"active\" is inferred from it. Please confirm.",
+          "sources": [
+            {
+              "detail": "Live, v1.0 released 2026-09-14",
+              "kind": "appStore",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://apps.apple.com/us/app/afghan-prayer-times/id6810537640"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "storeListings": [
+        {
+          "appIdentifier": "af.namazia.app",
+          "appName": "Afghan Prayer Times",
+          "id": "D1EEF5AF-DB24-52DC-8318-B5000DD73812",
+          "productionVersion": "1.0",
+          "reviewStatus": "Green check in App Store Connect (live)",
+          "seller": "AMINULLAH HASHEMI",
+          "store": "appStore",
+          "storefront": "United States",
+          "url": "https://apps.apple.com/us/app/afghan-prayer-times/id6810537640",
+          "verification": {
+            "notes": "The App Store lists the seller as the individual account \"AMINULLAH HASHEMI\", not \"Linumic\".",
+            "sources": [
+              {
+                "detail": "v1.0, released 2026-09-14",
+                "kind": "appStore",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://itunes.apple.com/lookup?bundleId=af.namazia.app"
+              },
+              {
+                "detail": "Afghan Prayer Times — iOS 1.0, green check",
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "App Store Connect app list, screenshot shared by the owner at 03:01 on 2026-09-23 (tools/inventory/evidence/app-store-connect-apps-2026-09-23.png)"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        }
+      ],
+      "summary": {
+        "verification": {
+          "notes": "The README contains only a title, and GitHub has no description.",
+          "sources": [],
+          "status": "unknown"
+        }
+      },
+      "website": {
+        "verification": {
+          "notes": "https://linumic.com/what-we-do/namazia/ returned 404. The repository contains a privacy-policy.html.",
+          "sources": [],
+          "status": "unknown"
+        }
+      }
     },
     {
+      "alsoKnownAs": {
+        "value": [
+          "KhayatYar",
+          "خیاط‌یار",
+          "Tailor ERP"
+        ],
+        "verification": {
+          "notes": "The repository, the app and the website call this product KhayatYar / Tailor ERP. \"AfghanJama\" appears only as the repository and package name.",
+          "sources": [
+            {
+              "detail": "Description: KhayatYar / خیاط‌یار — Tailor ERP",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/AfghanJama"
+            },
+            {
+              "detail": "Title: Tailor ERP — Orders, Production & Accounts",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/tailor-erp/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "backend": {
+        "value": "None: offline-first, all data stays on the device",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "\"بی‌اینترنت کار می‌کند. همهٔ داده روی خودِ دستگاه می‌مانَد.\"",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/AfghanJama/README.md"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "category": {
+        "value": "Tailoring workshop management (ERP)",
+        "verification": {
+          "notes": "This is the product linumic.com sells as \"Tailor ERP\". The separate Tailoring-Workshop-ERP repository (Darzi) is a different codebase. See that product.",
+          "sources": [
+            {
+              "detail": "KhayatYar — Tailor ERP",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/AfghanJama"
+            },
+            {
+              "detail": "Category \"Manufacturing\": Workshop management for tailoring businesses",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/tailor-erp/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "currentVersion": {
+        "value": "1.8.0",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Latest release v1.8.0",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/AfghanJama"
+            },
+            {
+              "detail": "appVersion=1.8.0, appVersionCode=13",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/AfghanJama/gradle.properties"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "id": "afghanjama",
+      "isLinumicProduct": {
+        "value": true,
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+            },
+            {
+              "detail": "Tailor ERP page download links point to github.com/aminullah-dev/AfghanJama/releases/download/v1.8.0/KhayatYar-1.8.0.{apk,msi,dmg}",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/tailor-erp/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "name": "AfghanJama",
-      "notes": "Top-level directories (unverified platform indicators): app, iosApp, desktop.",
+      "platforms": [
+        {
+          "component": "KhayatYar Android",
+          "id": "E419A66B-25BC-54B6-850E-C55602F9B12F",
+          "identifier": "com.afghanjama",
+          "platform": "android",
+          "sourceVersion": "1.8.0",
+          "verification": {
+            "notes": "Distributed through GitHub releases. No public Google Play listing was found (HTTP 404).",
+            "sources": [
+              {
+                "detail": "applicationId com.afghanjama",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Android/AfghanJama/app/build.gradle.kts"
+              },
+              {
+                "detail": "Release asset KhayatYar-1.8.0.apk",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/AfghanJama"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "KhayatYar desktop",
+          "id": "33D27464-ED22-58E9-B5DF-BC659E55EF1A",
+          "platform": "macOS",
+          "sourceVersion": "1.8.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Release asset KhayatYar-1.8.0.dmg",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/AfghanJama"
+              },
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Android/AfghanJama/desktop/build.gradle.kts"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "KhayatYar desktop",
+          "id": "66316D1A-1AF8-503A-A050-563CEC2167DC",
+          "platform": "windows",
+          "sourceVersion": "1.8.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Release asset KhayatYar-1.8.0.msi",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/AfghanJama"
+              },
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Android/AfghanJama/desktop/build.gradle.kts"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "KhayatYar iOS",
+          "id": "758E7A10-C9C2-52A4-B58D-D287E02EFF6B",
+          "identifier": "com.afghanjama.khayatyar",
+          "platform": "iOS",
+          "verification": {
+            "notes": "Only on branch claude/ios-app, not on main. linumic.com says \"iPhone — App Store · in preparation\". Not present in the owner's App Store Connect app list (screenshot 2026-09-23), which shows 7 apps: SafeBeauty, VELRO Driver, VELRO Ride, Linumic WorkTrack, VELRO Ops, Nerkh Times, Afghan Prayer Times.",
+            "sources": [
+              {
+                "detail": "SDKROOT iphoneos, bundle com.afghanjama.khayatyar",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Android/AfghanJama-ios/iosApp/KhayatYar.xcodeproj"
+              }
+            ],
+            "status": "partiallyVerified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        }
+      ],
+      "projectType": {
+        "value": "Kotlin Android app + Compose Desktop app (macOS/Windows), with an iOS app on a separate branch",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/AfghanJama/app/build.gradle.kts"
+            },
+            {
+              "detail": "org.jetbrains.compose desktop",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/AfghanJama/desktop/build.gradle.kts"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/AfghanJama-ios/iosApp/project.yml"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "provenance": {
-        "recordedAt": "2026-09-23T12:00:00Z",
-        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+        "recordedAt": "2026-09-23T07:00:00Z",
+        "source": "Command Center verified inventory, built by tools/inventory/build_seed.py"
       },
       "repositories": [
         {
+          "gitHub": {
+            "defaultBranch": "main",
+            "description": "KhayatYar / خیاط‌یار — Tailor ERP: orders, cutting, tailor assignments and accounts. Offline-first, Dari-native RTL.",
+            "fetchedAt": "2026-09-23T07:00:00Z",
+            "homepage": "https://linumic.com/what-we-do/tailor-erp/",
+            "languages": [
+              "Kotlin",
+              "Python",
+              "Shell",
+              "PowerShell",
+              "Swift"
+            ],
+            "latestCommit": {
+              "date": "2026-09-20T07:32:44Z",
+              "message": "هشدار روی publish.py — فایل‌های مخزن دیگر آینهٔ سایت نیستند",
+              "sha": "f71c233574c24b89c991b2bad8618ce12eae5905"
+            },
+            "latestRelease": {
+              "assets": [
+                "KhayatYar-1.8.0.apk",
+                "KhayatYar-1.8.0.dmg",
+                "KhayatYar-1.8.0.msi"
+              ],
+              "name": "خیاط‌یار ۱٫۸٫۰",
+              "publishedAt": "2026-09-20T05:08:23Z",
+              "tag": "v1.8.0"
+            },
+            "openIssues": 0,
+            "openPullRequests": 0,
+            "releaseCount": 2,
+            "slug": "aminullah-dev/AfghanJama",
+            "visibility": "public"
+          },
           "host": "github",
-          "id": "8F2B79A4-C988-58B2-82DD-FF35EAB73789",
+          "id": "A368D0B0-33F9-5452-BA4B-BBA1D7E3177D",
+          "link": {
+            "notes": "",
+            "sources": [
+              {
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/AfghanJama"
+              },
+              {
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [
+            {
+              "branch": "main",
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-09-20T07:32:44Z",
+                "message": "هشدار روی publish.py — فایل‌های مخزن دیگر آینهٔ سایت نیستند",
+                "sha": "f71c233574c24b89c991b2bad8618ce12eae5905"
+              },
+              "notes": "",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/Android/AfghanJama"
+            },
+            {
+              "branch": "claude/ios-app",
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-09-20T03:26:10Z",
+                "message": "هم‌گام با main — و پنج فیچرِ تازه روی آیفون هم نشستند",
+                "sha": "a1e27f85b949078d6f23c33699b77344085acdc9"
+              },
+              "notes": "Second working copy of the same repository, on the iOS branch.",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/Android/AfghanJama-ios"
+            },
+            {
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-09-20T00:00:00Z",
+                "message": "هشدار روی publish.py — فایل‌های مخزن دیگر آینهٔ سایت نیستند",
+                "sha": "f71c233"
+              },
+              "notes": "Older copy in _Archive. Commit date only (no time) recorded.",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/_Archive/StudioProjects/AfghanJama"
+            }
+          ],
           "name": "AfghanJama",
+          "notes": "",
+          "owner": "aminullah-dev",
+          "type": "application",
           "url": "https://github.com/aminullah-dev/AfghanJama"
         }
       ],
-      "status": "unknown"
+      "status": {
+        "value": "active",
+        "verification": {
+          "notes": "Public GitHub releases show it's available. Whether it counts as \"active\" is inferred from them. Please confirm.",
+          "sources": [
+            {
+              "detail": "Release v1.8.0 on 2026-09-20 (apk, dmg, msi)",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/AfghanJama"
+            },
+            {
+              "detail": "Offers downloads and per-workshop licensing",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/tailor-erp/"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "summary": {
+        "value": "KhayatYar / خیاط‌یار — Tailor ERP: orders, cutting, tailor assignments and accounts. Offline-first, Dari-native RTL.",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Repository description",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/AfghanJama"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "website": {
+        "value": "https://linumic.com/what-we-do/tailor-erp/",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Repository homepage field",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/AfghanJama"
+            },
+            {
+              "detail": "Page mentions AfghanJama and KhayatYar",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/tailor-erp/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      }
     },
     {
+      "alsoKnownAs": {
+        "value": [
+          "سوډر حاکم",
+          "SoderHakim"
+        ],
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "# سوډر حاکم — Android reader; dist/SoderHakim-1.0.apk",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/SODER-HAKEM/README.md"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "backend": {
+        "value": "None: no network access",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "\"no network access and no user-facing permissions\"",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/SODER-HAKEM/README.md"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "category": {
+        "value": "Book reader (Pashto)",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/SODER-HAKEM/README.md"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "currentVersion": {
+        "value": "1.0",
+        "verification": {
+          "notes": "Version from the build config and README. No GitHub release or store listing was found.",
+          "sources": [
+            {
+              "detail": "versionName 1.0",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/SODER-HAKEM/app/build.gradle.kts"
+            },
+            {
+              "detail": "dist/SoderHakim-1.0.apk",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/SODER-HAKEM/README.md"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "id": "soder-hakem",
+      "isLinumicProduct": {
+        "value": true,
+        "verification": {
+          "notes": "No Linumic reference found in the repository or on linumic.com.",
+          "sources": [
+            {
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "name": "SODER-HAKEM",
-      "notes": "Top-level directories (unverified platform indicators): app.",
+      "platforms": [
+        {
+          "component": "Reader app",
+          "id": "09AC3290-0946-50F6-8139-4F4548C98688",
+          "identifier": "com.hashemi.soderhakim",
+          "platform": "android",
+          "sourceVersion": "1.0",
+          "verification": {
+            "notes": "Sideloaded APK. No public Google Play listing was found (HTTP 404).",
+            "sources": [
+              {
+                "detail": "applicationId com.hashemi.soderhakim",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Android/SODER-HAKEM/app/build.gradle.kts"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        }
+      ],
+      "projectType": {
+        "value": "Android app (Kotlin + Jetpack Compose)",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/SODER-HAKEM/app/build.gradle.kts"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/SODER-HAKEM/README.md"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "provenance": {
-        "recordedAt": "2026-09-23T12:00:00Z",
-        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+        "recordedAt": "2026-09-23T07:00:00Z",
+        "source": "Command Center verified inventory, built by tools/inventory/build_seed.py"
       },
       "repositories": [
         {
+          "gitHub": {
+            "defaultBranch": "main",
+            "fetchedAt": "2026-09-23T07:00:00Z",
+            "languages": [
+              "Kotlin",
+              "Python"
+            ],
+            "latestCommit": {
+              "date": "2026-09-22T14:59:17Z",
+              "message": "Initial commit: SODER-HAKEM Android app source",
+              "sha": "aed081c5ccb24bdbc268452dbe977aec7cb4863f"
+            },
+            "openIssues": 0,
+            "openPullRequests": 0,
+            "releaseCount": 0,
+            "slug": "aminullah-dev/SODER-HAKEM",
+            "visibility": "private"
+          },
           "host": "github",
-          "id": "904C3D48-314E-52C3-A710-A72D64BDDA5E",
+          "id": "157214A7-0687-55C4-9AA1-0DDAA4D5B905",
+          "link": {
+            "notes": "",
+            "sources": [
+              {
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+              },
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Android/SODER-HAKEM/README.md"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [
+            {
+              "branch": "main",
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-09-22T14:59:17Z",
+                "message": "Initial commit: SODER-HAKEM Android app source",
+                "sha": "aed081c5ccb24bdbc268452dbe977aec7cb4863f"
+              },
+              "notes": "",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/Android/SODER-HAKEM"
+            }
+          ],
           "name": "SODER-HAKEM",
+          "notes": "",
+          "owner": "aminullah-dev",
+          "type": "application",
           "url": "https://github.com/aminullah-dev/SODER-HAKEM"
         }
       ],
-      "status": "unknown"
+      "status": {
+        "verification": {
+          "notes": "The first commit to GitHub was on 2026-09-22. The README describes sideloading an APK from dist/.",
+          "sources": [],
+          "status": "unknown"
+        }
+      },
+      "summary": {
+        "value": "Offline Android reading app for the book «سوډر حاکم — د بې‌واکه حاکمیت فلسفه» by امین‌الله هاشمي, with the full text bundled.",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Opening paragraph",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Android/SODER-HAKEM/README.md"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "website": {
+        "verification": {
+          "notes": "",
+          "sources": [],
+          "status": "unknown"
+        }
+      }
     },
     {
-      "id": "mediflow",
-      "name": "MediFlow",
-      "notes": "Python desktop application (pyproject.toml, packaging/).",
-      "provenance": {
-        "recordedAt": "2026-09-23T12:00:00Z",
-        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+      "backend": {
+        "value": "None: fully offline on one machine (SQLite in a per-user folder)",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "\"runs entirely on one machine with no internet, cloud, or subscription\"",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Desktop/MediFlow/README.md"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
       },
-      "repositories": [
+      "category": {
+        "value": "Clinic and hospital management",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/MediFlow"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "currentVersion": {
+        "value": "0.2.0",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Latest release v0.2.0",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/MediFlow"
+            },
+            {
+              "detail": "version 0.2.0",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Desktop/MediFlow/pyproject.toml"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "id": "mediflow",
+      "isLinumicProduct": {
+        "value": true,
+        "verification": {
+          "notes": "The LICENSE names \"Copyright (c) 2026 Aminullah Hashemi\" as a proprietary licence, not Linumic.",
+          "sources": [
+            {
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+            },
+            {
+              "detail": "Product page on linumic.com (HTTP 200); listed first on the products index under Healthcare",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/mediflow/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "name": "MediFlow",
+      "platforms": [
         {
-          "host": "github",
-          "id": "62878FFE-898A-5666-8291-B958264B894C",
-          "name": "MediFlow",
-          "url": "https://github.com/aminullah-dev/MediFlow"
+          "component": "Desktop app",
+          "id": "0C43E877-D209-5F16-9318-87CC40518687",
+          "platform": "windows",
+          "sourceVersion": "0.2.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Release asset MediFlow-0.2.0-windows.zip",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/MediFlow"
+              },
+              {
+                "detail": "Windows 10/11 installer",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Desktop/MediFlow/README.md"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "Desktop app",
+          "id": "0D7C7087-81C3-5236-9600-BC3AFA1CDDF6",
+          "platform": "macOS",
+          "verification": {
+            "notes": "macOS packaging exists in the source, but the v0.2.0 release and linumic.com offer only Windows. Not present in the owner's App Store Connect app list (screenshot 2026-09-23), which shows 7 apps: SafeBeauty, VELRO Driver, VELRO Ride, Linumic WorkTrack, VELRO Ops, Nerkh Times, Afghan Prayer Times.",
+            "sources": [
+              {
+                "detail": "macOS 11+ .dmg, Developer ID + notarised",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Desktop/MediFlow/README.md"
+              },
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Desktop/MediFlow/packaging/build-macos.sh"
+              },
+              {
+                "detail": "Commit 2080819 (2026-09-18): Make macOS a real target: sealed secrets, signed and notarised builds",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Desktop/MediFlow"
+              }
+            ],
+            "status": "partiallyVerified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
         }
       ],
-      "status": "unknown"
-    },
-    {
-      "id": "tailoring-workshop-erp",
-      "name": "Tailoring Workshop ERP",
-      "notes": "Top-level directories (unverified platform indicators): api, web.",
+      "projectType": {
+        "value": "Offline desktop application (Python 3.13, PySide6, SQLite) with a local web UI; 16 modules",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Module table (16 modules), start.command / start.bat web UI launchers",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Desktop/MediFlow/README.md"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Desktop/MediFlow/pyproject.toml"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "provenance": {
-        "recordedAt": "2026-09-23T12:00:00Z",
-        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+        "recordedAt": "2026-09-23T07:00:00Z",
+        "source": "Command Center verified inventory, built by tools/inventory/build_seed.py"
       },
       "repositories": [
         {
+          "gitHub": {
+            "defaultBranch": "main",
+            "description": "MediFlow — clinic and hospital management: appointments, patient records, pharmacy, laboratory, billing. Dari, Pashto, English.",
+            "fetchedAt": "2026-09-23T07:00:00Z",
+            "homepage": "https://linumic.com/what-we-do/mediflow/",
+            "languages": [
+              "Python",
+              "HTML",
+              "Shell",
+              "CSS",
+              "JavaScript",
+              "Batchfile",
+              "PowerShell",
+              "Inno Setup",
+              "Mako"
+            ],
+            "latestCommit": {
+              "date": "2026-09-22T15:49:20Z",
+              "message": "chore: remove marketing/ from the code repo (moved to ~/Projects/Marketing)",
+              "sha": "3f932672b47e3518f873656693da5d253734f928"
+            },
+            "latestRelease": {
+              "assets": [
+                "MediFlow-0.2.0-windows.zip"
+              ],
+              "name": "MediFlow ۰٫۲٫۰ — ویندوز",
+              "publishedAt": "2026-08-27T18:52:33Z",
+              "tag": "v0.2.0"
+            },
+            "openIssues": 0,
+            "openPullRequests": 0,
+            "releaseCount": 1,
+            "slug": "aminullah-dev/MediFlow",
+            "visibility": "private"
+          },
           "host": "github",
-          "id": "34E73D12-D92F-5EFF-BF5C-B7881BF3AC5B",
+          "id": "AEB1A38D-63F8-56AB-945E-892FB716EA45",
+          "link": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Description and homepage identify MediFlow",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/MediFlow"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [
+            {
+              "branch": "main",
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-09-22T15:49:20Z",
+                "message": "chore: remove marketing/ from the code repo (moved to ~/Projects/Marketing)",
+                "sha": "3f932672b47e3518f873656693da5d253734f928"
+              },
+              "notes": "26 commits since 2026-07-23. Tag v0.2.0. GitHub Actions CI (.github/workflows/ci.yml) passed on main on 2026-09-22. The README reports 117 passing tests; a local grep finds about 145 test functions in 8 files.",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/Desktop/MediFlow"
+            }
+          ],
+          "name": "MediFlow",
+          "notes": "Proprietary licence (LICENSE). The README notes that PySide6 is LGPL v3, which attaches conditions to how a closed-source product is sold.",
+          "owner": "aminullah-dev",
+          "type": "application",
+          "url": "https://github.com/aminullah-dev/MediFlow"
+        },
+        {
+          "host": "other",
+          "id": "0F053FB7-87EB-53A9-84B7-51097BACF1A7",
+          "link": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "# MediFlow — Marketing",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Marketing/marketing/README.md"
+              },
+              {
+                "detail": "Commit 3f93267 moved marketing/ to ~/Projects/Marketing",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Desktop/MediFlow"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [],
+          "name": "Marketing/marketing (local folder, not a Git repository)",
+          "notes": "Dari/Pashto social posts, cards and screenshots for MediFlow.",
+          "type": "marketing"
+        }
+      ],
+      "status": {
+        "value": "development",
+        "verification": {
+          "notes": "Publicly downloadable, but still in development according to the README roadmap. Whether any clinic runs it in production is unknown.",
+          "sources": [
+            {
+              "detail": "All 16 modules implemented (Phases 1–6). Phase 7 (printing & packaging) in progress: A4/thermal printing and receipt/prescription/report templates still open.",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Desktop/MediFlow/README.md"
+            },
+            {
+              "detail": "Release v0.2.0 on 2026-08-27 (MediFlow-0.2.0-windows.zip)",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/MediFlow"
+            },
+            {
+              "detail": "Offers the Windows ZIP download; \"a double-click installer is coming in the next release\"",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/mediflow/"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "summary": {
+        "value": "MediFlow — clinic and hospital management: appointments, patient records, pharmacy, laboratory, billing. Dari, Pashto, English.",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Repository description",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/MediFlow"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "website": {
+        "value": "https://linumic.com/what-we-do/mediflow/",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Repository homepage field",
+              "kind": "gitHub",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://api.github.com/repos/aminullah-dev/MediFlow"
+            },
+            {
+              "detail": "Title: MediFlow — Clinic & Hospital Management System",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/mediflow/"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      }
+    },
+    {
+      "alsoKnownAs": {
+        "value": [
+          "Darzi",
+          "درزی"
+        ],
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "# Darzi — درزی",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Web/Tailoring Workshop ERP/README.md"
+            },
+            {
+              "detail": "darzi-erp",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Web/Tailoring Workshop ERP/package.json"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "backend": {
+        "value": "Express 5 + Drizzle + PostgreSQL (api/)",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Layout table",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Web/Tailoring Workshop ERP/README.md"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "category": {
+        "value": "Garment production ERP",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "\"A production management platform for garment manufacturing\"",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Web/Tailoring Workshop ERP/README.md"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "currentVersion": {
+        "verification": {
+          "notes": "package.json declares 0.1.0. No release was found.",
+          "sources": [],
+          "status": "unknown"
+        }
+      },
+      "id": "tailoring-workshop-erp",
+      "isLinumicProduct": {
+        "value": true,
+        "verification": {
+          "notes": "No Linumic reference found in this repository.",
+          "sources": [
+            {
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "name": "Tailoring Workshop ERP",
+      "platforms": [
+        {
+          "component": "Web client (React + Vite)",
+          "id": "11EC057E-6A2F-5E82-8F1B-525A59723672",
+          "platform": "web",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "@darzi/web",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Web/Tailoring Workshop ERP/web/package.json"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        },
+        {
+          "component": "API (Express + PostgreSQL)",
+          "id": "4EE3A7D4-A4A8-5A8F-ACF2-F390D61595A4",
+          "platform": "backend",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "@darzi/api",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Web/Tailoring Workshop ERP/api/package.json"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        }
+      ],
+      "projectType": {
+        "value": "Web application: React web client + Express/Drizzle/PostgreSQL API",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Layout table",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Web/Tailoring Workshop ERP/README.md"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "provenance": {
+        "recordedAt": "2026-09-23T07:00:00Z",
+        "source": "Command Center verified inventory, built by tools/inventory/build_seed.py"
+      },
+      "repositories": [
+        {
+          "gitHub": {
+            "defaultBranch": "main",
+            "description": "Tailoring Workshop ERP",
+            "fetchedAt": "2026-09-23T07:00:00Z",
+            "languages": [
+              "TypeScript",
+              "Python",
+              "JavaScript",
+              "PLpgSQL",
+              "HTML"
+            ],
+            "latestCommit": {
+              "date": "2026-08-02T02:18:50Z",
+              "message": "Merge: goods receipts convert into the item's stocking unit",
+              "sha": "907623c1be84a54747b35adf967d51f856407de1"
+            },
+            "openIssues": 0,
+            "openPullRequests": 0,
+            "releaseCount": 0,
+            "slug": "aminullah-dev/Tailoring-Workshop-ERP",
+            "visibility": "private"
+          },
+          "host": "github",
+          "id": "17476DE8-F6D9-5525-B47C-97FDD934C5E5",
+          "link": {
+            "notes": "",
+            "sources": [
+              {
+                "detail": "Description: Tailoring Workshop ERP",
+                "kind": "gitHub",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "https://api.github.com/repos/aminullah-dev/Tailoring-Workshop-ERP"
+              },
+              {
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [
+            {
+              "branch": "feat/finished-goods-warehouse",
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-08-03T01:28:41Z",
+                "message": "refactor(web): give the app a shell and a page frame it did not have",
+                "sha": "6321d175af3d4e5ae5a1421f4c6a91b74a3cee5c"
+              },
+              "notes": "",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/Web/Tailoring Workshop ERP"
+            }
+          ],
           "name": "Tailoring-Workshop-ERP",
+          "notes": "The GitHub repository was created on 2026-09-22, but its commits date from 2026-08. The history was pushed after it was written.",
+          "owner": "aminullah-dev",
+          "type": "application",
           "url": "https://github.com/aminullah-dev/Tailoring-Workshop-ERP"
         }
       ],
-      "status": "unknown"
+      "status": {
+        "value": "development",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "\"Increment 1 — foundation and the order-intake slice\"",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Web/Tailoring Workshop ERP/README.md"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "summary": {
+        "value": "Tailoring workshop ERP: a production management platform for garment manufacturing, from the customer's measurements to the delivered, invoiced and costed order.",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Opening paragraph",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Web/Tailoring Workshop ERP/README.md"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "website": {
+        "verification": {
+          "notes": "The owner's list names this product \"Tailoring Workshop ERP\", but linumic.com's Tailor ERP page is the AfghanJama/KhayatYar codebase. This Darzi codebase doesn't appear on linumic.com.",
+          "sources": [
+            {
+              "detail": "\"Tailor ERP\" page: an offline Android/Windows/macOS app whose downloads are AfghanJama's KhayatYar-1.8.0 release",
+              "kind": "website",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "https://linumic.com/what-we-do/tailor-erp/"
+            },
+            {
+              "detail": "Darzi: a React web client + Express/PostgreSQL API, not offline Android/desktop",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Web/Tailoring Workshop ERP/README.md"
+            }
+          ],
+          "status": "conflicting",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      }
     },
     {
+      "alsoKnownAs": {
+        "value": [
+          "pashto-text"
+        ],
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "name pashto-text",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Research/The-Digital-Infrastructure-of-the-Pashto-Language/pyproject.toml"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "backend": {
+        "value": "None: a library. app/ is a local viewer server.",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Research/The-Digital-Infrastructure-of-the-Pashto-Language/README.md"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Research/The-Digital-Infrastructure-of-the-Pashto-Language/app/server.py"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "category": {
+        "value": "Language technology research",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Research/The-Digital-Infrastructure-of-the-Pashto-Language/README.md"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "currentVersion": {
+        "value": "0.1.0",
+        "verification": {
+          "notes": "No release was found.",
+          "sources": [
+            {
+              "detail": "version 0.1.0",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Research/The-Digital-Infrastructure-of-the-Pashto-Language/pyproject.toml"
+            }
+          ],
+          "status": "partiallyVerified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "id": "the-digital-infrastructure-of-the-pashto-language",
+      "isLinumicProduct": {
+        "value": true,
+        "verification": {
+          "notes": "No Linumic reference found in this repository.",
+          "sources": [
+            {
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "name": "The Digital Infrastructure of the Pashto Language",
-      "notes": "Top-level directories: app, data, hunspell, src.",
+      "platforms": [
+        {
+          "component": "Python library",
+          "id": "37D732C4-EAE8-56E0-A01B-E676C4EA5E4E",
+          "identifier": "pashto-text",
+          "platform": "research",
+          "sourceVersion": "0.1.0",
+          "verification": {
+            "notes": "",
+            "sources": [
+              {
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Research/The-Digital-Infrastructure-of-the-Pashto-Language/pyproject.toml"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          }
+        }
+      ],
+      "projectType": {
+        "value": "Python library, with a local web viewer (app/)",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Research/The-Digital-Infrastructure-of-the-Pashto-Language/pyproject.toml"
+            },
+            {
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Research/The-Digital-Infrastructure-of-the-Pashto-Language/app/server.py"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
       "provenance": {
-        "recordedAt": "2026-09-23T12:00:00Z",
-        "source": "Founder-provided product list + read-only survey of local Git remotes (~/Projects), 2026-09-23"
+        "recordedAt": "2026-09-23T07:00:00Z",
+        "source": "Command Center verified inventory, built by tools/inventory/build_seed.py"
       },
       "repositories": [
         {
+          "gitHub": {
+            "defaultBranch": "main",
+            "fetchedAt": "2026-09-23T07:00:00Z",
+            "languages": [],
+            "latestCommit": {
+              "date": "2026-07-27T06:08:24Z",
+              "message": "Initial commit",
+              "sha": "b63df549ce77ac6f74e5fb8dc86419f999036fb6"
+            },
+            "openIssues": 0,
+            "openPullRequests": 0,
+            "releaseCount": 0,
+            "slug": "aminullah-dev/The-Digital-Infrastructure-of-the-Pashto-Language",
+            "visibility": "public"
+          },
           "host": "github",
-          "id": "2172C4EF-57E0-5129-9A03-A6C116B0FED9",
+          "id": "9F004CB0-748B-54FC-8ABF-A617CE62EAC0",
+          "link": {
+            "notes": "",
+            "sources": [
+              {
+                "kind": "ownerStatement",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "Product list provided by the Linumic owner when the Command Center project started (2026-09-23)"
+              },
+              {
+                "detail": "*The Digital Infrastructure of the Pashto Language*",
+                "kind": "localRepository",
+                "observedAt": "2026-09-23T07:00:00Z",
+                "reference": "~/Projects/Research/The-Digital-Infrastructure-of-the-Pashto-Language/README.md"
+              }
+            ],
+            "status": "verified",
+            "verifiedAt": "2026-09-23T07:00:00Z"
+          },
+          "localCheckouts": [
+            {
+              "branch": "claude/new-session-cktx6n",
+              "lastCommit": {
+                "author": "Aminullah Hashemi",
+                "date": "2026-07-27T06:54:17Z",
+                "message": "Add app/: a local web viewer over the library",
+                "sha": "bfd7bf60b0375f107a864447f60069711c9623fa"
+              },
+              "notes": "The code is on this branch. GitHub main has only \"Initial commit\".",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "path": "~/Projects/Research/The-Digital-Infrastructure-of-the-Pashto-Language"
+            }
+          ],
           "name": "The-Digital-Infrastructure-of-the-Pashto-Language",
+          "notes": "",
+          "owner": "aminullah-dev",
+          "type": "research",
           "url": "https://github.com/aminullah-dev/The-Digital-Infrastructure-of-the-Pashto-Language"
         }
       ],
-      "status": "unknown"
+      "status": {
+        "verification": {
+          "notes": "",
+          "sources": [],
+          "status": "unknown"
+        }
+      },
+      "summary": {
+        "value": "Orthographic normalization, tokenization and stemming for Pashto. Pure Python standard library, MIT licensed.",
+        "verification": {
+          "notes": "",
+          "sources": [
+            {
+              "detail": "Opening lines",
+              "kind": "localRepository",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "~/Projects/Research/The-Digital-Infrastructure-of-the-Pashto-Language/README.md"
+            }
+          ],
+          "status": "verified",
+          "verifiedAt": "2026-09-23T07:00:00Z"
+        }
+      },
+      "website": {
+        "verification": {
+          "notes": "",
+          "sources": [],
+          "status": "unknown"
+        }
+      }
     }
   ],
-  "schemaVersion": 1
+  "schemaVersion": 2,
+  "unresolved": [
+    {
+      "findings": "Remotion motion-graphics project (package gul-e-lala-motion 1.0.0; compositions TitleCard, LogoReveal, LowerThird, CornerBug, KineticText, TransparentBadge; a Logo/ image). It isn't a Git repository and has no remote. No Linumic reference found.",
+      "id": "gul-e-lala",
+      "kind": "possibleProduct",
+      "location": "~/Projects/Web/Gul -E- Lala",
+      "name": "Gul-E-Lala",
+      "question": "Is Gul-E-Lala a Linumic product, a client project, or internal video tooling?",
+      "verification": {
+        "notes": "",
+        "sources": [
+          {
+            "kind": "localRepository",
+            "observedAt": "2026-09-23T07:00:00Z",
+            "reference": "~/Projects/Web/Gul -E- Lala/package.json"
+          },
+          {
+            "detail": "# Motion Graphics — Remotion Starter",
+            "kind": "localRepository",
+            "observedAt": "2026-09-23T07:00:00Z",
+            "reference": "~/Projects/Web/Gul -E- Lala/README.md"
+          }
+        ],
+        "status": "unknown"
+      }
+    },
+    {
+      "findings": "Private repository created 2026-07-28 with a single \"Initial commit\" containing only README.md (\"# Radar-system\"). No local working copy.",
+      "id": "radar-system",
+      "kind": "unresolvedRepository",
+      "location": "https://github.com/aminullah-dev/Radar-system",
+      "name": "Radar-system",
+      "question": "What is Radar-system for, and does it belong to any product?",
+      "verification": {
+        "notes": "",
+        "sources": [
+          {
+            "detail": "Contents: README.md only",
+            "kind": "gitHub",
+            "observedAt": "2026-09-23T07:00:00Z",
+            "reference": "https://api.github.com/repos/aminullah-dev/Radar-system"
+          }
+        ],
+        "status": "unknown"
+      }
+    },
+    {
+      "findings": "Explore_Afghanistan (private, 2025-08-03) holds a static website (index.html, js, stylesheet, images). Explore-Afghanistan (public, same day) is empty. Both predate every known product repository. No Linumic reference found (contents not read in depth).",
+      "id": "explore-afghanistan",
+      "kind": "unresolvedRepository",
+      "location": "https://github.com/aminullah-dev/Explore_Afghanistan",
+      "name": "Explore_Afghanistan / Explore-Afghanistan",
+      "question": "Are the Explore Afghanistan repositories related to Linumic, or personal projects?",
+      "verification": {
+        "notes": "",
+        "sources": [
+          {
+            "detail": "Contents: .gitignore, images, index.html, js, stylesheet",
+            "kind": "gitHub",
+            "observedAt": "2026-09-23T07:00:00Z",
+            "reference": "https://api.github.com/repos/aminullah-dev/Explore_Afghanistan"
+          },
+          {
+            "detail": "Empty repository",
+            "kind": "gitHub",
+            "observedAt": "2026-09-23T07:00:00Z",
+            "reference": "https://api.github.com/repos/aminullah-dev/Explore-Afghanistan"
+          }
+        ],
+        "status": "unknown"
+      }
+    }
+  ]
 }

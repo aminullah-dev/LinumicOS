@@ -42,6 +42,14 @@ struct ContentView: View {
         } message: {
             Text(model.errorMessage ?? "")
         }
+        .alert("Inventory updated", isPresented: Binding(
+            get: { model.notice != nil },
+            set: { if !$0 { model.notice = nil } }
+        )) {
+            Button("OK") { model.notice = nil }
+        } message: {
+            Text(model.notice ?? "")
+        }
     }
 
     private func rows(_ items: [SidebarItem]) -> some View {
@@ -55,6 +63,7 @@ struct ContentView: View {
         switch item {
         case .dashboard: DashboardView()
         case .allProducts: ProductsRootView()
+        case .verification: VerificationView()
         case .releases: AllReleasesView()
         case .roadmap: AllRoadmapView()
         case .issues: AllIssuesView()

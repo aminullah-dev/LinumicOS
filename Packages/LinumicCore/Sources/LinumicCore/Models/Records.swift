@@ -15,19 +15,56 @@ public struct Provenance: Codable, Hashable, Sendable {
     }
 }
 
+/// A working copy of a repository on this Mac, observed read-only.
+public struct LocalCheckout: Codable, Hashable, Sendable, Identifiable {
+    public var path: String
+    public var branch: String?
+    public var lastCommit: RepositorySnapshot.Commit?
+    public var observedAt: Date
+    public var notes: String
+    public var id: String { path }
+
+    public init(path: String, branch: String? = nil, lastCommit: RepositorySnapshot.Commit? = nil, observedAt: Date = .now, notes: String = "") {
+        self.path = path
+        self.branch = branch
+        self.lastCommit = lastCommit
+        self.observedAt = observedAt
+        self.notes = notes
+    }
+}
+
+/// A repository linked to a product. One product can have many repositories, and the
+/// link itself carries evidence (`link`), because a repository can exist without
+/// its product relationship being confirmed.
 public struct RepositoryRecord: Codable, Hashable, Sendable, Identifiable {
     public var id: UUID
     public var name: String
+    public var owner: String?
     public var url: URL?
     public var host: RepositoryHost
-    public var defaultBranch: String?
+    public var type: RepositoryType
+    /// Evidence that this repository belongs to the product.
+    public var link: Verification
+    /// Latest read-only observation from GitHub, if any.
+    public var gitHub: RepositorySnapshot?
+    public var localCheckouts: [LocalCheckout]
+    public var notes: String
 
-    public init(id: UUID = UUID(), name: String, url: URL? = nil, host: RepositoryHost = .github, defaultBranch: String? = nil) {
+    public init(
+        id: UUID = UUID(), name: String, owner: String? = nil, url: URL? = nil, host: RepositoryHost = .github,
+        type: RepositoryType = .unknown, link: Verification = .unknown, gitHub: RepositorySnapshot? = nil,
+        localCheckouts: [LocalCheckout] = [], notes: String = ""
+    ) {
         self.id = id
         self.name = name
+        self.owner = owner
         self.url = url
         self.host = host
-        self.defaultBranch = defaultBranch
+        self.type = type
+        self.link = link
+        self.gitHub = gitHub
+        self.localCheckouts = localCheckouts
+        self.notes = notes
     }
 
     /// `owner/name` parsed from a GitHub URL, if this is one.
@@ -36,6 +73,47 @@ public struct RepositoryRecord: Codable, Hashable, Sendable, Identifiable {
         let parts = url.path().split(separator: "/").prefix(2)
         guard parts.count == 2 else { return nil }
         return parts.joined(separator: "/").replacingOccurrences(of: ".git", with: "")
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, name, owner, url, host, type, link, gitHub, localCheckouts, notes
+    }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(UUID.self, forKey: .id)
+        name = try c.decode(String.self, forKey: .name)
+        owner = try c.decodeIfPresent(String.self, forKey: .owner)
+        url = try c.decodeIfPresent(URL.self, forKey: .url)
+        host = try c.decodeIfPresent(RepositoryHost.self, forKey: .host) ?? .github
+        type = try c.decodeIfPresent(RepositoryType.self, forKey: .type) ?? .unknown
+        link = try c.decodeIfPresent(Verification.self, forKey: .link) ?? .unknown
+        gitHub = try c.decodeIfPresent(RepositorySnapshot.self, forKey: .gitHub)
+        localCheckouts = try c.decodeIfPresent([LocalCheckout].self, forKey: .localCheckouts) ?? []
+        notes = try c.decodeIfPresent(String.self, forKey: .notes) ?? ""
+    }
+}
+
+/// A product running on a platform. It needs evidence (a build config, a store listing),
+/// not a folder name.
+public struct PlatformRecord: Codable, Hashable, Sendable, Identifiable {
+    public var id: UUID
+    public var platform: Platform
+    /// Which part of the product, e.g. "Passenger app", "Admin console".
+    public var component: String?
+    /// Bundle ID / application ID / package name, when one exists.
+    public var identifier: String?
+    /// Version declared in the build configuration (not necessarily released).
+    public var sourceVersion: String?
+    public var verification: Verification
+
+    public init(id: UUID = UUID(), platform: Platform, component: String? = nil, identifier: String? = nil, sourceVersion: String? = nil, verification: Verification) {
+        self.id = id
+        self.platform = platform
+        self.component = component
+        self.identifier = identifier
+        self.sourceVersion = sourceVersion
+        self.verification = verification
     }
 }
 
@@ -119,19 +197,37 @@ public struct Deployment: Codable, Hashable, Sendable, Identifiable {
     }
 }
 
-public struct StoreListing: Codable, Hashable, Sendable {
+/// One app on one store. A product can have several (e.g. separate passenger and driver apps).
+public struct StoreListing: Codable, Hashable, Sendable, Identifiable {
+    public var id: UUID
+    public var store: AppStore
+    public var appName: String?
+    /// Bundle ID or application ID.
+    public var appIdentifier: String?
     public var url: URL?
+    public var storefront: String?
+    public var seller: String?
     public var productionVersion: String?
     public var latestSubmittedVersion: String?
     public var reviewStatus: String?
-    public var lastChecked: Date?
+    public var verification: Verification
 
-    public init(url: URL? = nil, productionVersion: String? = nil, latestSubmittedVersion: String? = nil, reviewStatus: String? = nil, lastChecked: Date? = nil) {
+    public init(
+        id: UUID = UUID(), store: AppStore, appName: String? = nil, appIdentifier: String? = nil, url: URL? = nil,
+        storefront: String? = nil, seller: String? = nil, productionVersion: String? = nil,
+        latestSubmittedVersion: String? = nil, reviewStatus: String? = nil, verification: Verification = .unknown
+    ) {
+        self.id = id
+        self.store = store
+        self.appName = appName
+        self.appIdentifier = appIdentifier
         self.url = url
+        self.storefront = storefront
+        self.seller = seller
         self.productionVersion = productionVersion
         self.latestSubmittedVersion = latestSubmittedVersion
         self.reviewStatus = reviewStatus
-        self.lastChecked = lastChecked
+        self.verification = verification
     }
 }
 

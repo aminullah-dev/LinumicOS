@@ -117,9 +117,18 @@ struct AllRepositoriesView: View {
         ) {
             TableColumn("Product") { Text($0.productName).fontWeight(.medium) }
             TableColumn("Repository") { Text($0.record.gitHubSlug ?? $0.record.name).textSelection(.enabled) }
-            TableColumn("Default branch") { Text($0.record.defaultBranch ?? "—") }
-            TableColumn("Last commit / PRs / CI") { _ in
-                Text("Not connected").foregroundStyle(.secondary)
+            TableColumn("Type") { Text($0.record.type.title) }
+            TableColumn("Link") { VerificationBadge(status: $0.record.link.status, compact: true) }
+            TableColumn("Visibility") { Text($0.record.gitHub?.visibility?.title ?? "—") }
+            TableColumn("Default branch") { Text($0.record.gitHub?.defaultBranch ?? "—") }
+            TableColumn("Latest commit") { row in
+                if let c = row.record.gitHub?.latestCommit {
+                    Text("\(String(c.sha.prefix(7))) · \(c.date?.shortDate ?? "")").monospacedDigit().help(c.message)
+                } else { Text("—") }
+            }
+            TableColumn("Releases") { Text($0.record.gitHub?.latestRelease?.tag ?? ($0.record.gitHub?.releaseCount == 0 ? "none" : "—")) }
+            TableColumn("PRs / Issues") { row in
+                Text("\(row.record.gitHub?.openPullRequests.map(String.init) ?? "—") / \(row.record.gitHub?.openIssues.map(String.init) ?? "—")").monospacedDigit()
             }
         }
     }

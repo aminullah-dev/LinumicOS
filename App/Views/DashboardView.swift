@@ -9,18 +9,37 @@ struct DashboardView: View {
         let s = model.summary
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                if s.unknownStatusCount > 0 {
-                    Label("\(s.unknownStatusCount) of \(s.totalProducts) products have an unverified status. Open a product and press Edit to record verified facts.",
-                          systemImage: "questionmark.circle")
+                if s.pendingConfirmations > 0 {
+                    Button { router.sidebar = .verification } label: {
+                        HStack {
+                            Image(systemName: s.conflictingItems > 0 ? "exclamationmark.triangle.fill" : "person.badge.clock")
+                                .foregroundStyle(s.conflictingItems > 0 ? .red : .orange)
+                            Text("\(s.pendingConfirmations) facts need your confirmation\(s.conflictingItems > 0 ? ", \(s.conflictingItems) of them conflicting" : ""). Open Verification →")
+                            Spacer()
+                        }
                         .padding(10)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(.yellow.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
+                        .background((s.conflictingItems > 0 ? Color.red : Color.orange).opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                HStack(spacing: 12) {
+                    ForEach([VerificationStatus.verified, .partiallyVerified, .unknown, .conflicting]) { status in
+                        HStack {
+                            VerificationBadge(status: status)
+                            Spacer()
+                            Text("\(s.countsByVerification[status, default: 0])").font(.title3.weight(.semibold)).monospacedDigit()
+                        }
+                        .padding(10)
+                        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+                    }
                 }
 
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 12)], spacing: 12) {
                     MetricTile(title: "Total products", value: s.totalProducts, symbol: "shippingbox")
-                    MetricTile(title: "Active", value: s.activeCount, symbol: "checkmark.circle", tint: .green)
-                    MetricTile(title: "In development", value: s.inDevelopmentCount, symbol: "hammer", tint: .blue)
+                    MetricTile(title: "Active (recorded)", value: s.activeCount, symbol: "checkmark.circle", tint: .green)
+                    MetricTile(title: "In development (recorded)", value: s.inDevelopmentCount, symbol: "hammer", tint: .blue)
+                    MetricTile(title: "Status unknown", value: s.unknownStatusCount, symbol: "questionmark.circle", tint: .gray)
                     MetricTile(title: "Upcoming releases", value: s.upcomingReleases.count, symbol: "tag", tint: .indigo)
                     MetricTile(title: "Blocked releases", value: s.blockedReleases.count, symbol: "xmark.octagon", tint: s.blockedReleases.isEmpty ? .secondary : .red)
                     MetricTile(title: "Critical issues", value: s.openCriticalIssues.count, symbol: "exclamationmark.triangle", tint: s.openCriticalIssues.isEmpty ? .secondary : .red)
@@ -81,9 +100,9 @@ struct DashboardView: View {
 
                 HStack(alignment: .top, spacing: 16) {
                     DashboardPanel(title: "Store status") {
-                        LabeledContent("Products with App Store listing", value: "\(s.productsWithAppStoreListing)")
-                        LabeledContent("Products with Google Play listing", value: "\(s.productsWithGooglePlayListing)")
-                        Text("Live store status requires App Store Connect / Google Play integration (not connected).")
+                        LabeledContent("Products on the App Store", value: "\(s.productsWithAppStoreListing)")
+                        LabeledContent("Products on Google Play", value: "\(s.productsWithGooglePlayListing)")
+                        Text("From public store pages and the owner's App Store Connect screenshot (2026-09-23). Live sync needs the store integrations, which aren't connected.")
                             .font(.caption).foregroundStyle(.secondary)
                     }
                     DashboardPanel(title: "GitHub") {
@@ -128,7 +147,7 @@ struct MetricTile: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             Text("\(value)")
-                .font(.system(size: 28, weight: .semibold, design: .rounded))
+                .font(.title.weight(.semibold))
                 .monospacedDigit()
                 .foregroundStyle(tint)
         }

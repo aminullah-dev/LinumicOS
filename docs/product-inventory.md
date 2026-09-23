@@ -1,51 +1,37 @@
 # Product Inventory
 
-**Snapshot date:** 2026-09-23
-**Sources:**
-- (A) Product list provided by Linumic when the project started. It is not assumed to be complete.
-- (B) Read-only survey of local working copies under `~/Projects` (`git remote get-url origin`, top-level directory listing). No files were modified.
-- (C) `gh repo list aminullah-dev` for repository visibility.
+The inventory lives in the app, seeded from
+`Packages/LinumicCore/Sources/LinumicCore/Resources/seed-inventory.json`. That file is
+**generated** by `tools/inventory/build_seed.py` from evidence gathered read-only on 2026-09-23.
+Every fact records its sources (kind, exact reference, observed date) and one of four
+states: VERIFIED, PARTIALLY VERIFIED, UNKNOWN, CONFLICTING.
 
-"Platform indicators" are directory names seen at the top level of the working
-copy (for example `android/`, `ios/`, `web/`). They suggest which platforms
-exist but are **not verified** and aren't recorded as platforms in the app.
+For the full findings, open questions and classification of every repository, see
+[product-discovery-report.md](product-discovery-report.md).
 
-| Product | GitHub repository (B) | Visibility (C) | Local path (B) | Platform indicators (unverified) |
+## Summary
+
+| Product | Repositories | Current version | Status | Website |
 |---|---|---|---|---|
-| Safe Beauty | aminullah-dev/stealth-service-vault- | private | Multiplatform/Safe beauty | app, ios, desktop, functions, app-store, play-store |
-| Velro | aminullah-dev/velro | private | Multiplatform/Velro | mobile, ios, admin, backend |
-| WorkTrack | aminullah-dev/WorkTrack | private | Multiplatform/WorkTrack | app, ios, desktop, web, backend |
-| DukanPro | aminullah-dev/DukanPro | public | Multiplatform/DukanPro | app, server, melos.yaml (Flutter/Dart workspace) |
-| Talar | aminullah-dev/talar (+ aminullah-dev/talar-releases, public) | private | Multiplatform/Talar | android, desktop, web, backend |
-| NerkhTimes | aminullah-dev/NerkhTimes (+ nerkhtimes.github.io, public) | private | Android/NerkhTimes | app, ios, admin |
-| Namazia | aminullah-dev/-Namazia | public | Android/-Namazia | app, ios, store |
-| AfghanJama | aminullah-dev/AfghanJama | public | Android/AfghanJama (+ AfghanJama-ios, second working copy of the same repo) | app, iosApp, desktop |
-| SODER-HAKEM | aminullah-dev/SODER-HAKEM | private | Android/SODER-HAKEM | app |
-| MediFlow | aminullah-dev/MediFlow | private | Desktop/MediFlow | Python desktop app (pyproject.toml, packaging) |
-| Tailoring Workshop ERP | aminullah-dev/Tailoring-Workshop-ERP | private | Web/Tailoring Workshop ERP | api, web |
-| The Digital Infrastructure of the Pashto Language | aminullah-dev/The-Digital-Infrastructure-of-the-Pashto-Language | public | Research/The-Digital-Infrastructure-of-the-Pashto-Language | app, data, hunspell |
+| Safe Beauty | stealth-service-vault-, safebeauty-privacy, Marketing/pipeline | per platform (iOS 1.0.1 / Android 2.1.5) | active (partial) | linumic.com/what-we-do/safebeauty |
+| Velro | velro | 1.0.0 (iOS, partial) | active (partial) | linumic.com/what-we-do/velro |
+| WorkTrack | WorkTrack | per platform (iOS 1.0 / Android 1.2.0) | active (partial) | linumic.com/what-we-do/worktrack |
+| DukanPro | DukanPro | UNKNOWN — TO BE VERIFIED | development (partial) | UNKNOWN — TO BE VERIFIED |
+| Talar | talar, talar-releases | 1.0.0 | active (partial) | linumic.com/what-we-do/talar |
+| NerkhTimes | NerkhTimes, nerkhtimes.github.io | per platform (iOS 1.0 / Android 1.0.11) | active (partial) | aminullah-dev.github.io/nerkhtimes.github.io |
+| Namazia | -Namazia | per platform (iOS 1.0 / Android 1.1.0) | active (partial) | UNKNOWN — TO BE VERIFIED |
+| AfghanJama (KhayatYar) | AfghanJama | 1.8.0 | active (partial) | linumic.com/what-we-do/tailor-erp |
+| SODER-HAKEM | SODER-HAKEM | 1.0 (partial) | UNKNOWN — TO BE VERIFIED | UNKNOWN — TO BE VERIFIED |
+| MediFlow | MediFlow, Marketing/marketing | 0.2.0 | development (partial) | linumic.com/what-we-do/mediflow |
+| Tailoring Workshop ERP (Darzi) | Tailoring-Workshop-ERP | UNKNOWN — TO BE VERIFIED | development (partial) | **CONFLICTING** |
+| The Digital Infrastructure of the Pashto Language | The-Digital-Infrastructure-of-the-Pashto-Language | 0.1.0 (partial) | UNKNOWN — TO BE VERIFIED | UNKNOWN — TO BE VERIFIED |
 
-## UNKNOWN — TO BE VERIFIED, for every product
+"(partial)" means PARTIALLY VERIFIED: supported by indirect evidence, awaiting owner confirmation.
 
-- Description and category
-- Status (active, in development, …)
-- Verified platforms
-- Current and next version
-- Backend / hosting
-- Website
-- App Store and Google Play listings
-- Social accounts
-- Owner
+## Updating the inventory
 
-## Open questions
-
-- **Gul-E-Lala** (`~/Projects/Web/Gul -E- Lala`, a Remotion project with no Git
-  remote) is not on the product list. UNKNOWN — TO BE VERIFIED whether it is
-  a Linumic product.
-- Other GitHub repositories on the account (`Radar-system`, `kabul-signal-android`,
-  `Explore_Afghanistan`, `Explore-Afghanistan`, `safebeauty-privacy`, …) are not
-  on the product list. UNKNOWN — TO BE VERIFIED whether any of them belong to
-  a Linumic product.
-- The Safe Beauty repository is named `stealth-service-vault-`. UNKNOWN — TO BE
-  VERIFIED whether this is the canonical repository.
-- `~/Projects/Marketing` and `~/Projects/_Archive` were not surveyed.
+- **In the app:** each fact has an Edit… action that records a new value and its source.
+  Choosing "Record my confirmation as a source" stores an owner confirmation with today's date.
+- **Rebuilding the seed:** edit `tools/inventory/build_seed.py` (every value there cites its evidence),
+  then run `python3 tools/inventory/build_seed.py`. The seed is used only on first launch or
+  after a schema upgrade, so rebuilding it never overwrites edits made in the app.

@@ -1,0 +1,562 @@
+{
+ "stealth-service-vault-": {
+  "name": "stealth-service-vault-",
+  "owner": "aminullah-dev",
+  "visibility": "private",
+  "defaultBranch": "main",
+  "description": "SafeBeauty — a private, trilingual (EN/دری/پښتو) beauty-salon booking marketplace for women in Afghanistan. Android + Firebase, with web admin/provider consoles.",
+  "homepage": "https://linumic.com/what-we-do/safebeauty/",
+  "url": "https://github.com/aminullah-dev/stealth-service-vault-",
+  "pushedAt": "2026-09-23T04:25:46Z",
+  "createdAt": "2026-06-18T07:19:35Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "93866a5f7b9b3ab82d2ec0875cc4bff0bcd2b1f7",
+   "date": "2026-09-23T04:25:38Z",
+   "message": "Android 22 (2.1.5): the robust Update button, staged as a draft on Play"
+  },
+  "releaseCount": 2,
+  "latestRelease": {
+   "tag": "android-app",
+   "name": "SafeBeauty for Android",
+   "published": "2026-08-25T18:39:52Z",
+   "prerelease": false,
+   "assets": [
+    "SafeBeauty.apk"
+   ]
+  },
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {
+   "Kotlin": 1670843,
+   "Swift": 944564,
+   "JavaScript": 855513,
+   "HTML": 523118,
+   "Python": 110975,
+   "Shell": 26955,
+   "Makefile": 1968
+  }
+ },
+ "velro": {
+  "name": "velro",
+  "owner": "aminullah-dev",
+  "visibility": "private",
+  "defaultBranch": "main",
+  "description": "VELRO — intercity ride booking for Afghanistan: real seats at real stations, fares agreed before the trip.",
+  "homepage": "https://linumic.com/what-we-do/velro/",
+  "url": "https://github.com/aminullah-dev/velro",
+  "pushedAt": "2026-09-22T15:30:43Z",
+  "createdAt": "2026-08-31T19:13:19Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "34c999ca965a2d00942d8ac39e290f21f3a69ed6",
+   "date": "2026-09-20T22:50:05Z",
+   "message": "motion: seat-fill, logo reveal, stats, day-to-night (fa+ps)"
+  },
+  "releaseCount": 0,
+  "latestRelease": null,
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {
+   "Python": 1870581,
+   "Swift": 1161606,
+   "Kotlin": 1070437,
+   "TypeScript": 357970,
+   "HTML": 45009,
+   "Shell": 44336,
+   "CSS": 41221,
+   "JavaScript": 10780,
+   "Makefile": 4467,
+   "Dockerfile": 3572,
+   "Mako": 609
+  }
+ },
+ "WorkTrack": {
+  "name": "WorkTrack",
+  "owner": "aminullah-dev",
+  "visibility": "private",
+  "defaultBranch": "main",
+  "description": "WorkTrack — attendance, shifts, leave and payroll on the Solar Hijri calendar. Dari, Pashto, English.",
+  "homepage": "https://linumic.com/what-we-do/worktrack/",
+  "url": "https://github.com/aminullah-dev/WorkTrack",
+  "pushedAt": "2026-09-19T15:01:11Z",
+  "createdAt": "2026-07-17T18:45:38Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "cb194fd0f36f2ce9085bee0aff40c907355193d8",
+   "date": "2026-09-19T15:01:10Z",
+   "message": "Merge pull request #8 from aminullah-dev/claude/claude-md"
+  },
+  "releaseCount": 0,
+  "latestRelease": null,
+  "openPRs": 1,
+  "openIssues": 0,
+  "languages": {
+   "TypeScript": 1350569,
+   "Kotlin": 466226,
+   "Swift": 256964,
+   "HTML": 90793,
+   "JavaScript": 46764,
+   "CSS": 44602,
+   "Shell": 12435,
+   "Python": 3214,
+   "Ruby": 1537
+  },
+  "openPRTitles": [
+   "#1 Bring the WorkTrack platform onto main"
+  ]
+ },
+ "DukanPro": {
+  "name": "DukanPro",
+  "owner": "aminullah-dev",
+  "visibility": "public",
+  "defaultBranch": "main",
+  "description": null,
+  "homepage": null,
+  "url": "https://github.com/aminullah-dev/DukanPro",
+  "pushedAt": "2026-09-20T07:35:56Z",
+  "createdAt": "2026-09-11T17:04:16Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "41a3a4108be2756874ff7ca20ef8c4cfebba2dce",
+   "date": "2026-09-20T07:35:55Z",
+   "message": "The repository says what stays out of it, and keeps the editor's own state out"
+  },
+  "releaseCount": 0,
+  "latestRelease": null,
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {
+   "Dart": 1118608,
+   "Python": 699166,
+   "C++": 20277,
+   "CMake": 10555,
+   "Swift": 10048,
+   "Shell": 7871,
+   "Dockerfile": 778,
+   "C": 734,
+   "Mako": 704,
+   "Kotlin": 123,
+   "Objective-C": 38
+  }
+ },
+ "talar": {
+  "name": "talar",
+  "owner": "aminullah-dev",
+  "visibility": "private",
+  "defaultBranch": "main",
+  "description": "Talar (تالار) — Afghan Wedding Hall booking marketplace + ERP",
+  "homepage": "https://linumic.com/what-we-do/talar/",
+  "url": "https://github.com/aminullah-dev/talar",
+  "pushedAt": "2026-09-20T07:52:42Z",
+  "createdAt": "2026-07-16T06:50:18Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "4dae3a022e1dfc6ff7294f6b62fc3e586daf9f36",
+   "date": "2026-09-20T07:52:42Z",
+   "message": "Merge pull request #4 from aminullah-dev/demo/sandbox-project"
+  },
+  "releaseCount": 0,
+  "latestRelease": null,
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {
+   "TypeScript": 362040,
+   "Kotlin": 307862,
+   "JavaScript": 66269,
+   "HTML": 3772
+  }
+ },
+ "talar-releases": {
+  "name": "talar-releases",
+  "owner": "aminullah-dev",
+  "visibility": "public",
+  "defaultBranch": "main",
+  "description": "Installer downloads for Talar (تالار) — Afghan wedding-hall booking marketplace and ERP by Linumic. Release files only; source is private.",
+  "homepage": "https://linumic.com/what-we-do/talar/",
+  "url": "https://github.com/aminullah-dev/talar-releases",
+  "pushedAt": "2026-08-27T18:44:11Z",
+  "createdAt": "2026-08-27T18:43:36Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "72dd77f47d205a79a8208a43dbd9e8d40bac26f2",
+   "date": "2026-08-27T18:43:35Z",
+   "message": "Release downloads for Talar"
+  },
+  "releaseCount": 1,
+  "latestRelease": {
+   "tag": "v1.0.0",
+   "name": "تالار ۱٫۰٫۰",
+   "published": "2026-08-27T18:44:11Z",
+   "prerelease": false,
+   "assets": [
+    "Talar-1.0.0.apk"
+   ]
+  },
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {}
+ },
+ "NerkhTimes": {
+  "name": "NerkhTimes",
+  "owner": "aminullah-dev",
+  "visibility": "private",
+  "defaultBranch": "main",
+  "description": "NerkhTimes — daily currency, fuel and staple food prices across Afghanistan, by city. No signup, no ads.",
+  "homepage": "https://play.google.com/store/apps/details?id=af.market.nerkhtimes",
+  "url": "https://github.com/aminullah-dev/NerkhTimes",
+  "pushedAt": "2026-09-20T07:39:04Z",
+  "createdAt": "2026-02-01T23:51:43Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "df977c9438e50c858fb02ea048475696237a6719",
+   "date": "2026-09-20T07:39:03Z",
+   "message": "Add README, harden .gitignore, untrack IDE/local/generated files"
+  },
+  "releaseCount": 0,
+  "latestRelease": null,
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {
+   "Kotlin": 168463,
+   "Swift": 44580,
+   "JavaScript": 25737,
+   "HTML": 23335
+  }
+ },
+ "nerkhtimes.github.io": {
+  "name": "nerkhtimes.github.io",
+  "owner": "aminullah-dev",
+  "visibility": "public",
+  "defaultBranch": "main",
+  "description": "Landing and privacy-policy pages for the NerkhTimes app.",
+  "homepage": "https://aminullah-dev.github.io/nerkhtimes.github.io/",
+  "url": "https://github.com/aminullah-dev/nerkhtimes.github.io",
+  "pushedAt": "2026-02-03T18:29:27Z",
+  "createdAt": "2026-02-03T16:11:00Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "39f3038af76817fe6f7ca1728613331114e3005e",
+   "date": "2026-02-03T18:29:27Z",
+   "message": "Add privacy policy"
+  },
+  "releaseCount": 0,
+  "latestRelease": null,
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {
+   "HTML": 1265
+  }
+ },
+ "-Namazia": {
+  "name": "-Namazia",
+  "owner": "aminullah-dev",
+  "visibility": "public",
+  "defaultBranch": "main",
+  "description": null,
+  "homepage": null,
+  "url": "https://github.com/aminullah-dev/-Namazia",
+  "pushedAt": "2026-09-22T15:37:58Z",
+  "createdAt": "2026-06-24T08:42:24Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "9b3dba18941ab841b758a334fd6a67592a26312b",
+   "date": "2026-06-24T08:42:24Z",
+   "message": "Initial commit"
+  },
+  "releaseCount": 0,
+  "latestRelease": null,
+  "openPRs": 1,
+  "openIssues": 0,
+  "languages": {},
+  "openPRTitles": [
+   "#1 Claude/android prayer times app yiqx6y"
+  ]
+ },
+ "AfghanJama": {
+  "name": "AfghanJama",
+  "owner": "aminullah-dev",
+  "visibility": "public",
+  "defaultBranch": "main",
+  "description": "KhayatYar / خیاط‌یار — Tailor ERP: orders, cutting, tailor assignments and accounts. Offline-first, Dari-native RTL.",
+  "homepage": "https://linumic.com/what-we-do/tailor-erp/",
+  "url": "https://github.com/aminullah-dev/AfghanJama",
+  "pushedAt": "2026-09-20T07:32:45Z",
+  "createdAt": "2026-06-15T01:40:46Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "f71c233574c24b89c991b2bad8618ce12eae5905",
+   "date": "2026-09-20T07:32:44Z",
+   "message": "هشدار روی publish.py — فایل‌های مخزن دیگر آینهٔ سایت نیستند"
+  },
+  "releaseCount": 2,
+  "latestRelease": {
+   "tag": "v1.8.0",
+   "name": "خیاط‌یار ۱٫۸٫۰",
+   "published": "2026-09-20T05:08:23Z",
+   "prerelease": false,
+   "assets": [
+    "KhayatYar-1.8.0.apk",
+    "KhayatYar-1.8.0.dmg",
+    "KhayatYar-1.8.0.msi"
+   ]
+  },
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {
+   "Kotlin": 2636644,
+   "Python": 457127,
+   "Shell": 45480,
+   "PowerShell": 18264,
+   "Swift": 1058
+  }
+ },
+ "SODER-HAKEM": {
+  "name": "SODER-HAKEM",
+  "owner": "aminullah-dev",
+  "visibility": "private",
+  "defaultBranch": "main",
+  "description": null,
+  "homepage": null,
+  "url": "https://github.com/aminullah-dev/SODER-HAKEM",
+  "pushedAt": "2026-09-22T15:06:52Z",
+  "createdAt": "2026-09-22T15:06:47Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "aed081c5ccb24bdbc268452dbe977aec7cb4863f",
+   "date": "2026-09-22T14:59:17Z",
+   "message": "Initial commit: SODER-HAKEM Android app source"
+  },
+  "releaseCount": 0,
+  "latestRelease": null,
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {
+   "Kotlin": 114167,
+   "Python": 11457
+  }
+ },
+ "MediFlow": {
+  "name": "MediFlow",
+  "owner": "aminullah-dev",
+  "visibility": "private",
+  "defaultBranch": "main",
+  "description": "MediFlow — clinic and hospital management: appointments, patient records, pharmacy, laboratory, billing. Dari, Pashto, English.",
+  "homepage": "https://linumic.com/what-we-do/mediflow/",
+  "url": "https://github.com/aminullah-dev/MediFlow",
+  "pushedAt": "2026-09-22T15:50:10Z",
+  "createdAt": "2026-07-23T20:16:07Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "3f932672b47e3518f873656693da5d253734f928",
+   "date": "2026-09-22T15:49:20Z",
+   "message": "chore: remove marketing/ from the code repo (moved to ~/Projects/Marketing)"
+  },
+  "releaseCount": 1,
+  "latestRelease": {
+   "tag": "v0.2.0",
+   "name": "MediFlow ۰٫۲٫۰ — ویندوز",
+   "published": "2026-08-27T18:52:33Z",
+   "prerelease": false,
+   "assets": [
+    "MediFlow-0.2.0-windows.zip"
+   ]
+  },
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {
+   "Python": 851918,
+   "HTML": 93821,
+   "Shell": 29144,
+   "CSS": 23432,
+   "JavaScript": 7713,
+   "Batchfile": 3585,
+   "PowerShell": 2060,
+   "Inno Setup": 1711,
+   "Mako": 634
+  }
+ },
+ "Tailoring-Workshop-ERP": {
+  "name": "Tailoring-Workshop-ERP",
+  "owner": "aminullah-dev",
+  "visibility": "private",
+  "defaultBranch": "main",
+  "description": "Tailoring Workshop ERP",
+  "homepage": null,
+  "url": "https://github.com/aminullah-dev/Tailoring-Workshop-ERP",
+  "pushedAt": "2026-09-22T15:48:41Z",
+  "createdAt": "2026-09-22T15:48:37Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "907623c1be84a54747b35adf967d51f856407de1",
+   "date": "2026-08-02T02:18:50Z",
+   "message": "Merge: goods receipts convert into the item's stocking unit"
+  },
+  "releaseCount": 0,
+  "latestRelease": null,
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {
+   "TypeScript": 1628835,
+   "Python": 325217,
+   "JavaScript": 77362,
+   "PLpgSQL": 3556,
+   "HTML": 449
+  }
+ },
+ "The-Digital-Infrastructure-of-the-Pashto-Language": {
+  "name": "The-Digital-Infrastructure-of-the-Pashto-Language",
+  "owner": "aminullah-dev",
+  "visibility": "public",
+  "defaultBranch": "main",
+  "description": null,
+  "homepage": null,
+  "url": "https://github.com/aminullah-dev/The-Digital-Infrastructure-of-the-Pashto-Language",
+  "pushedAt": "2026-07-27T06:54:25Z",
+  "createdAt": "2026-07-27T06:08:24Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "b63df549ce77ac6f74e5fb8dc86419f999036fb6",
+   "date": "2026-07-27T06:08:24Z",
+   "message": "Initial commit"
+  },
+  "releaseCount": 0,
+  "latestRelease": null,
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {}
+ },
+ "Radar-system": {
+  "name": "Radar-system",
+  "owner": "aminullah-dev",
+  "visibility": "private",
+  "defaultBranch": "main",
+  "description": null,
+  "homepage": null,
+  "url": "https://github.com/aminullah-dev/Radar-system",
+  "pushedAt": "2026-07-28T08:21:36Z",
+  "createdAt": "2026-07-28T08:19:11Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "92f1c429bcf728529e93bddd1cb6397613a1ac73",
+   "date": "2026-07-28T08:19:12Z",
+   "message": "Initial commit"
+  },
+  "releaseCount": 0,
+  "latestRelease": null,
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {}
+ },
+ "kabul-signal-android": {
+  "name": "kabul-signal-android",
+  "owner": "aminullah-dev",
+  "visibility": "public",
+  "defaultBranch": "main",
+  "description": "Kabul Signal — Android reader for kabulsignal.com. Dari, Pashto, English.",
+  "homepage": "https://kabulsignal.com",
+  "url": "https://github.com/aminullah-dev/kabul-signal-android",
+  "pushedAt": "2026-06-20T01:14:21Z",
+  "createdAt": "2026-06-19T23:55:08Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "37d966486b17ec2f98e355262902c623111a7749",
+   "date": "2026-06-20T01:13:48Z",
+   "message": "Pin UI to LTR and force English dates"
+  },
+  "releaseCount": 0,
+  "latestRelease": null,
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {
+   "Kotlin": 46530
+  }
+ },
+ "safebeauty-privacy": {
+  "name": "safebeauty-privacy",
+  "owner": "aminullah-dev",
+  "visibility": "public",
+  "defaultBranch": "main",
+  "description": "Privacy policy pages for the SafeBeauty app.",
+  "homepage": "https://linumic.com/safebeauty-privacy-policy/",
+  "url": "https://github.com/aminullah-dev/safebeauty-privacy",
+  "pushedAt": "2026-06-22T03:55:53Z",
+  "createdAt": "2026-06-22T03:50:13Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "554ea0048f346b3a052fef455443d378f8398599",
+   "date": "2026-06-22T03:55:53Z",
+   "message": "Add files via upload"
+  },
+  "releaseCount": 0,
+  "latestRelease": null,
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {
+   "HTML": 28420
+  }
+ },
+ "Explore_Afghanistan": {
+  "name": "Explore_Afghanistan",
+  "owner": "aminullah-dev",
+  "visibility": "private",
+  "defaultBranch": "main",
+  "description": null,
+  "homepage": null,
+  "url": "https://github.com/aminullah-dev/Explore_Afghanistan",
+  "pushedAt": "2025-08-03T20:03:23Z",
+  "createdAt": "2025-08-03T00:43:11Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": {
+   "sha": "2093c6e242d2cea90cd712a4defc9be490d56f9a",
+   "date": "2025-08-03T18:44:08Z",
+   "message": "Upload full website"
+  },
+  "releaseCount": 0,
+  "latestRelease": null,
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {
+   "JavaScript": 10481,
+   "HTML": 7120,
+   "CSS": 3856
+  }
+ },
+ "Explore-Afghanistan": {
+  "name": "Explore-Afghanistan",
+  "owner": "aminullah-dev",
+  "visibility": "public",
+  "defaultBranch": "main",
+  "description": null,
+  "homepage": null,
+  "url": "https://github.com/aminullah-dev/Explore-Afghanistan",
+  "pushedAt": "2025-08-03T18:14:42Z",
+  "createdAt": "2025-08-03T18:14:42Z",
+  "archived": false,
+  "fork": false,
+  "latestCommit": null,
+  "releaseCount": 0,
+  "latestRelease": null,
+  "openPRs": 0,
+  "openIssues": 0,
+  "languages": {}
+ }
+}

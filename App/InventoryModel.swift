@@ -8,8 +8,12 @@ import Observation
 @Observable
 final class InventoryModel {
     private(set) var products: [Product] = []
+    /// Possible products, unresolved repositories and separate organizations found during discovery.
+    private(set) var unresolved: [UnresolvedItem] = []
     private(set) var isLoaded = false
     var errorMessage: String?
+    /// One-time information for the user, e.g. that an older inventory file was archived.
+    var notice: String?
 
     private let store: InventoryStore
     private var saveTask: Task<Void, Never>?
@@ -24,19 +28,38 @@ final class InventoryModel {
         products.first { $0.id == id }
     }
 
-    /// Loads the stored inventory. On first launch, seeds it from the verified-only seed file.
+    /// Loads the stored inventory. On first launch it seeds from the verified seed file.
+    /// A file from an older schema is archived (never deleted) and replaced by the current seed.
     func load() async {
         do {
             if let inventory = try await store.load() {
-                products = inventory.products
+                apply(inventory)
             } else {
-                products = try SeedInventory.load().products
-                persist()
+                try seed()
+            }
+        } catch InventoryStoreError.outdatedSchemaVersion(let version) {
+            do {
+                let archived = try await store.archive()
+                try seed()
+                notice = "The inventory was rebuilt from the verified seed (schema \(Inventory.currentSchemaVersion)). "
+                    + "The previous schema-\(version) file was kept at \(archived?.path(percentEncoded: false) ?? "its original location")."
+            } catch {
+                errorMessage = "Could not upgrade inventory: \(error.localizedDescription)"
             }
         } catch {
             errorMessage = "Could not load inventory: \(error.localizedDescription)"
         }
         isLoaded = true
+    }
+
+    private func seed() throws {
+        apply(try SeedInventory.load())
+        persist()
+    }
+
+    private func apply(_ inventory: Inventory) {
+        products = inventory.products
+        unresolved = inventory.unresolved
     }
 
     /// Adds a product, or replaces the existing product with the same ID.
@@ -74,7 +97,7 @@ final class InventoryModel {
 
     /// Saves are chained so they reach the store in the same order as the mutations.
     private func persist() {
-        let snapshot = Inventory(products: products)
+        let snapshot = Inventory(products: products, unresolved: unresolved)
         let previous = saveTask
         saveTask = Task { [store] in
             await previous?.value

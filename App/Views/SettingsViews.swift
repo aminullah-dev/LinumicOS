@@ -41,7 +41,7 @@ struct SecuritySettingsView: View {
             }
             Section("Local data") {
                 LabeledContent("Inventory file") {
-                    Text((try? JSONFileInventoryStore.defaultFileURL().path()) ?? "Unavailable")
+                    Text((try? JSONFileInventoryStore.defaultFileURL().path(percentEncoded: false)) ?? "Unavailable")
                         .textSelection(.enabled)
                         .font(.callout.monospaced())
                 }

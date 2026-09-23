@@ -26,7 +26,8 @@ struct ProductListView: View {
     private var rows: [Product] {
         let filtered = search.isEmpty ? model.products : model.products.filter {
             $0.name.localizedStandardContains(search)
-                || ($0.category ?? "").localizedStandardContains(search)
+                || ($0.category.value ?? "").localizedStandardContains(search)
+                || ($0.alsoKnownAs.value ?? []).contains { $0.localizedStandardContains(search) }
                 || $0.repositories.contains { $0.name.localizedStandardContains(search) }
         }
         return filtered.sorted(using: sortOrder)
@@ -35,28 +36,59 @@ struct ProductListView: View {
     var body: some View {
         Table(rows, selection: $selection, sortOrder: $sortOrder) {
             TableColumn("Name", value: \.name) { p in
-                Text(p.name).fontWeight(.medium)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(p.name).fontWeight(.medium)
+                    if let aka = p.alsoKnownAs.value, !aka.isEmpty {
+                        Text(aka.joined(separator: " · ")).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                    }
+                }
             }
-            TableColumn("Status", value: \.status.rawValue) { p in
-                StatusBadge(text: p.status.title, color: p.status.color)
+            .width(min: 160, ideal: 220)
+            TableColumn("Verification", value: \.overallVerification.rawValue) { p in
+                VerificationBadge(status: p.overallVerification)
             }
-            .width(min: 90, ideal: 110)
+            .width(min: 120, ideal: 150)
+            TableColumn("Needs you") { p in
+                let n = p.needsConfirmation.count
+                Text(n == 0 ? "—" : "\(n)").monospacedDigit().fontWeight(n == 0 ? .regular : .semibold)
+                    .accessibilityLabel(n == 0 ? "Nothing to confirm" : "\(n) items need your confirmation")
+            }
+            .width(min: 60, ideal: 70)
+            TableColumn("Status") { p in
+                if let s = p.status.value {
+                    HStack(spacing: 4) {
+                        StatusBadge(text: s.title, color: s.color)
+                        if p.status.status != .verified {
+                            Image(systemName: p.status.status.symbol).foregroundStyle(p.status.status.color)
+                                .help("Status is \(p.status.status.title)")
+                                .accessibilityLabel("Status verification: \(p.status.status.title)")
+                        }
+                    }
+                } else {
+                    Text("Unknown").foregroundStyle(.secondary).italic()
+                }
+            }
+            .width(min: 100, ideal: 130)
             TableColumn("Platforms") { p in
-                Text(p.platforms.isEmpty ? "—" : p.platforms.map(\.title).joined(separator: ", "))
-                    .foregroundStyle(p.platforms.isEmpty ? .secondary : .primary)
+                let platforms = p.evidencedPlatforms
+                Text(platforms.isEmpty ? "Unknown" : platforms.map(\.title).joined(separator: ", "))
+                    .foregroundStyle(platforms.isEmpty ? .secondary : .primary)
+                    .lineLimit(1)
             }
-            TableColumn("Current") { p in Text(p.currentVersion ?? "—").monospacedDigit() }
-                .width(min: 60, ideal: 70)
-            TableColumn("Next") { p in Text(p.nextVersion ?? "—").monospacedDigit() }
-                .width(min: 60, ideal: 70)
             TableColumn("Repos") { p in Text("\(p.repositories.count)").monospacedDigit() }
-                .width(50)
-            TableColumn("Open issues") { p in
-                Text("\(p.openIssues.count)")
-                    .monospacedDigit()
-                    .foregroundStyle(p.openCriticalIssues.isEmpty ? Color.primary : Color.red)
+                .width(45)
+            TableColumn("Stores") { p in
+                HStack(spacing: 4) {
+                    if !p.listings(on: .appStore).isEmpty { Image(systemName: "applelogo").help("App Store") }
+                    if !p.listings(on: .googlePlay).isEmpty { Image(systemName: "play.rectangle").help("Google Play") }
+                    if p.storeListings.isEmpty { Text("—").foregroundStyle(.secondary) }
+                }
             }
-            .width(min: 70, ideal: 80)
+            .width(55)
+            TableColumn("Last verified") { p in
+                Text(p.lastVerifiedAt?.shortDate ?? "Never").foregroundStyle(.secondary)
+            }
+            .width(min: 90, ideal: 100)
         }
         .contextMenu(forSelectionType: Product.ID.self) { ids in
             if let id = ids.first, ids.count == 1 {
@@ -118,7 +150,7 @@ struct QuickOpenView: View {
                     HStack {
                         Text(product.name)
                         Spacer()
-                        StatusBadge(text: product.status.title, color: product.status.color)
+                        VerificationBadge(status: product.overallVerification)
                     }
                     .contentShape(Rectangle())
                 }
