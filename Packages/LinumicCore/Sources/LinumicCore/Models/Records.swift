@@ -72,7 +72,9 @@ public struct RepositoryRecord: Codable, Hashable, Sendable, Identifiable {
         guard host == .github, let url, url.host() == "github.com" else { return nil }
         let parts = url.path().split(separator: "/").prefix(2)
         guard parts.count == 2 else { return nil }
-        return parts.joined(separator: "/").replacingOccurrences(of: ".git", with: "")
+        let slug = parts.joined(separator: "/")
+        // Strip only a trailing ".git": "nerkhtimes.github.io" contains ".git" in the middle.
+        return slug.hasSuffix(".git") ? String(slug.dropLast(4)) : slug
     }
 
     private enum CodingKeys: String, CodingKey {

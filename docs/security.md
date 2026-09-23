@@ -18,7 +18,10 @@ post as Linumic, so it is treated as a production system.
   read-only integrations) and user-selected files (read-only).
 - **Secrets** go through `SecretStore` → `KeychainSecretStore` (Security
   framework, generic-password items, service `com.linumic.commandcenter`,
-  `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`, not synced to iCloud).
+  `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`, not synced to iCloud). The store prefers the
+  data-protection keychain. Ad-hoc signed development builds lack that entitlement and fall
+  back to the login keychain, which is also device-local.
+- **Stored credentials today:** at most one, the optional read-only GitHub token (`github.token`).
 - **No secrets in source or Git.** `.gitignore` blocks `.env*`, `*.p8`, `*.p12`,
   `*.pem`, `*.key`, keystores, provisioning profiles and service-account JSON.
   Check `git diff --cached` before each commit.

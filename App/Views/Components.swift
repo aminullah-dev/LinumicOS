@@ -169,6 +169,35 @@ struct EvidenceView: View {
     }
 }
 
+extension RepositorySnapshot.CIConclusion {
+    var title: String {
+        switch self {
+        case .success: "Passing"
+        case .failure: "Failing"
+        case .cancelled: "Cancelled"
+        case .inProgress: "Running"
+        case .none: "No runs"
+        }
+    }
+    var symbol: String {
+        switch self {
+        case .success: "checkmark.circle.fill"
+        case .failure: "xmark.octagon.fill"
+        case .cancelled: "stop.circle"
+        case .inProgress: "clock"
+        case .none: "minus.circle"
+        }
+    }
+    var color: Color {
+        switch self {
+        case .success: .green
+        case .failure: .red
+        case .cancelled, .none: .secondary
+        case .inProgress: .blue
+        }
+    }
+}
+
 extension ReleaseStage {
     var color: Color {
         switch self {

@@ -1,6 +1,6 @@
 # Integrations
 
-**No external integration is connected yet.** Each one below is implemented
+**Connected:** GitHub (read-only). **Not connected:** everything else. Each one is added
 only when explicit credentials and authorization are provided.
 
 ## Principles
@@ -15,19 +15,33 @@ only when explicit credentials and authorization are provided.
 - **Failure is visible.** A failed sync shows an error state and never keeps
   showing stale data as if it were current.
 
-## GitHub (Phase 2)
+## GitHub (implemented, read-only)
 
-- Interface: `RepositoryHostClient` in LinumicCore (read-only methods only).
-- Auth: fine-grained personal access token with **read-only** `Contents`,
-  `Metadata`, `Pull requests`, `Issues`, `Actions` on selected repositories,
-  stored in the Keychain as `github.token`. Later: a GitHub App on the backend.
-- Data: default branch, latest commit, open PRs, open issues, latest release,
-  latest workflow run conclusion.
-- Local working copy status (branch, uncommitted changes) will come from
-  running `git` read-only on paths the user chooses. The sandboxed app needs a
-  user-granted security-scoped bookmark for this.
-- Forbidden without explicit per-action approval: push, merge, delete branch,
-  close issue, edit settings.
+- **Code:** `GitHubClient` (`Packages/LinumicCore/Sources/LinumicCore/Integrations/GitHubClient.swift`)
+  implements `RepositoryHostClient`. It sends GET requests only, and a test asserts that every
+  request is a body-less GET to api.github.com.
+- **What it reads:** repository metadata (visibility, description, homepage, default branch),
+  the latest commit on the default branch, published releases (drafts excluded), open PRs,
+  open issues (PRs excluded), languages, and the latest GitHub Actions run on the default
+  branch. Lists read one page of 100 items.
+- **Sync:** `RepositorySync.refresh` replaces only each repository's `gitHub` snapshot, stamped
+  with `fetchedAt`. It never changes repository links, types or verification. Failures are
+  reported per repository, and the toolbar shows how many failed and why.
+- **In the app:** Development → Repositories → **Refresh from GitHub** (⌘R), or Settings →
+  Integrations. Without a token only public repositories can be read (60 requests/hour).
+- **Token:** Settings → Integrations → GitHub. Use a **fine-grained** personal access token
+  limited to the Linumic repositories with read-only *Metadata, Contents, Issues, Pull
+  requests, Actions*. It's stored in the Keychain as `github.token` (service
+  `com.linumic.commandcenter`) and never written to disk, logs or the inventory.
+  Don't reuse a GitHub CLI token: those carry write scopes.
+- **Verified live on 2026-09-23:** an opt-in test (`GITHUB_TOKEN=… swift test --filter
+  liveReadOnlySnapshot`) read the private MediFlow and public DukanPro repositories. The
+  sandboxed app refreshed the public repositories without a token.
+- **Not yet:** local working-copy status (branch, uncommitted changes). The sandboxed app needs
+  a user-granted, security-scoped folder bookmark before it can run `git` read-only against
+  `~/Projects`.
+- **Forbidden without explicit per-action approval:** push, merge, delete branch, close issue,
+  edit settings. None of these exist in the code.
 
 ## Apple App Store Connect (Phase 4)
 

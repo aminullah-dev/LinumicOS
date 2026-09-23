@@ -116,10 +116,14 @@ struct AllRepositoriesView: View {
             matches: { $0.productName.localizedStandardContains($1) || $0.record.name.localizedStandardContains($1) }
         ) {
             TableColumn("Product") { Text($0.productName).fontWeight(.medium) }
-            TableColumn("Repository") { Text($0.record.gitHubSlug ?? $0.record.name).textSelection(.enabled) }
-            TableColumn("Type") { Text($0.record.type.title) }
+            TableColumn("Repository") { row in
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(row.record.gitHubSlug ?? row.record.name).textSelection(.enabled)
+                    Text([row.record.type.title, row.record.gitHub?.visibility?.title].compactMap { $0 }.joined(separator: " · "))
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
             TableColumn("Link") { VerificationBadge(status: $0.record.link.status, compact: true) }
-            TableColumn("Visibility") { Text($0.record.gitHub?.visibility?.title ?? "—") }
             TableColumn("Default branch") { Text($0.record.gitHub?.defaultBranch ?? "—") }
             TableColumn("Latest commit") { row in
                 if let c = row.record.gitHub?.latestCommit {
@@ -130,6 +134,26 @@ struct AllRepositoriesView: View {
             TableColumn("PRs / Issues") { row in
                 Text("\(row.record.gitHub?.openPullRequests.map(String.init) ?? "—") / \(row.record.gitHub?.openIssues.map(String.init) ?? "—")").monospacedDigit()
             }
+            TableColumn("CI") { row in
+                let ci = row.record.gitHub?.ciConclusion
+                Label(ci?.title ?? "—", systemImage: ci?.symbol ?? "minus").foregroundStyle(ci?.color ?? .secondary)
+            }
+            TableColumn("Fetched") { Text($0.record.gitHub?.fetchedAt.shortDate ?? "—").foregroundStyle(.secondary) }
+        }
+        .toolbar {
+            if let sync = model.lastGitHubSync, !sync.report.failed.isEmpty {
+                Label("\(sync.report.failed.count) failed", systemImage: "exclamationmark.triangle")
+                    .foregroundStyle(.orange)
+                    .help(sync.report.failed.map { "\($0.key): \($0.value)" }.sorted().joined(separator: "\n"))
+            }
+            Button {
+                Task { await model.refreshGitHub() }
+            } label: {
+                if model.isSyncingGitHub { ProgressView().controlSize(.small) } else { Label("Refresh from GitHub", systemImage: "arrow.clockwise") }
+            }
+            .keyboardShortcut("r")
+            .help("Read-only refresh of every GitHub repository (⌘R)")
+            .disabled(model.isSyncingGitHub)
         }
     }
 }

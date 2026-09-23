@@ -15,11 +15,11 @@ the app.
 - [x] Verified product inventory: evidence model, discovery report, verification UI
 - [ ] Owner answers the questions in docs/product-discovery-report.md
 
-## Phase 2: GitHub (read-only)
+## Phase 2: GitHub (read-only) (done except local status)
 
-- [ ] GitHub token in Keychain via Settings → Integrations
-- [ ] Read-only sync: default branch, last commit, open PRs/issues, latest release, CI status
-- [ ] Local working-copy status (branch, uncommitted changes), reading only
+- [x] GitHub token in Keychain via Settings → Integrations
+- [x] Read-only sync: default branch, last commit, open PRs/issues, latest release, CI status
+- [ ] Local working-copy status (branch, uncommitted changes), reading only. Needs a security-scoped folder bookmark in the sandbox.
 
 ## Phase 3: Backend
 

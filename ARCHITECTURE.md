@@ -39,9 +39,9 @@ Not installed: Docker, pnpm, Supabase CLI, AWS/Azure CLIs.
 | # | Module | MVP state |
 |---|---|---|
 | 1 | Dashboard | Implemented from local data |
-| 2 | Products | Implemented (list, detail, edit) |
+| 2 | Products | Implemented, with verification and evidence on every fact |
 | 3 | Version & release management | Implemented (manual records) |
-| 4 | Repository management | Manual records. GitHub sync is interface only (`RepositoryHostClient`). |
+| 4 | Repository management | Typed repositories with verified links, and read-only GitHub sync (`GitHubClient`) |
 | 5 | App Store / Google Play | Data fields only, no integration |
 | 6 | Social media | Data fields only, no integration |
 | 7 | Market intelligence | Design only ([docs/market-intelligence.md](docs/market-intelligence.md)) |

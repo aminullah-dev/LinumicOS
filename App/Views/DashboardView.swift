@@ -106,8 +106,11 @@ struct DashboardView: View {
                             .font(.caption).foregroundStyle(.secondary)
                     }
                     DashboardPanel(title: "GitHub") {
+                        let repos = model.products.flatMap(\.repositories).compactMap(\.gitHub)
                         LabeledContent("Products with repositories", value: "\(s.productsWithRepositories)")
-                        Text("Live repository status (commits, PRs, CI) requires the GitHub integration (not connected).")
+                        LabeledContent("Failing CI", value: "\(repos.count { $0.ciConclusion == .failure })")
+                        LabeledContent("Open pull requests", value: "\(repos.compactMap(\.openPullRequests).reduce(0, +))")
+                        Text("Last snapshot: \(repos.map(\.fetchedAt).max()?.formatted(date: .abbreviated, time: .shortened) ?? "never"). Refresh from Development → Repositories (read-only).")
                             .font(.caption).foregroundStyle(.secondary)
                     }
                     DashboardPanel(title: "Recent activity") {

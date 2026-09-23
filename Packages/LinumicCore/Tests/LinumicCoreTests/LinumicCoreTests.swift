@@ -32,6 +32,8 @@ struct ProductTests {
     @Test func gitHubSlugParsesURL() {
         let repo = RepositoryRecord(name: "r", url: URL(string: "https://github.com/aminullah-dev/-Namazia.git"))
         #expect(repo.gitHubSlug == "aminullah-dev/-Namazia")
+        // Regression: only a trailing ".git" is removed.
+        #expect(RepositoryRecord(name: "r", url: URL(string: "https://github.com/aminullah-dev/nerkhtimes.github.io")).gitHubSlug == "aminullah-dev/nerkhtimes.github.io")
         #expect(RepositoryRecord(name: "r", url: URL(string: "https://gitlab.com/a/b")).gitHubSlug == nil)
     }
 

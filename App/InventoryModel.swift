@@ -15,11 +15,41 @@ final class InventoryModel {
     /// One-time information for the user, e.g. that an older inventory file was archived.
     var notice: String?
 
+    /// State of the read-only GitHub refresh.
+    private(set) var isSyncingGitHub = false
+    private(set) var lastGitHubSync: (at: Date, report: RepositorySync.Report)?
+
     private let store: InventoryStore
+    let secrets: SecretStore
     private var saveTask: Task<Void, Never>?
 
-    init(store: InventoryStore) {
+    init(store: InventoryStore, secrets: SecretStore = KeychainSecretStore()) {
         self.store = store
+        self.secrets = secrets
+    }
+
+    /// Refreshes every GitHub repository snapshot, read-only. Without a token only public repositories succeed.
+    func refreshGitHub() async {
+        guard !isSyncingGitHub else { return }
+        isSyncingGitHub = true
+        defer { isSyncingGitHub = false }
+        let token: String?
+        do { token = try secrets.read(.gitHubToken) } catch {
+            errorMessage = "Could not read the GitHub token from the Keychain: \(error.localizedDescription)"
+            return
+        }
+        let (updated, report) = await RepositorySync.refresh(products, using: GitHubClient(token: token))
+        // Apply only the snapshots, in case products changed while the sync was running.
+        for product in updated {
+            update(product.id) { current in
+                for repo in product.repositories {
+                    if let i = current.repositories.firstIndex(where: { $0.id == repo.id }), let snap = repo.gitHub {
+                        current.repositories[i].gitHub = snap
+                    }
+                }
+            }
+        }
+        lastGitHubSync = (.now, report)
     }
 
     var summary: DashboardSummary { DashboardSummary(products: products) }

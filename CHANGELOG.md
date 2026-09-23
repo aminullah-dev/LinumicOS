@@ -5,6 +5,20 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: GitHub integration (read-only)
+- `GitHubClient` (GET only) and `RepositorySync`: repository metadata, latest commit,
+  releases, open PRs and issues, languages and CI conclusion, stamped with `fetchedAt`.
+- Settings → Integrations: GitHub token saved to or removed from the Keychain, plus Refresh All.
+- Repositories table: CI column, fetch date, Refresh from GitHub (⌘R), failure report.
+- Dashboard GitHub panel: failing CI, open PRs, last snapshot time.
+- Opt-in live test against api.github.com (`GITHUB_TOKEN`).
+
+### Fixed
+- `gitHubSlug` removed every ".git" substring, so `nerkhtimes.github.io` became
+  `nerkhtimeshub.io`. Now only a trailing ".git" is stripped.
+- The Keychain store falls back to the login keychain when the data-protection keychain
+  entitlement is missing (ad-hoc builds).
+
 ### Added: verified product inventory (schema 2)
 - Evidence model: `Fact`, `Verification` (VERIFIED / PARTIALLY VERIFIED / UNKNOWN /
   CONFLICTING), `Source` (kind, reference, observed date), integrity rules and roll-up.
