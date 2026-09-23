@@ -463,8 +463,9 @@ products.append(product(
     category=fact("Wedding-hall booking marketplace and hall ERP", "partiallyVerified", [gh("talar")]),
     projectType=fact("Monorepo: Android app, web app, Electron hall-management panel, Firebase Cloud Functions", "verified",
                      [local(f"{TL}/android/app/build.gradle.kts"), local(f"{TL}/web/package.json"), local(f"{TL}/desktop/package.json"), local(f"{TL}/backend/functions/package.json")]),
-    status=fact("active", "partiallyVerified", [gh("talar-releases", "Public release v1.0.0 (Talar-1.0.0.apk), 2026-08-27"), local(f"{TL}/README.md", "Public sandbox demo at linumic.com/what-we-do/talar/demo")],
-                "A public installer release and demo show it's available. Whether it counts as \"active\" is inferred from them. Please confirm."),
+    status=fact("development", "verified", [owner("\"Talar is still under development.\""),
+                                            gh("talar-releases", "Public release v1.0.0 (Talar-1.0.0.apk), 2026-08-27"), local(f"{TL}/README.md", "Public sandbox demo at linumic.com/what-we-do/talar/demo")],
+                "Owner, 2026-09-23: still under development, although v1.0.0 and a demo are public."),
     currentVersion=fact("1.0.0", "verified", [gh("talar-releases", "Latest release v1.0.0"), local(f"{TL}/android/app/build.gradle.kts", "versionName 1.0.0")]),
     backend=fact("Firebase: Cloud Functions (backend/functions). The docs link to Firebase project talar-af-prod.", "verified",
                  [local(f"{TL}/backend/functions/package.json", "talar-functions"), local(f"{TL}/README.md", "Firebase console links for talar-af-prod")]),
@@ -588,9 +589,9 @@ products.append(product(
                   "This is the product linumic.com sells as \"Tailor ERP\". The separate Tailoring-Workshop-ERP repository (Darzi) is a different codebase. See that product."),
     projectType=fact("Kotlin Android app + Compose Desktop app (macOS/Windows), with an iOS app on a separate branch", "verified",
                      [local(f"{AJ}/app/build.gradle.kts"), local(f"{AJ}/desktop/build.gradle.kts", "org.jetbrains.compose desktop"), local("Android/AfghanJama-ios/iosApp/project.yml")]),
-    status=fact("active", "partiallyVerified", [gh("AfghanJama", "Release v1.8.0 on 2026-09-20 (apk, dmg, msi)"),
+    status=fact("active", "verified", [owner("\"AfghanJama is active.\""), gh("AfghanJama", "Release v1.8.0 on 2026-09-20 (apk, dmg, msi)"),
                                                   web("https://linumic.com/what-we-do/tailor-erp/", "Offers downloads and per-workshop licensing")],
-                "Public GitHub releases show it's available. Whether it counts as \"active\" is inferred from them. Please confirm."),
+                "Public GitHub releases show it's available. " + CONFIRMED_ACTIVE),
     currentVersion=fact("1.8.0", "verified", [gh("AfghanJama", "Latest release v1.8.0"), local(f"{AJ}/gradle.properties", "appVersion=1.8.0, appVersionCode=13")]),
     backend=fact("None: offline-first, all data stays on the device", "verified", [local(f"{AJ}/README.md", "\"بی‌اینترنت کار می‌کند. همهٔ داده روی خودِ دستگاه می‌مانَد.\"")]),
     website=fact("https://linumic.com/what-we-do/tailor-erp/", "verified", [gh("AfghanJama", "Repository homepage field"), web("https://linumic.com/what-we-do/tailor-erp/", "Page mentions AfghanJama and KhayatYar")]),
@@ -622,7 +623,8 @@ products.append(product(
                  [local(f"{SH}/README.md", "Opening paragraph")]),
     category=fact("Book: reader app for the owner's Pashto book", "verified", [local(f"{SH}/README.md"), owner("\"SODER-HAKEM is a book.\"")]),
     projectType=fact("Android app (Kotlin + Jetpack Compose)", "verified", [local(f"{SH}/app/build.gradle.kts"), local(f"{SH}/README.md")]),
-    status=unknown("The first commit to GitHub was on 2026-09-22. The README describes sideloading an APK from dist/."),
+    status=unknown("The owner answered \"SODER-HAKEM is a book\" (2026-09-23); its lifecycle status (e.g. finished, still being written) is not stated. "
+                   "The first commit to GitHub was on 2026-09-22. The README describes sideloading an APK from dist/."),
     currentVersion=fact("1.0", "partiallyVerified", [local(f"{SH}/app/build.gradle.kts", "versionName 1.0"), local(f"{SH}/README.md", "dist/SoderHakim-1.0.apk")],
                         "Version from the build config and README. No GitHub release or store listing was found."),
     backend=fact("None: no network access", "verified", [local(f"{SH}/README.md", "\"no network access and no user-facing permissions\"")]),
@@ -730,6 +732,6 @@ unresolved = [
                          owner("\"Explore Afghanistan: sideline.\"")], "Sidelined by the owner.")},
 ]
 
-inventory = {"schemaVersion": 2, "seedRevision": 5, "products": products, "unresolved": unresolved}
+inventory = {"schemaVersion": 2, "seedRevision": 6, "products": products, "unresolved": unresolved}
 OUT.write_text(json.dumps(inventory, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
 print(f"wrote {OUT.relative_to(ROOT)}: {len(products)} products, {len(unresolved)} unresolved items")

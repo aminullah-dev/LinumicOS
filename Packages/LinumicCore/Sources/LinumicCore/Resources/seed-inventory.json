@@ -2321,10 +2321,16 @@
         }
       ],
       "status": {
-        "value": "active",
+        "value": "development",
         "verification": {
-          "notes": "A public installer release and demo show it's available. Whether it counts as \"active\" is inferred from them. Please confirm.",
+          "notes": "Owner, 2026-09-23: still under development, although v1.0.0 and a demo are public.",
           "sources": [
+            {
+              "detail": "\"Talar is still under development.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            },
             {
               "detail": "Public release v1.0.0 (Talar-1.0.0.apk), 2026-08-27",
               "kind": "gitHub",
@@ -2338,7 +2344,7 @@
               "reference": "~/Projects/Multiplatform/Talar/README.md"
             }
           ],
-          "status": "partiallyVerified",
+          "status": "verified",
           "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
@@ -3543,8 +3549,14 @@
       "status": {
         "value": "active",
         "verification": {
-          "notes": "Public GitHub releases show it's available. Whether it counts as \"active\" is inferred from them. Please confirm.",
+          "notes": "Public GitHub releases show it's available. Confirmed active by the owner on 2026-09-23.",
           "sources": [
+            {
+              "detail": "\"AfghanJama is active.\"",
+              "kind": "ownerStatement",
+              "observedAt": "2026-09-23T07:00:00Z",
+              "reference": "Owner's answers in the Command Center working session, 2026-09-23"
+            },
             {
               "detail": "Release v1.8.0 on 2026-09-20 (apk, dmg, msi)",
               "kind": "gitHub",
@@ -3558,7 +3570,7 @@
               "reference": "https://linumic.com/what-we-do/tailor-erp/"
             }
           ],
-          "status": "partiallyVerified",
+          "status": "verified",
           "verifiedAt": "2026-09-23T07:00:00Z"
         }
       },
@@ -3821,7 +3833,7 @@
       ],
       "status": {
         "verification": {
-          "notes": "The first commit to GitHub was on 2026-09-22. The README describes sideloading an APK from dist/.",
+          "notes": "The owner answered \"SODER-HAKEM is a book\" (2026-09-23); its lifecycle status (e.g. finished, still being written) is not stated. The first commit to GitHub was on 2026-09-22. The README describes sideloading an APK from dist/.",
           "sources": [],
           "status": "unknown"
         }
@@ -4729,7 +4741,7 @@
     }
   ],
   "schemaVersion": 2,
-  "seedRevision": 5,
+  "seedRevision": 6,
   "unresolved": [
     {
       "findings": "Private repository created 2026-07-28 with a single \"Initial commit\" containing only README.md (\"# Radar-system\"). No local working copy.",
