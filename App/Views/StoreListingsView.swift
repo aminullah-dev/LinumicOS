@@ -110,7 +110,7 @@ struct StoreListingsView: View {
             if let sync = model.lastConsoleSync[store] {
                 Text(verbatim: String(localized: "Console refresh \(sync.at.formatted(date: .omitted, time: .shortened)): \(sync.report.updated.count) updated")
                      + (sync.report.notInAccount.isEmpty ? "" : String(localized: ", not in this account: \(sync.report.notInAccount.joined(separator: ", "))"))
-                     + (sync.report.failed.isEmpty ? "" : String(localized: ", failed: \(sync.report.failed.map { "\($0.key) (\($0.value))" }.sorted().joined(separator: "; "))")))
+                     + (sync.report.failed.isEmpty ? "" : String(localized: ", failed:") + "\n" + sync.report.failureSummary))
                     .foregroundStyle(.primary)
             }
             if store == .appStore {

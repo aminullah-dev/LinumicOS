@@ -291,5 +291,11 @@ public enum ReviewPhase: String, Codable, Sendable, CaseIterable {
 }
 
 extension StoreListing {
-    public var reviewPhase: ReviewPhase { ReviewPhase(reviewStatus: reviewStatus) }
+    /// A live production version with nothing submitted for production reads as Live, whatever the
+    /// testing tracks say: an empty draft on a beta track isn't news about the store listing.
+    public var reviewPhase: ReviewPhase {
+        let phase = ReviewPhase(reviewStatus: reviewStatus)
+        if productionVersion != nil, latestSubmittedVersion == nil, [.notSubmitted, .testing, .unknown].contains(phase) { return .live }
+        return phase
+    }
 }

@@ -48,6 +48,7 @@
       }
     },
     "%@ %@ is now live on %@.": {
+      "extractionState": "stale",
       "localizations": {
         "fa-AF": {
           "stringUnit": {
@@ -69,6 +70,7 @@
       }
     },
     "%@ %@ is waiting on %@.": {
+      "extractionState": "stale",
       "localizations": {
         "fa-AF": {
           "stringUnit": {
@@ -120,6 +122,7 @@
       }
     },
     "%@ on %@: %@ → %@": {
+      "extractionState": "stale",
       "localizations": {
         "fa-AF": {
           "stringUnit": {
@@ -129,13 +132,12 @@
         }
       }
     },
-    "%@ refused access (403). The key or account lacks read permission for this app.": {
-      "extractionState": "stale",
+    "%@ refused access (403). The account lacks read permission for this app, or a permission granted in the last day hasn't taken effect yet.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ دسترسی نداد (403). کلید یا حساب اجازهٔ خواندن این برنامه را ندارد."
+            "value": "%@ دسترسی نداد (403). حساب اجازهٔ خواندن این برنامه را ندارد، یا اجازه‌ای که در ۲۴ ساعت گذشته داده شده هنوز فعال نشده است."
           }
         }
       }
@@ -476,6 +478,16 @@
         }
       }
     },
+    ", failed:": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "، ناموفق:"
+          }
+        }
+      }
+    },
     ", failed: %@": {
       "localizations": {
         "fa-AF": {
@@ -701,6 +713,7 @@
       }
     },
     "An activity feed will come with the backend audit log.": {
+      "extractionState": "stale",
       "localizations": {
         "fa-AF": {
           "stringUnit": {
@@ -3712,6 +3725,7 @@
       }
     },
     "Not submitted": {
+      "extractionState": "stale",
       "localizations": {
         "fa-AF": {
           "stringUnit": {
@@ -4489,6 +4503,7 @@
       }
     },
     "Recent activity": {
+      "extractionState": "stale",
       "localizations": {
         "fa-AF": {
           "stringUnit": {
@@ -5983,6 +5998,7 @@
       }
     },
     "Unexpected response: %@": {
+      "extractionState": "stale",
       "localizations": {
         "fa-AF": {
           "stringUnit": {

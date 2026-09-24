@@ -251,7 +251,7 @@ private struct StoreConsoleSection: View {
         guard let sync = model.lastConsoleSync[store] else { return nil }
         var text = String(localized: "Refreshed \(sync.report.updated.count) listings at \(sync.at.formatted(date: .omitted, time: .shortened)).")
         if !sync.report.notInAccount.isEmpty { text += " " + String(localized: "Not found in this account: \(sync.report.notInAccount.joined(separator: ", ")).") }
-        if !sync.report.failed.isEmpty { text += " " + String(localized: "\(sync.report.failed.count) failed:") + " " + sync.report.failed.map { "\($0.key) (\($0.value))" }.sorted().joined(separator: "; ") }
+        if !sync.report.failed.isEmpty { text += " " + String(localized: "\(sync.report.failed.count) failed:") + "\n" + sync.report.failureSummary }
         return text
     }
 }

@@ -23,7 +23,7 @@ public enum StoreConsoleError: Error, LocalizedError, Equatable {
         switch self {
         case .invalidKey(let why): LF("The key can't be used: %@", why)
         case .unauthorized(let service): LF("%@ rejected the credentials (401). Check them in Settings → Integrations.", service)
-        case .forbidden(let service): LF("%@ refused access (403). The key or account lacks read permission for this app.", service)
+        case .forbidden(let service): LF("%@ refused access (403). The account lacks read permission for this app, or a permission granted in the last day hasn't taken effect yet.", service)
         case .notFound(let what): LF("Not found: %@", what)
         case .http(let code, let service): LF("%@ returned HTTP %d.", service, code)
         case .unexpectedResponse(let detail): LF("Unexpected response: %@", detail)
@@ -420,6 +420,14 @@ public enum StoreConsoleSync {
         public var updated: [String] = []
         public var notInAccount: [String] = []
         public var failed: [String: String] = [:]
+
+        /// Failures grouped by error, so six identical 403s read as one line: "error: a, b, c".
+        public var failureSummary: String {
+            Dictionary(grouping: failed.keys.sorted(), by: { failed[$0]! })
+                .sorted { $0.key < $1.key }
+                .map { "\($0.key) — \($0.value.joined(separator: ", "))" }
+                .joined(separator: "\n")
+        }
     }
 
     static let ascReferencePrefix = "App Store Connect API"

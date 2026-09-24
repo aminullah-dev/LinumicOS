@@ -191,6 +191,12 @@ struct GooglePlayTests {
         #expect(review.productionVersion == nil)
     }
 
+    @Test func failuresAreGroupedByError() {
+        var r = StoreConsoleSync.Report()
+        r.failed = ["b.app": "403", "a.app": "403", "c.app": "500"]
+        #expect(r.failureSummary == "403 — a.app, b.app\n500 — c.app")
+    }
+
     @Test func humanizesStates() {
         #expect(humanizeState("RELEASE_LIFECYCLE_STATE_APPROVED_NOT_PUBLISHED") == "Approved not published")
         #expect(humanizeState("READY_FOR_DISTRIBUTION") == "Ready for distribution")
@@ -199,6 +205,22 @@ struct GooglePlayTests {
 
 @Suite("Review phase")
 struct ReviewPhaseTests {
+    @Test func liveProductionWinsOverTestingTrackNoise() {
+        // Stored text from 2026-09-23 for SafeBeauty on Google Play: production 2.1.5 is live, and an
+        // empty draft sits on the beta track. That listing is Live, not "Not submitted".
+        let safeBeauty = StoreListing(store: .googlePlay, productionVersion: "2.1.5",
+                                      reviewStatus: "beta —: Draft; alpha 14 (1.9) (14): Published; internal 3 (1.0) (3): Published")
+        #expect(safeBeauty.reviewPhase == .live)
+        // A version actually waiting keeps its phase even when an older one is live (VELRO Ride on the App Store).
+        let velro = StoreListing(store: .appStore, productionVersion: "1.0.0", latestSubmittedVersion: "1.0.1", reviewStatus: "1.0.1: Prepare for submission")
+        #expect(velro.reviewPhase == .notSubmitted)
+        // Rejections and reviews always show.
+        let rejected = StoreListing(store: .googlePlay, productionVersion: "1.0", reviewStatus: "production 1.1 (5): Not approved; Live: production 1.0 (4)")
+        #expect(rejected.reviewPhase == .rejected)
+        // Testing-only apps stay Testing (VELRO on Google Play).
+        #expect(StoreListing(store: .googlePlay, reviewStatus: "alpha 1.2.3 (6): Published").reviewPhase == .testing)
+    }
+
     @Test func classifiesSeedAndConsoleTexts() {
         let cases: [(String?, ReviewPhase)] = [
             ("Green check in App Store Connect (live)", .live),
