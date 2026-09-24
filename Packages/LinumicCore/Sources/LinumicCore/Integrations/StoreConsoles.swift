@@ -16,6 +16,8 @@ public enum StoreConsoleError: Error, LocalizedError, Equatable {
     case forbidden(String)
     case notFound(String)
     case http(Int, String)
+    /// The service answered, but not in the shape expected. Carries where decoding failed.
+    case unexpectedResponse(String)
 
     public var errorDescription: String? {
         switch self {
@@ -24,6 +26,7 @@ public enum StoreConsoleError: Error, LocalizedError, Equatable {
         case .forbidden(let service): LF("%@ refused access (403). The key or account lacks read permission for this app.", service)
         case .notFound(let what): LF("Not found: %@", what)
         case .http(let code, let service): LF("%@ returned HTTP %d.", service, code)
+        case .unexpectedResponse(let detail): LF("Unexpected response: %@", detail)
         }
     }
 
@@ -34,6 +37,20 @@ public enum StoreConsoleError: Error, LocalizedError, Equatable {
         case 404: .notFound(path)
         default: .http(status, service)
         }
+    }
+}
+
+/// Decodes, and on failure says which field broke and shows the start of the body (responses carry no secrets).
+func decodeResponse<T: Decodable>(_ type: T.Type, from data: Data, decoder: JSONDecoder = JSONDecoder(), what: String) throws -> T {
+    do { return try decoder.decode(type, from: data) } catch let error as DecodingError {
+        let context: DecodingError.Context
+        switch error {
+        case .typeMismatch(_, let c), .valueNotFound(_, let c), .keyNotFound(_, let c), .dataCorrupted(let c): context = c
+        @unknown default: throw error
+        }
+        let path = context.codingPath.map { $0.intValue.map(String.init) ?? $0.stringValue }.joined(separator: ".")
+        let body = String(decoding: data.prefix(160), as: UTF8.self)
+        throw StoreConsoleError.unexpectedResponse("\(what) [\(path)] \(context.debugDescription) — \(body)")
     }
 }
 
@@ -290,7 +307,16 @@ public struct PlayRelease: Sendable, Equatable, Decodable {
     }
 
     private enum Keys: String, CodingKey { case releaseName, track, activeArtifacts, releaseLifecycleState }
-    private struct Artifact: Decodable { let versionCode: Int? }
+    /// Google's JSON encodes int64 fields as strings ("22"), so accept either form.
+    private struct Artifact: Decodable {
+        let versionCode: Int?
+        private enum Keys: String, CodingKey { case versionCode }
+        init(from decoder: Decoder) throws {
+            let c = try decoder.container(keyedBy: Keys.self)
+            if let n = try? c.decodeIfPresent(Int.self, forKey: .versionCode) { versionCode = n }
+            else { versionCode = (try c.decodeIfPresent(String.self, forKey: .versionCode)).flatMap { Int($0) } }
+        }
+    }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: Keys.self)
@@ -303,10 +329,18 @@ public struct PlayRelease: Sendable, Equatable, Decodable {
     public var isPublished: Bool { state == "RELEASE_LIFECYCLE_STATE_PUBLISHED" }
 
     /// "2.1.5 (22)", or just the codes when the release has no name.
+    /// The version name. Play's default release name is "<versionCode> (<versionName>)", so that becomes "<versionName>".
+    public var versionName: String? {
+        guard let name = releaseName else { return nil }
+        if let m = name.wholeMatch(of: /\d+ \((.+)\)/) { return String(m.1) }
+        return name
+    }
+
+    /// "2.1.5 (22)", or just the codes when the release has no name.
     public var label: String {
         let codes = versionCodes.map(String.init).joined(separator: ", ")
-        switch (releaseName, codes.isEmpty) {
-        case (let n?, false): return "\(n) (\(codes))"
+        switch (versionName, codes.isEmpty) {
+        case (let n?, false): return n == codes || n.hasSuffix("(\(codes))") ? n : "\(n) (\(codes))"
         case (let n?, true): return n
         case (nil, _): return codes.isEmpty ? "—" : codes
         }
@@ -350,7 +384,7 @@ public actor GooglePlayClient {
         let (data, response) = try await transport.send(request)
         guard (200..<300).contains(response.statusCode) else { throw StoreConsoleError.from(status: response.statusCode == 400 ? 401 : response.statusCode, service: Self.service, path: "token") }
         struct T: Decodable { let access_token: String; let expires_in: Double? }
-        let t = try JSONDecoder().decode(T.self, from: data)
+        let t = try decodeResponse(T.self, from: data, what: "token")
         cached = (t.access_token, now().addingTimeInterval(t.expires_in ?? 3600))
         return t.access_token
     }
@@ -363,9 +397,11 @@ public actor GooglePlayClient {
         request.setValue("Bearer \(try await accessToken())", forHTTPHeaderField: "Authorization")
         let (data, response) = try await transport.send(request)
         if response.statusCode == 404 { return [] }
+        // A track with no releases answers 200 with an empty body, not "{}".
+        if data.allSatisfy({ [0x20, 0x0A, 0x0D, 0x09].contains($0) }) && (200..<300).contains(response.statusCode) { return [] }
         guard (200..<300).contains(response.statusCode) else { throw StoreConsoleError.from(status: response.statusCode, service: Self.service, path: path) }
         struct R: Decodable { let releases: [PlayRelease]? }
-        return try JSONDecoder().decode(R.self, from: data).releases?.map { var r = $0; if r.track.isEmpty { r.track = track }; return r } ?? []
+        return try decodeResponse(R.self, from: data, what: track).releases?.map { var r = $0; if r.track.isEmpty { r.track = track }; return r } ?? []
     }
 
     public func allReleases(packageName: String) async throws -> [PlayRelease] {
@@ -419,11 +455,16 @@ public enum StoreConsoleSync {
     public static func apply(_ releases: [PlayRelease], packageName: String, to listing: StoreListing, at now: Date) -> StoreListing {
         var l = listing
         let production = releases.first { $0.track == "production" && $0.isPublished }
-        l.productionVersion = production?.releaseName ?? production.map(\.label)
-        let others = releases.filter { $0 != production }
-        l.latestSubmittedVersion = others.first { !$0.isPublished && $0.track == "production" }?.label
-        l.reviewStatus = others.isEmpty ? (production == nil ? nil : "Live, nothing pending")
-            : others.map { "\($0.track) \($0.label): \(humanizeState($0.state))" }.joined(separator: "; ")
+        l.productionVersion = production.map { $0.versionName ?? $0.label }
+        let pendingProduction = releases.filter { $0.track == "production" && !$0.isPublished }
+        l.latestSubmittedVersion = pendingProduction.first?.label
+        // Headline first (ReviewPhase reads the first clause): a production release under review or not
+        // yet sent wins, then the live production release, then testing tracks. Drafts on testing tracks
+        // are noise here; they stay in the source detail.
+        let describe = { (r: PlayRelease) in "\(r.track) \(r.label): \(humanizeState(r.state))" }
+        let testing = releases.filter { $0.track != "production" && $0.state != "RELEASE_LIFECYCLE_STATE_DRAFT" }
+        let clauses = pendingProduction.map(describe) + (production.map { ["Live: production \($0.label)"] } ?? []) + testing.map(describe)
+        l.reviewStatus = clauses.isEmpty ? nil : clauses.joined(separator: "; ")
         l.verification.sources.removeAll { $0.reference.hasPrefix(playReferencePrefix) }
         l.verification.sources.append(Source(kind: .googlePlay, reference: "\(playReferencePrefix) applications/\(packageName)/tracks/*/releases", observedAt: now,
                                              detail: releases.map { "\($0.track) \($0.label) \($0.state)" }.joined(separator: "; ")))

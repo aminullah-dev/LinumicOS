@@ -5892,6 +5892,16 @@
         }
       }
     },
+    "Unexpected response: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاسخ غیرمنتظره: %@"
+          }
+        }
+      }
+    },
     "Unknown": {
       "localizations": {
         "fa-AF": {

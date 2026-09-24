@@ -145,6 +145,7 @@ struct GooglePlayTests {
             if req.url!.path.hasSuffix("/tracks/alpha/releases") {
                 return (200, #"{"releases":[{"releaseName":"2.1.6","activeArtifacts":[{"versionCode":23}],"releaseLifecycleState":"RELEASE_LIFECYCLE_STATE_IN_REVIEW"}]}"#)
             }
+            if req.url!.path.hasSuffix("/tracks/beta/releases") { return (200, "") }  // empty body, as the live API sends
             return (404, "{}")
         }
         let client = GooglePlayClient(credentials: GooglePlayCredentials(clientEmail: "sa@sample", privateKeyPEM: pem), transport: stub, now: { now })
@@ -157,8 +158,37 @@ struct GooglePlayTests {
 
         let listing = StoreConsoleSync.apply(releases, packageName: "sample.app", to: StoreListing(store: .googlePlay, appIdentifier: "sample.app"), at: now)
         #expect(listing.productionVersion == "2.1.5")
-        #expect(listing.reviewStatus == "alpha 2.1.6 (23): In review")
+        #expect(listing.reviewStatus == "Live: production 2.1.5 (22); alpha 2.1.6 (23): In review")
+        #expect(listing.reviewPhase == .live)
         #expect(listing.verification.status == .verified && listing.verification.issues.isEmpty)
+    }
+
+    @Test func versionCodesMayBeStrings() throws {
+        // Google encodes int64 as a JSON string; this is what the live API returned.
+        let json = #"{"releaseName":"2.1.5","track":"production","activeArtifacts":[{"versionCode":"22"}],"releaseLifecycleState":"RELEASE_LIFECYCLE_STATE_PUBLISHED"}"#
+        let r = try JSONDecoder().decode(PlayRelease.self, from: Data(json.utf8))
+        #expect(r.versionCodes == [22] && r.label == "2.1.5 (22)")
+    }
+
+    @Test func playReleaseNamesAndHeadline() {
+        // Shapes returned by the live API on 2026-09-23.
+        let r = PlayRelease(releaseName: "4 (1.1.0)", track: "production", versionCodes: [4], state: "RELEASE_LIFECYCLE_STATE_IN_REVIEW")
+        #expect(r.versionName == "1.1.0" && r.label == "1.1.0 (4)")
+        #expect(PlayRelease(releaseName: "Closed Test v1", track: "alpha", versionCodes: [3], state: "").label == "Closed Test v1 (3)")
+        #expect(PlayRelease(releaseName: "6", track: "alpha", versionCodes: [6], state: "").label == "6")
+        #expect(PlayRelease(releaseName: "1.2.3 (6)", track: "alpha", versionCodes: [6], state: "").label == "1.2.3 (6)")
+
+        let live = PlayRelease(releaseName: "10 (1.0.10)", track: "production", versionCodes: [10], state: "RELEASE_LIFECYCLE_STATE_PUBLISHED")
+        let draft = PlayRelease(releaseName: nil, track: "alpha", versionCodes: [], state: "RELEASE_LIFECYCLE_STATE_DRAFT")
+        let l = StoreConsoleSync.apply([live, draft], packageName: "p", to: StoreListing(store: .googlePlay), at: now)
+        #expect(l.productionVersion == "1.0.10")
+        #expect(l.reviewStatus == "Live: production 1.0.10 (10)", "a draft on a testing track doesn't hide a live release")
+        #expect(l.reviewPhase == .live)
+
+        let review = StoreConsoleSync.apply([r, PlayRelease(releaseName: "1 (1.0)", track: "alpha", versionCodes: [2], state: "RELEASE_LIFECYCLE_STATE_PUBLISHED")], packageName: "p", to: StoreListing(store: .googlePlay), at: now)
+        #expect(review.reviewPhase == .pending)
+        #expect(review.latestSubmittedVersion == "1.1.0 (4)")
+        #expect(review.productionVersion == nil)
     }
 
     @Test func humanizesStates() {

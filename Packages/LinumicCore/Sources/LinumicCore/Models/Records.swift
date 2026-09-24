@@ -277,7 +277,8 @@ public enum ReviewPhase: String, Sendable, CaseIterable {
     }
 
     public init(reviewStatus: String?) {
-        guard let text = reviewStatus?.lowercased(), !text.isEmpty else { self = .unknown; return }
+        // The first clause is the headline; later ones ("…; alpha 1.9: Published") are detail.
+        guard let text = reviewStatus?.split(separator: ";").first?.lowercased(), !text.isEmpty else { self = .unknown; return }
         func has(_ words: String...) -> Bool { words.contains { text.contains($0) } }
         if has("rejected", "not approved") { self = .rejected }
         else if has("nothing pending") { self = .live }
