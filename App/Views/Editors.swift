@@ -115,6 +115,8 @@ struct VerificationSection: View {
                     Button(role: .destructive) { draft.sources.removeAll { $0.id == source.id } } label: { Image(systemName: "minus.circle") }
                         .buttonStyle(.borderless)
                         .help("Remove this source")
+                        .accessibilityLabel("Remove this source")
+                        .minTapTarget()
                 }
             }
             Toggle("Record my confirmation as a source", isOn: $draft.recordOwnerConfirmation)

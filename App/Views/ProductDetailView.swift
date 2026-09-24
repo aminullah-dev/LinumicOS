@@ -78,10 +78,10 @@ struct ProductDetailView: View {
             ForEach(ProductTab.allCases) { Text(LocalizedStringKey($0.rawValue)).tag($0) }
         }
         if compact {
-            HStack {
+            FitRow {
                 Text("Section").foregroundStyle(.secondary)
                 picker.pickerStyle(.menu)
-                Spacer()
+                Spacer(minLength: 0)
             }
         } else {
             picker.pickerStyle(.segmented).labelsHidden()
@@ -90,7 +90,7 @@ struct ProductDetailView: View {
 
     private func header(_ p: Product) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .firstTextBaseline, spacing: 10) {
+            FitRow(spacing: 10, alignment: .firstTextBaseline) {
                 Text(p.name).font(compact ? .title.weight(.semibold) : .largeTitle.weight(.semibold))
                 VerificationBadge(status: p.overallVerification)
             }
@@ -105,6 +105,7 @@ struct ProductDetailView: View {
                 Text("Last verified \(p.lastVerifiedAt?.shortDate ?? String(localized: "never"))").foregroundStyle(.secondary)
             }
             .font(.callout)
+            .fixedSize(horizontal: false, vertical: true)
         }
         .padding(20)
     }
@@ -267,11 +268,13 @@ private struct OverviewTab: View {
         VStack(alignment: .leading, spacing: 0) {
             ForEach(product.fieldStates) { state in
                 VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 8) {
+                    FitRow(spacing: 8) {
                         Text(state.field.title).font(.subheadline).foregroundStyle(.secondary)
-                        Spacer()
-                        EvidenceButton(verification: state.verification)
-                        Button("Edit…") { onEdit(state.field) }.buttonStyle(.borderless).font(.subheadline)
+                        Spacer(minLength: 8)
+                        FitRow(spacing: 8) {
+                            EvidenceButton(verification: state.verification)
+                            Button("Edit…") { onEdit(state.field) }.buttonStyle(.borderless).font(.subheadline).fixedSize().minTapTarget()
+                        }
                     }
                     fieldValue(state)
                     if !state.verification.notes.isEmpty {
@@ -379,7 +382,7 @@ private struct RepositoryRow: View {
                         Text(gh.languages.prefix(5).joined(separator: " · ")).font(.caption)
                     }
                     Spacer()
-                    Text("GitHub snapshot \(gh.fetchedAt.shortDate)").font(.caption2).foregroundStyle(.tertiary)
+                    Text("GitHub snapshot \(gh.fetchedAt.shortDate)").font(.caption2).foregroundStyle(.secondary)
                 }
             }
             ForEach(repository.localCheckouts) { c in
@@ -592,7 +595,7 @@ struct RecordSection<Item: Identifiable, Row: View>: View {
                 }
                 .background(.background.secondary, in: RoundedRectangle(cornerRadius: 8))
                 Text("Double-click a row to edit. Right-click for more actions. Click a badge to see its evidence.")
-                    .font(.caption).foregroundStyle(.tertiary)
+                    .font(.caption).foregroundStyle(.secondary)
             }
         }
     }

@@ -13,7 +13,8 @@ struct VerificationView: View {
     #else
     private let compact = false
     #endif
-    private var statusColumns: Int { compact ? 2 : 4 }
+    @Environment(\.dynamicTypeSize) private var typeSize
+    private var statusColumns: Int { !compact ? 4 : typeSize.isAccessibilitySize ? 1 : 2 }
 
     private struct Row: Identifiable {
         let id: String
@@ -75,10 +76,11 @@ struct VerificationView: View {
                                 if compact {
                                     // Phone: product and badge on one line, the item and its notes below.
                                     VStack(alignment: .leading, spacing: 4) {
-                                        HStack {
+                                        FitRow {
                                             Button(row.productName) { router.open(productID: row.productID) }
                                                 .buttonStyle(.borderless).foregroundStyle(.tint)
-                                            Spacer()
+                                                .minTapTarget()
+                                            Spacer(minLength: 8)
                                             EvidenceButton(verification: row.verification)
                                         }
                                         itemText(row)

@@ -51,7 +51,7 @@ struct ProductListView: View {
                         .accessibilityHidden(p.alsoKnownAs.value?.isEmpty ?? true)
                     // An iPhone shows only this column, so the key badges come along.
                     if compact {
-                        HStack(spacing: 6) {
+                        FitRow {
                             VerificationBadge(status: p.overallVerification, compact: true)
                             if let st = p.status.value { StatusBadge(text: st.title, color: st.color) }
                             let n = p.needsConfirmation.count
@@ -184,7 +184,9 @@ struct QuickOpenView: View {
             }
             .listStyle(.plain)
         }
+        #if os(macOS)
         .frame(width: 480, height: 360)
+        #endif
         .onAppear { focused = true }
         #if os(macOS)
         .onExitCommand { dismiss() }

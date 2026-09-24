@@ -37,7 +37,7 @@ struct StoreListingsView: View {
                         // An iPhone shows only this column, so the essentials come along.
                         if compact {
                             Text(row.listing.appName ?? "—").font(.subheadline)
-                            HStack(spacing: 6) {
+                            FitRow {
                                 ReviewPhaseBadge(phase: row.listing.reviewPhase)
                                 Text("Live: \(row.listing.productionVersion ?? String(localized: "unknown"))").font(.caption).foregroundStyle(.secondary)
                                 if let s = row.listing.latestSubmittedVersion { Text("Submitted: \(s)").font(.caption).foregroundStyle(.secondary) }

@@ -6,7 +6,8 @@ struct DashboardView: View {
     @Environment(Router.self) private var router
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var sizeClass
-    private var statusColumns: Int { sizeClass == .compact ? 2 : 4 }
+    @Environment(\.dynamicTypeSize) private var typeSize
+    private var statusColumns: Int { sizeClass != .compact ? 4 : typeSize.isAccessibilitySize ? 1 : 2 }
     #else
     private let statusColumns = 4
     #endif

@@ -174,11 +174,49 @@ struct EvidenceButton: View {
         .buttonStyle(.plain)
         .help("Show evidence")
         .accessibilityHint("Shows the sources, verification date and notes")
+        .minTapTarget()
         .popover(isPresented: $isShowing, arrowEdge: .trailing) {
+            #if os(macOS)
             EvidenceView(verification: verification)
                 .padding()
                 .frame(width: 440)
+            #else
+            // A phone shows popovers as sheets, and 440pt is wider than the screen.
+            ScrollView {
+                EvidenceView(verification: verification).padding()
+            }
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+            #endif
         }
+    }
+}
+
+/// Items side by side when they fit, stacked when they don't, e.g. at the largest Dynamic Type sizes.
+struct FitRow<Content: View>: View {
+    var spacing: CGFloat = 6
+    var alignment: VerticalAlignment = .center
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: alignment, spacing: spacing) { content }
+            VStack(alignment: .leading, spacing: 4) { content }
+        }
+    }
+}
+
+extension View {
+    /// On iPhone, grows the tappable area to the 44pt minimum without changing the layout.
+    /// On the Mac, pointer targets are fine as they are.
+    func minTapTarget() -> some View {
+        #if os(iOS)
+        self.padding(.vertical, 12).padding(.horizontal, 6)
+            .contentShape(Rectangle())
+            .padding(.vertical, -12).padding(.horizontal, -6)
+        #else
+        self
+        #endif
     }
 }
 
