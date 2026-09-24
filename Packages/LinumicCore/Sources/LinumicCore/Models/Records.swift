@@ -261,7 +261,7 @@ public struct DocumentLink: Codable, Hashable, Sendable, Identifiable {
 
 /// A coarse phase read from a listing's free-text review status, for scanning a table at a glance.
 /// The full text stays the source of truth and is shown alongside.
-public enum ReviewPhase: String, Sendable, CaseIterable {
+public enum ReviewPhase: String, Codable, Sendable, CaseIterable {
     /// Being prepared in the console; not yet sent to review.
     case live, notSubmitted, pending, testing, rejected, unknown
 

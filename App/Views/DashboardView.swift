@@ -125,8 +125,25 @@ struct DashboardView: View {
                         Text("Last snapshot: \(repos.map(\.fetchedAt).max()?.formatted(date: .abbreviated, time: .shortened) ?? "never"). Refresh from Development → Repositories (read-only).")
                             .font(.caption).foregroundStyle(.secondary)
                     }
-                    DashboardPanel(title: "Recent activity") {
-                        EmptyPanelText("An activity feed will come with the backend audit log.")
+                    DashboardPanel(title: "Store changes") {
+                        if model.recentStoreChanges.isEmpty {
+                            EmptyPanelText("No store changes yet. They appear here after each automatic refresh of App Store Connect and Google Play.")
+                        } else {
+                            ForEach(model.recentStoreChanges.prefix(6)) { change in
+                                Button { router.open(productID: change.productID) } label: {
+                                    HStack(alignment: .firstTextBaseline, spacing: 6) {
+                                        Image(systemName: change.isImportant ? "bell.badge.fill" : "bell")
+                                            .foregroundStyle(change.isImportant ? .orange : .secondary)
+                                        VStack(alignment: .leading, spacing: 1) {
+                                            Text(verbatim: change.message).font(.callout)
+                                            Text(change.detectedAt, style: .relative).font(.caption).foregroundStyle(.secondary)
+                                        }
+                                        Spacer(minLength: 0)
+                                    }
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
                     }
                 }
             }

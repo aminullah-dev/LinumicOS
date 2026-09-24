@@ -5,6 +5,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: automatic store refresh and change alerts
+- Connected consoles are read on launch and every 30 minutes while the app is open (Settings → Integrations →
+  Automatic refresh).
+- `StoreChangeDetector` compares consecutive console reads: a version went live, the review phase changed
+  (e.g. rejected), or a different version is waiting. Seed/screenshot data never triggers an alert.
+- Changes appear in the dashboard's "Store changes" panel and as local notifications (macOS and iOS).
+
 ### Added: App Store Connect and Google Play Console (read-only)
 - App Store Connect API client (ES256 JWT, GET only) and Google Play Developer API client (RS256 service
   account, releases list without edits). Keys are added in Settings → Integrations and kept in the Keychain.

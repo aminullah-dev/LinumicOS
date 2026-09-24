@@ -31,7 +31,14 @@ struct LinumicOSApp: App {
                 #if os(macOS)
                 .frame(minWidth: 960, minHeight: 600)
                 #endif
-                .task { await model.load() }
+                .task {
+                    await model.load()
+                    // Store status on launch, then every 30 minutes while the app is open.
+                    while !Task.isCancelled {
+                        await model.autoRefreshStoresIfDue()
+                        try? await Task.sleep(for: .seconds(InventoryModel.autoRefreshInterval))
+                    }
+                }
         }
         .commands {
             CommandGroup(replacing: .newItem) {

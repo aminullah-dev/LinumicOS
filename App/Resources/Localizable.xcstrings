@@ -47,6 +47,16 @@
         }
       }
     },
+    "%@ %@ is now live on %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ نسخهٔ %2$@ حالا در %3$@ فعال است."
+          }
+        }
+      }
+    },
     "%@ %@ is pending in App Store Connect. That's awaiting Apple, not recorded as blocked.": {
       "extractionState": "stale",
       "localizations": {
@@ -54,6 +64,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ %2$@ در App Store Connect در انتظار است. این منتظر اپل است و مسدود ثبت نشده است."
+          }
+        }
+      }
+    },
+    "%@ %@ is waiting on %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ نسخهٔ %2$@ در %3$@ منتظر است."
           }
         }
       }
@@ -95,6 +115,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "«%@» دست‌کم به یک منبع نیاز دارد. یک منبع اضافه کنید یا تأیید خود را ثبت کنید."
+          }
+        }
+      }
+    },
+    "%@ on %@: %@ → %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ در %2$@: %3$@ ← %4$@"
           }
         }
       }
@@ -517,6 +547,16 @@
         }
       }
     },
+    "A notification when a version goes live, is rejected, or a new one is waiting.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی نسخه‌ای فعال یا رد شود، یا نسخهٔ تازه‌ای منتظر باشد، اعلان می‌آید."
+          }
+        }
+      }
+    },
     "A value marked Unknown would look like a fact. Choose a status and a source, or clear the value.": {
       "localizations": {
         "fa-AF": {
@@ -830,6 +870,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "احراز هویت، نقش‌ها، سابقهٔ حسابرسی و مدیریت رمزها در سرور با مرحلهٔ سرور اضافه می‌شوند. docs/security.md را ببینید."
+          }
+        }
+      }
+    },
+    "Automatic refresh": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به‌روزرسانی خودکار"
           }
         }
       }
@@ -3517,6 +3567,16 @@
         }
       }
     },
+    "No store changes yet. They appear here after each automatic refresh of App Store Connect and Google Play.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز تغییری در فروشگاه‌ها نبوده. بعد از هر به‌روزرسانی خودکار App Store Connect و Google Play، تغییرات این‌جا می‌آید."
+          }
+        }
+      }
+    },
     "No store listings recorded. Unknown whether this product is on the App Store or Google Play.": {
       "localizations": {
         "fa-AF": {
@@ -3707,6 +3767,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "چیزی برای تأیید نیست"
+          }
+        }
+      }
+    },
+    "Notify me about store changes": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تغییرات فروشگاه را به من اطلاع بده"
           }
         }
       }
@@ -4514,6 +4584,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "به‌روزرسانی از Play Console"
+          }
+        }
+      }
+    },
+    "Refresh store status automatically": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت فروشگاه‌ها را خودکار به‌روز کن"
           }
         }
       }
@@ -5393,6 +5473,16 @@
         }
       }
     },
+    "Store changes": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تغییرات فروشگاه"
+          }
+        }
+      }
+    },
     "Store listing record": {
       "extractionState": "stale",
       "localizations": {
@@ -6155,6 +6245,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "منبع چه می‌گوید (نقل‌قول یا رقم، همان‌طور که پیدا شد)"
+          }
+        }
+      }
+    },
+    "When the app opens, then every 30 minutes while it's open. Only connected stores are read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنگام باز شدن برنامه و بعد هر ۳۰ دقیقه تا وقتی باز است. فقط فروشگاه‌های وصل خوانده می‌شوند."
           }
         }
       }

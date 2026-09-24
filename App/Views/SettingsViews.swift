@@ -11,6 +11,8 @@ struct IntegrationsSettingsView: View {
     @State private var tokenInput = ""
     @State private var hasToken = false
     @State private var message: String?
+    @AppStorage(InventoryModel.autoRefreshKey) private var autoRefresh = true
+    @AppStorage(InventoryModel.notifyKey) private var notifyChanges = true
 
     private let integrations: [(name: String, symbol: String, plan: String)] = [
         ("Social networks", "bubble.left.and.bubble.right", "Phase 5: OAuth, approval before publishing"),
@@ -49,6 +51,18 @@ struct IntegrationsSettingsView: View {
             }
             StoreConsoleSection(store: .appStore)
             StoreConsoleSection(store: .googlePlay)
+            Section {
+                Toggle(isOn: $autoRefresh) {
+                    Text("Refresh store status automatically")
+                    Text("When the app opens, then every 30 minutes while it's open. Only connected stores are read.")
+                }
+                Toggle(isOn: $notifyChanges) {
+                    Text("Notify me about store changes")
+                    Text("A notification when a version goes live, is rejected, or a new one is waiting.")
+                }
+            } header: {
+                Text("Automatic refresh")
+            }
             Section {
                 ForEach(integrations, id: \.name) { i in
                     LabeledContent {

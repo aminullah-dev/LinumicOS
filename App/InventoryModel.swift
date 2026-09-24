@@ -110,6 +110,41 @@ final class InventoryModel {
         lastAppStoreSync = (.now, report)
     }
 
+    // MARK: Store changes and automatic refresh
+
+    static let autoRefreshKey = "LCCAutoRefreshStores"
+    static let notifyKey = "LCCNotifyStoreChanges"
+    static let autoRefreshInterval: TimeInterval = 30 * 60
+    private static let recentChangesKey = "LCCRecentStoreChanges"
+    private static let lastAutoRefreshKey = "LCCLastStoreAutoRefresh"
+
+    /// Changes noticed by console refreshes on this device, newest first. A per-device convenience,
+    /// kept in UserDefaults; the store data itself lives in the inventory.
+    private(set) var recentStoreChanges: [StoreChange] = {
+        guard let data = UserDefaults.standard.data(forKey: recentChangesKey) else { return [] }
+        return (try? JSONDecoder().decode([StoreChange].self, from: data)) ?? []
+    }()
+
+    private func record(_ changes: [StoreChange]) async {
+        guard !changes.isEmpty else { return }
+        recentStoreChanges = Array((changes + recentStoreChanges).prefix(50))
+        if let data = try? JSONEncoder().encode(recentStoreChanges) { UserDefaults.standard.set(data, forKey: Self.recentChangesKey) }
+        if UserDefaults.standard.object(forKey: Self.notifyKey) as? Bool ?? true { await StoreNotifier.post(changes) }
+    }
+
+    /// Refreshes every connected console if automatic refresh is on and the last run is old enough.
+    func autoRefreshStoresIfDue() async {
+        let defaults = UserDefaults.standard
+        guard defaults.object(forKey: Self.autoRefreshKey) as? Bool ?? true, isLoaded else { return }
+        let last = defaults.object(forKey: Self.lastAutoRefreshKey) as? Date ?? .distantPast
+        guard Date.now.timeIntervalSince(last) >= Self.autoRefreshInterval - 60 else { return }
+        let connected = AppStore.allCases.filter(hasConsoleCredentials)
+        guard !connected.isEmpty else { return }
+        if defaults.object(forKey: Self.notifyKey) as? Bool ?? true { await StoreNotifier.requestPermission() }
+        defaults.set(Date.now, forKey: Self.lastAutoRefreshKey)
+        for store in connected { await refreshFromConsole(store) }
+    }
+
     private(set) var syncingConsoles: Set<AppStore> = []
     private(set) var lastConsoleSync: [AppStore: (at: Date, report: StoreConsoleSync.Report)] = [:]
 
@@ -143,6 +178,7 @@ final class InventoryModel {
             errorMessage = String(localized: "Could not use the \(store.title) credentials: \(error.localizedDescription)")
             return
         }
+        let changes = StoreChangeDetector.changes(before: products, after: updated)
         for product in updated {
             update(product.id) { current in
                 for listing in product.storeListings where listing.store == store {
@@ -151,6 +187,7 @@ final class InventoryModel {
             }
         }
         lastConsoleSync[store] = (.now, report)
+        await record(changes)
     }
 
     /// Refreshes every GitHub repository snapshot, read-only. Without a token only public repositories succeed.

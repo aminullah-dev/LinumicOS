@@ -82,6 +82,15 @@ only when explicit credentials and authorization are provided.
   release is listed in `reviewStatus` with its track and lifecycle state (draft, in review, approved…).
 - Custom closed-testing tracks aren't read yet; closed testing on the default `alpha` track is.
 
+## Automatic refresh and store change alerts
+
+- With either console connected, the app reads it on launch and every 30 minutes while open
+  (toggle in Settings → Integrations). Reads only.
+- Each read is compared with the previous console read of the same listing (`StoreChangeDetector`).
+  Only console-to-console differences count, so the first read after seed or screenshot data is silent.
+- Changes are listed in the dashboard ("Store changes", kept per device) and posted as local
+  notifications, which never leave the device.
+
 ## Social media (Phase 5)
 
 LinkedIn, Facebook, Instagram, X and YouTube. OAuth per network, tokens stored
