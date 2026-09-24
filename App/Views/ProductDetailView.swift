@@ -522,7 +522,75 @@ private struct StoreListingRow: View {
             .font(.caption)
             .foregroundStyle(.secondary)
             if let url = listing.url { Link(url.absoluteString, destination: url).font(.caption) }
+            if let insights = listing.insights {
+                if listing.store == .appStore { RatingLabel(insights: insights).font(.callout) }
+                if !insights.reviews.isEmpty {
+                    DisclosureGroup {
+                        VStack(alignment: .leading, spacing: 8) {
+                            ForEach(insights.reviews.prefix(5)) { ReviewRow(review: $0) }
+                        }
+                        .padding(.top, 4)
+                    } label: {
+                        Label("Recent reviews (\(insights.reviews.count))", systemImage: "text.bubble").font(.callout)
+                    }
+                }
+                if !insights.testBuilds.isEmpty {
+                    DisclosureGroup {
+                        VStack(alignment: .leading, spacing: 4) {
+                            ForEach(insights.testBuilds) { TestBuildRow(build: $0) }
+                        }
+                        .padding(.top, 4)
+                    } label: {
+                        Label("TestFlight builds (\(insights.testBuilds.count))", systemImage: "airplane").font(.callout)
+                    }
+                }
+            }
         }
+    }
+}
+
+private struct ReviewRow: View {
+    let review: CustomerReview
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: 6) {
+                // Stars as text plus a label, so the rating isn't carried by the glyphs alone.
+                Text(String(repeating: "★", count: max(0, min(5, review.rating))) + String(repeating: "☆", count: max(0, 5 - review.rating)))
+                    .foregroundStyle(review.rating <= 2 ? .orange : .yellow)
+                    .accessibilityLabel(Text("\(review.rating) of 5 stars"))
+                if let title = review.title { Text(title).bold() }
+                Spacer(minLength: 0)
+                if let date = review.createdAt { Text(date.shortDate).foregroundStyle(.secondary) }
+            }
+            if let body = review.body { Text(body).lineLimit(3).textSelection(.enabled) }
+            if let who = review.reviewer { Text(verbatim: "— \(who)\(review.territory.map { " · \($0)" } ?? "")").foregroundStyle(.secondary) }
+        }
+        .font(.caption)
+    }
+}
+
+private struct TestBuildRow: View {
+    let build: TestBuild
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Text(build.label).monospacedDigit().bold()
+            if let p = build.platform { Text(p == "MAC_OS" ? "macOS" : p == "IOS" ? "iOS" : p).foregroundStyle(.secondary) }
+            Spacer(minLength: 0)
+            if build.expired {
+                StatusBadge(text: "Expired", color: .gray)
+            } else if build.processingState == "VALID" {
+                if let days = build.daysUntilExpiry(from: .now) {
+                    StatusBadge(text: String(localized: "Expires in \(days) days"), color: .orange)
+                } else if let expires = build.expiresAt {
+                    Text("Expires \(expires.shortDate)").foregroundStyle(.secondary)
+                }
+            } else {
+                StatusBadge(text: build.processingState.map(humanizeState) ?? String(localized: "Unknown"), color: .blue)
+            }
+        }
+        .font(.caption)
     }
 }
 

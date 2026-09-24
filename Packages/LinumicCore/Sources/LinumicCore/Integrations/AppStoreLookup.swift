@@ -11,6 +11,8 @@ public struct AppStoreLookupClient: Sendable {
         public var url: URL?
         public var seller: String?
         public var storefront: String
+        public var averageUserRating: Double? = nil
+        public var userRatingCount: Int? = nil
     }
 
     private let transport: HTTPTransport
@@ -26,6 +28,9 @@ public struct AppStoreLookupClient: Sendable {
             let currentVersionReleaseDate: Date?
             let trackViewUrl: String?
             let sellerName: String?
+            let averageUserRatingForCurrentVersion: Double?
+            let averageUserRating: Double?
+            let userRatingCount: Int?
         }
         let resultCount: Int
         let results: [Item]
@@ -47,7 +52,8 @@ public struct AppStoreLookupClient: Sendable {
         decoder.dateDecodingStrategy = .iso8601
         guard let item = try decoder.decode(Response.self, from: data).results.first else { return nil }
         return Result(trackName: item.trackName, version: item.version, currentVersionReleaseDate: item.currentVersionReleaseDate,
-                      url: item.trackViewUrl.flatMap(URL.init(string:)).map(Self.stripQuery), seller: item.sellerName, storefront: country)
+                      url: item.trackViewUrl.flatMap(URL.init(string:)).map(Self.stripQuery), seller: item.sellerName, storefront: country,
+                      averageUserRating: item.averageUserRating, userRatingCount: item.userRatingCount)
     }
 
     private static func stripQuery(_ url: URL) -> URL {
@@ -87,11 +93,20 @@ public enum StoreSync {
                         continue
                     }
                     var l = listing
+                    // App Store Connect is the better source for versions (per platform, with review state).
+                    // When it has spoken, the public lookup only adds the rating, so the two never flip-flop.
+                    let fromConsole = l.verification.sources.contains { $0.reference.hasPrefix(StoreConsoleSync.ascReferencePrefix) }
                     l.appName = r.trackName
-                    l.productionVersion = r.version
+                    if !fromConsole { l.productionVersion = r.version }
                     l.url = r.url ?? l.url
                     l.seller = r.seller ?? l.seller
                     l.storefront = r.storefront.uppercased()
+                    var insights = l.insights ?? StoreInsights()
+                    insights.rating = r.averageUserRating
+                    insights.ratingCount = r.userRatingCount
+                    insights.ratingStorefront = r.storefront.uppercased()
+                    insights.ratingObservedAt = now
+                    l.insights = insights
                     let source = Source(kind: .appStore, reference: AppStoreLookupClient.lookupURL(bundleID: bundle, country: r.storefront).absoluteString,
                                         observedAt: now,
                                         detail: "Public version \(r.version)" + (r.currentVersionReleaseDate.map { ", released \($0.formatted(.iso8601.year().month().day()))" } ?? ""))

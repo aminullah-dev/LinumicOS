@@ -408,6 +408,16 @@
         }
       }
     },
+    "%lld of 5 stars": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld از ۵ ستاره"
+          }
+        }
+      }
+    },
     "%lld products": {
       "localizations": {
         "fa-AF": {
@@ -893,6 +903,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "به‌روزرسانی خودکار"
+          }
+        }
+      }
+    },
+    "Average rating in the %@ storefront": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "میانگین امتیاز در فروشگاه %@"
           }
         }
       }
@@ -1928,6 +1948,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "شواهد: %@"
+          }
+        }
+      }
+    },
+    "Expired": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منقضی شده"
+          }
+        }
+      }
+    },
+    "Expires %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انقضا: %@"
+          }
+        }
+      }
+    },
+    "Expires in %lld days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld روز تا انقضا"
           }
         }
       }
@@ -3168,6 +3218,16 @@
         }
       }
     },
+    "New %@★ review of %@: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نظر تازهٔ %1$@★ برای %2$@: %3$@"
+          }
+        }
+      }
+    },
     "New Post": {
       "localizations": {
         "fa-AF": {
@@ -3432,6 +3492,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "محصولی نیست"
+          }
+        }
+      }
+    },
+    "No ratings yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز امتیازی نیست"
           }
         }
       }
@@ -4442,6 +4512,26 @@
         }
       }
     },
+    "Rating": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امتیاز"
+          }
+        }
+      }
+    },
+    "Rating %@ from %lld ratings": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امتیاز %1$@ از %2$lld رأی"
+          }
+        }
+      }
+    },
     "Read the public App Store lookup for each bundle ID (no credentials)": {
       "localizations": {
         "fa-AF": {
@@ -4509,6 +4599,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "فعالیت‌های اخیر"
+          }
+        }
+      }
+    },
+    "Recent reviews (%lld)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نظرهای اخیر (%lld)"
           }
         }
       }
@@ -5706,6 +5806,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "نسخهٔ هدف"
+          }
+        }
+      }
+    },
+    "TestFlight build %@ of %@ expires in %@ days.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیلد TestFlight %1$@ از %2$@ تا %3$@ روز دیگر منقضی می‌شود."
+          }
+        }
+      }
+    },
+    "TestFlight build %@ of %@ is ready to test.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیلد TestFlight %1$@ از %2$@ آمادهٔ تست است."
+          }
+        }
+      }
+    },
+    "TestFlight builds (%lld)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیلدهای TestFlight (%lld)"
           }
         }
       }

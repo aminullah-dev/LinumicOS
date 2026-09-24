@@ -213,11 +213,14 @@ public struct StoreListing: Codable, Hashable, Sendable, Identifiable {
     public var latestSubmittedVersion: String?
     public var reviewStatus: String?
     public var verification: Verification
+    /// Ratings, recent reviews and test builds, read from the store. Each part carries its own date.
+    public var insights: StoreInsights?
 
     public init(
         id: UUID = UUID(), store: AppStore, appName: String? = nil, appIdentifier: String? = nil, url: URL? = nil,
         storefront: String? = nil, seller: String? = nil, productionVersion: String? = nil,
-        latestSubmittedVersion: String? = nil, reviewStatus: String? = nil, verification: Verification = .unknown
+        latestSubmittedVersion: String? = nil, reviewStatus: String? = nil, verification: Verification = .unknown,
+        insights: StoreInsights? = nil
     ) {
         self.id = id
         self.store = store
@@ -230,6 +233,7 @@ public struct StoreListing: Codable, Hashable, Sendable, Identifiable {
         self.latestSubmittedVersion = latestSubmittedVersion
         self.reviewStatus = reviewStatus
         self.verification = verification
+        self.insights = insights
     }
 }
 
@@ -297,5 +301,107 @@ extension StoreListing {
         let phase = ReviewPhase(reviewStatus: reviewStatus)
         if productionVersion != nil, latestSubmittedVersion == nil, [.notSubmitted, .testing, .unknown].contains(phase) { return .live }
         return phase
+    }
+}
+
+/// What a store says about an app beyond its version: the rating, recent reviews and test builds.
+/// Every part is optional and dated, because each comes from a different read (and may be missing).
+public struct StoreInsights: Codable, Hashable, Sendable {
+    /// Average rating and count in one storefront (App Store ratings are per country).
+    public var rating: Double?
+    public var ratingCount: Int?
+    public var ratingStorefront: String?
+    public var ratingObservedAt: Date?
+    /// Newest first, at most 10.
+    public var reviews: [CustomerReview]
+    public var reviewsObservedAt: Date?
+    /// Newest first, at most 5.
+    public var testBuilds: [TestBuild]
+    public var testBuildsObservedAt: Date?
+
+    public init(rating: Double? = nil, ratingCount: Int? = nil, ratingStorefront: String? = nil, ratingObservedAt: Date? = nil,
+                reviews: [CustomerReview] = [], reviewsObservedAt: Date? = nil, testBuilds: [TestBuild] = [], testBuildsObservedAt: Date? = nil) {
+        self.rating = rating
+        self.ratingCount = ratingCount
+        self.ratingStorefront = ratingStorefront
+        self.ratingObservedAt = ratingObservedAt
+        self.reviews = reviews
+        self.reviewsObservedAt = reviewsObservedAt
+        self.testBuilds = testBuilds
+        self.testBuildsObservedAt = testBuildsObservedAt
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case rating, ratingCount, ratingStorefront, ratingObservedAt, reviews, reviewsObservedAt, testBuilds, testBuildsObservedAt
+    }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        rating = try c.decodeIfPresent(Double.self, forKey: .rating)
+        ratingCount = try c.decodeIfPresent(Int.self, forKey: .ratingCount)
+        ratingStorefront = try c.decodeIfPresent(String.self, forKey: .ratingStorefront)
+        ratingObservedAt = try c.decodeIfPresent(Date.self, forKey: .ratingObservedAt)
+        reviews = try c.decodeIfPresent([CustomerReview].self, forKey: .reviews) ?? []
+        reviewsObservedAt = try c.decodeIfPresent(Date.self, forKey: .reviewsObservedAt)
+        testBuilds = try c.decodeIfPresent([TestBuild].self, forKey: .testBuilds) ?? []
+        testBuildsObservedAt = try c.decodeIfPresent(Date.self, forKey: .testBuildsObservedAt)
+    }
+}
+
+public struct CustomerReview: Codable, Hashable, Sendable, Identifiable {
+    /// The store's own review ID, so a review is recognised on the next read.
+    public var id: String
+    public var rating: Int
+    public var title: String?
+    public var body: String?
+    public var reviewer: String?
+    public var territory: String?
+    public var createdAt: Date?
+
+    public init(id: String, rating: Int, title: String? = nil, body: String? = nil, reviewer: String? = nil, territory: String? = nil, createdAt: Date? = nil) {
+        self.id = id
+        self.rating = rating
+        self.title = title
+        self.body = body
+        self.reviewer = reviewer
+        self.territory = territory
+        self.createdAt = createdAt
+    }
+}
+
+public struct TestBuild: Codable, Hashable, Sendable, Identifiable {
+    public var id: String
+    /// Build number, e.g. "7".
+    public var build: String
+    /// Marketing version, e.g. "1.0.1".
+    public var version: String?
+    public var platform: String?
+    /// PROCESSING, FAILED, INVALID or VALID.
+    public var processingState: String?
+    public var expired: Bool
+    public var uploadedAt: Date?
+    public var expiresAt: Date?
+
+    public init(id: String, build: String, version: String? = nil, platform: String? = nil, processingState: String? = nil,
+                expired: Bool = false, uploadedAt: Date? = nil, expiresAt: Date? = nil) {
+        self.id = id
+        self.build = build
+        self.version = version
+        self.platform = platform
+        self.processingState = processingState
+        self.expired = expired
+        self.uploadedAt = uploadedAt
+        self.expiresAt = expiresAt
+    }
+
+    /// "1.0.1 (7)", or the build number alone.
+    public var label: String { version.map { "\($0) (\(build))" } ?? build }
+    public var isUsable: Bool { !expired && processingState == "VALID" }
+
+    /// Whole days until expiry, when it expires within `days`.
+    public func daysUntilExpiry(from now: Date, within days: Int = 7) -> Int? {
+        guard isUsable, let expiresAt else { return nil }
+        let left = expiresAt.timeIntervalSince(now) / 86_400
+        return left <= Double(days) && left > 0 ? Int(left.rounded(.down)) : nil
     }
 }

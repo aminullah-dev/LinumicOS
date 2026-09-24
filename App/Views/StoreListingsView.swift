@@ -41,6 +41,7 @@ struct StoreListingsView: View {
                                 ReviewPhaseBadge(phase: row.listing.reviewPhase)
                                 Text("Live: \(row.listing.productionVersion ?? String(localized: "unknown"))").font(.caption).foregroundStyle(.secondary)
                                 if let s = row.listing.latestSubmittedVersion { Text("Submitted: \(s)").font(.caption).foregroundStyle(.secondary) }
+                                if store == .appStore, row.listing.insights?.rating != nil { RatingLabel(insights: row.listing.insights).font(.caption) }
                             }
                         }
                     }
@@ -64,6 +65,8 @@ struct StoreListingsView: View {
                     .help(row.listing.reviewStatus ?? "")
                 }
                 if store == .appStore {
+                    TableColumn("Rating") { RatingLabel(insights: $0.listing.insights) }
+                        .width(min: 90, ideal: 110)
                     TableColumn("Storefront") { Text($0.listing.storefront ?? "—") }
                         .width(min: 70, ideal: 90)
                 }

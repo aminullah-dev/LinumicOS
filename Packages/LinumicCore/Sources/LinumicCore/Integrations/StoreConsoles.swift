@@ -185,11 +185,8 @@ public struct AppStoreConnectClient: Sendable {
         return try JSONDecoder().decode(Page<A>.self, from: data).data.first { $0.attributes.bundleId == bundleID }?.id
     }
 
-    public func versions(appID: String) async throws -> [AppStoreConnectVersion] {
-        let data = try await get("v1/apps/\(appID)/appStoreVersions", query: [
-            URLQueryItem(name: "fields[appStoreVersions]", value: "versionString,platform,appVersionState,appStoreState,createdDate"),
-            URLQueryItem(name: "limit", value: "20"),
-        ])
+    /// Apple's dates come with or without fractional seconds.
+    static var decoder: JSONDecoder {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .custom { d in
             let s = try d.singleValueContainer().decode(String.self)
@@ -199,7 +196,57 @@ public struct AppStoreConnectClient: Sendable {
             if let date = f.date(from: s) { return date }
             throw DecodingError.dataCorrupted(.init(codingPath: d.codingPath, debugDescription: "Bad date \(s)"))
         }
-        return try decoder.decode(Page<AppStoreConnectVersion>.self, from: data).data.map(\.attributes)
+        return decoder
+    }
+
+    public func versions(appID: String) async throws -> [AppStoreConnectVersion] {
+        let data = try await get("v1/apps/\(appID)/appStoreVersions", query: [
+            URLQueryItem(name: "fields[appStoreVersions]", value: "versionString,platform,appVersionState,appStoreState,createdDate"),
+            URLQueryItem(name: "limit", value: "20"),
+        ])
+        return try decodeResponse(Page<AppStoreConnectVersion>.self, from: data, decoder: Self.decoder, what: "appStoreVersions").data.map(\.attributes)
+    }
+
+    /// Newest customer reviews (read-only; the Developer role may read them).
+    public func customerReviews(appID: String, limit: Int = 10) async throws -> [CustomerReview] {
+        struct A: Decodable { let rating: Int; let title: String?; let body: String?; let reviewerNickname: String?; let createdDate: Date?; let territory: String? }
+        let data = try await get("v1/apps/\(appID)/customerReviews", query: [
+            URLQueryItem(name: "sort", value: "-createdDate"),
+            URLQueryItem(name: "limit", value: String(limit)),
+            URLQueryItem(name: "fields[customerReviews]", value: "rating,title,body,reviewerNickname,createdDate,territory"),
+        ])
+        return try decodeResponse(Page<A>.self, from: data, decoder: Self.decoder, what: "customerReviews").data.map {
+            CustomerReview(id: $0.id, rating: $0.attributes.rating, title: $0.attributes.title, body: $0.attributes.body,
+                           reviewer: $0.attributes.reviewerNickname, territory: $0.attributes.territory, createdAt: $0.attributes.createdDate)
+        }
+    }
+
+    /// Newest TestFlight builds with their marketing version and platform.
+    public func testBuilds(appID: String, limit: Int = 5) async throws -> [TestBuild] {
+        struct Ref: Decodable { let id: String }
+        struct Rel: Decodable { struct D: Decodable { let data: Ref? }; let preReleaseVersion: D? }
+        struct B: Decodable {
+            struct A: Decodable { let version: String; let uploadedDate: Date?; let expirationDate: Date?; let expired: Bool?; let processingState: String? }
+            let id: String; let attributes: A; let relationships: Rel?
+        }
+        struct Inc: Decodable { struct A: Decodable { let version: String?; let platform: String? }; let id: String; let type: String; let attributes: A? }
+        struct R: Decodable { let data: [B]; let included: [Inc]? }
+        let data = try await get("v1/builds", query: [
+            URLQueryItem(name: "filter[app]", value: appID),
+            URLQueryItem(name: "sort", value: "-uploadedDate"),
+            URLQueryItem(name: "limit", value: String(limit)),
+            URLQueryItem(name: "fields[builds]", value: "version,uploadedDate,expirationDate,expired,processingState,preReleaseVersion"),
+            URLQueryItem(name: "include", value: "preReleaseVersion"),
+            URLQueryItem(name: "fields[preReleaseVersions]", value: "version,platform"),
+        ])
+        let r = try decodeResponse(R.self, from: data, decoder: Self.decoder, what: "builds")
+        let versions = Dictionary((r.included ?? []).filter { $0.type == "preReleaseVersions" }.map { ($0.id, $0.attributes) }, uniquingKeysWith: { a, _ in a })
+        return r.data.map { b in
+            let pre = b.relationships?.preReleaseVersion?.data.flatMap { versions[$0.id] } ?? nil
+            return TestBuild(id: b.id, build: b.attributes.version, version: pre?.version, platform: pre?.platform,
+                             processingState: b.attributes.processingState, expired: b.attributes.expired ?? false,
+                             uploadedAt: b.attributes.uploadedDate, expiresAt: b.attributes.expirationDate)
+        }
     }
 }
 
@@ -489,7 +536,19 @@ public enum StoreConsoleSync {
                 guard let bundle = listing.appIdentifier else { continue }
                 do {
                     guard let id = try await client.appID(bundleID: bundle) else { report.notInAccount.append(bundle); continue }
-                    result[pi].storeListings[li] = apply(try await client.versions(appID: id), appID: id, to: listing, at: now)
+                    var l = apply(try await client.versions(appID: id), appID: id, to: listing, at: now)
+                    // Reviews and test builds are extras: a failure there doesn't undo the version read.
+                    var insights = l.insights ?? StoreInsights()
+                    if let reviews = try? await client.customerReviews(appID: id) {
+                        insights.reviews = reviews
+                        insights.reviewsObservedAt = now
+                    }
+                    if let builds = try? await client.testBuilds(appID: id) {
+                        insights.testBuilds = builds
+                        insights.testBuildsObservedAt = now
+                    }
+                    l.insights = insights
+                    result[pi].storeListings[li] = l
                     report.updated.append(bundle)
                 } catch {
                     report.failed[bundle] = error.localizedDescription

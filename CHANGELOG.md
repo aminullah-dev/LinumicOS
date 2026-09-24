@@ -5,6 +5,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: ratings, reviews and TestFlight builds
+- `StoreListing.insights`: App Store rating per storefront (public lookup, no key), the newest customer reviews and
+  TestFlight builds (App Store Connect, Developer role, read-only). Stored in a new `store_listings.insights` jsonb
+  column (migration 20260924020000); an older client that sends no insights keeps the stored ones.
+- Alerts for a new review (1–2★ is important), a TestFlight build ready to test, and a build expiring within 7 days.
+- Change detection compares versions, not labels, so relabelling ("10 (1.0.10)" → "1.0.10") isn't news.
+- Google Play reviews are not read: that API needs the "Reply to reviews" permission, which isn't read-only.
+
 ### Added: automatic store refresh and change alerts
 - Connected consoles are read on launch and every 30 minutes while the app is open (Settings → Integrations →
   Automatic refresh).

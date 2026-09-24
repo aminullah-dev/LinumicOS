@@ -11,6 +11,12 @@ public struct StoreChange: Codable, Hashable, Sendable, Identifiable {
         case phaseChanged
         /// A different version is waiting (submitted or being prepared).
         case newPending
+        /// A customer review arrived. `to` holds the stars, `from` the title.
+        case newReview
+        /// A TestFlight build finished processing. `to` holds its label.
+        case buildReady
+        /// A TestFlight build expires within a week. `to` holds its label, `from` the days left.
+        case buildExpiring
     }
 
     public var id: UUID
@@ -42,12 +48,20 @@ public struct StoreChange: Codable, Hashable, Sendable, Identifiable {
         case .nowLive: LF("%@ %@ is now live on %@.", appName, to ?? "", store.title)
         case .phaseChanged: LF("%@ on %@: %@ → %@", appName, store.title, phaseTitle(from), phaseTitle(to))
         case .newPending: LF("%@ %@ is waiting on %@.", appName, to ?? "", store.title)
+        case .newReview: LF("New %@★ review of %@: %@", to ?? "?", appName, from ?? "")
+        case .buildReady: LF("TestFlight build %@ of %@ is ready to test.", to ?? "", appName)
+        case .buildExpiring: LF("TestFlight build %@ of %@ expires in %@ days.", to ?? "", appName, from ?? "?")
         }
     }
 
     /// Worth an interruption: something went live or was rejected.
     public var isImportant: Bool {
-        kind == .nowLive || (kind == .phaseChanged && (to == ReviewPhase.rejected.rawValue || to == ReviewPhase.live.rawValue))
+        switch kind {
+        case .nowLive, .buildExpiring: true
+        case .phaseChanged: to == ReviewPhase.rejected.rawValue || to == ReviewPhase.live.rawValue
+        case .newReview: (to.flatMap(Int.init) ?? 5) <= 2
+        case .newPending, .buildReady: false
+        }
     }
 }
 
@@ -68,12 +82,47 @@ public enum StoreChangeDetector {
                 func change(_ kind: StoreChange.Kind, _ from: String?, _ to: String?) -> StoreChange {
                     StoreChange(kind: kind, productID: product.id, appName: name, store: new.store, from: from, to: to, detectedAt: now)
                 }
-                if new.productionVersion != previous.productionVersion, let live = new.productionVersion {
+                result += insightChanges(previous.insights, new.insights, change: change, at: now)
+                if versionKey(new.productionVersion) != versionKey(previous.productionVersion), let live = new.productionVersion {
                     result.append(change(.nowLive, previous.productionVersion, live))
                 } else if new.reviewPhase != previous.reviewPhase {
                     result.append(change(.phaseChanged, previous.reviewPhase.rawValue, new.reviewPhase.rawValue))
-                } else if new.latestSubmittedVersion != previous.latestSubmittedVersion, let pending = new.latestSubmittedVersion {
+                } else if versionKey(new.latestSubmittedVersion) != versionKey(previous.latestSubmittedVersion), let pending = new.latestSubmittedVersion {
                     result.append(change(.newPending, previous.latestSubmittedVersion, pending))
+                }
+            }
+        }
+        return result
+    }
+
+    /// The versions a label names, ignoring how it's written: "10 (1.0.10)", "1.0.10" and
+    /// "iOS 1.0.10" are the same version. Dotted versions are used when present, else every number.
+    static func versionKey(_ label: String?) -> Set<String>? {
+        guard let label else { return nil }
+        let tokens = label.split(whereSeparator: { !($0.isNumber || $0 == ".") }).map(String.init).filter { $0.contains(where: \.isNumber) }
+        let dotted = tokens.filter { $0.contains(".") }
+        return Set(dotted.isEmpty ? tokens : dotted)
+    }
+
+    /// Reviews and builds are compared only when both reads included them, so the first read is silent.
+    static func insightChanges(_ old: StoreInsights?, _ new: StoreInsights?, change: (StoreChange.Kind, String?, String?) -> StoreChange,
+                               at now: Date) -> [StoreChange] {
+        guard let new else { return [] }
+        var result: [StoreChange] = []
+        if let old, old.reviewsObservedAt != nil, new.reviewsObservedAt != nil {
+            let seen = Set(old.reviews.map(\.id))
+            for review in new.reviews where !seen.contains(review.id) {
+                result.append(change(.newReview, review.title ?? review.body.map { String($0.prefix(60)) }, String(review.rating)))
+            }
+        }
+        if let old, let oldAt = old.testBuildsObservedAt, new.testBuildsObservedAt != nil {
+            let before = Dictionary(old.testBuilds.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+            for build in new.testBuilds {
+                let previous = before[build.id]
+                // New and ready, or finished processing since the last read.
+                if build.isUsable, previous?.isUsable != true { result.append(change(.buildReady, nil, build.label)) }
+                if let days = build.daysUntilExpiry(from: now), previous?.daysUntilExpiry(from: oldAt) == nil {
+                    result.append(change(.buildExpiring, String(days), build.label))
                 }
             }
         }

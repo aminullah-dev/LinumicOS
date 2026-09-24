@@ -82,6 +82,15 @@ only when explicit credentials and authorization are provided.
   release is listed in `reviewStatus` with its track and lifecycle state (draft, in review, approved…).
 - Custom closed-testing tracks aren't read yet; closed testing on the default `alpha` track is.
 
+## Ratings, reviews and TestFlight builds
+
+- App Store rating and count: Apple's public lookup (no key), per storefront, on each automatic refresh.
+- Newest 10 customer reviews and newest 5 TestFlight builds: App Store Connect (`customerReviews`,
+  `builds` with `preReleaseVersion`), GET only, Developer role.
+- The console is authoritative for versions: once App Store Connect has been read, the public lookup only adds
+  the rating.
+- Google Play reviews need the "Reply to reviews" permission, which also allows writing; not read for now.
+
 ## Automatic refresh and store change alerts
 
 - With either console connected, the app reads it on launch and every 30 minutes while open

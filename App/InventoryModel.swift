@@ -138,10 +138,12 @@ final class InventoryModel {
         guard defaults.object(forKey: Self.autoRefreshKey) as? Bool ?? true, isLoaded else { return }
         let last = defaults.object(forKey: Self.lastAutoRefreshKey) as? Date ?? .distantPast
         guard Date.now.timeIntervalSince(last) >= Self.autoRefreshInterval - 60 else { return }
+        defaults.set(Date.now, forKey: Self.lastAutoRefreshKey)
+        // Public App Store data (ratings) needs no key.
+        await refreshAppStore()
         let connected = AppStore.allCases.filter(hasConsoleCredentials)
         guard !connected.isEmpty else { return }
         if defaults.object(forKey: Self.notifyKey) as? Bool ?? true { await StoreNotifier.requestPermission() }
-        defaults.set(Date.now, forKey: Self.lastAutoRefreshKey)
         for store in connected { await refreshFromConsole(store) }
     }
 

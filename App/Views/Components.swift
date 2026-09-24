@@ -40,6 +40,26 @@ struct StatusBadge: View {
     }
 }
 
+/// "★ 4.6 (120)" with the storefront in the help text, or a dash when unknown.
+struct RatingLabel: View {
+    let insights: StoreInsights?
+
+    var body: some View {
+        if let rating = insights?.rating, let count = insights?.ratingCount, count > 0 {
+            HStack(spacing: 3) {
+                Image(systemName: "star.fill").foregroundStyle(.yellow).imageScale(.small)
+                Text(rating.formatted(.number.precision(.fractionLength(1)))).monospacedDigit()
+                Text(verbatim: "(\(count.formatted()))").foregroundStyle(.secondary).monospacedDigit()
+            }
+            .help(Text("Average rating in the \(insights?.ratingStorefront ?? "?") storefront"))
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Rating \(rating.formatted(.number.precision(.fractionLength(1)))) from \(count) ratings"))
+        } else {
+            Text("No ratings yet").foregroundStyle(.secondary)
+        }
+    }
+}
+
 /// Review phase as a badge: icon + text, so meaning never depends on color alone.
 struct ReviewPhaseBadge: View {
     let phase: ReviewPhase
