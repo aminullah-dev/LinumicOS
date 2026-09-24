@@ -262,11 +262,13 @@ public struct DocumentLink: Codable, Hashable, Sendable, Identifiable {
 /// A coarse phase read from a listing's free-text review status, for scanning a table at a glance.
 /// The full text stays the source of truth and is shown alongside.
 public enum ReviewPhase: String, Sendable, CaseIterable {
-    case live, pending, testing, rejected, unknown
+    /// Being prepared in the console; not yet sent to review.
+    case live, notSubmitted, pending, testing, rejected, unknown
 
     public var title: String {
         switch self {
         case .live: L("Live")
+        case .notSubmitted: L("Not submitted")
         case .pending: L("Pending review")
         case .testing: L("Testing")
         case .rejected: L("Rejected")
@@ -279,7 +281,8 @@ public enum ReviewPhase: String, Sendable, CaseIterable {
         func has(_ words: String...) -> Bool { words.contains { text.contains($0) } }
         if has("rejected", "not approved") { self = .rejected }
         else if has("nothing pending") { self = .live }
-        else if has("pending", "in review", "waiting", "draft", "prepare", "ready for review", "not published", "not sent") { self = .pending }
+        else if has("prepare for submission", "draft", "not sent for review", "developer removed") { self = .notSubmitted }
+        else if has("pending", "in review", "waiting", "ready for review", "not published") { self = .pending }
         else if has("testing", "alpha", "beta", "internal") { self = .testing }
         else if has("live", "available", "published", "ready for distribution", "ready for sale") { self = .live }
         else { self = .unknown }

@@ -179,6 +179,9 @@ struct ReviewPhaseTests {
             ("Live, nothing pending", .live),
             ("iOS 1.0.1: Waiting for review; macOS 1.0: In review", .pending),
             ("alpha 1.2.3 (6): Published", .testing),
+            ("1.0.1: Prepare for submission", .notSubmitted),
+            ("iOS 1.0: Prepare for submission; macOS 1.0: Prepare for submission", .notSubmitted),
+            ("production 2.1.6 (23): Draft", .notSubmitted),
             ("production 2.1.6 (23): Not approved", .rejected),
             ("", .unknown), (nil, .unknown), ("Something else", .unknown),
         ]

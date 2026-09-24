@@ -376,6 +376,8 @@ public actor GooglePlayClient {
 }
 
 // MARK: - Applying console data to listings
+// The texts written into listings are data, not UI: they stay in English whatever the app language,
+// so `ReviewPhase` can classify them and they read the same on every device.
 
 public enum StoreConsoleSync {
     public struct Report: Sendable, Equatable {
@@ -400,7 +402,7 @@ public enum StoreConsoleSync {
         let pending = byPlatform.keys.sorted().compactMap { newest(byPlatform[$0]!.filter { !$0.isLive && !$0.isHistorical }) }
         l.productionVersion = live.isEmpty ? nil : live.map(label).joined(separator: ", ")
         l.latestSubmittedVersion = pending.isEmpty ? nil : pending.map(label).joined(separator: ", ")
-        l.reviewStatus = pending.isEmpty ? (live.isEmpty ? nil : L("Live, nothing pending"))
+        l.reviewStatus = pending.isEmpty ? (live.isEmpty ? nil : "Live, nothing pending")
             : pending.map { "\(label($0)): \(humanizeState($0.state))" }.joined(separator: "; ")
 
         let detail = versions.sorted { ($0.createdDate ?? .distantPast) > ($1.createdDate ?? .distantPast) }.prefix(6)
@@ -420,7 +422,7 @@ public enum StoreConsoleSync {
         l.productionVersion = production?.releaseName ?? production.map(\.label)
         let others = releases.filter { $0 != production }
         l.latestSubmittedVersion = others.first { !$0.isPublished && $0.track == "production" }?.label
-        l.reviewStatus = others.isEmpty ? (production == nil ? nil : L("Live, nothing pending"))
+        l.reviewStatus = others.isEmpty ? (production == nil ? nil : "Live, nothing pending")
             : others.map { "\($0.track) \($0.label): \(humanizeState($0.state))" }.joined(separator: "; ")
         l.verification.sources.removeAll { $0.reference.hasPrefix(playReferencePrefix) }
         l.verification.sources.append(Source(kind: .googlePlay, reference: "\(playReferencePrefix) applications/\(packageName)/tracks/*/releases", observedAt: now,

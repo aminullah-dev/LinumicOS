@@ -64,6 +64,7 @@ extension ReviewPhase {
     var color: Color {
         switch self {
         case .live: .green
+        case .notSubmitted: .yellow
         case .pending: .orange
         case .testing: .blue
         case .rejected: .red
@@ -74,6 +75,7 @@ extension ReviewPhase {
     var symbol: String {
         switch self {
         case .live: "checkmark.circle.fill"
+        case .notSubmitted: "pencil.circle.fill"
         case .pending: "clock.fill"
         case .testing: "testtube.2"
         case .rejected: "xmark.octagon.fill"
