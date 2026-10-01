@@ -6717,6 +6717,479 @@
           }
         }
       }
+    },
+    "Oversight": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نظارت"
+          }
+        }
+      }
+    },
+    "Scan all repositories": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اسکن همهٔ مخازن"
+          }
+        }
+      }
+    },
+    "Nothing scanned yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز چیزی اسکن نشده"
+          }
+        }
+      }
+    },
+    "Run a read-only sweep to put every repository you own under oversight: latest changes, open pull requests, CI status and security alerts. This only reads from GitHub.": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک اسکن فقط‌خواندنی اجرا کنید تا همهٔ مخازن شما زیر نظارت بیایند: آخرین تغییرات، درخواست‌های کشش باز، وضعیت CI و هشدارهای امنیتی. این فقط از گیت‌هاب می‌خواند."
+          }
+        }
+      }
+    },
+    "Scanning…": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال اسکن…"
+          }
+        }
+      }
+    },
+    "Fleet health": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سلامت کلی پروژه‌ها"
+          }
+        }
+      }
+    },
+    "%lld of %lld repositories healthy": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld از %2$lld مخزن سالم"
+          }
+        }
+      }
+    },
+    "Last scan: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین اسکن: %@"
+          }
+        }
+      }
+    },
+    "Open security alerts": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هشدارهای امنیتی باز"
+          }
+        }
+      }
+    },
+    "Repos with alerts": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخازن دارای هشدار"
+          }
+        }
+      }
+    },
+    "Unprotected branches": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاخه‌های محافظت‌نشده"
+          }
+        }
+      }
+    },
+    "Stale (30d+)": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "راکد (۳۰ روز به بالا)"
+          }
+        }
+      }
+    },
+    "Open issues": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ایشوهای باز"
+          }
+        }
+      }
+    },
+    "Read-only. A repository is counted healthy only when it was scanned and nothing was flagged; anything unread shows as “Not scanned” and is never assumed clean. Security alerts need a GitHub token with the right scope; where a category can't be read it stays Unknown.": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط‌خواندنی. یک مخزن تنها زمانی سالم شمرده می‌شود که اسکن شده و چیزی علامت نخورده باشد؛ هر چیز خوانده‌نشده «اسکن‌نشده» نشان داده می‌شود و هرگز سالم فرض نمی‌شود. هشدارهای امنیتی به توکن گیت‌هاب با دسترسی مناسب نیاز دارند؛ هر دسته‌ای که خوانده نشود، نامعلوم می‌ماند."
+          }
+        }
+      }
+    },
+    "/ 100": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "/ ۱۰۰"
+          }
+        }
+      }
+    },
+    "%1$lld %2$@": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld %2$@"
+          }
+        }
+      }
+    },
+    "Archived": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بایگانی‌شده"
+          }
+        }
+      }
+    },
+    "Branch unprotected": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاخهٔ محافظت‌نشده"
+          }
+        }
+      }
+    },
+    "Secrets": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رازها"
+          }
+        }
+      }
+    },
+    "Code scan": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اسکن کد"
+          }
+        }
+      }
+    },
+    "CI passing": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI موفق"
+          }
+        }
+      }
+    },
+    "CI failing": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI ناموفق"
+          }
+        }
+      }
+    },
+    "CI cancelled": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI لغو‌شده"
+          }
+        }
+      }
+    },
+    "CI running": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI در حال اجرا"
+          }
+        }
+      }
+    },
+    "Needs attention": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نیازمند توجه"
+          }
+        }
+      }
+    },
+    "Not scanned": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اسکن‌نشده"
+          }
+        }
+      }
+    },
+    "Project oversight": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نظارت بر پروژه‌ها"
+          }
+        }
+      }
+    },
+    "No repositories scanned yet. Open Oversight to run a read-only sweep →": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز مخزنی اسکن نشده. برای اجرای اسکن فقط‌خواندنی، نظارت را باز کنید ←"
+          }
+        }
+      }
+    },
+    "Local workspace: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فضای کاری محلی: %@"
+          }
+        }
+      }
+    },
+    "%lld checkouts scanned · %lld with uncommitted changes · %lld diverged": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld چک‌اوت اسکن‌شده · %2$lld با تغییرات کامیت‌نشده · %3$lld واگرا"
+          }
+        }
+      }
+    },
+    "No local folder chosen. Pick the folder that holds your repositories to track uncommitted and unpushed work (read-only).": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ پوشهٔ محلی انتخاب نشده. پوشه‌ای را که مخازن شما را دارد انتخاب کنید تا کارهای کامیت‌نشده و push‌نشده پیگیری شوند (فقط‌خواندنی)."
+          }
+        }
+      }
+    },
+    "Scan local": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اسکن محلی"
+          }
+        }
+      }
+    },
+    "Change folder": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تغییر پوشه"
+          }
+        }
+      }
+    },
+    "Choose folder": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتخاب پوشه"
+          }
+        }
+      }
+    },
+    "Uncommitted (local)": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کامیت‌نشده (محلی)"
+          }
+        }
+      }
+    },
+    "Diverged from origin": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "واگرا از origin"
+          }
+        }
+      }
+    },
+    "In sync with origin": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هم‌تراز با origin"
+          }
+        }
+      }
+    },
+    "No remote branch": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون شاخهٔ ریموت"
+          }
+        }
+      }
+    },
+    "Clean": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمیز"
+          }
+        }
+      }
+    },
+    "Changes unknown": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تغییرات نامعلوم"
+          }
+        }
+      }
+    },
+    "detached": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جداشده"
+          }
+        }
+      }
+    },
+    "Choose": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتخاب"
+          }
+        }
+      }
+    },
+    "Choose the folder that contains your repositories (read-only).": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشه‌ای را که مخازن شما را دارد انتخاب کنید (فقط‌خواندنی)."
+          }
+        }
+      }
     }
   },
   "version": "1.1"

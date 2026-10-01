@@ -12,6 +12,8 @@ final class InventoryModel {
     private(set) var unresolved: [UnresolvedItem] = []
     private(set) var market = MarketIntelligence()
     private(set) var content: [ContentItem] = []
+    /// Every repository under oversight ("from 0 to 100"), refreshed read-only from GitHub.
+    private(set) var oversight: [OversightRepo] = []
     /// Seed revision of the current data. It has to be saved back, or every launch would look outdated.
     private var seedRevision = 1
     private(set) var isLoaded = false
@@ -22,6 +24,15 @@ final class InventoryModel {
     /// State of the read-only GitHub refresh.
     private(set) var isSyncingGitHub = false
     private(set) var lastGitHubSync: (at: Date, report: RepositorySync.Report)?
+
+    /// State of the read-only oversight sweep across every repository.
+    private(set) var isSyncingOversight = false
+    private(set) var lastOversightSync: (at: Date, report: OversightSync.Report)?
+
+    /// State of the local working-copy scan.
+    private(set) var isScanningLocal = false
+    var workspacePath: String? { WorkspaceStore.displayPath }
+    var hasWorkspace: Bool { WorkspaceStore.hasWorkspace }
 
     /// The active store: the local file, or cloud-plus-local-cache when signed in to Supabase.
     private var store: InventoryStore
@@ -216,7 +227,71 @@ final class InventoryModel {
         lastGitHubSync = (.now, report)
     }
 
+    /// The GitHub owner used as a public fallback when there is no token. Prefers an owner seen on a
+    /// product repository; otherwise the known account.
+    private var oversightOwner: String {
+        for product in products {
+            for repo in product.repositories {
+                if let owner = repo.gitHubSlug?.split(separator: "/").first { return String(owner) }
+            }
+        }
+        return "aminullah-dev"
+    }
+
+    /// Discovers and refreshes every repository under oversight, read-only. Security posture and
+    /// latest-change facts come from GitHub. Existing data is kept if the sweep fails.
+    func refreshOversight() async {
+        guard !isSyncingOversight else { return }
+        isSyncingOversight = true
+        defer { isSyncingOversight = false }
+        let token: String?
+        do { token = try secrets.read(.gitHubToken) } catch {
+            errorMessage = String(localized: "Could not read the GitHub token from the Keychain: \(error.localizedDescription)")
+            return
+        }
+        let (updated, report) = await OversightSync.refresh(
+            oversight, using: GitHubClient(token: token), owner: oversightOwner
+        )
+        oversight = updated
+        lastOversightSync = (.now, report)
+        persist()
+    }
+
+    #if os(macOS)
+    /// Presents the folder picker, stores the workspace bookmark, then scans it.
+    func chooseWorkspace() async {
+        guard WorkspaceStore.choose() != nil else { return }
+        await refreshLocal()
+    }
+    #endif
+
+    /// Scans the chosen workspace folder read-only and merges each working copy's status into the
+    /// oversight register, matched to a repository by its `origin` remote. A local checkout whose
+    /// remote isn't already in the register is added, so local-only repos still appear.
+    func refreshLocal() async {
+        guard !isScanningLocal else { return }
+        isScanningLocal = true
+        defer { isScanningLocal = false }
+        guard let statuses = await WorkspaceStore.scan() else { return }
+
+        var bySlug = Dictionary(uniqueKeysWithValues: oversight.map { ($0.slug, $0) })
+        // Clear any stale local status first; a repo removed from the folder shouldn't keep old data.
+        for slug in bySlug.keys { bySlug[slug]?.local = nil }
+
+        for status in statuses {
+            guard let slug = status.originSlug else { continue }   // only match GitHub-origin checkouts
+            if bySlug[slug] != nil {
+                bySlug[slug]?.local = status
+            } else {
+                bySlug[slug] = OversightRepo(slug: slug, local: status)
+            }
+        }
+        oversight = bySlug.values.sorted { ($0.pushedAt ?? .distantPast) > ($1.pushedAt ?? .distantPast) }
+        persist()
+    }
+
     var summary: DashboardSummary { DashboardSummary(products: products) }
+    var oversightSummary: OversightSummary { OversightSummary(repos: oversight) }
 
     func product(id: Product.ID) -> Product? {
         products.first { $0.id == id }
@@ -279,6 +354,7 @@ final class InventoryModel {
         unresolved = inventory.unresolved
         market = inventory.market
         content = inventory.content
+        oversight = inventory.oversight
         seedRevision = inventory.seedRevision
     }
 
@@ -339,7 +415,7 @@ final class InventoryModel {
 
     /// Saves are chained so they reach the store in the same order as the mutations.
     private func persist() {
-        let snapshot = Inventory(seedRevision: seedRevision, products: products, unresolved: unresolved, market: market, content: content)
+        let snapshot = Inventory(seedRevision: seedRevision, products: products, unresolved: unresolved, market: market, content: content, oversight: oversight)
         let previous = saveTask
         saveTask = Task { [store, hybrid] in
             await previous?.value
