@@ -5,6 +5,21 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: project oversight across every repository ("from 0 to 100")
+- A new **Oversight** screen and a live **Project oversight** card on the dashboard put every repository you own
+  under scrutiny, read-only, in one place: a 0–100 fleet-health score, per-repo health (critical / needs attention /
+  healthy / not scanned), latest push, open pull requests and issues, CI status, and security alerts.
+- `OversightSync` discovers every repository from GitHub (`GET /user/repos`, private included) and refreshes each
+  one. A failed sweep never blanks the dashboard: the last good snapshot and a per-repo scan error are kept.
+- Security posture per repo: open Dependabot, secret-scanning and code-scanning alerts, plus default-branch
+  protection. Each is independent and best-effort — a category the token can't read stays **Unknown**, never
+  reported as zero. A repository counts as healthy only when it was scanned and nothing was flagged.
+- `RepositorySnapshot.Security` travels with the GitHub snapshot, so product repositories gain the same security
+  read. The oversight register is persisted in a new optional `inventory.oversight` section (older files decode as
+  empty). English and Dari strings included.
+- 13 tests (113 in total): health classification, the 0–100 score, alert roll-ups, discovery, and
+  snapshot/list-failure preservation.
+
 ### Added: ratings, reviews and TestFlight builds
 - `StoreListing.insights`: App Store rating per storefront (public lookup, no key), the newest customer reviews and
   TestFlight builds (App Store Connect, Developer role, read-only). Stored in a new `store_listings.insights` jsonb

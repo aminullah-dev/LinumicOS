@@ -19,7 +19,16 @@ the app.
 
 - [x] GitHub token in Keychain via Settings → Integrations
 - [x] Read-only sync: default branch, last commit, open PRs/issues, latest release, CI status
-- [ ] Local working-copy status (branch, uncommitted changes), reading only. Needs a security-scoped folder bookmark in the sandbox.
+- [ ] Local working-copy status (branch, uncommitted changes), reading only. Needs a security-scoped folder bookmark in the sandbox. (Oversight Increment 2.)
+
+## Phase 2.5: Project oversight ("from 0 to 100")
+
+- [x] Oversight screen + live dashboard card over every repository, not just linked products
+- [x] Discovery of all owned repositories from GitHub (`OversightSync`), read-only
+- [x] Per-repo security posture: Dependabot / secret-scanning / code-scanning alerts + default-branch protection, each best-effort (Unknown when unreadable, never a false zero)
+- [x] 0–100 fleet-health score and per-repo health roll-up (`OversightSummary`)
+- [ ] Local `.git` scan via a security-scoped bookmark: current branch, loose last-commit, tip-vs-remote divergence (Increment 2; the app is sandboxed so it parses `.git` directly rather than running git)
+- [ ] Scheduled/periodic oversight sweep and change alerts (like the store refresh)
 
 ## Phase 3: Backend (deferred at the owner's instruction; see docs/backend-plan.md)
 
