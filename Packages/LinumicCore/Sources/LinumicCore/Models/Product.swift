@@ -302,18 +302,22 @@ public struct Inventory: Codable, Hashable, Sendable {
     public var unresolved: [UnresolvedItem]
     public var market: MarketIntelligence
     public var content: [ContentItem]
+    /// Every repository under oversight ("from 0 to 100"), independent of product links.
+    /// Populated by `OversightSync` from GitHub; decodes as empty for inventories made before it existed.
+    public var oversight: [OversightRepo]
 
     public init(schemaVersion: Int = Inventory.currentSchemaVersion, seedRevision: Int = 1, products: [Product] = [], unresolved: [UnresolvedItem] = [],
-                market: MarketIntelligence = MarketIntelligence(), content: [ContentItem] = []) {
+                market: MarketIntelligence = MarketIntelligence(), content: [ContentItem] = [], oversight: [OversightRepo] = []) {
         self.schemaVersion = schemaVersion
         self.seedRevision = seedRevision
         self.products = products
         self.unresolved = unresolved
         self.market = market
         self.content = content
+        self.oversight = oversight
     }
 
-    private enum CodingKeys: String, CodingKey { case schemaVersion, seedRevision, products, unresolved, market, content }
+    private enum CodingKeys: String, CodingKey { case schemaVersion, seedRevision, products, unresolved, market, content, oversight }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -323,6 +327,7 @@ public struct Inventory: Codable, Hashable, Sendable {
         unresolved = try c.decodeIfPresent([UnresolvedItem].self, forKey: .unresolved) ?? []
         market = try c.decodeIfPresent(MarketIntelligence.self, forKey: .market) ?? MarketIntelligence()
         content = try c.decodeIfPresent([ContentItem].self, forKey: .content) ?? []
+        oversight = try c.decodeIfPresent([OversightRepo].self, forKey: .oversight) ?? []
     }
 }
 // MARK: - Seed upgrades
