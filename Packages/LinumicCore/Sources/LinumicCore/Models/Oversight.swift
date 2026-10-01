@@ -15,6 +15,9 @@ public struct OversightRepo: Codable, Hashable, Sendable, Identifiable {
     public var snapshot: RepositorySnapshot?
     /// The last sync error for this repo, if the snapshot could not be refreshed.
     public var scanError: String?
+    /// Status of the local working copy on this Mac, from the last local scan. `nil` when no local
+    /// checkout has been scanned (no workspace folder chosen, or this repo isn't checked out there).
+    public var local: LocalGitStatus?
     /// When this entry was last touched by a sync.
     public var observedAt: Date
 
@@ -24,7 +27,7 @@ public struct OversightRepo: Codable, Hashable, Sendable, Identifiable {
 
     public init(
         slug: String, isPrivate: Bool = false, isArchived: Bool = false, pushedAt: Date? = nil,
-        snapshot: RepositorySnapshot? = nil, scanError: String? = nil, observedAt: Date = .now
+        snapshot: RepositorySnapshot? = nil, scanError: String? = nil, local: LocalGitStatus? = nil, observedAt: Date = .now
     ) {
         self.slug = slug
         self.isPrivate = isPrivate
@@ -32,6 +35,7 @@ public struct OversightRepo: Codable, Hashable, Sendable, Identifiable {
         self.pushedAt = pushedAt
         self.snapshot = snapshot
         self.scanError = scanError
+        self.local = local
         self.observedAt = observedAt
     }
 }
@@ -70,13 +74,19 @@ extension OversightRepo {
         return Calendar.current.dateComponents([.day], from: pushedAt, to: reference).day
     }
 
-    /// Derived health. `staleAfterDays` is how long without a push counts as stale.
+    /// Derived health. `staleAfterDays` is how long without a push counts as stale. A repository is
+    /// Unknown only when neither a GitHub snapshot nor a local scan exists; it is Healthy only after
+    /// being scanned with nothing flagged.
     public func health(staleAfterDays: Int = 30, asOf reference: Date = .now) -> OversightHealth {
-        guard let snapshot else { return .unknown }
-        if snapshot.security?.hasOpenAlerts == true { return .critical }
-        if snapshot.ciConclusion == .failure { return .critical }
+        if snapshot == nil && local == nil { return .unknown }
+        // Critical: anything security- or build-breaking from GitHub.
+        if snapshot?.security?.hasOpenAlerts == true { return .critical }
+        if snapshot?.ciConclusion == .failure { return .critical }
+        // Needs attention: softer signals, from GitHub or the local working copy.
         if scanError != nil { return .attention }
-        if snapshot.security?.defaultBranchProtected == false { return .attention }
+        if snapshot?.security?.defaultBranchProtected == false { return .attention }
+        if local?.hasUncommittedChanges == true { return .attention }
+        if local?.syncState == .diverged { return .attention }
         if let days = daysSincePush(asOf: reference), days > staleAfterDays { return .attention }
         return .healthy
     }
@@ -99,6 +109,10 @@ public struct OversightSummary: Sendable, Equatable {
     public var staleRepos: Int
     public var totalOpenPullRequests: Int
     public var totalOpenIssues: Int
+    /// Local working-copy signals (only counted for repos that were scanned locally).
+    public var reposScannedLocally: Int
+    public var reposWithUncommittedChanges: Int
+    public var reposDivergedFromOrigin: Int
     public var lastScan: Date?
 
     /// A single 0–100 health score: the share of repositories that are healthy. A repo that was
@@ -110,6 +124,7 @@ public struct OversightSummary: Sendable, Equatable {
         totalRepos = repos.count
         var scanned = 0, never = 0, critical = 0, attention = 0, healthy = 0
         var alerts = 0, withAlerts = 0, failingCI = 0, unprotected = 0, stale = 0, prs = 0, issues = 0
+        var localScanned = 0, uncommitted = 0, diverged = 0
         var latest: Date?
 
         for repo in repos {
@@ -130,6 +145,11 @@ public struct OversightSummary: Sendable, Equatable {
                 issues += snap.openIssues ?? 0
             }
             if let days = repo.daysSincePush(asOf: now), days > staleAfterDays { stale += 1 }
+            if let local = repo.local {
+                localScanned += 1
+                if local.hasUncommittedChanges == true { uncommitted += 1 }
+                if local.syncState == .diverged { diverged += 1 }
+            }
         }
 
         totalRepos = repos.count
@@ -145,6 +165,9 @@ public struct OversightSummary: Sendable, Equatable {
         staleRepos = stale
         totalOpenPullRequests = prs
         totalOpenIssues = issues
+        reposScannedLocally = localScanned
+        reposWithUncommittedChanges = uncommitted
+        reposDivergedFromOrigin = diverged
         lastScan = latest
         healthScore = repos.isEmpty ? nil : Int((Double(healthy) / Double(repos.count) * 100).rounded())
     }
