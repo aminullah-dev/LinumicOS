@@ -34,6 +34,32 @@ final class InventoryModel {
     var workspacePath: String? { WorkspaceStore.displayPath }
     var hasWorkspace: Bool { WorkspaceStore.hasWorkspace }
 
+    // Oversight automatic sweep + change feed.
+    static let autoRefreshOversightKey = "LCCAutoRefreshOversight"
+    static let notifyOversightKey = "LCCNotifyOversightChanges"
+    private static let lastOversightAutoRefreshKey = "LCCLastOversightAutoRefresh"
+    private static let recentOversightChangesKey = "LCCRecentOversightChanges"
+
+    /// Oversight changes noticed on this device, newest first. A per-device convenience in
+    /// UserDefaults; the register itself lives in the inventory.
+    private(set) var recentOversightChanges: [OversightChange] = {
+        guard let data = UserDefaults.standard.data(forKey: recentOversightChangesKey) else { return [] }
+        return (try? JSONDecoder().decode([OversightChange].self, from: data)) ?? []
+    }()
+
+    private func recordOversight(_ changes: [OversightChange]) async {
+        guard !changes.isEmpty else { return }
+        recentOversightChanges = Array((changes + recentOversightChanges).prefix(50))
+        if let data = try? JSONEncoder().encode(recentOversightChanges) {
+            UserDefaults.standard.set(data, forKey: Self.recentOversightChangesKey)
+        }
+        if UserDefaults.standard.object(forKey: Self.notifyOversightKey) as? Bool ?? true {
+            await OversightNotifier.post(changes)
+        }
+    }
+
+    var hasGitHubToken: Bool { ((try? secrets.read(.gitHubToken)) ?? nil) != nil }
+
     /// The active store: the local file, or cloud-plus-local-cache when signed in to Supabase.
     private var store: InventoryStore
     private let localStore: InventoryStore
@@ -249,12 +275,14 @@ final class InventoryModel {
             errorMessage = String(localized: "Could not read the GitHub token from the Keychain: \(error.localizedDescription)")
             return
         }
+        let before = oversight
         let (updated, report) = await OversightSync.refresh(
             oversight, using: GitHubClient(token: token), owner: oversightOwner
         )
         oversight = updated
         lastOversightSync = (.now, report)
         persist()
+        await recordOversight(OversightChangeDetector.changes(before: before, after: updated))
     }
 
     #if os(macOS)
@@ -273,6 +301,7 @@ final class InventoryModel {
         isScanningLocal = true
         defer { isScanningLocal = false }
         guard let statuses = await WorkspaceStore.scan() else { return }
+        let before = oversight
 
         var bySlug = Dictionary(uniqueKeysWithValues: oversight.map { ($0.slug, $0) })
         // Clear any stale local status first; a repo removed from the folder shouldn't keep old data.
@@ -288,6 +317,20 @@ final class InventoryModel {
         }
         oversight = bySlug.values.sorted { ($0.pushedAt ?? .distantPast) > ($1.pushedAt ?? .distantPast) }
         persist()
+        await recordOversight(OversightChangeDetector.changes(before: before, after: oversight))
+    }
+
+    /// Runs an oversight sweep (GitHub, plus local if a workspace is set) if the automatic sweep is
+    /// on, a token exists, and the last run is old enough. Shares the 30-minute cadence with stores.
+    func autoRefreshOversightIfDue() async {
+        let defaults = UserDefaults.standard
+        guard defaults.object(forKey: Self.autoRefreshOversightKey) as? Bool ?? true, isLoaded, hasGitHubToken else { return }
+        let last = defaults.object(forKey: Self.lastOversightAutoRefreshKey) as? Date ?? .distantPast
+        guard Date.now.timeIntervalSince(last) >= Self.autoRefreshInterval - 60 else { return }
+        defaults.set(Date.now, forKey: Self.lastOversightAutoRefreshKey)
+        if defaults.object(forKey: Self.notifyOversightKey) as? Bool ?? true { await OversightNotifier.requestPermission() }
+        await refreshOversight()
+        if hasWorkspace { await refreshLocal() }
     }
 
     var summary: DashboardSummary { DashboardSummary(products: products) }

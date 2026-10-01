@@ -13,6 +13,8 @@ struct IntegrationsSettingsView: View {
     @State private var message: String?
     @AppStorage(InventoryModel.autoRefreshKey) private var autoRefresh = true
     @AppStorage(InventoryModel.notifyKey) private var notifyChanges = true
+    @AppStorage(InventoryModel.autoRefreshOversightKey) private var autoRefreshOversight = true
+    @AppStorage(InventoryModel.notifyOversightKey) private var notifyOversight = true
 
     private let integrations: [(name: String, symbol: String, plan: String)] = [
         ("Social networks", "bubble.left.and.bubble.right", "Phase 5: OAuth, approval before publishing"),
@@ -47,7 +49,7 @@ struct IntegrationsSettingsView: View {
             } header: {
                 Text("GitHub")
             } footer: {
-                Text("Use a fine-grained token with read-only Metadata, Contents, Issues, Pull requests and Actions on the Linumic repositories. It's stored only in this Mac's Keychain.")
+                Text("Use a fine-grained token with read-only Metadata, Contents, Issues, Pull requests, Actions, and (for oversight) Dependabot alerts and Administration. A classic token with the repo scope also works. It's stored only in this Mac's Keychain.")
             }
             StoreConsoleSection(store: .appStore)
             StoreConsoleSection(store: .googlePlay)
@@ -62,6 +64,18 @@ struct IntegrationsSettingsView: View {
                 }
             } header: {
                 Text("Automatic refresh")
+            }
+            Section {
+                Toggle(isOn: $autoRefreshOversight) {
+                    Text("Sweep all repositories automatically")
+                    Text("When the app opens, then every 30 minutes while it's open. Reads GitHub (and your local folder, if chosen) read-only. Needs a GitHub token.")
+                }
+                Toggle(isOn: $notifyOversight) {
+                    Text("Notify me about oversight changes")
+                    Text("A notification when a new security alert appears, CI breaks, or uncommitted work shows up.")
+                }
+            } header: {
+                Text("Project oversight")
             }
             Section {
                 ForEach(integrations, id: \.name) { i in

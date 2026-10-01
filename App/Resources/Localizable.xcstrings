@@ -7190,6 +7190,149 @@
           }
         }
       }
+    },
+    "%@: %@ open security alerts (was %@).": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@ هشدار امنیتی باز (قبلاً %3$@)."
+          }
+        }
+      }
+    },
+    "%@: CI is now failing on the default branch.": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: CI روی شاخهٔ پیش‌فرض اکنون ناموفق است."
+          }
+        }
+      }
+    },
+    "%@: CI is passing again.": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: CI دوباره موفق است."
+          }
+        }
+      }
+    },
+    "%@: the default branch is no longer protected.": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: شاخهٔ پیش‌فرض دیگر محافظت‌شده نیست."
+          }
+        }
+      }
+    },
+    "%@: %@ tracked files have uncommitted changes.": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@ فایلِ ردگیری‌شده تغییرات کامیت‌نشده دارند."
+          }
+        }
+      }
+    },
+    "%@: the local branch has diverged from origin.": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: شاخهٔ محلی از origin واگرا شده است."
+          }
+        }
+      }
+    },
+    "%@: new repository under oversight.": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: مخزن جدید زیر نظارت."
+          }
+        }
+      }
+    },
+    "Sweep all repositories automatically": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سوییپ خودکار همهٔ مخازن"
+          }
+        }
+      }
+    },
+    "When the app opens, then every 30 minutes while it's open. Reads GitHub (and your local folder, if chosen) read-only. Needs a GitHub token.": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنگام باز شدن اپ، سپس هر ۳۰ دقیقه تا وقتی باز است. گیت‌هاب (و در صورت انتخاب، پوشهٔ محلی) را فقط‌خواندنی می‌خواند. به توکن گیت‌هاب نیاز دارد."
+          }
+        }
+      }
+    },
+    "Notify me about oversight changes": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دربارهٔ تغییرات نظارت به من اطلاع بده"
+          }
+        }
+      }
+    },
+    "A notification when a new security alert appears, CI breaks, or uncommitted work shows up.": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک اعلان وقتی هشدار امنیتی جدیدی پیدا شود، CI خراب شود، یا کار کامیت‌نشده ظاهر شود."
+          }
+        }
+      }
+    },
+    "Recent changes": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تغییرات اخیر"
+          }
+        }
+      }
+    },
+    "Use a fine-grained token with read-only Metadata, Contents, Issues, Pull requests, Actions, and (for oversight) Dependabot alerts and Administration. A classic token with the repo scope also works. It's stored only in this Mac's Keychain.": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از یک توکن ریزدانه با دسترسی فقط‌خواندنی به Metadata، Contents، Issues، Pull requests، Actions و (برای نظارت) Dependabot alerts و Administration استفاده کنید. یک توکن کلاسیک با scope repo هم کار می‌کند. فقط در Keychain همین مک ذخیره می‌شود."
+          }
+        }
+      }
     }
   },
   "version": "1.1"

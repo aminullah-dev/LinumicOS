@@ -36,6 +36,7 @@ struct LinumicOSApp: App {
                     // Store status on launch, then every 30 minutes while the app is open.
                     while !Task.isCancelled {
                         await model.autoRefreshStoresIfDue()
+                        await model.autoRefreshOversightIfDue()
                         try? await Task.sleep(for: .seconds(InventoryModel.autoRefreshInterval))
                     }
                 }

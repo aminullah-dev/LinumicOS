@@ -16,6 +16,7 @@ struct OversightView: View {
                     header(summary)
                     workspaceBar(summary)
                     metrics(summary)
+                    changesPanel
                     repoList
                 }
                 footnote(summary)
@@ -149,6 +150,26 @@ struct OversightView: View {
                        tint: s.reposWithUncommittedChanges > 0 ? .orange : .secondary)
             MetricTile(title: "Diverged from origin", value: s.reposDivergedFromOrigin, symbol: "arrow.triangle.branch",
                        tint: s.reposDivergedFromOrigin > 0 ? .orange : .secondary)
+        }
+    }
+
+    // MARK: Recent changes feed
+
+    @ViewBuilder private var changesPanel: some View {
+        if !model.recentOversightChanges.isEmpty {
+            DashboardPanel(title: "Recent changes") {
+                ForEach(model.recentOversightChanges.prefix(8)) { change in
+                    HStack(alignment: .firstTextBaseline, spacing: 6) {
+                        Image(systemName: change.isImportant ? "bell.badge.fill" : "bell")
+                            .foregroundStyle(change.isImportant ? .orange : .secondary)
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(verbatim: change.message).font(.callout)
+                            Text(change.detectedAt, style: .relative).font(.caption).foregroundStyle(.secondary)
+                        }
+                        Spacer(minLength: 0)
+                    }
+                }
+            }
         }
     }
 
