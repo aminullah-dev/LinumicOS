@@ -7025,6 +7025,171 @@
           }
         }
       }
+    },
+    "Local workspace: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فضای کاری محلی: %@"
+          }
+        }
+      }
+    },
+    "%lld checkouts scanned · %lld with uncommitted changes · %lld diverged": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld چک‌اوت اسکن‌شده · %2$lld با تغییرات کامیت‌نشده · %3$lld واگرا"
+          }
+        }
+      }
+    },
+    "No local folder chosen. Pick the folder that holds your repositories to track uncommitted and unpushed work (read-only).": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ پوشهٔ محلی انتخاب نشده. پوشه‌ای را که مخازن شما را دارد انتخاب کنید تا کارهای کامیت‌نشده و push‌نشده پیگیری شوند (فقط‌خواندنی)."
+          }
+        }
+      }
+    },
+    "Scan local": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اسکن محلی"
+          }
+        }
+      }
+    },
+    "Change folder": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تغییر پوشه"
+          }
+        }
+      }
+    },
+    "Choose folder": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتخاب پوشه"
+          }
+        }
+      }
+    },
+    "Uncommitted (local)": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کامیت‌نشده (محلی)"
+          }
+        }
+      }
+    },
+    "Diverged from origin": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "واگرا از origin"
+          }
+        }
+      }
+    },
+    "In sync with origin": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هم‌تراز با origin"
+          }
+        }
+      }
+    },
+    "No remote branch": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون شاخهٔ ریموت"
+          }
+        }
+      }
+    },
+    "Clean": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمیز"
+          }
+        }
+      }
+    },
+    "Changes unknown": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تغییرات نامعلوم"
+          }
+        }
+      }
+    },
+    "detached": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جداشده"
+          }
+        }
+      }
+    },
+    "Choose": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتخاب"
+          }
+        }
+      }
+    },
+    "Choose the folder that contains your repositories (read-only).": {
+      "extractionState": "manual",
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشه‌ای را که مخازن شما را دارد انتخاب کنید (فقط‌خواندنی)."
+          }
+        }
+      }
     }
   },
   "version": "1.1"

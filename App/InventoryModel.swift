@@ -29,6 +29,11 @@ final class InventoryModel {
     private(set) var isSyncingOversight = false
     private(set) var lastOversightSync: (at: Date, report: OversightSync.Report)?
 
+    /// State of the local working-copy scan.
+    private(set) var isScanningLocal = false
+    var workspacePath: String? { WorkspaceStore.displayPath }
+    var hasWorkspace: Bool { WorkspaceStore.hasWorkspace }
+
     /// The active store: the local file, or cloud-plus-local-cache when signed in to Supabase.
     private var store: InventoryStore
     private let localStore: InventoryStore
@@ -249,6 +254,39 @@ final class InventoryModel {
         )
         oversight = updated
         lastOversightSync = (.now, report)
+        persist()
+    }
+
+    #if os(macOS)
+    /// Presents the folder picker, stores the workspace bookmark, then scans it.
+    func chooseWorkspace() async {
+        guard WorkspaceStore.choose() != nil else { return }
+        await refreshLocal()
+    }
+    #endif
+
+    /// Scans the chosen workspace folder read-only and merges each working copy's status into the
+    /// oversight register, matched to a repository by its `origin` remote. A local checkout whose
+    /// remote isn't already in the register is added, so local-only repos still appear.
+    func refreshLocal() async {
+        guard !isScanningLocal else { return }
+        isScanningLocal = true
+        defer { isScanningLocal = false }
+        guard let statuses = await WorkspaceStore.scan() else { return }
+
+        var bySlug = Dictionary(uniqueKeysWithValues: oversight.map { ($0.slug, $0) })
+        // Clear any stale local status first; a repo removed from the folder shouldn't keep old data.
+        for slug in bySlug.keys { bySlug[slug]?.local = nil }
+
+        for status in statuses {
+            guard let slug = status.originSlug else { continue }   // only match GitHub-origin checkouts
+            if bySlug[slug] != nil {
+                bySlug[slug]?.local = status
+            } else {
+                bySlug[slug] = OversightRepo(slug: slug, local: status)
+            }
+        }
+        oversight = bySlug.values.sorted { ($0.pushedAt ?? .distantPast) > ($1.pushedAt ?? .distantPast) }
         persist()
     }
 

@@ -14,6 +14,7 @@ struct OversightView: View {
                     emptyState
                 } else {
                     header(summary)
+                    workspaceBar(summary)
                     metrics(summary)
                     repoList
                 }
@@ -86,6 +87,47 @@ struct OversightView: View {
         .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
     }
 
+    // MARK: Local workspace (macOS)
+
+    @ViewBuilder private func workspaceBar(_ s: OversightSummary) -> some View {
+        #if os(macOS)
+        HStack(spacing: 12) {
+            Image(systemName: "folder.badge.gearshape").foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 2) {
+                if let path = model.workspacePath {
+                    Text("Local workspace: \(path)").font(.callout)
+                    Text("\(s.reposScannedLocally) checkouts scanned · \(s.reposWithUncommittedChanges) with uncommitted changes · \(s.reposDivergedFromOrigin) diverged")
+                        .font(.caption).foregroundStyle(.secondary)
+                } else {
+                    Text("No local folder chosen. Pick the folder that holds your repositories to track uncommitted and unpushed work (read-only).")
+                        .font(.callout).foregroundStyle(.secondary)
+                }
+            }
+            Spacer()
+            if model.hasWorkspace {
+                Button {
+                    Task { await model.refreshLocal() }
+                } label: {
+                    if model.isScanningLocal { ProgressView().controlSize(.small) }
+                    else { Label("Scan local", systemImage: "arrow.clockwise.circle") }
+                }
+                .disabled(model.isScanningLocal)
+            }
+            Button {
+                Task { await model.chooseWorkspace() }
+            } label: {
+                Label(model.hasWorkspace ? "Change folder" : "Choose folder", systemImage: "folder")
+            }
+            .disabled(model.isScanningLocal)
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+        #else
+        EmptyView()
+        #endif
+    }
+
     // MARK: Metric tiles
 
     private func metrics(_ s: OversightSummary) -> some View {
@@ -103,6 +145,10 @@ struct OversightView: View {
                        tint: s.staleRepos > 0 ? .orange : .secondary)
             MetricTile(title: "Open pull requests", value: s.totalOpenPullRequests, symbol: "arrow.triangle.pull", tint: .indigo)
             MetricTile(title: "Open issues", value: s.totalOpenIssues, symbol: "exclamationmark.triangle", tint: .indigo)
+            MetricTile(title: "Uncommitted (local)", value: s.reposWithUncommittedChanges, symbol: "pencil.and.list.clipboard",
+                       tint: s.reposWithUncommittedChanges > 0 ? .orange : .secondary)
+            MetricTile(title: "Diverged from origin", value: s.reposDivergedFromOrigin, symbol: "arrow.triangle.branch",
+                       tint: s.reposDivergedFromOrigin > 0 ? .orange : .secondary)
         }
     }
 
@@ -218,6 +264,7 @@ struct OversightRepoRow: View {
                     }
                 }
                 securityLine
+                localLine
                 if let err = repo.scanError {
                     Text(verbatim: err).font(.caption2).foregroundStyle(.red).lineLimit(2)
                 }
@@ -229,6 +276,34 @@ struct OversightRepoRow: View {
             }
         }
         .padding(.vertical, 4)
+    }
+
+    @ViewBuilder private var localLine: some View {
+        if let local = repo.local {
+            HStack(spacing: 6) {
+                Image(systemName: "desktopcomputer").font(.caption2).foregroundStyle(.secondary)
+                if let branch = local.branch {
+                    Text(branch).font(.caption.monospaced()).foregroundStyle(.secondary)
+                } else if local.isDetached {
+                    Text("detached").font(.caption).foregroundStyle(.secondary)
+                }
+                switch local.syncState {
+                case .diverged: StatusBadge(text: "Diverged from origin", color: .orange)
+                case .inSync: StatusBadge(text: "In sync with origin", color: .green)
+                case .noRemoteRef: StatusBadge(text: "No remote branch", color: .secondary)
+                case .unknown: EmptyView()
+                }
+                if let modified = local.modifiedTrackedFiles {
+                    if modified > 0 {
+                        StatusBadge(text: "\(modified) uncommitted", color: .orange)
+                    } else {
+                        StatusBadge(text: "Clean", color: .green)
+                    }
+                } else {
+                    StatusBadge(text: "Changes unknown", color: .secondary)
+                }
+            }
+        }
     }
 
     @ViewBuilder private var securityLine: some View {
