@@ -34,6 +34,8 @@ struct DashboardView: View {
                     .buttonStyle(.plain)
                 }
 
+                oversightCard
+
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: statusColumns), spacing: 12) {
                     ForEach([VerificationStatus.verified, .partiallyVerified, .unknown, .conflicting]) { status in
                         VStack(alignment: .leading, spacing: 6) {
@@ -151,6 +153,43 @@ struct DashboardView: View {
             .padding(20)
         }
         .navigationTitle("Dashboard")
+    }
+
+    /// Live project-oversight summary: the 0→100 fleet health and the counts that need a person.
+    private var oversightCard: some View {
+        let o = model.oversightSummary
+        return Button { router.sidebar = .oversight } label: {
+            HStack(spacing: 16) {
+                HealthScoreRing(score: o.healthScore)
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "scope").foregroundStyle(.secondary)
+                        Text("Project oversight").font(.headline)
+                    }
+                    if o.totalRepos == 0 {
+                        Text("No repositories scanned yet. Open Oversight to run a read-only sweep →")
+                            .font(.callout).foregroundStyle(.secondary)
+                    } else {
+                        Text("\(o.healthyRepos) of \(o.totalRepos) repositories healthy")
+                            .font(.callout).foregroundStyle(.secondary)
+                        HStack(spacing: 8) {
+                            HealthChip(health: .critical, count: o.criticalRepos)
+                            HealthChip(health: .attention, count: o.attentionRepos)
+                            HealthChip(health: .unknown, count: o.neverScanned)
+                            if o.openSecurityAlerts > 0 {
+                                StatusBadge(text: "\(o.openSecurityAlerts) security alerts", color: .red)
+                            }
+                        }
+                    }
+                }
+                Spacer()
+                Image(systemName: "chevron.right").foregroundStyle(.tertiary)
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
     }
 
     private func releaseRow(_ ref: DashboardSummary.ReleaseRef) -> some View {
