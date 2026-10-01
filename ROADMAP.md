@@ -28,7 +28,8 @@ the app.
 - [x] Per-repo security posture: Dependabot / secret-scanning / code-scanning alerts + default-branch protection, each best-effort (Unknown when unreadable, never a false zero)
 - [x] 0–100 fleet-health score and per-repo health roll-up (`OversightSummary`)
 - [x] Local `.git` scan via a security-scoped bookmark: current branch, tip-vs-remote divergence, and exact uncommitted-tracked-file count by blob SHA (Increment 2; the app is sandboxed so it parses `.git` directly rather than running git)
-- [ ] Scheduled/periodic oversight sweep and change alerts (like the store refresh)
+- [x] Periodic oversight sweep (launch + every 30 min while open) and change alerts with local notifications (Increment 3)
+- [ ] Background sweep while the app is closed (needs BGTaskScheduler / a login item)
 
 ## Phase 3: Backend (deferred at the owner's instruction; see docs/backend-plan.md)
 
