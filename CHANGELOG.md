@@ -20,6 +20,18 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - 13 tests (113 in total): health classification, the 0–100 score, alert roll-ups, discovery, and
   snapshot/list-failure preservation.
 
+### Added: local working-copy scan (uncommitted and unpushed work)
+- Point Oversight at the folder that holds your repositories (Oversight → Choose folder) and it tracks
+  each local checkout read-only: current branch, whether it is in sync with or diverged from `origin`,
+  and the exact number of tracked files with uncommitted changes.
+- The app is sandboxed and never runs `git`: it reads the `.git` directory directly through a
+  security-scoped bookmark. "Uncommitted" is computed by comparing each file's git blob SHA-1 against
+  the index, so it is exact, not a timestamp guess. Facts it cannot read (e.g. an unsupported index
+  version) show as Unknown. Access is read-only; no repository is ever modified.
+- Local status feeds the same dashboard: repos with uncommitted changes or diverged from origin count
+  as "needs attention", and new "Uncommitted (local)" and "Diverged from origin" tiles appear.
+- 7 more tests (120 in total) against real on-disk `.git` fixtures, including a hand-built v2 index.
+
 ### Added: ratings, reviews and TestFlight builds
 - `StoreListing.insights`: App Store rating per storefront (public lookup, no key), the newest customer reviews and
   TestFlight builds (App Store Connect, Developer role, read-only). Stored in a new `store_listings.insights` jsonb
