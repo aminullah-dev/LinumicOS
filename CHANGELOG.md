@@ -5,6 +5,45 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: project oversight across every repository ("from 0 to 100")
+- A new **Oversight** screen and a live **Project oversight** card on the dashboard put every repository you own
+  under scrutiny, read-only, in one place: a 0–100 fleet-health score, per-repo health (critical / needs attention /
+  healthy / not scanned), latest push, open pull requests and issues, CI status, and security alerts.
+- `OversightSync` discovers every repository from GitHub (`GET /user/repos`, private included) and refreshes each
+  one. A failed sweep never blanks the dashboard: the last good snapshot and a per-repo scan error are kept.
+- Security posture per repo: open Dependabot, secret-scanning and code-scanning alerts, plus default-branch
+  protection. Each is independent and best-effort — a category the token can't read stays **Unknown**, never
+  reported as zero. A repository counts as healthy only when it was scanned and nothing was flagged.
+- `RepositorySnapshot.Security` travels with the GitHub snapshot, so product repositories gain the same security
+  read. The oversight register is persisted in a new optional `inventory.oversight` section (older files decode as
+  empty). English and Dari strings included.
+- 13 tests (113 in total): health classification, the 0–100 score, alert roll-ups, discovery, and
+  snapshot/list-failure preservation.
+
+### Added: local working-copy scan (uncommitted and unpushed work)
+- Point Oversight at the folder that holds your repositories (Oversight → Choose folder) and it tracks
+  each local checkout read-only: current branch, whether it is in sync with or diverged from `origin`,
+  and the exact number of tracked files with uncommitted changes.
+- The app is sandboxed and never runs `git`: it reads the `.git` directory directly through a
+  security-scoped bookmark. "Uncommitted" is computed by comparing each file's git blob SHA-1 against
+  the index, so it is exact, not a timestamp guess. Facts it cannot read (e.g. an unsupported index
+  version) show as Unknown. Access is read-only; no repository is ever modified.
+- Local status feeds the same dashboard: repos with uncommitted changes or diverged from origin count
+  as "needs attention", and new "Uncommitted (local)" and "Diverged from origin" tiles appear.
+- 7 more tests (120 in total) against real on-disk `.git` fixtures, including a hand-built v2 index.
+
+### Added: automatic oversight sweep and change alerts
+- Oversight now refreshes itself: on launch and every 30 minutes while the app is open, it re-scans
+  every repository (GitHub, and your local folder if chosen), read-only. Toggle it in
+  Settings → Integrations → Project oversight; it needs a GitHub token.
+- `OversightChangeDetector` compares each sweep with the last and raises alerts: a new security alert
+  appeared, CI started failing (or recovered), the default branch lost protection, uncommitted work
+  showed up locally, a branch diverged from origin, or a new repository was found. The first sweep is
+  silent, so populating the register never floods you.
+- Changes appear in a "Recent changes" panel on the Oversight screen and as local notifications
+  (new security alerts and broken CI buzz; the rest are quiet). Notifications stay on the device.
+- 7 more tests (127 in total) for the change detector. English and Dari strings included.
+
 ### Added: ratings, reviews and TestFlight builds
 - `StoreListing.insights`: App Store rating per storefront (public lookup, no key), the newest customer reviews and
   TestFlight builds (App Store Connect, Developer role, read-only). Stored in a new `store_listings.insights` jsonb

@@ -38,6 +38,7 @@ Not installed: Docker, pnpm, Supabase CLI, AWS/Azure CLIs.
 
 | # | Module | MVP state |
 |---|---|---|
+| 0 | Project oversight | All owned repositories under read-only scrutiny: 0–100 fleet health, per-repo health, latest changes and GitHub security posture (`OversightRepo`, `OversightSync`, `OversightSummary`). Local `.git` scan is Increment 2. |
 | 1 | Dashboard | Implemented from local data |
 | 2 | Products | Implemented, with verification and evidence on every fact |
 | 3 | Version & release management | Implemented (manual records) |

@@ -38,6 +38,57 @@ public struct RepositorySnapshot: Codable, Hashable, Sendable {
         case success, failure, cancelled, inProgress, none
     }
 
+    /// Read-only security posture from GitHub. Every count is optional: `nil` means the
+    /// datum could not be read (the feature is off, or the token lacks the scope), never zero.
+    /// This keeps the no-invented-data rule: an unreadable fact is Unknown, not "clean".
+    public struct Security: Codable, Hashable, Sendable {
+        /// Open Dependabot (vulnerable-dependency) alerts.
+        public var dependabotAlerts: Int?
+        /// Open secret-scanning alerts (leaked credentials).
+        public var secretScanningAlerts: Int?
+        /// Open code-scanning (CodeQL) alerts.
+        public var codeScanningAlerts: Int?
+        /// Whether the default branch has a protection rule.
+        public var defaultBranchProtected: Bool?
+        public var observedAt: Date
+
+        public init(
+            dependabotAlerts: Int? = nil, secretScanningAlerts: Int? = nil,
+            codeScanningAlerts: Int? = nil, defaultBranchProtected: Bool? = nil, observedAt: Date
+        ) {
+            self.dependabotAlerts = dependabotAlerts
+            self.secretScanningAlerts = secretScanningAlerts
+            self.codeScanningAlerts = codeScanningAlerts
+            self.defaultBranchProtected = defaultBranchProtected
+            self.observedAt = observedAt
+        }
+
+        /// Total open alerts across the readable categories; `nil` only when none were readable.
+        public var openAlertTotal: Int? {
+            let readable = [dependabotAlerts, secretScanningAlerts, codeScanningAlerts].compactMap { $0 }
+            return readable.isEmpty ? nil : readable.reduce(0, +)
+        }
+
+        /// True when any readable category has at least one open alert.
+        public var hasOpenAlerts: Bool { (openAlertTotal ?? 0) > 0 }
+    }
+
+    /// A lightweight entry from the owner's repository list, before a full snapshot is fetched.
+    public struct Listing: Codable, Hashable, Sendable, Identifiable {
+        public var slug: String
+        public var isPrivate: Bool
+        public var isArchived: Bool
+        public var pushedAt: Date?
+        public var id: String { slug }
+
+        public init(slug: String, isPrivate: Bool, isArchived: Bool, pushedAt: Date? = nil) {
+            self.slug = slug
+            self.isPrivate = isPrivate
+            self.isArchived = isArchived
+            self.pushedAt = pushedAt
+        }
+    }
+
     public var slug: String
     public var visibility: RepositoryVisibility?
     public var description: String?
@@ -51,6 +102,8 @@ public struct RepositorySnapshot: Codable, Hashable, Sendable {
     /// Languages by bytes, largest first.
     public var languages: [String]
     public var ciConclusion: CIConclusion?
+    /// Read-only security posture, if any of it was readable.
+    public var security: Security?
     /// When this snapshot was fetched. Every integration datum carries a timestamp.
     public var fetchedAt: Date
 
@@ -58,7 +111,7 @@ public struct RepositorySnapshot: Codable, Hashable, Sendable {
         slug: String, visibility: RepositoryVisibility? = nil, description: String? = nil, homepage: URL? = nil,
         defaultBranch: String, latestCommit: Commit? = nil, releaseCount: Int? = nil, latestRelease: ReleaseInfo? = nil,
         openPullRequests: Int? = nil, openIssues: Int? = nil, languages: [String] = [], ciConclusion: CIConclusion? = nil,
-        fetchedAt: Date
+        security: Security? = nil, fetchedAt: Date
     ) {
         self.slug = slug
         self.visibility = visibility
@@ -72,6 +125,7 @@ public struct RepositorySnapshot: Codable, Hashable, Sendable {
         self.openIssues = openIssues
         self.languages = languages
         self.ciConclusion = ciConclusion
+        self.security = security
         self.fetchedAt = fetchedAt
     }
 }
