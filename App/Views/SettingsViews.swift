@@ -16,6 +16,7 @@ struct IntegrationsSettingsView: View {
     @AppStorage(InventoryModel.autoRefreshOversightKey) private var autoRefreshOversight = true
     @AppStorage(InventoryModel.notifyOversightKey) private var notifyOversight = true
     @AppStorage(LicenceModel.notifyKey) private var notifyLicences = true
+    @AppStorage(PlatformHubModel.autoRefreshKey) private var autoRefreshPlatforms = true
     @Environment(LicenceModel.self) private var licences
 
     private let integrations: [(name: String, symbol: String, plan: String)] = [
@@ -78,6 +79,14 @@ struct IntegrationsSettingsView: View {
                 }
             } header: {
                 Text("Project oversight")
+            }
+            Section {
+                Toggle(isOn: $autoRefreshPlatforms) {
+                    Text("Refresh platforms automatically")
+                    Text("When the app opens, then every 30 minutes while it's open. Reads versions, releases, CI and pull requests from GitHub with conditional requests, read-only. Needs a GitHub token.")
+                }
+            } header: {
+                Text("Platforms")
             }
             Section {
                 Toggle(isOn: $notifyLicences) {

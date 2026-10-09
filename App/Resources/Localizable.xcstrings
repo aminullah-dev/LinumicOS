@@ -8703,6 +8703,816 @@
           }
         }
       }
+    },
+    "%1$@ %2$@: live %3$@, main %4$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@: فعال %3$@، main %4$@"
+          }
+        }
+      }
+    },
+    "%1$@ · %2$@ failed on %3$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ روی %3$@ ناکام شد"
+          }
+        }
+      }
+    },
+    "%1$@: main %2$@, latest release %3$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: main %2$@، آخرین انتشار %3$@"
+          }
+        }
+      }
+    },
+    "%lld active · %lld ending within 30 days · %lld expired": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld فعال · %lld تا ۳۰ روز ختم می‌شود · %lld ختم‌شده"
+          }
+        }
+      }
+    },
+    "%lld downloads": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld دانلود"
+          }
+        }
+      }
+    },
+    "%lld not read yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld هنوز خوانده نشده"
+          }
+        }
+      }
+    },
+    "%lld open PRs": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld PR باز"
+          }
+        }
+      }
+    },
+    "%lld passing, %lld failing, %lld not run on main": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld موفق، %lld ناکام، %lld روی main اجرا نشده"
+          }
+        }
+      }
+    },
+    "%lld platforms, not read from GitHub yet. Open Platforms to refresh →": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld پلتفرم، هنوز از GitHub خوانده نشده. برای به‌روزرسانی «پلتفرم‌ها» را باز کنید ←"
+          }
+        }
+      }
+    },
+    "Across %lld platforms · GitHub read %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در %lld پلتفرم · خواندن GitHub %@"
+          }
+        }
+      }
+    },
+    "Admin": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدیریت"
+          }
+        }
+      }
+    },
+    "Afghan Prayer Times (Namazia)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afghan Prayer Times (Namazia)"
+          }
+        }
+      }
+    },
+    "Business model: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدل کسب‌وکار: %@"
+          }
+        }
+      }
+    },
+    "CI failing on main": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI روی main ناکام است"
+          }
+        }
+      }
+    },
+    "CI on main (latest run per workflow)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI روی main (آخرین اجرای هر workflow)"
+          }
+        }
+      }
+    },
+    "Console": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنسول"
+          }
+        }
+      }
+    },
+    "Consumer app": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ عمومی"
+          }
+        }
+      }
+    },
+    "Could not save the platforms cache: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حافظهٔ پلتفرم‌ها ذخیره نشد: %@"
+          }
+        }
+      }
+    },
+    "Default branch %@ · read %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاخهٔ اصلی %@ · خوانده‌شده %@"
+          }
+        }
+      }
+    },
+    "Download page": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صفحهٔ دانلود"
+          }
+        }
+      }
+    },
+    "Drift": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عقب‌ماندگی"
+          }
+        }
+      }
+    },
+    "DukanPro": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DukanPro"
+          }
+        }
+      }
+    },
+    "From the licence ledger on this device": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از دفتر لایسنس روی همین دستگاه"
+          }
+        }
+      }
+    },
+    "GitHub Actions run of %1$@, %2$@ (read %3$@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجرای GitHub Actions برای %1$@، %2$@ (خوانده‌شده %3$@)"
+          }
+        }
+      }
+    },
+    "GitHub read %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن GitHub %@"
+          }
+        }
+      }
+    },
+    "GitHub releases": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشارهای GitHub"
+          }
+        }
+      }
+    },
+    "Last read from GitHub: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین خواندن از GitHub: %@"
+          }
+        }
+      }
+    },
+    "Last refresh failed: %@. Showing the previous read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین به‌روزرسانی ناکام شد: %@. خواندن قبلی نشان داده می‌شود."
+          }
+        }
+      }
+    },
+    "Latest": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین"
+          }
+        }
+      }
+    },
+    "Latest release: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین انتشار: %@"
+          }
+        }
+      }
+    },
+    "Location from %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جای فایل از %@"
+          }
+        }
+      }
+    },
+    "Main": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "main"
+          }
+        }
+      }
+    },
+    "Main is ahead of the latest release": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "main از آخرین انتشار جلوتر است"
+          }
+        }
+      }
+    },
+    "Main: %1$@ from %2$@, read %3$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "main: %1$@ از %2$@، خوانده‌شده %3$@"
+          }
+        }
+      }
+    },
+    "MediFlow": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MediFlow"
+          }
+        }
+      }
+    },
+    "NerkhTimes": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NerkhTimes"
+          }
+        }
+      }
+    },
+    "No GitHub release": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشار GitHub ندارد"
+          }
+        }
+      }
+    },
+    "No platforms": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پلتفرمی نیست"
+          }
+        }
+      }
+    },
+    "No run on main": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روی main اجرا نشده"
+          }
+        }
+      }
+    },
+    "No version file": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل نسخه ندارد"
+          }
+        }
+      }
+    },
+    "No workflows": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "workflow ندارد"
+          }
+        }
+      }
+    },
+    "None of the catalogued products is in the inventory.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ‌کدام از محصولات فهرست‌شده در inventory نیست."
+          }
+        }
+      }
+    },
+    "Not found": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیدا نشد"
+          }
+        }
+      }
+    },
+    "Not in a store": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در فروشگاه نیست"
+          }
+        }
+      }
+    },
+    "Not read from GitHub yet. Use Refresh from GitHub (a token is needed for private repositories).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز از GitHub خوانده نشده. «به‌روزرسانی از GitHub» را بزنید (برای مخزن‌های خصوصی توکن لازم است)."
+          }
+        }
+      }
+    },
+    "Not read yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز خوانده نشده"
+          }
+        }
+      }
+    },
+    "Nothing to flag: no failing CI on main, and no release or store version behind main where both versions are known.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چیزی برای هشدار نیست: CI روی main ناکام نیست و هیچ انتشار یا نسخهٔ فروشگاه، جایی که هر دو نسخه معلوم است، از main عقب نیست."
+          }
+        }
+      }
+    },
+    "Open PRs": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PR های باز"
+          }
+        }
+      }
+    },
+    "Open product record": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن معلومات محصول"
+          }
+        }
+      }
+    },
+    "Open the run on GitHub": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن اجرا در GitHub"
+          }
+        }
+      }
+    },
+    "Opens the Licences screen": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صفحهٔ لایسنس‌ها را باز می‌کند"
+          }
+        }
+      }
+    },
+    "Opens the platform details": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جزئیات پلتفرم را باز می‌کند"
+          }
+        }
+      }
+    },
+    "Pre-release": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیش‌انتشار"
+          }
+        }
+      }
+    },
+    "Product page": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صفحهٔ محصول"
+          }
+        }
+      }
+    },
+    "Pull requests: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pull request ها: %@"
+          }
+        }
+      }
+    },
+    "Read versions, releases, CI and pull requests from GitHub (read-only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخه‌ها، انتشارها، CI و pull request ها را از GitHub بخوان (فقط خواندن)"
+          }
+        }
+      }
+    },
+    "Read-only. Versions on main are read from each repository's version file through the GitHub contents API; releases, CI runs and pull requests from the GitHub API; store versions from the store listings already in the inventory. A drift is shown only when two real version numbers can be compared.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط خواندن. نسخهٔ main از فایل نسخهٔ هر مخزن با GitHub contents API خوانده می‌شود؛ انتشارها، اجراهای CI و pull request ها از GitHub API؛ نسخه‌های فروشگاه از معلومات فروشگاهی که در inventory است. عقب‌ماندگی فقط وقتی نشان داده می‌شود که دو شمارهٔ نسخهٔ واقعی قابل مقایسه باشند."
+          }
+        }
+      }
+    },
+    "Refresh platforms automatically": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پلتفرم‌ها را خودکار به‌روز کن"
+          }
+        }
+      }
+    },
+    "Release drift": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عقب‌ماندگی انتشار"
+          }
+        }
+      }
+    },
+    "Release: %1$@ on %2$@ (GitHub /releases/latest, read %3$@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشار: %1$@ در %2$@ (GitHub /releases/latest، خوانده‌شده %3$@)"
+          }
+        }
+      }
+    },
+    "Releases: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشارها: %@"
+          }
+        }
+      }
+    },
+    "SafeBeauty": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SafeBeauty"
+          }
+        }
+      }
+    },
+    "Sales page": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صفحهٔ فروش"
+          }
+        }
+      }
+    },
+    "Self-serve sign-up": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت‌نام توسط خود مشتری"
+          }
+        }
+      }
+    },
+    "Source: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع: %@"
+          }
+        }
+      }
+    },
+    "Store drift": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عقب‌ماندگی فروشگاه"
+          }
+        }
+      }
+    },
+    "Store version older than main": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ فروشگاه از main کهنه‌تر است"
+          }
+        }
+      }
+    },
+    "Store versions": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخه‌های فروشگاه"
+          }
+        }
+      }
+    },
+    "Store: %1$@ (%2$@, %3$@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فروشگاه: %1$@ (%2$@، %3$@)"
+          }
+        }
+      }
+    },
+    "Tailor ERP / KhayatYar": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tailor ERP / KhayatYar"
+          }
+        }
+      }
+    },
+    "Talar": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talar"
+          }
+        }
+      }
+    },
+    "The file has no version this app can read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این فایل نسخه‌ای ندارد که این برنامه بتواند بخواند."
+          }
+        }
+      }
+    },
+    "The oversight register is waiting to upload.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست نظارت منتظر بالا شدن است."
+          }
+        }
+      }
+    },
+    "VELRO": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VELRO"
+          }
+        }
+      }
+    },
+    "Version on main": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخه روی main"
+          }
+        }
+      }
+    },
+    "When the app opens, then every 30 minutes while it's open. Reads versions, releases, CI and pull requests from GitHub with conditional requests, read-only. Needs a GitHub token.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی برنامه باز می‌شود و بعد هر ۳۰ دقیقه تا باز است. نسخه‌ها، انتشارها، CI و pull request ها را با درخواست‌های شرطی از GitHub می‌خواند، فقط خواندن. توکن GitHub لازم است."
+          }
+        }
+      }
+    },
+    "WorkTrack": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WorkTrack"
+          }
+        }
+      }
+    },
+    "Workflow %@: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Workflow %@: %@"
+          }
+        }
+      }
+    },
+    "Workflows: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Workflow ها: %@"
+          }
+        }
+      }
+    },
+    "date unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ نامعلوم"
+          }
+        }
+      }
+    },
+    "no source recorded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبعی ثبت نشده"
+          }
+        }
+      }
     }
   },
   "version": "1.1"

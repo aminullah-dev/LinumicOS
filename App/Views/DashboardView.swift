@@ -5,6 +5,7 @@ struct DashboardView: View {
     @Environment(InventoryModel.self) private var model
     @Environment(Router.self) private var router
     @Environment(LicenceModel.self) private var licences
+    @Environment(PlatformHubModel.self) private var platforms
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -34,6 +35,8 @@ struct DashboardView: View {
                     }
                     .buttonStyle(.plain)
                 }
+
+                platformsCard
 
                 oversightCard
 
@@ -156,6 +159,37 @@ struct DashboardView: View {
             .padding(20)
         }
         .navigationTitle("Dashboard")
+    }
+
+    /// Platforms hub summary: how many platforms have CI failing, a release behind main, or a store version behind main.
+    private var platformsCard: some View {
+        let p = platforms.summary
+        return Button { router.sidebar = .platforms } label: {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 6) {
+                    Image(systemName: SidebarItem.platforms.symbol).foregroundStyle(.secondary)
+                    Text("Platforms").font(.headline)
+                    Spacer()
+                    Image(systemName: "chevron.right").foregroundStyle(.tertiary)
+                }
+                if p.lastRead == nil {
+                    Text("\(p.products) platforms, not read from GitHub yet. Open Platforms to refresh →")
+                        .font(.callout).foregroundStyle(.secondary)
+                } else {
+                    FitRow(spacing: 8) {
+                        DriftCountChip(kind: .ciFailing, count: p.withCIFailing)
+                        DriftCountChip(kind: .releaseBehindMain, count: p.withReleaseDrift)
+                        DriftCountChip(kind: .storeBehindMain, count: p.withStoreDrift)
+                    }
+                    Text("Across \(p.products) platforms · GitHub read \(p.lastRead!.formatted(date: .abbreviated, time: .shortened))")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
     }
 
     /// Live project-oversight summary: the 0→100 fleet health and the counts that need a person.
