@@ -18273,6 +18273,56 @@
           }
         }
       }
+    },
+    "Backups off this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبان‌های بیرون از این مک"
+          }
+        }
+      }
+    },
+    "Folders the app may read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشه‌هایی که برنامه می‌تواند بخواند"
+          }
+        }
+      }
+    },
+    "Key files not in the registry": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل‌های کلیدی که در فهرست نیستند"
+          }
+        }
+      }
+    },
+    "Keys on this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهای روی این مک"
+          }
+        }
+      }
+    },
+    "Known gaps": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کمبودهای شناخته‌شده"
+          }
+        }
+      }
     }
   },
   "version": "1.1"

@@ -231,8 +231,8 @@ struct KeysView: View {
         }
     }
 
-    private func sectionTitle(_ title: String, symbol: String) -> some View {
-        Label(LocalizedStringKey(title), systemImage: symbol).font(.title3.weight(.semibold))
+    private func sectionTitle(_ title: LocalizedStringKey, symbol: String) -> some View {
+        Label(title, systemImage: symbol).font(.title3.weight(.semibold))
             .accessibilityAddTraits(.isHeader)
     }
 
