@@ -78,6 +78,7 @@ struct ContentView: View {
         case .licences: LicencesView()
         case .worktrackCustomers: WorkTrackCustomersView()
         case .operations: OperationsView()
+        case .siteMessages: SiteMessagesView()
         case .vault: VaultView()
         case .keys: KeysView()
         case .allProducts: ProductsRootView()

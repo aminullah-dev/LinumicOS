@@ -334,6 +334,8 @@ public enum KeysReminderKind: String, Codable, Sendable, CaseIterable {
     case keyNotBackedUp
     case uncoveredFile
     case passphraseMissing
+    /// A file recorded as deliberately deleted is on this Mac again.
+    case deletedFileBack
 }
 
 public struct KeysReminder: Identifiable, Hashable, Sendable {
@@ -380,7 +382,7 @@ public enum KeysRules {
 
     /// Backup state of a registry key, from the registry and (when checked) the files' modification days.
     public static func backupState(_ key: TrackedKey, registry: KeysRegistry, result: KeyCheckResult?, calendar: Calendar = .current) -> KeyBackupState {
-        guard key.kind.needsBackup else { return .notApplicable }
+        guard key.kind.needsBackup, !key.isDeleted else { return .notApplicable }
         let backups = key.backupIDs.compactMap(registry.backup)
         guard !backups.isEmpty else { return .notBackedUp }
         // The newest backup that holds it. A file changed on a LATER day than that may be newer than the backup.
@@ -439,6 +441,15 @@ public enum KeysRules {
 
         for key in reg.keys {
             let result = input.results[key.id]
+            // Deleted on purpose: absence is the expected state. Only its return is worth saying.
+            if let deleted = key.deletedOn {
+                if case .present = result?.status {
+                    out.append(KeysReminder(id: "keys.deletedback.\(key.id)", kind: .deletedFileBack, severity: .normal,
+                                            text: LF("%@ was deleted on %@ but is on this Mac again", L(key.title), deleted.description),
+                                            detail: key.path, source: checkSource, readAt: input.checkedAt, keyID: key.id))
+                }
+                continue
+            }
             if case .missing = result?.status {
                 out.append(KeysReminder(id: "keys.missing.\(key.id)", kind: .keyMissing, severity: key.kind == .passphraseCopy ? .info : .high,
                                         text: key.kind == .passphraseCopy ? LF("%@ is no longer on this Mac", L(key.title))

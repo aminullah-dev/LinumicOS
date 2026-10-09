@@ -13,6 +13,7 @@ enum PaletteAction {
     case newProduct
     case checkMonitor
     case refreshReleases
+    case refreshSiteMessages
     case lockVault
 }
 
@@ -27,6 +28,7 @@ struct CommandPaletteView: View {
     @Environment(VaultModel.self) private var vault
     @Environment(MonitorModel.self) private var monitor
     @Environment(KeysModel.self) private var keys
+    @Environment(SiteMessagesModel.self) private var siteMessages
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
 
@@ -164,6 +166,9 @@ struct CommandPaletteView: View {
         case .refreshReleases:
             router.go(.releaseCenter)
             Task { await releases.refresh() }
+        case .refreshSiteMessages:
+            router.go(.siteMessages)
+            Task { await siteMessages.refresh() }
         case .lockVault: vault.lock()
         }
     }
@@ -199,6 +204,14 @@ struct CommandPaletteView: View {
         add(PaletteCandidate(id: "action.releases.refresh", title: String(localized: "Refresh releases"), subtitle: SidebarItem.releaseCenter.title,
                              keywords: ["releases", "refresh", "app store", "google play", "github"], group: .action, symbol: "arrow.clockwise"),
             .refreshReleases)
+        add(PaletteCandidate(id: "action.sitemessages.refresh", title: String(localized: "Refresh website messages"),
+                             subtitle: SidebarItem.siteMessages.title,
+                             keywords: ["website", "messages", "contact", "form", "linumic.com", "sureforms", "refresh"],
+                             group: .action, symbol: "arrow.clockwise"), .refreshSiteMessages)
+        add(PaletteCandidate(id: "open.sureforms.entries", title: String(localized: "Open form entries in wp-admin"),
+                             subtitle: SidebarItem.siteMessages.title,
+                             keywords: ["website", "messages", "contact", "entries", "wordpress", "wp-admin", "sureforms"],
+                             group: .action, symbol: "safari"), .openURL(SiteMessagesSource.entriesAdminURL()))
         if LicenceModel.canIssue {
             add(PaletteCandidate(id: "action.licence.issue", title: String(localized: "Issue licence…"), subtitle: SidebarItem.licences.title,
                                  keywords: ["licence", "license", "issue", "mediflow", "khayatyar"], group: .action, symbol: "key.horizontal"),
@@ -258,6 +271,12 @@ struct CommandPaletteView: View {
             add(PaletteCandidate(id: "keys.\(k.id)", title: L(k.title), subtitle: "\(SidebarItem.keys.title) · \(k.kind.title)",
                                  keywords: [k.product ?? "", "key", "keystore", "backup"], group: .entity, symbol: k.kind.symbol),
                 .go(.keys, nil))
+        }
+        // Website messages not marked seen: the sender's name only (no address, no text).
+        for m in siteMessages.new {
+            add(PaletteCandidate(id: "sitemessage.\(m.id)", title: m.name ?? String(localized: "Website message #\(m.id)"), subtitle: SidebarItem.siteMessages.title,
+                                 keywords: ["message", "website", "contact"], group: .entity, symbol: "envelope"),
+                .go(.siteMessages, nil))
         }
         for t in monitor.targets {
             add(PaletteCandidate(id: "monitor.\(t.id)", title: "\(t.product.title) \(L(t.name))", subtitle: t.host,

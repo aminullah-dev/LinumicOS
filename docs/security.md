@@ -17,6 +17,7 @@ post as Linumic, so it is treated as a production system.
 | Release Center (store and repository state) | An accidental App Store release, a Play edit committed by mistake, a credential copied into a cache | One write only (`appStoreVersionReleaseRequests`), offered only for PENDING_DEVELOPER_RELEASE, behind a confirmation naming app, version and build, state re-checked first, sent once, read back and logged; Play edits are opened to read tracks and deleted, never committed (no commit call exists); GitHub GET only; credentials read from the existing Keychain items when needed, never copied; the cache holds observations only |
 | Daily Brief and Command Palette | A summary or search result exposing a secret, a palette shortcut making a write | No requests and no credentials of their own; the daily snapshot (`brief-snapshots.json`, this device) holds states, counts and PR titles only; the palette indexes Vault titles and products, never logins or passwords, keeps only chosen ids as recents, and its actions only navigate or read (writes stay behind each screen's own confirmation) |
 | Keys & Backups (registry and checks) | The app reading, copying or leaking a signing key, keystore password or backup passphrase; broad file access; a stale backup trusted | No key content is ever read: only FileManager attributes (exists, size, modification date) and directory listings, inside read-only security-scoped bookmarks the owner chose (plus the Oversight workspace); the passphrase item is looked up with `kSecReturnAttributes` only, never `kSecReturnData`; the registry (`keys-registry.json`, this device) holds paths, titles, days, sizes and Drive file ids, nothing secret; restore commands make openssl prompt for the passphrase, never pass it; no network |
+| Website messages (linumic.com contact form) | The WordPress application password leaking or reaching another host; customers' names, addresses and messages on disk; an accidental change to entries | Keychain item `wordpress.linumic.apppassword` only (redacted description, never logged), sent only as HTTPS Basic auth to https://linumic.com on an ephemeral session that refuses redirects; GET only to the two read-only SureForms abilities (no call marks, edits or deletes); messages in memory only, `site-messages.json` holds ids and times; reply links only for plain addresses (no injected headers); notifications show names, never addresses |
 | Assistant | Invented status, prompt injection from ingested content | Grounded answers with verified/derived/unknown labels. Ingested text is treated as data, and actions are only proposals. |
 
 ## MVP (local app)
@@ -118,7 +119,9 @@ post as Linumic, so it is treated as a production system.
     `~/.velro-keys`, `~/.linumic/license-keys` and `~/.appstoreconnect` (skipping node_modules, build, .git and
     symbolic links), only `attributesOfItem` (type, size, modification date) and `contentsOfDirectory`. No file is
     opened. Not read: key and keystore contents, `.storepass`, `keystore.properties`, `.env`, the `.p8`/`.pem` files and
-    `~/.linumic/license-backup-passphrase.txt` (listed in the registry so its existence is visible; never opened).
+    `~/.linumic/license-backup-passphrase.txt` (deleted on purpose 2026-10-09 after its hash matched the Keychain item;
+    the registry records the deletion and only warns if the file comes back; never opened). The passphrase is kept in
+    the Keychain item, the owner's private Notion page and on paper.
   - **Sandbox:** the app can only see folders the owner picked in an open panel. Those grants are stored as
     security-scoped bookmarks created with `.securityScopeAllowOnlyReadAccess` (UserDefaults `LCCKeysBookmarks`);
     the Oversight workspace bookmark is reused. A location outside every grant is shown as "not granted — choose
@@ -128,6 +131,13 @@ post as Linumic, so it is treated as a production system.
   - **Restore guide:** shown, never run. `openssl enc -d … | tar -x(z)` prompts for the passphrase; the guide restores
     into an empty `0700` folder and deletes it after.
   - On iPhone and iPad the checks don't exist; the registry is shown with its facts only.
+- **Website messages (since 2026-10-09):** the owner's WordPress application password (an Administrator's, so it could
+  also change the site through the REST API; revoke it in wp-admin → Users → Profile → Application Passwords) is kept in
+  the Keychain item `wordpress.linumic.apppassword` (`kSecAttrAccessibleWhenUnlockedThisDeviceOnly`, not synchronizable).
+  The client sends two GETs to `/wp-json/wp-abilities/v1/abilities/sureforms/{list-entries,bulk-get-entries}/run`; it has
+  no other request. HTTPS only (a non-HTTPS site address is refused before anything is sent), redirects refused so the
+  header can't follow to another host, no cookies, no cache. Customer messages are held in memory only; the file
+  `site-messages.json` holds entry ids (seen, notified) and the last read time. Fixtures in tests are invented data.
 - **Licence signing keys (MediFlow, KhayatYar):** imported by the owner on the Mac only, checked against the
   production public key built into the app, then stored in the Keychain (`licence.signing.<product>`,
   `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`, `kSecAttrSynchronizable` false). They are never logged, never

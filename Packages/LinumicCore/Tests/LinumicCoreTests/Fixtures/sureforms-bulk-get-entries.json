@@ -1,0 +1,39 @@
+{
+  "_comment": "FAKE DATA. Shape of the sureforms/bulk-get-entries ability output (SureForms 2.12.8 inc/abilities/entries/bulk-get-entries.php get_output_schema, fields from entry-parser.php parse_entry), as returned by GET /wp-json/wp-abilities/v1/abilities/sureforms/bulk-get-entries/run. Names, addresses and text are invented; example.com/example.org are reserved domains. Entry 101 is left out on purpose (deleted between the two calls).",
+  "entries": [
+    {
+      "id": 104, "form_id": 1752, "form_name": "Simple Contact Form", "status": "unread", "created_at": "2026-10-08 21:15:04",
+      "form_data": [
+        { "label": "First Name", "value": "Test", "block_name": "srfm-input" },
+        { "label": "Last Name", "value": "Person", "block_name": "srfm-input" },
+        { "label": "Email", "value": "test.person@example.com", "block_name": "srfm-email" },
+        { "label": "Message", "value": "Hello,\n\nI would like a WorkTrack demo for a shop with   twelve staff in Herat. Can you call me next week? We also need Dari reports and an offline mode because the internet is often down. Thanks.", "block_name": "srfm-textarea" }
+      ],
+      "submission_info": { "user_ip": "203.*.*.*", "browser_name": "Safari", "device_name": "Mac", "submission_url": "https://linumic.com/contact/" },
+      "user": null
+    },
+    {
+      "id": 103, "form_id": 1752, "form_name": "Simple Contact Form", "status": "unread", "created_at": "2026-10-02 09:30:00",
+      "form_data": [
+        { "label": "First Name", "value": "", "block_name": "srfm-input" },
+        { "label": "Last Name", "value": "", "block_name": "srfm-input" },
+        { "label": "Email", "value": "someone@example.org?cc=other@example.org", "block_name": "srfm-email" },
+        { "label": "Message", "value": "Short question about prices.", "block_name": "srfm-textarea" }
+      ],
+      "submission_info": { "user_ip": "", "browser_name": "Chrome", "device_name": "Android", "submission_url": "https://linumic.com/fa/contact/" },
+      "user": null
+    },
+    {
+      "id": 102, "form_id": 1752, "form_name": "Simple Contact Form", "status": "read", "created_at": "2026-09-19 16:02:11",
+      "form_data": [
+        { "label": "نام", "value": "آزمون", "block_name": "srfm-input" },
+        { "label": "تخلص", "value": "نمونه", "block_name": "srfm-input" },
+        { "label": "ایمیل", "value": "sample@example.com", "block_name": "srfm-email" },
+        { "label": "پیام", "value": ["سلام", "قیمت برنامه چند است؟"], "block_name": "srfm-textarea" }
+      ],
+      "submission_info": { "user_ip": "", "browser_name": "", "device_name": "", "submission_url": "" },
+      "user": null
+    }
+  ],
+  "errors": []
+}

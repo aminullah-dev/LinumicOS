@@ -54,10 +54,10 @@ private struct FakeFS: KeyFileSystem {
     }
 }
 
-/// Every seeded key present, all modified before the backups.
+/// Every seeded key present, all modified before the backups. Keys recorded as deleted are absent, as they are.
 private func seededFS(changing: [String: Date] = [:], removing: Set<String> = [], adding: [String: Date] = [:]) -> FakeFS {
     var files: [String: Date] = [:]
-    for key in KeysRegistry.seed.keys {
+    for key in KeysRegistry.seed.keys where !key.isDeleted {
         let full = KeyPaths.expand(key.path, home: home)
         if key.isPattern {
             let dir = (full as NSString).deletingLastPathComponent
@@ -105,6 +105,47 @@ struct KeysTests {
         #expect(seed.gaps.allSatisfy { !$0.source.isEmpty })
         #expect(seed.keys.first { $0.id == "velro-from-downloads" }?.doNotDelete == true)
         #expect(seed.keys.first { $0.id == "asc-api-keys" }?.backupIDs.isEmpty == true)
+    }
+
+    @Test func passphraseFileIsRecordedAsDeletedNotMissing() throws {
+        let seed = KeysRegistry.seed
+        let file = try #require(seed.keys.first { $0.id == "licence-passphrase-file" })
+        #expect(file.deletedOn == day("2026-10-09"))
+        #expect(file.deletedNote?.contains("Linumic license backup passphrase") == true)
+        for b in seed.backups {
+            #expect(b.passphraseKeptIn == ["macOS Keychain", "Private Notion page", "Paper"])
+        }
+        // Absent (as it should be): no reminder at all about it.
+        let absent = KeysRules.reminders(input(seededFS()))
+        #expect(!absent.contains { $0.keyID == "licence-passphrase-file" })
+        #expect(KeysRules.backupState(file, registry: seed, result: nil) == .notApplicable)
+        // Back on the Mac: one reminder that says so.
+        let path = KeyPaths.expand(file.path, home: home)
+        let back = KeysRules.reminders(input(seededFS(adding: [path: at("2026-10-12")]), now: "2026-10-12"))
+        let r = try #require(back.first { $0.keyID == "licence-passphrase-file" })
+        #expect(r.kind == .deletedFileBack)
+        #expect(r.severity == .normal)
+    }
+
+    @Test func savedRegistryFromTheOlderSeedGetsTheDeletionFact() throws {
+        var old = KeysRegistry.seed
+        let i = try #require(old.keys.firstIndex { $0.id == "licence-passphrase-file" })
+        old.keys[i].deletedOn = nil
+        old.keys[i].deletedNote = nil
+        for b in old.backups.indices { old.backups[b].passphraseKeptIn = ["macOS Keychain", "Private Notion page"] }
+        // An owner-added key survives the correction.
+        old.keys.append(TrackedKey(id: "owner-added", title: "Talar key", kind: .androidSigning, path: "~/Keys/talar.jks",
+                                   source: "Entered in Linumic OS", recordedOn: day("2026-10-10")))
+        let dir = FileManager.default.temporaryDirectory.appending(path: "keys-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let store = KeysRegistryStore(fileURL: dir.appending(path: "keys-registry.json"))
+        try store.save(old)
+        let loaded = try #require(store.load())
+        #expect(loaded.keys.first { $0.id == "licence-passphrase-file" }?.deletedOn == day("2026-10-09"))
+        #expect(loaded.backups.allSatisfy { $0.passphraseKeptIn.contains("Paper") })
+        #expect(loaded.keys.contains { $0.id == "owner-added" })
+        var again = loaded
+        #expect(again.applySeedCorrections() == false)   // idempotent
     }
 
     @Test func registryRoundTripsThroughTheStore() throws {
