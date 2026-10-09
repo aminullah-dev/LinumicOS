@@ -1,6 +1,7 @@
 # Integrations
 
-**Connected:** GitHub (read-only) and the public App Store lookup (read-only, no credentials).
+**Connected:** GitHub (read-only), the public App Store lookup (read-only, no credentials), and the WorkTrack vendor
+API (read, plus licence renewals confirmed per action; the owner signs in with his vendor account).
 **Built, waiting for the owner's keys:** App Store Connect and Google Play Console (both read-only, both free).
 **Not connected:** social networks, AI providers. Each one is added
 only when explicit credentials and authorization are provided.
@@ -202,6 +203,109 @@ only when explicit credentials and authorization are provided.
 - **لایسنس‌های قبلی:** «بیشتر» ← «وارد کردن issued.csv…» و فایل `~/.linumic/licenses/issued.csv` را (و اگر خواستید
   فایل‌های `.lnmlic` کنارش را) انتخاب کنید. بدون فایل `.lnmlic`، کلید آن لایسنس «نامعلوم» می‌ماند.
 - **یادآوری:** ۳۰، ۱۴، ۷ و ۱ روز پیش از ختم هر لایسنس اطلاعیه می‌آید. روی آیفون فقط دفتر دیده می‌شود؛ صدور فقط روی مک است.
+
+## WorkTrack customers and renewals (vendor API)
+
+- **What it is:** WorkTrack customers (مشتریان WorkTrack) in the sidebar. Every WorkTrack customer company with its
+  licence, payments and history, read from WorkTrack's own vendor console API, and a **Renew** action that changes a
+  licence. Source of every route and schema: the WorkTrack repository, `main` @ `f2a9d2c` (2026-10-09):
+  `backend/functions/src/routes/vendor.ts`, `middleware/vendor.ts`, `services/license.ts`, `services/plans.ts`,
+  `services/billing.ts`, `services/vendor.ts`, `services/vendorInsights.ts`, `lib/errors.ts`. See also
+  `research/platform-admin-apis.md` §1.
+- **Code:** `FirebaseAuthREST` and `WorkTrackVendorClient` (`LinumicCore/Integrations`), the renewal builder, filters,
+  reminders and action log in `LinumicCore/Services/WorkTrackCustomers.swift`, the screen in `App/Views/WorkTrackViews.swift`.
+- **Environments:** Production `https://worktrack-prod.web.app/v1`, Demo `https://worktrack-demo-af.web.app/v1`, and,
+  in debug builds only, Local emulator `http://127.0.0.1:5001/demo-worktrack/us-central1/api/v1` with the Auth
+  emulator on `127.0.0.1:9099`. Release builds don't offer the emulator, and a stored emulator session is ignored.
+- **Sign-in:** Firebase email/password over REST, no Firebase SDK: `POST identitytoolkit.googleapis.com/v1/accounts:signInWithPassword`,
+  then `POST securetoken.googleapis.com/v1/token` (`grant_type=refresh_token`) whenever the one-hour ID token is
+  within five minutes of expiring. The account needs the `vendor: true` claim, no customer claims (`cid`/`eid`) and a
+  verified email; WorkTrack checks the token for revocation on every request (`middleware/vendor.ts:44-90`). After
+  signing in, the app calls `GET /vendor/me` and keeps the session only if that succeeds.
+- **Web API keys** (public by design; they identify the Firebase project, access is the ID token): production
+  `web/.env.production:18`, demo `web/.env.demo:20` in the WorkTrack repository (`VITE_FIREBASE_API_KEY`; the same values
+  are in `ios/WorkTrack/Core/Environment.swift:48-49`). The emulator accepts `demo-key` (`web/.env.emulator`).
+- **Reads** (GET only, retried once after a 401 with a refreshed token): `/vendor/me`, `/vendor/companies`,
+  `/vendor/companies/:id`, `/vendor/companies/:id/detail`, `/vendor/companies/:id/orders`, `/vendor/revenue`,
+  `/vendor/plans`, `/vendor/audit`. The company list is read when the screen's data is needed: on launch, every 6
+  hours while the app is open, with ⌘R, and after a renewal. WorkTrack reads several documents per company for it,
+  so it is not polled more often. Nothing is cached on disk; a failed read clears the list instead of showing old
+  data as current. Every number shows the environment and the time it was read; days left are WorkTrack's own
+  `daysUntilExpiry` (counted from today in Kabul).
+- **The one write:** `PUT /vendor/companies/:id/license`. WorkTrack's schema makes `expiresAt` optional and stores an
+  omitted (or null) value as **no end date** (`setLicense` writes `input.expiresAt ?? null`, `license.ts:191`). So:
+  - the request is built only by `WorkTrackRenewal.makeWrite` from the licence **as just fetched**
+    (`GET /vendor/companies/:id` when the sheet opens);
+  - **every** field is sent: `plan`, `deviceLimit`, `status`, `expiresAt`, `enforceDevices`, and also the optional
+    `enforcePlan`, `employeeLimit`, `extraFeatures` with their current values, so nothing relies on WorkTrack's
+    "omitted keeps current" rule;
+  - `expiresAt` is always in the body. "No end date" is a separate choice with its own confirmation toggle, and even
+    then the key is sent as an explicit `null`. Unit tests check the encoded JSON for both cases;
+  - the builder refuses a day before today (Kabul), an invalid date, an unknown plan, a status WorkTrack won't
+    accept, seats outside 1–100,000, and a stored feature key WorkTrack no longer accepts.
+- **Renew sheet:** plan (with the price and seats from `/vendor/plans`), device seats (with "use the plan's N"),
+  status (an EXPIRED licence is proposed as ACTIVE; a SUSPENDED one stays suspended unless the owner chooses
+  otherwise), and the new last day: +1 month, +1 year (counted from the current last day if it is still ahead,
+  otherwise today in Kabul, with WorkTrack's month clamping), a custom day, or no end date. A table shows every
+  licence field before and after. Production needs the company name typed exactly; Demo and the emulator need a
+  tick. Just before sending, the app reads the company again and sends nothing if the licence changed since the
+  sheet opened. The PUT is sent once and never retried. Then the app reads `/detail` again, compares every field
+  with what it sent, and shows "verified" or the differences.
+- **Audit:** WorkTrack writes its own two trails for every licence change (the company's `auditLogs` and
+  `vendorAuditLogs`, `routes/vendor.ts:239-257`); the screen shows the newest `vendorAuditLogs` entries. Linumic OS
+  also keeps its own append-only log on this device, `worktrack-actions.json` next to `inventory.json`: time,
+  environment, account, company, licence before, licence sent, licence read back, and outcome (verified, not
+  verified, failed). Entries are never removed. It is not synced to Supabase in this phase.
+- **Dashboard and reminders:** a WorkTrack customers card lists the companies whose licence ends within 30 days.
+  Local notifications at 09:00, 30, 14, 7 and 1 days before a **production** customer's last day (Settings →
+  Integrations → WorkTrack customers). TEST and DUPLICATE companies are listed but left out of counts and reminders,
+  as WorkTrack leaves them out of revenue.
+- **Not in this phase:** company deletion, purge, TEST/DUPLICATE marks, plan prices, CRM writes. None of these calls
+  exist in the client.
+
+### WorkTrack: testing against the emulator (never production)
+
+1. Start WorkTrack's emulators (from the WorkTrack repository; `backend/functions/.env.demo-worktrack` must exist with
+   `HESAB_FORWARD_URL=` empty, it is gitignored):
+   `cd backend/functions && npm run build && npx firebase emulators:start --config ../../firebase.json --project demo-worktrack --only functions,firestore,auth < /dev/null`
+2. Seed the sample tenant: `FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 node seed.js`.
+3. From this repository, add the vendor test user and sample companies (emulator only; the script refuses to run
+   without the emulator hosts): `FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 node tools/worktrack/emulator-setup.js`.
+   It creates `vendor@linumic.test` (vendor, verified), `novendor@linumic.test` (no claim) and
+   `unverified@linumic.test` (claim, unverified email), all with the emulator-only password in the script, and five
+   companies: expiring in 10 days (SILVER with an employee cap, extra feature and both enforcement flags on),
+   expired 20 days ago, a trial ending in 5 days, a TEST-marked one, and a perpetual one.
+4. `LCC_WT_EMULATOR=1 swift test --package-path Packages/LinumicCore --filter liveEmulator` signs in, reads every
+   endpoint, renews the 10-day company by one month with the real builder, checks the stored licence both through
+   the API and directly in the emulator's Firestore (`expiresAt` set, every other field unchanged, `source` VENDOR,
+   one new `license.update` audit entry), and checks the error paths (404, 422, wrong password, no vendor claim,
+   unverified email, revoked refresh token).
+5. In a debug build of the app, sign in with Environment "Local emulator" and the same account.
+
+Run on 2026-10-09: all of the above passed. The emulator stored
+`plan=SILVER deviceLimit=30 status=ACTIVE expiresAt=2026-11-19 enforceDevices=true enforcePlan=true employeeLimit=60 extraFeatures=[projects] source=VENDOR`
+after a renewal from `expiresAt=2026-10-19`.
+
+### راهنمای امین‌الله: مشتریان WorkTrack (دری)
+
+- **ورود:** در نوار کنار «مشتریان WorkTrack» ← «ورود…». محیط را «Production» بگذارید، ایمیل و رمز حساب فروشندهٔ
+  خود را بنویسید. این همان حسابی است که در کنسول WorkTrack (console.linumic.com) با آن وارد می‌شوید و نشان
+  `vendor` دارد. رمز فقط یک بار به Firebase می‌رود و جایی ذخیره نمی‌شود؛ فقط یک refresh token در Keychain همین
+  دستگاه می‌ماند. اگر رمز را در Firebase عوض کنید، نشست باطل می‌شود و دوباره وارد می‌شوید.
+- **اگر خطای 403 دیدید:** حساب نشان `vendor` ندارد یا ایمیلش تأیید نشده است. در مخزن WorkTrack دستور
+  `scripts/grant-vendor.ts` را برای همان ایمیل اجرا کنید (اول بدون `--apply`).
+- **فهرست:** همهٔ شرکت‌ها با پلن، وضعیت لایسنس، روز آخر، روزهای باقی‌مانده، دستگاه‌ها، کارمندان و آخرین فعالیت.
+  فیلترها: «ختم در ۳۰ روز»، «ختم‌شده»، «آزمایشی رایگان»، «نیاز به توجه». شرکت‌های «آزمایشی» و «تکراری» نشان دارند
+  و در شمارش و یادآوری نیستند. روزها با تاریخ امروزِ کابل شمرده می‌شوند.
+- **تمدید:** روی شرکت بزنید ← «تمدید یا تغییر لایسنس…». پلن، تعداد دستگاه، وضعیت و روز آخر تازه را انتخاب کنید
+  (+۱ ماه، +۱ سال، تاریخ دلخواه). جدول «قبل و بعد» همهٔ خانه‌ها را نشان می‌دهد. در Production باید نام شرکت را
+  دقیقاً بنویسید، بعد «فرستادن به WorkTrack». برنامه بعد از فرستادن، شرکت را دوباره می‌خواند و می‌گوید همه‌چیز
+  همان است که فرستاده شد یا نه.
+- **«بدون تاریخ ختم»** یعنی لایسنس دائمی؛ فقط وقتی قرارداد همین است و تیک تأیید جداگانه‌اش را بزنید.
+- **ثبت کارها:** هر تمدید در دفتر همین دستگاه («فرستاده‌شده از Linumic OS») و در دفتر بازرسی خود WorkTrack ثبت
+  می‌شود.
+- **یادآوری:** ۳۰، ۱۴، ۷ و ۱ روز پیش از ختم لایسنس هر مشتری Production اطلاعیه می‌آید (تنظیمات ← Integrations).
+- حذف یا پاک کردن شرکت در این مرحله نیست؛ برای آن از کنسول WorkTrack استفاده کنید.
 
 ## Social media (Phase 5)
 

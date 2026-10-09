@@ -5,6 +5,23 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: WorkTrack customers and renewals (platform control, phase 3)
+- A new **WorkTrack customers** screen (مشتریان WorkTrack). The owner signs in with his WorkTrack vendor account
+  (Firebase email and password over REST; Production, Demo, and Local emulator in debug builds). The password is
+  never stored; only the refresh token is kept in the Keychain, after `GET /vendor/me` confirms the vendor claim.
+- Every customer company with plan, licence standing, last day and days left, device seats, employees, last activity
+  and TEST / DUPLICATE marks; filters for expiring in 30 days, expired, trial and needs attention. Company detail with
+  every licence field, orders, history and CRM contacts; revenue summary; WorkTrack's vendor audit trail.
+- **Renew** sheet: plan, seats, status and a new last day (+1 month, +1 year, a custom day, or a separately confirmed
+  "no end date"), a before/after table of every licence field, the company name typed for production, a check that
+  the licence hasn't changed since the sheet opened, one `PUT /vendor/companies/:id/license`, then a re-read and a
+  field-by-field comparison. `expiresAt` is always sent (WorkTrack treats an omitted one as perpetual) and every
+  other field is re-sent from the fetched licence. Each write is recorded in `worktrack-actions.json` on this device.
+- Dashboard card for customers expiring within 30 days and reminders 30/14/7/1 days ahead for production customers.
+- No deletion, purge, marks, prices or CRM writes in this phase.
+- Tested end to end against WorkTrack's Firebase emulator (`tools/worktrack/emulator-setup.js`, opt-in
+  `liveEmulator` test), never against production. 29 tests (28 unit, one opt-in), 220 in total. English and Dari strings.
+
 ### Added: platforms hub (platform control, phase 2)
 - A new **Platforms** screen (پلتفرم‌ها) with one card per product: WorkTrack, SafeBeauty, Talar, VELRO, MediFlow,
   Tailor ERP / KhayatYar, NerkhTimes, Afghan Prayer Times (Namazia) and DukanPro. Each shows the version on `main`,

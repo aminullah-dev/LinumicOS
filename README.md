@@ -11,7 +11,7 @@ Afghanistan.
 
 **Status:** MVP. Connected, read-only: GitHub (repositories, oversight, platforms hub), the public App Store
 lookup, App Store Connect and Google Play (with the owner's keys), and Supabase for the shared inventory and licence
-ledger. See [docs/integrations.md](docs/integrations.md).
+ledger. WorkTrack customers: the vendor API, read plus licence renewals confirmed per action. See [docs/integrations.md](docs/integrations.md).
 
 ## Layout
 

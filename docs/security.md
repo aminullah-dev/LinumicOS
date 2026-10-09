@@ -10,6 +10,7 @@ post as Linumic, so it is treated as a production system.
 | Integration credentials (GitHub, ASC, Play, social, AI) | Leak through Git, logs or backups | Keychain / backend secret store, `.gitignore` patterns, never logged |
 | Inventory data | Tampering, loss | Sandboxed app container, and later a backend with audit log and backups |
 | Repositories and store listings | Unintended destructive action | Read-only integrations, per-action confirmation for writes |
+| WorkTrack customer licences (vendor account) | Wrong or accidental licence change, perpetual licence by omission | Refresh token only in the Keychain, one write (licence PUT) built from the fetched licence with `expiresAt` always sent, diff + typed confirmation in production, stale-licence check, no retry, local and server audit |
 | Assistant | Invented status, prompt injection from ingested content | Grounded answers with verified/derived/unknown labels. Ingested text is treated as data, and actions are only proposals. |
 
 ## MVP (local app)
@@ -25,6 +26,18 @@ post as Linumic, so it is treated as a production system.
   token (`github.token`), the App Store Connect API key (`appstoreconnect.key`, Developer role) and the
   Google Play service account (`googleplay.serviceaccount`, "View app information"), plus the Supabase
   session. The console clients only read: GET requests, and Play's release list needs no edit.
+- **WorkTrack vendor session:** the owner types his vendor email and password in the sign-in sheet; the password is
+  sent once, in the body of Firebase's `signInWithPassword` request, and is never stored or logged; the sheet clears
+  the field after each attempt. Only the Firebase refresh token is kept, in the Keychain as `worktrack.vendor.session` (JSON with the
+  environment and email beside it; `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`, not synchronizable). The one-hour
+  ID token lives only in memory. Signing out deletes the item. WorkTrack checks the token for revocation on every
+  request, so changing the password in Firebase ends the session at once. A vendor account reaches every WorkTrack
+  customer, so: the only write in the client is `PUT /vendor/companies/:id/license`; it is sent once, never retried,
+  only after a before/after diff and a typed company name in production, and only if the licence hasn't changed
+  since the sheet opened; `expiresAt` is always sent (an omitted value would make the licence perpetual); every
+  write is recorded in the local append-only `worktrack-actions.json` and in WorkTrack's own two audit trails.
+  The Firebase Web API keys in `WorkTrackEnvironment` are public identifiers (shipped in every WorkTrack client), not
+  secrets. The local emulator environment exists in debug builds only and speaks plain HTTP to `127.0.0.1`.
 - **Licence signing keys (MediFlow, KhayatYar):** imported by the owner on the Mac only, checked against the
   production public key built into the app, then stored in the Keychain (`licence.signing.<product>`,
   `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`, `kSecAttrSynchronizable` false). They are never logged, never
