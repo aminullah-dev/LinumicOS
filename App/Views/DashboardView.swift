@@ -6,6 +6,7 @@ struct DashboardView: View {
     @Environment(Router.self) private var router
     @Environment(LicenceModel.self) private var licences
     @Environment(PlatformHubModel.self) private var platforms
+    @Environment(WorkTrackModel.self) private var worktrack
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -41,6 +42,8 @@ struct DashboardView: View {
                 oversightCard
 
                 licencesCard
+
+                worktrackCard
 
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: statusColumns), spacing: 12) {
                     ForEach([VerificationStatus.verified, .partiallyVerified, .unknown, .conflicting]) { status in
@@ -264,6 +267,57 @@ struct DashboardView: View {
                             }
                             .font(.callout)
                         }
+                    }
+                }
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// WorkTrack customers whose licence ends within 30 days (TEST / DUPLICATE left out), with where and when it was read.
+    private var worktrackCard: some View {
+        let s = worktrack.summary
+        return Button { router.sidebar = .worktrackCustomers } label: {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 6) {
+                    Image(systemName: SidebarItem.worktrackCustomers.symbol).foregroundStyle(.secondary)
+                    Text("WorkTrack customers").font(.headline)
+                    if let env = worktrack.environment { WorkTrackEnvironmentBadge(environment: env) }
+                    Spacer()
+                    Image(systemName: "chevron.right").foregroundStyle(.tertiary)
+                }
+                if !worktrack.isSignedIn {
+                    Text("Not signed in. Open WorkTrack customers to sign in with your vendor account →")
+                        .font(.callout).foregroundStyle(.secondary)
+                } else if let error = worktrack.loadError {
+                    Label(error, systemImage: "exclamationmark.triangle.fill").font(.callout).foregroundStyle(.red)
+                } else if worktrack.lastRead == nil {
+                    Text(worktrack.isRefreshing ? "Reading from WorkTrack…" : "Not read yet.").font(.callout).foregroundStyle(.secondary)
+                } else {
+                    HStack(spacing: 16) {
+                        Text("\(s.total) companies").font(.callout).monospacedDigit()
+                        if !s.expired.isEmpty {
+                            StatusBadge(text: String(localized: "\(s.expired.count) expired"), color: .red)
+                        }
+                    }
+                    if s.expiringSoon.isEmpty {
+                        Text("No customer licence ends in the next 30 days.").font(.callout).foregroundStyle(.secondary)
+                    } else {
+                        ForEach(s.expiringSoon.prefix(5)) { c in
+                            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                                Image(systemName: "clock.badge.exclamationmark").foregroundStyle(.orange)
+                                Text(verbatim: "\(c.name) · \(c.license.plan.rawValue)")
+                                Spacer(minLength: 4)
+                                WorkTrackExpiryText(company: c).foregroundStyle(.secondary)
+                            }
+                            .font(.callout)
+                        }
+                    }
+                    if let at = worktrack.lastRead {
+                        Text("Read \(at.formatted(date: .abbreviated, time: .shortened))").font(.caption).foregroundStyle(.tertiary)
                     }
                 }
             }

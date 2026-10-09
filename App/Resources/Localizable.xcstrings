@@ -9513,6 +9513,1716 @@
           }
         }
       }
+    },
+    "%@ (%@) ends in %lld days (last day %@). Open WorkTrack customers to renew.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ (%2$@) پس از %3$lld روز ختم می‌شود (روز آخر %4$@). برای تمدید «مشتریان WorkTrack» را باز کنید."
+          }
+        }
+      }
+    },
+    "%@ · %lld/%lld devices · %lld/%lld employees": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$lld/%3$lld دستگاه · %4$lld/%5$lld کارمند"
+          }
+        }
+      }
+    },
+    "%@: changes from %@ to %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: از %2$@ به %3$@ تغییر می‌کند"
+          }
+        }
+      }
+    },
+    "%@: stays %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: همان %2$@ می‌ماند"
+          }
+        }
+      }
+    },
+    "%lld companies": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld شرکت"
+          }
+        }
+      }
+    },
+    "%lld counted (%lld active) of %lld": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld شمرده‌شده (%2$lld فعال) از %3$lld"
+          }
+        }
+      }
+    },
+    "%lld in use of %lld": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld در استفاده از %2$lld"
+          }
+        }
+      }
+    },
+    "+1 month": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+۱ ماه"
+          }
+        }
+      }
+    },
+    "+1 year": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+۱ سال"
+          }
+        }
+      }
+    },
+    "A licence keeps working for %lld days after its last day (grace), then lapses.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس تا %lld روز پس از روز آخرش کار می‌کند (مهلت)، بعد از کار می‌افتد."
+          }
+        }
+      }
+    },
+    "A licence without an end date needs its own confirmation.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس بدون تاریخ ختم، تأیید جداگانه می‌خواهد."
+          }
+        }
+      }
+    },
+    "Account status": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت حساب"
+          }
+        }
+      }
+    },
+    "After": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بعد"
+          }
+        }
+      }
+    },
+    "Attention": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توجه"
+          }
+        }
+      }
+    },
+    "Before": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قبل"
+          }
+        }
+      }
+    },
+    "Before and after": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قبل و بعد"
+          }
+        }
+      }
+    },
+    "Before and now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قبل و اکنون"
+          }
+        }
+      }
+    },
+    "Closure": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بستن حساب"
+          }
+        }
+      }
+    },
+    "Closure scheduled": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بستن حساب زمان‌بندی شده"
+          }
+        }
+      }
+    },
+    "Companies": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شرکت‌ها"
+          }
+        }
+      }
+    },
+    "Company": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شرکت"
+          }
+        }
+      }
+    },
+    "Company id": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شناسهٔ شرکت"
+          }
+        }
+      }
+    },
+    "Company name or id": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام یا شناسهٔ شرکت"
+          }
+        }
+      }
+    },
+    "Confirm": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید"
+          }
+        }
+      }
+    },
+    "Could not save the WorkTrack action log: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر کارهای WorkTrack ذخیره نشد: %@"
+          }
+        }
+      }
+    },
+    "Couldn't reach WorkTrack: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به WorkTrack وصل نشد: %@"
+          }
+        }
+      }
+    },
+    "Counted from %@: the current last day if it is still ahead, otherwise today in Kabul.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از %@ شمرده می‌شود: روز آخر فعلی اگر هنوز نرسیده، وگرنه امروزِ کابل."
+          }
+        }
+      }
+    },
+    "Current licence read at %@. If it changes in WorkTrack before you send, nothing is sent.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس فعلی ساعت %@ خوانده شد. اگر پیش از فرستادن در WorkTrack تغییر کند، چیزی فرستاده نمی‌شود."
+          }
+        }
+      }
+    },
+    "Custom": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دلخواه"
+          }
+        }
+      }
+    },
+    "DUPLICATE": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تکراری"
+          }
+        }
+      }
+    },
+    "Demo": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نمایشی"
+          }
+        }
+      }
+    },
+    "Device seats": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جای دستگاه"
+          }
+        }
+      }
+    },
+    "Device seats must be between 1 and 100,000 (got %ld).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جای دستگاه باید بین ۱ و ۱۰۰٬۰۰۰ باشد (%ld داده شد)."
+          }
+        }
+      }
+    },
+    "Device seats: %lld": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جای دستگاه: %lld"
+          }
+        }
+      }
+    },
+    "Earned (HesabPay, paid)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درآمد (HesabPay، پرداخت‌شده)"
+          }
+        }
+      }
+    },
+    "Email": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ایمیل"
+          }
+        }
+      }
+    },
+    "Employee cap": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سقف کارمندان"
+          }
+        }
+      }
+    },
+    "Employees": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کارمندان"
+          }
+        }
+      }
+    },
+    "Enforce device seats": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجرای سقف دستگاه"
+          }
+        }
+      }
+    },
+    "Enforce plan": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجرای پلن"
+          }
+        }
+      }
+    },
+    "Enter the password.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمز را بنویسید."
+          }
+        }
+      }
+    },
+    "Every field is sent, including the ones you didn't change (copied from the current licence), so WorkTrack keeps them exactly as they are.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همهٔ خانه‌ها فرستاده می‌شوند، حتی آن‌هایی که تغییر ندادید (از لایسنس فعلی کاپی می‌شوند)، تا WorkTrack آن‌ها را دقیقاً همان‌طور نگه دارد."
+          }
+        }
+      }
+    },
+    "Expected renewals, next %lld days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمدیدهای پیش‌بینی‌شده، %lld روز آینده"
+          }
+        }
+      }
+    },
+    "Extra features": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قابلیت‌های اضافه"
+          }
+        }
+      }
+    },
+    "Field": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خانه"
+          }
+        }
+      }
+    },
+    "Firebase Auth returned HTTP %1$ld (%2$@).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firebase Auth پاسخ HTTP %1$ld داد (%2$@)."
+          }
+        }
+      }
+    },
+    "Firebase refused the app's Web API key (%@).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firebase کلید Web API برنامه را نپذیرفت (%@)."
+          }
+        }
+      }
+    },
+    "From WorkTrack /vendor/revenue. Earned counts only orders HesabPay marked PAID, by Solar Hijri month in Kabul (year/month). Expected is WorkTrack's forecast at today's prices, not money received.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از WorkTrack /vendor/revenue. درآمد فقط سفارش‌هایی است که HesabPay «پرداخت‌شده» علامت زده، به ماه هجری شمسی کابل (سال/ماه). پیش‌بینی، تخمین WorkTrack به قیمت امروز است، نه پول دریافت‌شده."
+          }
+        }
+      }
+    },
+    "HesabPay checkout orders from /vendor/companies/:id/orders, newest first (up to 100).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سفارش‌های پرداخت HesabPay از /vendor/companies/:id/orders، تازه‌ترین اول (تا ۱۰۰)."
+          }
+        }
+      }
+    },
+    "History": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخچه"
+          }
+        }
+      }
+    },
+    "I understand this licence will never expire": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "می‌دانم این لایسنس هیچ‌وقت ختم نمی‌شود"
+          }
+        }
+      }
+    },
+    "I've checked the changes above": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تغییرات بالا را بررسی کردم"
+          }
+        }
+      }
+    },
+    "In grace": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در مهلت"
+          }
+        }
+      }
+    },
+    "Lapsed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از کار افتاده"
+          }
+        }
+      }
+    },
+    "Last activity": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین فعالیت"
+          }
+        }
+      }
+    },
+    "Last activity %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین فعالیت %@"
+          }
+        }
+      }
+    },
+    "Last day": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روز آخر"
+          }
+        }
+      }
+    },
+    "Last day %@ → %@, plan %@ → %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روز آخر %1$@ ← %2$@، پلن %3$@ ← %4$@"
+          }
+        }
+      }
+    },
+    "Last day %@ → %@, plan %@ → %@ · %@ · %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روز آخر %1$@ ← %2$@، پلن %3$@ ← %4$@ · %5$@ · %6$@"
+          }
+        }
+      }
+    },
+    "Last day (expiresAt)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روز آخر (expiresAt)"
+          }
+        }
+      }
+    },
+    "Last written by": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین نوشته توسط"
+          }
+        }
+      }
+    },
+    "Left out: %lld TEST or DUPLICATE companies (%lld orders, %@).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب نشده: %1$lld شرکت آزمایشی یا تکراری (%2$lld سفارش، %3$@)."
+          }
+        }
+      }
+    },
+    "Licence changed by %@: last day %@ → %@, plan %@ → %@, seats %@ → %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس را %1$@ تغییر داد: روز آخر %2$@ ← %3$@، پلن %4$@ ← %5$@، جای دستگاه %6$@ ← %7$@"
+          }
+        }
+      }
+    },
+    "Licence status": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت لایسنس"
+          }
+        }
+      }
+    },
+    "Licence updated": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس به‌روز شد"
+          }
+        }
+      }
+    },
+    "Licence: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس: %@"
+          }
+        }
+      }
+    },
+    "Local emulator": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شبیه‌ساز محلی"
+          }
+        }
+      }
+    },
+    "Local notifications 30, 14, 7 and 1 days before a production customer's last licensed day (TEST and DUPLICATE companies excluded). The list is read when the app opens and every 6 hours while it's open.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اطلاعیهٔ محلی ۳۰، ۱۴، ۷ و ۱ روز پیش از روز آخر لایسنس هر مشتری production (بدون شرکت‌های آزمایشی و تکراری). فهرست هنگام باز شدن برنامه و تا وقتی باز است هر ۶ ساعت خوانده می‌شود."
+          }
+        }
+      }
+    },
+    "Never (perpetual)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ‌وقت (دائمی)"
+          }
+        }
+      }
+    },
+    "New last day": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روز آخر تازه"
+          }
+        }
+      }
+    },
+    "No activity recorded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فعالیتی ثبت نشده"
+          }
+        }
+      }
+    },
+    "No companies in this environment.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در این محیط شرکتی نیست."
+          }
+        }
+      }
+    },
+    "No companies match.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ شرکتی جور نیامد."
+          }
+        }
+      }
+    },
+    "No customer licence ends in the next 30 days.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس هیچ مشتری در ۳۰ روز آینده ختم نمی‌شود."
+          }
+        }
+      }
+    },
+    "No end date": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون تاریخ ختم"
+          }
+        }
+      }
+    },
+    "No end date (perpetual)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون تاریخ ختم (دائمی)"
+          }
+        }
+      }
+    },
+    "No orders.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سفارشی نیست."
+          }
+        }
+      }
+    },
+    "Not found in WorkTrack (404): %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در WorkTrack پیدا نشد (404): %@"
+          }
+        }
+      }
+    },
+    "Not read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز خوانده نشده."
+          }
+        }
+      }
+    },
+    "Not signed in": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وارد نشده"
+          }
+        }
+      }
+    },
+    "Not signed in to WorkTrack": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به WorkTrack وارد نشده‌اید"
+          }
+        }
+      }
+    },
+    "Not signed in to WorkTrack.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به WorkTrack وارد نشده‌اید."
+          }
+        }
+      }
+    },
+    "Not signed in. Open WorkTrack customers to sign in with your vendor account →": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وارد نشده‌اید. «مشتریان WorkTrack» را باز کنید و با حساب فروشنده وارد شوید ←"
+          }
+        }
+      }
+    },
+    "Not verified": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید نشد"
+          }
+        }
+      }
+    },
+    "Now = /vendor/companies/%@/detail on %@, read at %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اکنون = /vendor/companies/%1$@/detail روی %2$@، خوانده‌شده ساعت %3$@."
+          }
+        }
+      }
+    },
+    "Order %@ %@, %@ AFN: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سفارش %1$@ %2$@، %3$@ افغانی: %4$@"
+          }
+        }
+      }
+    },
+    "Orders": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سفارش‌ها"
+          }
+        }
+      }
+    },
+    "Password": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمز"
+          }
+        }
+      }
+    },
+    "Plan": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پلن"
+          }
+        }
+      }
+    },
+    "Plan's cap": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سقف پلن"
+          }
+        }
+      }
+    },
+    "Possible duplicate": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاید تکراری"
+          }
+        }
+      }
+    },
+    "Production holds real customers. Renewals you send here change their licences.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Production مشتریان واقعی دارد. تمدیدی که این‌جا بفرستید لایسنس آن‌ها را تغییر می‌دهد."
+          }
+        }
+      }
+    },
+    "Read %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوانده‌شده %@"
+          }
+        }
+      }
+    },
+    "Read back from WorkTrack: every field is as sent.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دوباره از WorkTrack خوانده شد: همهٔ خانه‌ها همان است که فرستاده شد."
+          }
+        }
+      }
+    },
+    "Read back from WorkTrack: some fields differ from what was sent.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دوباره از WorkTrack خوانده شد: بعضی خانه‌ها با آنچه فرستاده شد فرق دارند."
+          }
+        }
+      }
+    },
+    "Read every company from WorkTrack again (read-only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همهٔ شرکت‌ها را دوباره از WorkTrack بخوان (فقط خواندن)"
+          }
+        }
+      }
+    },
+    "Read from %@/vendor/companies at %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوانده‌شده از %1$@/vendor/companies ساعت %2$@"
+          }
+        }
+      }
+    },
+    "Read from %@/vendor/companies/%@/detail and /orders at %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوانده‌شده از %1$@/vendor/companies/%2$@/detail و /orders ساعت %3$@."
+          }
+        }
+      }
+    },
+    "Reading companies…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن شرکت‌ها…"
+          }
+        }
+      }
+    },
+    "Reading from WorkTrack…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن از WorkTrack…"
+          }
+        }
+      }
+    },
+    "Reading the current licence…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن لایسنس فعلی…"
+          }
+        }
+      }
+    },
+    "Recorded in this device's action log; WorkTrack wrote its own audit entries too.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در دفتر کارهای همین دستگاه ثبت شد؛ WorkTrack هم ثبت‌های بازرسی خودش را نوشت."
+          }
+        }
+      }
+    },
+    "Refresh": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه کردن"
+          }
+        }
+      }
+    },
+    "Remind me before WorkTrack licences expire": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیش از ختم لایسنس‌های WorkTrack یادم بده"
+          }
+        }
+      }
+    },
+    "Renew or Change Licence": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمدید یا تغییر لایسنس"
+          }
+        }
+      }
+    },
+    "Renew or Change Licence…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمدید یا تغییر لایسنس…"
+          }
+        }
+      }
+    },
+    "Revenue": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درآمد"
+          }
+        }
+      }
+    },
+    "Scheduled, purge after %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زمان‌بندی شده، پاک شدن پس از %@"
+          }
+        }
+      }
+    },
+    "Send to WorkTrack": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فرستادن به WorkTrack"
+          }
+        }
+      }
+    },
+    "Sent": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فرستاده‌شده"
+          }
+        }
+      }
+    },
+    "Sent from Linumic OS": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فرستاده‌شده از Linumic OS"
+          }
+        }
+      }
+    },
+    "Shows every licence field before and after, asks for confirmation, sends one PUT, then reads the company again to check what WorkTrack stored.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همهٔ خانه‌های لایسنس را قبل و بعد نشان می‌دهد، تأیید می‌خواهد، یک PUT می‌فرستد، بعد شرکت را دوباره می‌خواند تا ببیند WorkTrack چه ذخیره کرد."
+          }
+        }
+      }
+    },
+    "Sign In": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ورود"
+          }
+        }
+      }
+    },
+    "Sign In to WorkTrack": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ورود به WorkTrack"
+          }
+        }
+      }
+    },
+    "Sign In…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ورود…"
+          }
+        }
+      }
+    },
+    "Sign in under WorkTrack customers in the sidebar. Only a refresh token is kept, in this device's Keychain (worktrack.vendor.session).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از «مشتریان WorkTrack» در نوار کنار وارد شوید. فقط یک refresh token در Keychain همین دستگاه نگه داشته می‌شود (worktrack.vendor.session)."
+          }
+        }
+      }
+    },
+    "Sign in with your WorkTrack vendor account to see every customer company, its licence and payments, and to renew licences. The password is sent once to Firebase and never stored; only a refresh token is kept in this device's Keychain.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "با حساب فروشندهٔ WorkTrack وارد شوید تا همهٔ شرکت‌های مشتری، لایسنس و پرداخت‌شان را ببینید و لایسنس تمدید کنید. رمز فقط یک بار به Firebase فرستاده می‌شود و هرگز ذخیره نمی‌شود؛ فقط یک refresh token در Keychain همین دستگاه می‌ماند."
+          }
+        }
+      }
+    },
+    "Sign out of WorkTrack?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از WorkTrack خارج می‌شوید؟"
+          }
+        }
+      }
+    },
+    "Signed in as %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "واردشده با %@"
+          }
+        }
+      }
+    },
+    "Signed in, but this account isn't a WorkTrack vendor account (403). The `vendor` claim is granted only with scripts/grant-vendor.ts, and a vendor account must not belong to any customer company.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وارد شدید، اما این حساب، حساب فروشندهٔ WorkTrack نیست (403). نشان `vendor` فقط با scripts/grant-vendor.ts داده می‌شود و حساب فروشنده نباید به هیچ شرکت مشتری تعلق داشته باشد."
+          }
+        }
+      }
+    },
+    "Signed up": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت‌نام"
+          }
+        }
+      }
+    },
+    "Sorted by days left, as WorkTrack returns them. Days are counted from today's date in Kabul. TEST and DUPLICATE companies are listed but left out of the counts.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به ترتیب روزهای باقی‌مانده، همان‌طور که WorkTrack می‌دهد. روزها از تاریخ امروزِ کابل شمرده می‌شوند. شرکت‌های آزمایشی و تکراری در فهرست هستند اما در شمارش نیستند."
+          }
+        }
+      }
+    },
+    "Status was EXPIRED; a renewal sets it to ACTIVE. Change it here if you don't mean that.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت EXPIRED بود؛ تمدید آن را ACTIVE می‌کند. اگر این را نمی‌خواهید، این‌جا تغییرش دهید."
+          }
+        }
+      }
+    },
+    "Stored": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ذخیره‌شده"
+          }
+        }
+      }
+    },
+    "Suspended": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "معلق"
+          }
+        }
+      }
+    },
+    "Switch Account or Environment…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عوض کردن حساب یا محیط…"
+          }
+        }
+      }
+    },
+    "TEST": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آزمایشی"
+          }
+        }
+      }
+    },
+    "TEST / DUPLICATE": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آزمایشی / تکراری"
+          }
+        }
+      }
+    },
+    "That isn't a valid email address.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این آدرس ایمیل درست نیست."
+          }
+        }
+      }
+    },
+    "The WorkTrack session has ended (the password was changed, the account was disabled, or the session expired). Sign in again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشست WorkTrack تمام شده است (رمز عوض شده، حساب غیرفعال شده یا نشست ختم شده). دوباره وارد شوید."
+          }
+        }
+      }
+    },
+    "The current employee cap (%ld) is outside 1 to 100,000; WorkTrack would refuse it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سقف فعلی کارمندان (%ld) بیرون از ۱ تا ۱۰۰٬۰۰۰ است؛ WorkTrack آن را نمی‌پذیرد."
+          }
+        }
+      }
+    },
+    "The current status “%@” can't be sent back; choose ACTIVE, SUSPENDED or EXPIRED.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت فعلی «%@» قابل فرستادن نیست؛ ACTIVE، SUSPENDED یا EXPIRED را انتخاب کنید."
+          }
+        }
+      }
+    },
+    "The email or password is wrong.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ایمیل یا رمز اشتباه است."
+          }
+        }
+      }
+    },
+    "The licence carries a feature WorkTrack no longer accepts (“%@”); change it in the WorkTrack console.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس قابلیتی دارد که WorkTrack دیگر نمی‌پذیرد («%@»)؛ آن را در کنسول WorkTrack تغییر دهید."
+          }
+        }
+      }
+    },
+    "The licence changed in WorkTrack after this sheet was opened (someone else, or a payment). Nothing was sent. Close the sheet and start the renewal again from the current licence.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس پس از باز شدن این صفحه در WorkTrack تغییر کرد (کس دیگری، یا یک پرداخت). چیزی فرستاده نشد. صفحه را ببندید و تمدید را از لایسنس فعلی دوباره شروع کنید."
+          }
+        }
+      }
+    },
+    "The new last day (%@) is before today in Kabul.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روز آخر تازه (%@) پیش از امروزِ کابل است."
+          }
+        }
+      }
+    },
+    "The newest entries of WorkTrack's vendorAuditLogs (/vendor/audit): what any vendor account did, from any console.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه‌ترین ثبت‌های vendorAuditLogs در WorkTrack (/vendor/audit): کاری که هر حساب فروشنده از هر کنسولی کرده است."
+          }
+        }
+      }
+    },
+    "The refresh token is removed from this device's Keychain. WorkTrack itself is not changed.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "refresh token از Keychain همین دستگاه پاک می‌شود. خود WorkTrack تغییر نمی‌کند."
+          }
+        }
+      }
+    },
+    "This account has been disabled in Firebase.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این حساب در Firebase غیرفعال شده است."
+          }
+        }
+      }
+    },
+    "This changes a real customer's licence in production.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کار لایسنس یک مشتری واقعی را در production تغییر می‌دهد."
+          }
+        }
+      }
+    },
+    "This device's own log of licence changes sent to WorkTrack (worktrack-actions.json, never deleted). WorkTrack keeps its own audit trail as well.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر همین دستگاه از تغییرات لایسنس که به WorkTrack فرستاده شده (worktrack-actions.json، هرگز پاک نمی‌شود). WorkTrack هم دفتر بازرسی خودش را دارد."
+          }
+        }
+      }
+    },
+    "This licence is SUSPENDED and stays suspended unless you choose ACTIVE.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این لایسنس SUSPENDED است و معلق می‌ماند مگر ACTIVE را انتخاب کنید."
+          }
+        }
+      }
+    },
+    "Ticket “%@” (%@): %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تکت «%1$@» (%2$@): %3$@"
+          }
+        }
+      }
+    },
+    "Too many sign-in attempts. Firebase has blocked this account for a while; try again later or reset the password.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تلاش ورود زیاد شد. Firebase این حساب را برای مدتی بسته است؛ بعداً دوباره کوشش کنید یا رمز را عوض کنید."
+          }
+        }
+      }
+    },
+    "Trial": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آزمایشی رایگان"
+          }
+        }
+      }
+    },
+    "Trials": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آزمایشی‌های رایگان"
+          }
+        }
+      }
+    },
+    "Type the company name exactly to confirm.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای تأیید، نام شرکت را دقیقاً بنویسید."
+          }
+        }
+      }
+    },
+    "Type the company name to confirm": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای تأیید نام شرکت را بنویسید"
+          }
+        }
+      }
+    },
+    "Type: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بنویسید: %@"
+          }
+        }
+      }
+    },
+    "Use the plan's %lld": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عدد پلن (%lld) را بگذار"
+          }
+        }
+      }
+    },
+    "Vendor CRM": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CRM فروشنده"
+          }
+        }
+      }
+    },
+    "Vendor account": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب فروشنده"
+          }
+        }
+      }
+    },
+    "Vendor mark": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشان فروشنده"
+          }
+        }
+      }
+    },
+    "Vendor mark set to %@ by %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشان فروشنده را %2$@ به %1$@ گذاشت"
+          }
+        }
+      }
+    },
+    "WorkTrack accepted the change, but reading it back failed, so it isn't verified. Check the company again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WorkTrack تغییر را پذیرفت، اما دوباره خواندنش ناکام شد، پس تأیید نشده است. شرکت را دوباره بررسی کنید."
+          }
+        }
+      }
+    },
+    "WorkTrack answered in a form this app doesn't understand: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WorkTrack به شکلی پاسخ داد که این برنامه نمی‌فهمد: %@"
+          }
+        }
+      }
+    },
+    "WorkTrack audit trail": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر بازرسی WorkTrack"
+          }
+        }
+      }
+    },
+    "WorkTrack customers": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مشتریان WorkTrack"
+          }
+        }
+      }
+    },
+    "WorkTrack doesn't accept the plan “%@”.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WorkTrack پلن «%@» را نمی‌پذیرد."
+          }
+        }
+      }
+    },
+    "WorkTrack environment: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محیط WorkTrack: %@"
+          }
+        }
+      }
+    },
+    "WorkTrack is rate limiting requests. Wait a minute and try again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WorkTrack درخواست‌ها را محدود کرده است. یک دقیقه صبر کنید و دوباره کوشش کنید."
+          }
+        }
+      }
+    },
+    "WorkTrack licence expiring": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس WorkTrack نزدیک به ختم"
+          }
+        }
+      }
+    },
+    "WorkTrack refused the request: %1$@ (%2$@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WorkTrack درخواست را رد کرد: %1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "WorkTrack refused the request: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WorkTrack درخواست را رد کرد: %@"
+          }
+        }
+      }
+    },
+    "WorkTrack rejected the session (401): the token is invalid, expired or revoked. Sign in again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WorkTrack نشست را رد کرد (401): توکن نادرست، ختم‌شده یا باطل‌شده است. دوباره وارد شوید."
+          }
+        }
+      }
+    },
+    "WorkTrack requires a verified email for vendor access (403). grant-vendor.ts marks the address verified; run it for this account.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WorkTrack برای دسترسی فروشنده ایمیل تأییدشده می‌خواهد (403). grant-vendor.ts آدرس را تأییدشده علامت می‌زند؛ آن را برای این حساب اجرا کنید."
+          }
+        }
+      }
+    },
+    "WorkTrack returned HTTP %1$ld %2$@: %3$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WorkTrack پاسخ HTTP %1$ld %2$@ داد: %3$@"
+          }
+        }
+      }
+    },
+    "WorkTrack stores no end date: the customer keeps the plan with no renewal. Use only when that's the agreement.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WorkTrack تاریخ ختم ذخیره نمی‌کند: مشتری پلن را بدون تمدید نگه می‌دارد. فقط وقتی قرارداد همین است استفاده کنید."
+          }
+        }
+      }
+    },
+    "Your WorkTrack vendor account (Firebase email and password, with the vendor claim and a verified email). The password goes to Firebase once and is not stored; only the refresh token is kept, in this device's Keychain.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب فروشندهٔ WorkTrack شما (ایمیل و رمز Firebase، با نشان vendor و ایمیل تأییدشده). رمز یک بار به Firebase می‌رود و ذخیره نمی‌شود؛ فقط refresh token در Keychain همین دستگاه می‌ماند."
+          }
+        }
+      }
+    },
+    "none": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ"
+          }
+        }
+      }
+    },
+    "“%@” isn't a valid date (YYYY-MM-DD).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«%@» تاریخ درست نیست (YYYY-MM-DD)."
+          }
+        }
+      }
     }
   },
   "version": "1.1"

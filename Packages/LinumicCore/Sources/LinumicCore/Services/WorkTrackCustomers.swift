@@ -30,7 +30,7 @@ public enum WorkTrackDates {
     /// Strict `YYYY-MM-DD` (a real calendar day).
     public static func isValid(_ text: String) -> Bool { parse(text) != nil }
 
-    static func parse(_ text: String) -> (Int, Int, Int)? {
+    public static func parse(_ text: String) -> (Int, Int, Int)? {
         let parts = text.split(separator: "-", omittingEmptySubsequences: false)
         guard parts.count == 3, parts[0].count == 4, parts[1].count == 2, parts[2].count == 2,
               parts.allSatisfy({ $0.allSatisfy { $0.isASCII && $0.isNumber } }),
