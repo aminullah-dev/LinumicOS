@@ -5,6 +5,20 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Website messages (linumic.com contact form)
+- New sidebar screen **Website messages** («پیام‌های سایت»): the newest 20 contact-form entries from linumic.com
+  (SureForms), with name, date, email, full text, Open in wp-admin, Reply by email and Mark seen (this device only).
+- Read through SureForms' read-only abilities over the WordPress Abilities API (GET, application password over HTTPS),
+  at launch and every 30 minutes. SureForms' own `/sureforms/v1/entries/*` routes need a browser nonce and are not used.
+- Daily Brief section "Website messages" (new since seen, first 140 characters, the two links), a "Waiting for you"
+  row on the Dashboard, palette entries, and an optional notification (Settings → Integrations → Website messages).
+- Messages stay in memory; `site-messages.json` keeps ids and times only. 14 new tests on invented fixtures.
+
+### Fixed: Keys & Backups, the deleted passphrase file
+- `~/.linumic/license-backup-passphrase.txt` is recorded as deleted on 2026-10-09 (its hash matched the Keychain item
+  first), so it no longer shows as missing; it warns only if it returns. The passphrase locations are the Keychain item,
+  the private Notion page and paper. Registries saved from the earlier seed get the correction on load. 2 new tests.
+
 ### Added: Operations, Talar, SafeBeauty and VELRO overview (platform control, phase 4)
 - A new **Operations** screen (عملیات) with a tab per product, read-only, every value with its environment and read time.
   - **Talar** (Firebase email/password, the `role: "admin"` claim checked): dashboard numbers, halls awaiting approval

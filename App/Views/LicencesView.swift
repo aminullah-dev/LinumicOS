@@ -69,6 +69,7 @@ func formatted(_ licenceDate: String?) -> String {
 
 struct LicencesView: View {
     @Environment(LicenceModel.self) private var licences
+    @Environment(Router.self) private var router
     @State private var product: LicenceProduct?
     @State private var status: LicenceStatus?
     @State private var expiringOnly = false
@@ -139,6 +140,15 @@ struct LicencesView: View {
         }
         .sheet(isPresented: $isIssuing) {
             IssueLicenceSheet(renewing: nil) { issued in path = [issued.licenceID] }
+        }
+        // From the Command Palette or the Daily Brief: open a licence, or the issue sheet (nothing is signed until
+        // the owner fills it in and confirms there).
+        .onChange(of: router.request, initial: true) {
+            switch router.take({ if case .licence = $0 { true } else { $0 == .issueLicence } }) {
+            case .licence(let id): path = [id]
+            case .issueLicence: if LicenceModel.canIssue { isIssuing = true }
+            default: break
+            }
         }
         .alert("Import", isPresented: Binding(get: { importSummary != nil }, set: { if !$0 { importSummary = nil } })) {
             Button("OK") { importSummary = nil }

@@ -39,7 +39,7 @@ enum WorkspaceStore {
     #endif
 
     /// Resolves the stored bookmark to a URL, refreshing it if it went stale. `nil` when none is set.
-    private static func resolve() -> URL? {
+    static func resolvedURL() -> URL? {
         guard let data = UserDefaults.standard.data(forKey: defaultsKey) else { return nil }
         #if os(macOS)
         var stale = false
@@ -56,7 +56,7 @@ enum WorkspaceStore {
     /// Scans the workspace read-only. Returns the per-repository local statuses, or `nil` when no
     /// workspace is set or access could not be started. Runs off the main actor.
     static func scan() async -> [LocalGitStatus]? {
-        guard let url = resolve() else { return nil }
+        guard let url = resolvedURL() else { return nil }
         return await Task.detached(priority: .utility) { () -> [LocalGitStatus]? in
             #if os(macOS)
             guard url.startAccessingSecurityScopedResource() else { return nil }

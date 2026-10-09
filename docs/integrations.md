@@ -3,7 +3,9 @@
 **Connected:** GitHub (read-only), the public App Store lookup (read-only, no credentials), and the WorkTrack vendor
 API (read, plus licence renewals confirmed per action; the owner signs in with his vendor account), and the Talar,
 SafeBeauty and VELRO admin overviews under Operations (read-only except Talar's audited hall approve/reject; the owner
-signs in to each).
+signs in to each), the Release Center (stores, PRs and CI; one confirmed write: releasing an approved App Store version),
+and Website messages (linumic.com contact-form entries through SureForms' read-only abilities; needs the owner's
+WordPress application password).
 **Built, waiting for the owner's keys:** App Store Connect and Google Play Console (both read-only, both free).
 **Not connected:** social networks, AI providers. Each one is added
 only when explicit credentials and authorization are provided.
@@ -571,6 +573,253 @@ resolves as a Linumic host).
 - **کش سایت:** صفحهٔ اصلی linumic.com تا ۳۱ روز در کش CDN گودادی می‌ماند و پلن تنظیمی برایش ندارد. پس از ویرایش
   مهم، کش را از داشبورد گودادی پاک کنید.
 - **امنیت:** هیچ رمز، کوکی یا توکنی فرستاده نمی‌شود و چیزی در سرورها تغییر نمی‌کند.
+
+## Releases: stores, PRs and CI in one place (Release Center)
+
+Sidebar > Releases («انتشارها»), plus a "Releases: waiting on you" card on the Dashboard. One screen that answers
+where every app is in every store, what waits on the owner, and whether every repository is green. Logic and
+parsing are in `LinumicCore/Releases` (tested against real read-only responses captured on 2026-10-09, fixtures
+`release-*.json`); the App layer (`App/ReleaseCenterModel.swift`) reads the credentials and runs the requests.
+
+**Credentials:** the three that Settings > Integrations already keeps in the Keychain (`appstoreconnect.key`,
+`googleplay.serviceaccount`, `github.token`). The Release Center keeps no copy and adds no new credential. A source
+without its credential keeps its last reading and says why.
+
+**Which apps** (`ReleaseCatalog.apps`): every App Store and Google Play listing in the inventory that has a bundle id
+or package name; each card cites the listing's own source. On 2026-10-09 the seed holds 7 App Store apps and 6 Google
+Play apps, and `GET /v1/apps` on App Store Connect returned exactly the same 7 bundle ids:
+
+| Product | App Store bundle id | Google Play package | Repository evidence |
+|---|---|---|---|
+| SafeBeauty | `com.safebeauty.app` | `com.security.stealthapp` | Safe beauty/ios/project.yml:72, app/build.gradle.kts:62 |
+| WorkTrack | `app.worktrack` | `app.worktrack` | WorkTrack/ios/project.yml:117, app/build.gradle.kts:62 |
+| VELRO Ride | `af.velro.passenger` | `af.velro.passenger` | Velro/ios/project.yml:79, mobile/app-passenger/build.gradle.kts:17 |
+| VELRO Driver | `af.velro.driver` | `af.velro.driver` | Velro/ios/project.yml:159, mobile/app-driver/build.gradle.kts:17 |
+| VELRO Ops | `af.velro.ops` (iOS and macOS versions) | – | Velro/ios/project.yml:243 |
+| NerkhTimes | `af.market.nerkhtimes` | `af.market.nerkhtimes` | inventory listings; GitHub contents API (PlatformCatalog) |
+| Afghan Prayer Times | `af.namazia.app` | `af.namazia.app` | inventory listings (main holds only README.md) |
+
+Not listed because they are not on a store: Talar (`af.talar`, sideloaded) and DukanPro (`com.dukanpro.dukanpro`).
+KhayatYar is registered in Play Console (PRIORITIES.md) but has no store listing in the inventory, so it is not read;
+add the listing to have it appear.
+
+**Which repositories** (`ReleaseCatalog.repos`): the inventory's code repositories (monorepo, application, backend)
+under `aminullah-dev`, plus `aminullah-dev/LinumicOS` (the `origin` of this folder). Websites, research, marketing and
+release-only repositories are left out.
+
+**App Store Connect** (GET, the existing ES256 key):
+- `GET /v1/apps?filter[bundleId]=…`, then `GET /v1/apps/{id}/appStoreVersions?include=build` (versionString,
+  platform, appVersionState or appStoreState, releaseType, earliestReleaseDate, createdDate, and the attached build's
+  number, upload date and processing state), and `GET /v1/builds?filter[app]=…&include=preReleaseVersion` (newest 8).
+- Per platform: the live version (READY_FOR_DISTRIBUTION / READY_FOR_SALE) and the version in progress (newest that is
+  neither live nor replaced), with its state as a phase: preparing, waiting for review, in review, approved and waiting
+  for you (PENDING_DEVELOPER_RELEASE), approved and released by Apple, processing, rejected (REJECTED,
+  METADATA_REJECTED, INVALID_BINARY), removed from review. An unknown state is shown raw, never guessed.
+- Verified on 2026-10-09 through the API: SafeBeauty iOS 1.0.2, build 9 (uploaded 2026-10-09 16:36 UTC), state
+  WAITING_FOR_REVIEW, releaseType MANUAL; live 1.0.1 (build 8).
+- **The one write:** "Release this version…" appears only for a version in PENDING_DEVELOPER_RELEASE. The confirmation
+  names the app, platform, version and build. Then: `GET /v1/appStoreVersions/{id}` (if the state moved, nothing is
+  sent), `POST /v1/appStoreVersionReleaseRequests` once (never retried), `GET` again (processing for distribution or
+  live = verified), and the result goes to `release-actions.json` (append-only) and the app is read again.
+- **Key role:** reads work with the Developer key described above. Apple allows release requests only to Admin and App
+  Manager keys, so with a Developer key Apple answers 403 and the app shows "can read but not release … nothing was
+  changed". To release from Linumic OS, create a new team key with the App Manager role (an existing key's role can't
+  be raised) and replace it in Settings > Integrations. Admin is only needed for signing and uploading builds, which
+  this app doesn't do. Not verified at runtime: which role the key stored in this Mac's Keychain has.
+
+**Google Play** (the existing service account):
+- Per package: `POST .../applications/{pkg}/edits` (opens an edit), `GET .../edits/{id}/tracks`, `DELETE
+  .../edits/{id}`. An edit changes nothing until it is committed (Safe beauty/DEPLOY.md, "An edit changes nothing until
+  committed, so opening one and deleting it is a safe way to read state"); the client has no commit call. This gives
+  every track's releases with name, version codes, status (completed, inProgress, halted, draft), `userFraction` and
+  release-note languages.
+- If Play refuses to open the edit (for example a "View app information" only account), it falls back to
+  `tracks/{track}/releases` (no edit), which gives version codes and published/draft only; rollout share and notes then
+  show as unknown and the card says why. Checked on 2026-10-09 with SafeBeauty's release service account: the edit read
+  worked (production 2.1.5 (22) completed with en-US, fa-AF and ps-AF notes; beta an empty draft; alpha 14 (1.9);
+  internal 3 (1.0)) and the edit was deleted. Not verified: whether the account stored in Linumic OS may open edits.
+- Gotcha: a draft with no version codes is Play's empty placeholder and is not reported.
+
+**GitHub** (GET only, the existing token):
+- `GET /repos/{r}` (default branch), `/pulls?state=open`, `/pulls/{n}` per PR (`mergeable`, `mergeable_state`; GitHub
+  computes these lazily, so PRs still "unknown" are read once more after 1.5 s), `/actions/runs?head_sha={sha}` per PR
+  (CI rollup), `/actions/runs?branch={default}` (CI on the default branch), `/releases/latest` (404 → `/tags?per_page=1`;
+  none is a fact).
+- CI rollup: the newest run of each workflow; any failure → failing, any still running → running, otherwise passing;
+  GitHub's Dependabot/Pages runs (event `dynamic`) and pull-request runs on the default branch are ignored.
+- **Stacks:** a PR whose base is another open PR's head branch. Shown bottom first (merge order) with the hint "Merge
+  from the top of the stack down, using Merge commit, not squash." (how the owner merges, e.g. PR #6 then #7 here).
+  A tree (two PRs on one PR) is shown depth-first and flagged.
+
+**Waiting on you** (`WaitingOnYou.items`, one place for the rules), each with its source endpoint and read time:
+- App Store: a version approved and waiting for a manual release (with the Release button); a rejected version; the
+  newest build failing processing.
+- Google Play: a halted release; a draft with version codes waiting for "Start rollout"; a staged rollout below 100%
+  (for information).
+- GitHub: failing CI on the default branch; a PR ready to merge (not a draft, GitHub says clean, CI passing, or no CI at
+  all in a repository without workflows); for a stack only the bottom PR; bot dependency updates grouped per
+  repository. A source that failed to read produces no items.
+
+**Schedule and storage:** read on launch and every 30 minutes (Settings > Integrations > Releases), and with Refresh
+(⌘R). The last reading is kept in `release-center.json` next to `inventory.json` (a per-device cache, no credentials).
+
+### راهنمای امین‌الله: انتشارها (دری)
+
+- **کجاست:** نوار کنار ← «انتشارها». در داشبورد هم کارت «انتشارها: منتظر شما» تعداد کارهای منتظر را نشان می‌دهد.
+- **چه می‌بیند:** بالای صفحه «منتظر شما» است (نسخهٔ تأییدشده که منتظر انتشار است، رد شدن، PR آمادهٔ ادغام با CI سبز، CI ناکام
+  روی main). بعد برای هر اپ App Store: نسخهٔ زنده، نسخهٔ در جریان و وضعیتش، شمارهٔ بیلد و تاریخ بارگذاری، نوع انتشار. برای هر
+  اپ Google Play: هر track با versionCode، وضعیت، درصد پخش و زبان‌های یادداشت انتشار. برای هر مخزن: CI روی main، آخرین انتشار
+  یا تگ، و PR های باز. PR های زنجیره‌ای به ترتیب ادغام نشان داده می‌شوند: از بالا به پایین ادغام کنید، با Merge commit، نه squash.
+- **انتشار نسخه:** وقتی اپل نسخه‌ای با انتشار دستی را تأیید کرد، دکمهٔ «انتشار این نسخه…» می‌آید. برنامه نام اپ، نسخه و بیلد را
+  می‌پرسد و بعد از تأیید شما فقط یک بار درخواست می‌فرستد و نتیجه را در دفتر همین دستگاه ثبت می‌کند. این کار کلید App Store
+  Connect با نقش App Manager یا Admin می‌خواهد؛ با کلید Developer اپل رد می‌کند و چیزی تغییر نمی‌کند.
+- **Google Play:** فقط خواندن. برنامه یک edit باز می‌کند، trackها را می‌خواند و همان لحظه پاکش می‌کند؛ هرگز commit نمی‌شود.
+- **کلیدها:** همان کلیدهای تنظیمات ← Integrations. چیز تازه‌ای ذخیره نمی‌شود.
+
+## Daily Brief and Command Palette (local, no integration)
+
+Neither feature is an integration: they call no service and add no credential. They only read what the other models
+already hold in memory or in their local files.
+
+- **Daily Brief:** sidebar > Brief («گزارش روز»), right under Dashboard. Sections, in order: Monitor (anything down or
+  slow now, downtime in the last 24 hours, TLS certificates and domain registrations within 30 days), Releases (the
+  Release Center's "Waiting on you" items), Licences (MediFlow and KhayatYar licences expired or ending within 30 days,
+  and those issued in the last 7 days), WorkTrack customers (renewals due within 30 days and expired licences, TEST and
+  DUPLICATE companies excluded), Operations (Talar, SafeBeauty and VELRO queues above zero), Oversight (open security
+  alerts, unprotected default branches, uncommitted local work, changes of the last 24 hours) and "What changed since
+  yesterday". Every line has its source and read time and an Open button to its screen. A section with nothing to
+  report says "All clear"; a source that was never read (not signed in, no key, not checked yet) says so instead of
+  showing zero. Logic: `LinumicCore/Brief` (`DailyBriefBuilder`, `BriefDiff`, `BriefSnapshotHistory`); App:
+  `BriefModel`, `BriefViews`.
+- **Snapshots:** after every refresh round (launch, then every 30 minutes) the app stores one small snapshot per day in
+  `brief-snapshots.json` next to `inventory.json` (monitor states, App Store and Play states per app, open PR numbers
+  and titles, CI on the default branch, licence counts, WorkTrack company and expired counts, Operations queue counts;
+  last 8 days). "What changed since yesterday" compares the latest snapshot of an earlier day with now, field by field,
+  and only for fields read on both days.
+- **Morning notification:** Settings > Integrations > Daily Brief, on by default at 08:00 local time. One pending local
+  notification, rebuilt after every refresh with the brief as it is then; the text ends with "As of <time>" so an old
+  brief (the app was closed overnight) is never presented as fresh.
+- **Command Palette:** ⌘K (Go menu), the magnifier in the sidebar toolbar on the Mac and on iPhone/iPad. Fuzzy search
+  over every sidebar destination (also by its English name in Dari), products, WorkTrack companies, licences, Vault
+  entries (title and product only, never a login or password), monitor targets, Release Center apps and open PRs, and
+  the actions that already exist: Check now, Refresh releases, Issue licence…, New vault entry…, Lock vault, New
+  Product…, and "Open <host>" for the Vault's sign-in addresses and the monitored pages. Nothing writes from the palette:
+  Issue licence and New vault entry open their own sheet, where saving needs the owner; Check now and Refresh releases
+  only read. Arrow keys move, Return opens, Escape closes; the last 12 choices (ids only, UserDefaults
+  `LCCPaletteRecents`) come first. Matching (`LinumicCore/Palette`) folds case, accents, Arabic/Persian letter forms
+  (ي/ی، ك/ک، ة/ه، أ/ا), harakat, tatweel, ZWNJ, bidi marks and Persian digits.
+
+### راهنمای امین‌الله: گزارش روز و جستجو (دری)
+
+- **گزارش روز:** نوار کنار ← «گزارش روز» (زیر داشبورد). هر بخش یا «همه چیز درست است» می‌گوید، یا خط‌هایی با منبع و زمان
+  خواندن و دکمهٔ «باز کردن». اگر به محصولی وارد نشده‌اید، همان را می‌گوید، نه صفر. بخش «از دیروز چه تغییر کرد» از روز دوم
+  کار می‌کند.
+- **اعلان صبح:** تنظیمات ← Integrations ← «گزارش روز». روشن یا خاموش، و ساعت آن (پیش‌فرض ۸ صبح). متن اعلان می‌گوید وضعیت
+  مال چه ساعتی است.
+- **جستجو و فرمان‌ها:** ⌘K یا دکمهٔ ذره‌بین. نام صفحه، مشتری، شمارهٔ لایسنس، نام حساب گاوصندوق یا شمارهٔ PR را بنویسید؛
+  با کلیدهای بالا و پایین انتخاب و با Return باز کنید. حروف عربی و فارسی (ي/ی، ك/ک) فرقی نمی‌کنند. فرمان‌هایی که چیزی
+  را تغییر می‌دهند فقط صفحهٔ خود را باز می‌کنند؛ تأیید همان‌جاست.
+
+## Keys & Backups (local, no integration)
+
+No service and no credential: a registry on this device and, on the Mac, file attributes in folders the owner granted.
+
+- **Screen:** sidebar > Keys & Backups («کلیدها و پشتیبان‌ها»). Reminders first, then the backups (file, Drive link,
+  size, day made and verified, encryption, where the passphrase is kept, Keychain item found or not, last restore test
+  and its age), the keys (path, on this Mac / missing / not granted, size and modification date, backed up / changed
+  after backup / not backed up, "do not delete"), key files found that the registry doesn't know, the known gaps, the
+  granted folders, and a read-only restore guide.
+- **Seed (2026-10-09):** sources `~/Keys/README.md` (written 2026-10-09), `Linumic/licensing/MAP.md` and the session
+  records of 2026-10-08/09. Android keys: WorkTrack (repository + the identical copy in `~/Keys/worktrack`), VELRO
+  (`~/.velro-keys` + `.storepass`), the second VELRO key from Downloads (origin unknown, do not delete), SafeBeauty,
+  SODER-HAKEM. Licence keys: `~/.linumic/license-keys/{mediflow,khayatyar}-private.pem`. App Store Connect:
+  `~/.appstoreconnect/private_keys/AuthKey_*.p8` (5, no backup). Backups in Google Drive > Mohem:
+  `linumic-android-signing-keys.tgz.enc` (id 1mBSWqt_JwvEU7BMSFcJ-FJucPGJeuS4q, 22,336 bytes, made 2026-10-09,
+  compared byte-identical and test-decrypted; restored by the owner 2026-10-09) and `linumic-license-keys.tar.enc`
+  (id 13YZuIKfJrlgZFH98_DeqqBUb_ZXhrd5b, made 2026-10-08, verified 2026-10-08/09, test decryption 2026-10-08, no owner
+  restore recorded). AES-256-CBC, PBKDF2 600000 iterations. Open gaps: no second off-Mac copy; ASC keys and the
+  notarytool profile not backed up; new keys (Talar) must be added.
+- **Rules:** a key is "changed after backup" when its file's modification day is later than the day its newest backup
+  was made (facts are known to the day, so a change later on the backup's own day isn't flagged). A key file found by
+  name that no registry path or pattern covers is "not covered by any backup". Reminders: restore test older than 90
+  days (or none), second copy missing, key missing, key changed after backup, key in no backup, uncovered key file,
+  passphrase Keychain item missing. They appear on the screen and as the Daily Brief's Keys section. A key recorded as
+  deleted (`deletedOn`) is expected to be absent: `~/.linumic/license-backup-passphrase.txt` was deleted on purpose on
+  2026-10-09 after its hash matched the Keychain item "Linumic license backup passphrase"; it only produces a reminder
+  if it shows up again. The passphrase is kept in that Keychain item, the owner's private Notion page and on paper.
+- **Editing:** add/edit/remove registry keys (removing only edits the list), edit a backup's facts after making a new
+  bundle (day made, verified, size, Drive id), "Mark restore test done…" (backup, day, by whom, note; no future days),
+  "Mark second copy done…" (day and where). Every change is saved at once to `keys-registry.json`; a file that can't
+  be read is never overwritten. Command palette: "Mark restore test done…" opens that sheet.
+- **Checks run** at launch and every 30 minutes with the other refreshes, and with "Check files".
+
+### راهنمای امین‌الله: کلیدها و پشتیبان‌ها (دری)
+
+- **بار اول:** نوار کنار ← «کلیدها و پشتیبان‌ها» ← در بخش «پوشه‌هایی که برنامه می‌تواند بخواند» دکمهٔ «انتخاب پوشه…» را بزنید
+  و پوشهٔ خانه (`aminullahhashemi`) را انتخاب کنید. این یک بار همهٔ جاها را می‌پوشاند. برنامه فقط نام، اندازه و تاریخ فایل‌ها
+  را می‌بیند، نه خود کلیدها.
+- **وقتی بازیابی آزمایشی کردید:** «ثبت بازیابی آزمایشی…» (یا ⌘K و همین نام)، پشتیبان و روز را انتخاب کنید. هر ۹۰ روز یک بار
+  یادآوری می‌آید.
+- **وقتی نسخهٔ دوم (فلش‌دیسک) را ساختید:** در «کمبودهای شناخته‌شده» دکمهٔ «ثبت نسخهٔ دوم…» و بنویسید کجاست.
+- **وقتی کلید تازه ساختید (مثلاً تالار):** آن را به بستهٔ رمزگذاری‌شده اضافه کنید، فایل تازه را در Drive بگذارید، بعد در برنامه
+  «ویرایش پشتیبان…» و روز ساخت را عوض کنید و کلید را با «افزودن به فهرست…» اضافه کنید.
+- **بازیابی:** «راهنمای بازیابی» در پایین صفحه فرمان‌ها را دارد؛ رمز را openssl خودش می‌پرسد.
+
+## Website messages: linumic.com contact form (SureForms, read-only)
+
+Why: linumic.com's contact form (SureForms "Simple Contact Form", form id 1752: first name, last name, email, message)
+stores every entry in WordPress, but its notification email never reached the owner's Gmail (none of the 4 entries
+produced one, checked 2026-10-09). The app reads the entries itself.
+
+- **Route (from the plugin source, SureForms 2.12.8 from wordpress.org, read 2026-10-09):**
+  - Not used: SureForms' own admin routes `GET /wp-json/sureforms/v1/entries/list` and
+    `GET /wp-json/sureforms/v1/entry/{id}/details` (`inc/rest-api.php`, `get_endpoints()`; handlers
+    `get_entries_list()` and `get_entry_details()`). Each handler first checks `X-WP-Nonce` with
+    `wp_verify_nonce(..., 'wp_rest')` and answers 403 otherwise. A `wp_rest` nonce belongs to a browser login session, so
+    an application password can't pass it.
+  - Used: the WordPress Abilities that SureForms registers, run through WordPress core
+    `GET /wp-json/wp-abilities/v1/abilities/{name}/run?input[...]=...` (wordpress-develop 6.9,
+    `src/wp-includes/rest-api/endpoints/class-wp-rest-abilities-v1-run-controller.php`: read-only abilities must be
+    called with GET, input in the `input` query parameter, the response is the ability's output).
+    - `sureforms/list-entries` (`inc/abilities/entries/list-entries.php`): newest 20, `status=all` (excludes trash),
+      `orderby=created_at`, `order=DESC`; returns `entries[{id, form_id, form_title, status, created_at}]`, `total`, …
+    - `sureforms/bulk-get-entries` (`inc/abilities/entries/bulk-get-entries.php`, fields from `entry-parser.php`): up
+      to 50 ids; returns each entry's `form_data[{label, value, block_name}]` (IP masked by SureForms).
+    - Both are `readonly`, need `manage_options` (an Administrator) and `show_in_rest: true`
+      (`inc/abilities/abstract-ability.php`). They are registered only while SureForms → Settings → **Enable
+      Abilities** (`srfm_abilities_api`) is on (`inc/abilities/abilities-registrar.php`); Edit and Delete abilities have
+      their own switches and stay off. With it off WordPress answers 404 `rest_ability_not_found` and the app says so.
+  - linumic.com's public `/wp-json/` index (read without credentials, 2026-10-09) lists `wp-abilities/v1` (WordPress
+    6.9+), `sureforms/v1` and `application-passwords`; `timezone_string` is Asia/Kabul (entries' `created_at` is site
+    time, `current_time('mysql')`).
+- **Credential:** a WordPress application password (wp-admin → Users → Profile → Application Passwords) of an
+  Administrator, sent as HTTPS Basic auth. Stored in Settings → Integrations → Website messages, in the Keychain item
+  `wordpress.linumic.apppassword` (JSON username + password), like the GitHub token. Not in the Vault: the Vault asks
+  for Touch ID for every read, and this is read in the background every 30 minutes. The site runs the Two Factor
+  plugin; its 0.17.0 source lets application-password logins through (`app_password_did_authenticate`), the installed
+  version was not checked.
+- **What the app does:** two GETs at launch and every 30 minutes (`SiteMessagesClient`, ephemeral session, no
+  cookies, redirects refused, HTTPS only). Messages stay in memory. `site-messages.json` keeps only the ids the owner
+  marked seen or was notified about and the last read time. Nothing is written to WordPress; SureForms' own
+  read/unread is shown but not changed.
+- **Where it shows:** sidebar «پیام‌های سایت» (each message, Open in wp-admin = `admin.php?page=sureforms_entries#/entry/{id}`,
+  Reply by email = `mailto:` with a subject, only for a plain address, Mark seen); Daily Brief section "Website
+  messages" (new since seen: name, date, first 140 characters, the two links); Dashboard "Waiting for you" row;
+  Command palette (Refresh website messages, Open form entries in wp-admin, unseen senders by name). Optional local
+  notification for new messages (Settings, on by default; name and short excerpt, never the address).
+- **Not verified:** no call with credentials was made to linumic.com, so whether the host passes the Authorization
+  header, and whether "Enable Abilities" is on, are unknown until the owner saves the password and presses Read now.
+
+### راهنمای امین‌الله: پیام‌های سایت (دری)
+
+- **یک بار:** در wp-admin ← Users ← Profile ← Application Passwords یک نام بنویسید (Linumic OS) و Add را بزنید؛ رمز را
+  کپی کنید (فقط یک بار نشان داده می‌شود). بعد SureForms ← Settings ← «Enable Abilities» را روشن کنید (Edit و Delete
+  خاموش بمانند).
+- **در برنامه:** تنظیمات ← Integrations ← «پیام‌های سایت»: نام کاربری و رمز را بگذارید، «ذخیره در Keychain»، بعد «همین حالا
+  بخوان». اگر خطا داد، متن خطا می‌گوید چه کنید.
+- **هر روز:** پیام‌های تازه در «گزارش روز»، در داشبورد («منتظر شما») و در صفحهٔ «پیام‌های سایت» می‌آیند. «باز کردن در
+  wp-admin» یا «پاسخ با ایمیل» را بزنید و بعد «دیده شد». این علامت فقط روی همین دستگاه است.
+- **باطل کردن:** همان صفحهٔ Application Passwords در WordPress ← Revoke؛ و در برنامه «حذف».
 
 ## Social media (Phase 5)
 

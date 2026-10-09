@@ -39,7 +39,7 @@ final class LicenceModel {
     private let store: LicenceLedgerStore?
     private let keys: LicenceSigningKeys
     private var needsUpload = false
-    private var lastSyncedAt: Date?
+    private(set) var lastSyncedAt: Date?
     private var saveTask: Task<Void, Never>?
 
     init(inventory: InventoryModel) {
