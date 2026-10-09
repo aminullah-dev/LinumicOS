@@ -5,6 +5,7 @@ import SwiftUI
 struct LinumicOSApp: App {
     @State private var model: InventoryModel
     @State private var router = Router()
+    @State private var licences: LicenceModel
 
     init() {
         // macOS has no Persian system localization, so AppKit (window controls, split views, sheets,
@@ -19,7 +20,9 @@ struct LinumicOSApp: App {
             // Application Support could not be resolved, so keep this session's data in memory.
             store = InMemoryInventoryStore()
         }
-        _model = State(initialValue: InventoryModel(store: store))
+        let inventory = InventoryModel(store: store)
+        _model = State(initialValue: inventory)
+        _licences = State(initialValue: LicenceModel(inventory: inventory))
     }
 
     var body: some Scene {
@@ -27,16 +30,19 @@ struct LinumicOSApp: App {
             ContentView()
                 .environment(\.layoutDirection, Self.layoutDirection)
                 .environment(model)
+                .environment(licences)
                 .environment(router)
                 #if os(macOS)
                 .frame(minWidth: 960, minHeight: 600)
                 #endif
                 .task {
                     await model.load()
+                    await licences.load()
                     // Store status on launch, then every 30 minutes while the app is open.
                     while !Task.isCancelled {
                         await model.autoRefreshStoresIfDue()
                         await model.autoRefreshOversightIfDue()
+                        await licences.sync()
                         try? await Task.sleep(for: .seconds(InventoryModel.autoRefreshInterval))
                     }
                 }

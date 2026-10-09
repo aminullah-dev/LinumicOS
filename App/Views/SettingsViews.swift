@@ -15,6 +15,8 @@ struct IntegrationsSettingsView: View {
     @AppStorage(InventoryModel.notifyKey) private var notifyChanges = true
     @AppStorage(InventoryModel.autoRefreshOversightKey) private var autoRefreshOversight = true
     @AppStorage(InventoryModel.notifyOversightKey) private var notifyOversight = true
+    @AppStorage(LicenceModel.notifyKey) private var notifyLicences = true
+    @Environment(LicenceModel.self) private var licences
 
     private let integrations: [(name: String, symbol: String, plan: String)] = [
         ("Social networks", "bubble.left.and.bubble.right", "Phase 5: OAuth, approval before publishing"),
@@ -76,6 +78,15 @@ struct IntegrationsSettingsView: View {
                 }
             } header: {
                 Text("Project oversight")
+            }
+            Section {
+                Toggle(isOn: $notifyLicences) {
+                    Text("Remind me before licences expire")
+                    Text("Local notifications 30, 14, 7 and 1 days before a MediFlow or KhayatYar licence's last valid day.")
+                }
+                .onChange(of: notifyLicences) { Task { await LicenceNotifier.reschedule(for: licences.records) } }
+            } header: {
+                Text("Licences")
             }
             Section {
                 ForEach(integrations, id: \.name) { i in
@@ -305,7 +316,7 @@ struct SecuritySettingsView: View {
             Section("This app") {
                 LabeledContent("App Sandbox", value: "Enabled")
                 LabeledContent("Credential storage", value: "macOS Keychain (this device only)")
-                LabeledContent("Stored credentials", value: "GitHub token only, if you saved one")
+                LabeledContent("Stored credentials", value: "Only what you added: GitHub token, store console keys, licence signing keys (Mac)")
                 LabeledContent("Network", value: "HTTPS only. GitHub read-only when you refresh")
             }
             Section("Local data") {

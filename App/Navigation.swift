@@ -5,6 +5,7 @@ import Observation
 enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case dashboard
     case oversight
+    case licences
     case allProducts, verification, releases, roadmap, issues
     case repositories, builds, deployments
     case appStore, googlePlay
@@ -18,6 +19,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         switch self {
         case .dashboard: L("Dashboard")
         case .oversight: L("Oversight")
+        case .licences: L("Licences")
         case .allProducts: L("All Products")
         case .verification: L("Verification")
         case .releases: L("Releases")
@@ -42,6 +44,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         switch self {
         case .dashboard: "square.grid.2x2"
         case .oversight: "scope"
+        case .licences: "key.horizontal"
         case .allProducts: "shippingbox"
         case .verification: "checkmark.seal"
         case .releases: "tag"
@@ -69,7 +72,7 @@ struct SidebarSection: Identifiable {
     var id: String { title ?? "root" }
 
     static let all: [SidebarSection] = [
-        SidebarSection(title: nil, items: [.dashboard, .oversight]),
+        SidebarSection(title: nil, items: [.dashboard, .oversight, .licences]),
         SidebarSection(title: "Products", items: [.allProducts, .verification, .releases, .roadmap, .issues]),
         SidebarSection(title: "Development", items: [.repositories, .builds, .deployments]),
         SidebarSection(title: "Stores", items: [.appStore, .googlePlay]),

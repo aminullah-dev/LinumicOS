@@ -120,6 +120,13 @@ final class InventoryModel {
         cloudStatus = await hybrid.status
     }
 
+    /// The shared licence ledger on Supabase, when signed in. Licences sync on their own (record by
+    /// record, never deleting), not with the whole-inventory upload.
+    func licenceRemote() -> SupabaseLicenceRemote? {
+        guard let sessionManager, cloudUser != nil, let config = Self.supabaseConfig else { return nil }
+        return SupabaseLicenceRemote(config: config, token: { try await sessionManager.accessToken() })
+    }
+
     func signOut() async {
         await sessionManager?.signOut()
         cloudUser = nil

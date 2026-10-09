@@ -111,6 +111,16 @@
         }
       }
     },
+    "%@ licence %@ for %@ ends in %lld days (last valid day %@).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس %1$@ با شمارهٔ %2$@ برای %3$@ تا %4$lld روز دیگر ختم می‌شود (آخرین روز معتبر: %5$@)."
+          }
+        }
+      }
+    },
     "%@ needs at least one source. Add one, or record your own confirmation.": {
       "localizations": {
         "fa-AF": {
@@ -160,6 +170,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ خطای HTTP %d برگرداند."
+          }
+        }
+      }
+    },
+    "%@ will be marked superseded. Its key keeps working in the customer's app until it expires.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ «جایگزین‌شده» علامت می‌خورد. کلید آن در برنامهٔ مشتری تا ختم اعتبارش کار می‌کند."
           }
         }
       }
@@ -239,6 +259,56 @@
         }
       }
     },
+    "%@: %lld active": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$lld فعال"
+          }
+        }
+      }
+    },
+    "%@: %lld added, %lld already in the ledger, %lld rejected.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$lld افزوده شد، %3$lld از قبل در دفتر بود، %4$lld رد شد."
+          }
+        }
+      }
+    },
+    "%@: invalid expiry date.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: تاریخ ختم نادرست است."
+          }
+        }
+      }
+    },
+    "%@: invalid issue date.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: تاریخ صدور نادرست است."
+          }
+        }
+      }
+    },
+    "%@: invalid machine code.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: کد دستگاه نادرست است."
+          }
+        }
+      }
+    },
     "%@: new commit on %@/%@ %@: “%@”.": {
       "extractionState": "stale",
       "localizations": {
@@ -246,6 +316,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@: کامیت تازه در %2$@/%3$@ به تاریخ %4$@: «%5$@»."
+          }
+        }
+      }
+    },
+    "%@: no customer.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: نام مشتری ندارد."
           }
         }
       }
@@ -294,6 +374,16 @@
         }
       }
     },
+    "%@: unknown product.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: محصول ناشناخته."
+          }
+        }
+      }
+    },
     "%ld draft finding(s) haven't been reviewed and aren't reported.": {
       "extractionState": "stale",
       "localizations": {
@@ -328,6 +418,46 @@
       }
     },
     "%lld": {},
+    "%lld active": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld فعال"
+          }
+        }
+      }
+    },
+    "%lld characters; a machine code has 16": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld حرف؛ کد دستگاه ۱۶ حرف دارد"
+          }
+        }
+      }
+    },
+    "%lld expired": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ختم‌شده"
+          }
+        }
+      }
+    },
+    "%lld of 16 characters": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld از ۱۶ حرف"
+          }
+        }
+      }
+    },
     "%lld PRs": {
       "localizations": {
         "fa-AF": {
@@ -478,6 +608,16 @@
         }
       }
     },
+    "+1 Year": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+۱ سال"
+          }
+        }
+      }
+    },
     ", ": {
       "localizations": {
         "fa-AF": {
@@ -545,6 +685,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "؛ "
+          }
+        }
+      }
+    },
+    "A %@ licence can't be renewed. Renew the newest licence of this customer.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنسِ «%@» تمدید نمی‌شود. تازه‌ترین لایسنس همین مشتری را تمدید کنید."
           }
         }
       }
@@ -690,7 +840,27 @@
         }
       }
     },
+    "All (*)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همه (*)"
+          }
+        }
+      }
+    },
     "All Products": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همهٔ محصولات"
+          }
+        }
+      }
+    },
+    "All products": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
@@ -750,6 +920,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "پاسخ‌ها فقط از سوابق همین برنامه می‌آیند: معلومات با منابعشان، تصویرهای GitHub و App Store، و انتشارها، نقشهٔ راه، مشکلات و شواهد بازار که ثبت کرده‌اید. هیچ مدل زبانی وصل نیست و هیچ چیزی از دانش عمومی گرفته نمی‌شود."
+          }
+        }
+      }
+    },
+    "Any machine (*)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر دستگاه (*)"
+          }
+        }
+      }
+    },
+    "Any machine (*): the key works on every device. Use only when you mean it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر دستگاه (*): کلید روی هر دستگاهی کار می‌کند. فقط وقتی استفاده کنید که واقعاً همین را می‌خواهید."
+          }
+        }
+      }
+    },
+    "Any status": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر وضعیت"
           }
         }
       }
@@ -1026,6 +1226,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "بر اساس بخش"
+          }
+        }
+      }
+    },
+    "Choose issued.csv from ~/.linumic/licenses, and optionally the .lnmlic files next to it so their keys are attached.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل issued.csv را از ~/.linumic/licenses انتخاب کنید و اگر خواستید فایل‌های .lnmlic کنارش را هم، تا کلیدهایشان ضمیمه شوند."
+          }
+        }
+      }
+    },
+    "Choose the %@ private key (<product>-private.pem). It is checked against the public key built into the app and stored only in this Mac's Keychain.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید خصوصی %@ را انتخاب کنید (<product>-private.pem). با کلید عمومیِ داخل برنامه مقایسه می‌شود و فقط در Keychain همین مک نگه داشته می‌شود."
           }
         }
       }
@@ -1318,6 +1538,26 @@
         }
       }
     },
+    "Copied": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کاپی شد"
+          }
+        }
+      }
+    },
+    "Copy Key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کاپی کلید"
+          }
+        }
+      }
+    },
     "Could not load inventory: %@": {
       "localizations": {
         "fa-AF": {
@@ -1338,6 +1578,16 @@
         }
       }
     },
+    "Could not read the licence ledger: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر لایسنس‌ها خوانده نشد: %@"
+          }
+        }
+      }
+    },
     "Could not remove: %@": {
       "localizations": {
         "fa-AF": {
@@ -1354,6 +1604,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "فهرست محصولات ذخیره نشد: %@"
+          }
+        }
+      }
+    },
+    "Could not save the licence ledger: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر لایسنس‌ها ذخیره نشد: %@"
           }
         }
       }
@@ -1472,6 +1732,16 @@
         }
       }
     },
+    "Customer (clinic or workshop)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مشتری (کلینیک یا کارگاه)"
+          }
+        }
+      }
+    },
     "Customer feedback": {
       "extractionState": "stale",
       "localizations": {
@@ -1479,6 +1749,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نظر مشتری"
+          }
+        }
+      }
+    },
+    "Customer, licence id or machine code": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مشتری، شمارهٔ لایسنس یا کد دستگاه"
           }
         }
       }
@@ -1581,6 +1861,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "حذف…"
+          }
+        }
+      }
+    },
+    "Dependabot": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dependabot"
           }
         }
       }
@@ -1841,12 +2131,62 @@
         }
       }
     },
+    "Edition": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخه"
+          }
+        }
+      }
+    },
     "Edit…": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "ویرایش…"
+          }
+        }
+      }
+    },
+    "Ended %lld days ago": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld روز پیش ختم شد"
+          }
+        }
+      }
+    },
+    "Ends in %lld days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld روز دیگر ختم می‌شود"
+          }
+        }
+      }
+    },
+    "Ends tomorrow": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فردا ختم می‌شود"
+          }
+        }
+      }
+    },
+    "Enter the customer's name.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام مشتری را بنویسید."
           }
         }
       }
@@ -1982,6 +2322,46 @@
         }
       }
     },
+    "Expiring": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نزدیک به ختم"
+          }
+        }
+      }
+    },
+    "Expiring in 30 days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ختم در ۳۰ روز آینده"
+          }
+        }
+      }
+    },
+    "Expiry": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ختم اعتبار"
+          }
+        }
+      }
+    },
+    "Export CSV…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خروجی CSV…"
+          }
+        }
+      }
+    },
     "Facebook": {
       "extractionState": "stale",
       "localizations": {
@@ -2035,6 +2415,16 @@
         }
       }
     },
+    "Features": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قابلیت‌ها"
+          }
+        }
+      }
+    },
     "Fetched": {
       "localizations": {
         "fa-AF": {
@@ -2061,6 +2451,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "یافته‌ها"
+          }
+        }
+      }
+    },
+    "Fleet health %lld out of 100": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سلامت همهٔ مخزن‌ها %lld از ۱۰۰"
+          }
+        }
+      }
+    },
+    "Fleet health unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سلامت مخزن‌ها نامعلوم"
           }
         }
       }
@@ -2372,6 +2782,36 @@
         }
       }
     },
+    "Import": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وارد کردن"
+          }
+        }
+      }
+    },
+    "Import issued.csv…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وارد کردن issued.csv…"
+          }
+        }
+      }
+    },
+    "Import Signing Key…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وارد کردن کلید امضا…"
+          }
+        }
+      }
+    },
     "In App Store Connect, open ⁨Users and Access › Integrations⁩.": {
       "localizations": {
         "fa-AF": {
@@ -2550,6 +2990,26 @@
         }
       }
     },
+    "Issue a licence, or import issued.csv from the terminal tool.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک لایسنس صادر کنید، یا issued.csv ابزار ترمینال را وارد کنید."
+          }
+        }
+      }
+    },
+    "Issue Licence": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صدور لایسنس"
+          }
+        }
+      }
+    },
     "Issue record (manual entry)": {
       "extractionState": "stale",
       "localizations": {
@@ -2568,6 +3028,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "سوابق مشکلات"
+          }
+        }
+      }
+    },
+    "Issued": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ صدور"
+          }
+        }
+      }
+    },
+    "Issued licences keep working. You need the key file (or its encrypted backup) to issue again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس‌های صادرشده کار می‌کنند. برای صدور دوباره، فایل کلید (یا پشتیبان رمزگذاری‌شدهٔ آن) لازم است."
           }
         }
       }
@@ -2613,6 +3093,26 @@
         }
       }
     },
+    "Keep the code to renew. Enter the new code if the customer changed computer or phone.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای تمدید، همین کد را نگه دارید. اگر مشتری کمپیوتر یا گوشی را عوض کرده، کد تازه را بنویسید."
+          }
+        }
+      }
+    },
+    "Kept only in this Mac's Keychain (this device, not synced). Never uploaded to Supabase or written to the ledger.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط در Keychain همین مک نگه داشته می‌شود (همین دستگاه، بدون همگام‌سازی). هرگز به Supabase فرستاده یا در دفتر نوشته نمی‌شود."
+          }
+        }
+      }
+    },
     "Key ID": {
       "localizations": {
         "fa-AF": {
@@ -2623,12 +3123,42 @@
         }
       }
     },
+    "Key missing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید نیست"
+          }
+        }
+      }
+    },
+    "Key present": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید موجود است"
+          }
+        }
+      }
+    },
     "Key removed.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "کلید حذف شد."
+          }
+        }
+      }
+    },
+    "Keys: %lld attached, %lld added from the key file, %lld rejected.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدها: %1$lld ضمیمه شد، %2$lld از فایل کلید افزوده شد، %3$lld رد شد."
           }
         }
       }
@@ -2663,6 +3193,26 @@
         }
       }
     },
+    "Last changed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین تغییر"
+          }
+        }
+      }
+    },
+    "Last day today": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امروز آخرین روز است"
+          }
+        }
+      }
+    },
     "Last refresh %@: %lld updated": {
       "localizations": {
         "fa-AF": {
@@ -2679,6 +3229,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "آخرین تصویر: %@. از توسعه ← مخزن‌ها به‌روز کنید (فقط‌خواندنی)."
+          }
+        }
+      }
+    },
+    "Last valid day": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین روز معتبر"
           }
         }
       }
@@ -2743,6 +3303,16 @@
         }
       }
     },
+    "Ledger": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر"
+          }
+        }
+      }
+    },
     "Legal owner": {
       "extractionState": "stale",
       "localizations": {
@@ -2750,6 +3320,106 @@
           "stringUnit": {
             "state": "translated",
             "value": "مالک حقوقی"
+          }
+        }
+      }
+    },
+    "Licence": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس"
+          }
+        }
+      }
+    },
+    "Licence %@ is already in the ledger.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس %@ از قبل در دفتر است."
+          }
+        }
+      }
+    },
+    "Licence expiring": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس نزدیک به ختم"
+          }
+        }
+      }
+    },
+    "Licence issued": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس صادر شد"
+          }
+        }
+      }
+    },
+    "Licence key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید لایسنس"
+          }
+        }
+      }
+    },
+    "Licence not found": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس پیدا نشد"
+          }
+        }
+      }
+    },
+    "Licence status: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت لایسنس: %@"
+          }
+        }
+      }
+    },
+    "Licences": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس‌ها"
+          }
+        }
+      }
+    },
+    "Licences issued on the Mac appear here after they sync.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس‌هایی که روی مک صادر می‌شوند، بعد از همگام‌سازی این‌جا دیده می‌شوند."
+          }
+        }
+      }
+    },
+    "Line %lld: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سطر %1$lld: %2$@"
           }
         }
       }
@@ -2938,6 +3608,16 @@
         }
       }
     },
+    "Local notifications 30, 14, 7 and 1 days before a MediFlow or KhayatYar licence's last valid day.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اطلاعیهٔ محلی ۳۰، ۱۴، ۷ و ۱ روز پیش از آخرین روز معتبر لایسنس MediFlow یا خیاط‌یار."
+          }
+        }
+      }
+    },
     "Local only. Sign in to keep the inventory on the Linumic server (Supabase) and use it on Mac and iPhone.": {
       "localizations": {
         "fa-AF": {
@@ -2977,6 +3657,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "اولویت پایین"
+          }
+        }
+      }
+    },
+    "Machine": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دستگاه"
+          }
+        }
+      }
+    },
+    "Machine code": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کد دستگاه"
           }
         }
       }
@@ -3124,6 +3824,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "مخزن یکپارچه"
+          }
+        }
+      }
+    },
+    "More": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیشتر"
           }
         }
       }
@@ -3330,6 +4040,26 @@
         }
       }
     },
+    "No %@ signing key on this Mac. Import it under Licences › Signing keys first.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای %@ روی این مک نیست. اول آن را در لایسنس‌ها › کلیدهای امضا وارد کنید."
+          }
+        }
+      }
+    },
+    "No %@ signing key on this Mac. Import it under Signing keys first.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای %@ روی این مک نیست. اول آن را در بخش کلیدهای امضا وارد کنید."
+          }
+        }
+      }
+    },
     "No GitHub description": {
       "localizations": {
         "fa-AF": {
@@ -3408,6 +4138,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "هیچ مشکلی ثبت نشده. همگام‌سازی مشکلات GitHub در برنامه است."
+          }
+        }
+      }
+    },
+    "No licence id.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شمارهٔ لایسنس ندارد."
+          }
+        }
+      }
+    },
+    "No licences in the ledger yet. Open Licences to issue one or import issued.csv →": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز لایسنسی در دفتر نیست. برای صدور یا وارد کردن issued.csv، لایسنس‌ها را باز کنید ←"
+          }
+        }
+      }
+    },
+    "No licences match these filters.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ لایسنسی با این فیلترها نمی‌خواند."
+          }
+        }
+      }
+    },
+    "No licences yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز لایسنسی نیست"
           }
         }
       }
@@ -3690,6 +4460,16 @@
         }
       }
     },
+    "None ends in the next 30 days.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در ۳۰ روز آینده هیچ لایسنسی ختم نمی‌شود."
+          }
+        }
+      }
+    },
     "None recorded": {
       "localizations": {
         "fa-AF": {
@@ -3717,6 +4497,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "اولویت عادی"
+          }
+        }
+      }
+    },
+    "not an LNM1 licence key.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید لایسنس LNM1 نیست."
           }
         }
       }
@@ -3835,6 +4625,16 @@
         }
       }
     },
+    "Notes (ledger only, not in the key)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یادداشت (فقط در دفتر، نه در کلید)"
+          }
+        }
+      }
+    },
     "Nothing is posted automatically. Publish on the network yourself, then record it here.": {
       "localizations": {
         "fa-AF": {
@@ -3861,6 +4661,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "تغییرات فروشگاه را به من اطلاع بده"
+          }
+        }
+      }
+    },
+    "Offline keys can't be recalled. Voiding only marks the licence in your ledger; the customer's app keeps accepting a valid key until it expires.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهای آفلاین پس گرفته نمی‌شوند. باطل کردن فقط لایسنس را در دفتر شما علامت می‌زند؛ برنامهٔ مشتری کلید معتبر را تا ختم اعتبارش می‌پذیرد."
+          }
+        }
+      }
+    },
+    "Offline, showing this device's copy: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آفلاین؛ نسخهٔ همین دستگاه نشان داده می‌شود: %@"
           }
         }
       }
@@ -4014,6 +4834,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نسبتاً تأییدشده"
+          }
+        }
+      }
+    },
+    "Perpetual": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دائمی"
           }
         }
       }
@@ -4440,6 +5270,16 @@
         }
       }
     },
+    "Public key fingerprint (SHA-256): %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اثر انگشت کلید عمومی (SHA-256): %@"
+          }
+        }
+      }
+    },
     "Public repositories only": {
       "localizations": {
         "fa-AF": {
@@ -4592,6 +5432,16 @@
         }
       }
     },
+    "Reason (optional)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دلیل (اختیاری)"
+          }
+        }
+      }
+    },
     "Recent activity": {
       "extractionState": "stale",
       "localizations": {
@@ -4609,6 +5459,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نظرهای اخیر (%lld)"
+          }
+        }
+      }
+    },
+    "Record": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سابقه"
           }
         }
       }
@@ -4639,6 +5499,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "اشکالات سابقه"
+          }
+        }
+      }
+    },
+    "Recorded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت شده"
+          }
+        }
+      }
+    },
+    "Recorded as %@ (the customer's app counts down from it, with 30 days of grace after).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به‌صورت %@ ثبت می‌شود (برنامهٔ مشتری تا این روز شمارش معکوس می‌کند و بعد از آن ۳۰ روز مهلت دارد)."
+          }
+        }
+      }
+    },
+    "Recorded by": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت‌کننده"
           }
         }
       }
@@ -4920,12 +5810,32 @@
         }
       }
     },
+    "Remind me before licences expire": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیش از ختم لایسنس‌ها یادآوری کن"
+          }
+        }
+      }
+    },
     "Remove Key": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "حذف کلید"
+          }
+        }
+      }
+    },
+    "Remove the %@ signing key from this Mac?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای %@ از این مک حذف شود؟"
           }
         }
       }
@@ -4946,6 +5856,66 @@
           "stringUnit": {
             "state": "translated",
             "value": "حذف این منبع"
+          }
+        }
+      }
+    },
+    "Remove…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حذف…"
+          }
+        }
+      }
+    },
+    "Renew or Re-issue": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمدید یا صدور دوباره"
+          }
+        }
+      }
+    },
+    "Renew or Re-issue…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمدید یا صدور دوباره…"
+          }
+        }
+      }
+    },
+    "Renewing is available on the Mac.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمدید فقط روی مک ممکن است."
+          }
+        }
+      }
+    },
+    "Renews": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمدیدِ"
+          }
+        }
+      }
+    },
+    "Replaced by": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جایگزین‌شده با"
           }
         }
       }
@@ -5159,6 +6129,26 @@
         }
       }
     },
+    "Save .lnmlic…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ذخیرهٔ .lnmlic…"
+          }
+        }
+      }
+    },
+    "Save Notes": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ذخیرهٔ یادداشت"
+          }
+        }
+      }
+    },
     "Save to Keychain": {
       "localizations": {
         "fa-AF": {
@@ -5311,6 +6301,16 @@
         }
       }
     },
+    "Share": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اشتراک‌گذاری"
+          }
+        }
+      }
+    },
     "Show": {
       "localizations": {
         "fa-AF": {
@@ -5352,6 +6352,26 @@
         }
       }
     },
+    "Sign a new licence for a customer's machine code": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امضای لایسنس تازه برای کد دستگاه یک مشتری"
+          }
+        }
+      }
+    },
+    "Sign and Issue": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امضا و صدور"
+          }
+        }
+      }
+    },
     "Sign Out": {
       "localizations": {
         "fa-AF": {
@@ -5372,6 +6392,16 @@
         }
       }
     },
+    "Sign Renewal": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امضای تمدید"
+          }
+        }
+      }
+    },
     "Sign-in and role-based access will be added with the cloud backend.": {
       "extractionState": "stale",
       "localizations": {
@@ -5379,6 +6409,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "ورود و دسترسی بر اساس نقش همراه با سرور ابری اضافه می‌شود."
+          }
+        }
+      }
+    },
+    "Signature verified with the %@ public key built into the app.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امضا با کلید عمومی %@ که داخل برنامه است تأیید شد."
+          }
+        }
+      }
+    },
+    "Signed and verified with the built-in public key. Send this key (or the .lnmlic file) to the customer.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امضا شد و با کلید عمومیِ داخل برنامه تأیید شد. این کلید (یا فایل .lnmlic) را برای مشتری بفرستید."
           }
         }
       }
@@ -5400,6 +6450,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "وارد شده‌اید، اما این حساب هنوز دسترسی مدیر به Linumic OS ندارد."
+          }
+        }
+      }
+    },
+    "Signing keys": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهای امضا"
           }
         }
       }
@@ -5709,6 +6769,16 @@
         }
       }
     },
+    "Superseded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جایگزین‌شده"
+          }
+        }
+      }
+    },
     "Survey": {
       "extractionState": "stale",
       "localizations": {
@@ -5736,6 +6806,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "همگام‌شده %@"
+          }
+        }
+      }
+    },
+    "Syncing…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال همگام‌سازی…"
           }
         }
       }
@@ -5882,6 +6962,46 @@
         }
       }
     },
+    "The code the customer reads from the licence screen of the app. KhayatYar: from the main device of the workshop. * means any machine.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کدی که مشتری از صفحهٔ لایسنس برنامه می‌خواند. خیاط‌یار: از دستگاه اصلی کارگاه. * یعنی هر دستگاه."
+          }
+        }
+      }
+    },
+    "The expiry date is before today.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ ختم پیش از امروز است."
+          }
+        }
+      }
+    },
+    "The expiry date isn't a valid date.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ ختم درست نیست."
+          }
+        }
+      }
+    },
+    "The header doesn't look like issued.csv (id, product, customer, machine, issued, expires, edition).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرستون‌ها مانند issued.csv نیست (id, product, customer, machine, issued, expires, edition)."
+          }
+        }
+      }
+    },
     "The inventory file contains no secrets.": {
       "localizations": {
         "fa-AF": {
@@ -5923,6 +7043,66 @@
         }
       }
     },
+    "the key doesn't match ledger row %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید با سطر %@ دفتر نمی‌خواند."
+          }
+        }
+      }
+    },
+    "The key wasn't recorded (issued.csv doesn't contain it). Import the matching .lnmlic file from ~/.linumic/licenses to attach it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید ثبت نشده است (issued.csv آن را ندارد). برای ضمیمه کردن، فایل .lnmlic همین لایسنس را از ~/.linumic/licenses وارد کنید."
+          }
+        }
+      }
+    },
+    "The licence contents can't be read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محتوای لایسنس خوانده نمی‌شود."
+          }
+        }
+      }
+    },
+    "The licence key is damaged (it isn't valid base64url).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید لایسنس خراب است (base64url درست نیست)."
+          }
+        }
+      }
+    },
+    "The machine code must be 16 characters like K7Q2-9XMB-4T1D-WP3C, or * for any machine.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کد دستگاه باید ۱۶ حرف باشد، مانند K7Q2-9XMB-4T1D-WP3C، یا * برای هر دستگاه."
+          }
+        }
+      }
+    },
+    "The new key didn't verify, so it wasn't issued: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید تازه تأیید نشد، پس صادر نشد: %@"
+          }
+        }
+      }
+    },
     "The private key isn't an RSA key.": {
       "extractionState": "stale",
       "localizations": {
@@ -5956,6 +7136,26 @@
         }
       }
     },
+    "The signature doesn't match. The key was changed, or signed with a different key.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امضا نمی‌خواند. کلید تغییر کرده یا با کلید دیگری امضا شده است."
+          }
+        }
+      }
+    },
+    "These licence ids exist on the server with different contents, so the server copy was kept: %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این شماره‌های لایسنس روی سرور با محتوای دیگری هستند، پس نسخهٔ سرور نگه داشته شد: %@."
+          }
+        }
+      }
+    },
     "These need credentials and authorization before they can be added. See docs/integrations.md.": {
       "localizations": {
         "fa-AF": {
@@ -5976,12 +7176,62 @@
         }
       }
     },
+    "This device only. Sign in under Settings › Account to share the ledger with your other devices.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط همین دستگاه. برای داشتن دفتر روی دستگاه‌های دیگر، در تنظیمات › حساب وارد شوید."
+          }
+        }
+      }
+    },
     "This evidence is cited by a finding. Remove or edit the finding first.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "یک یافته به این شاهد استناد می‌کند. اول آن یافته را حذف یا ویرایش کنید."
+          }
+        }
+      }
+    },
+    "This file isn't a P-256 private key in PEM format. Choose <product>-private.pem.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این فایل کلید خصوصی P-256 در قالب PEM نیست. فایل <product>-private.pem را انتخاب کنید."
+          }
+        }
+      }
+    },
+    "This is a public key. Signing needs the private key (<product>-private.pem).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کلید عمومی است. برای امضا کلید خصوصی (<product>-private.pem) لازم است."
+          }
+        }
+      }
+    },
+    "This is not an LNM1 licence key.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کلید لایسنس LNM1 نیست."
+          }
+        }
+      }
+    },
+    "This is the %1$@ signing key, not the %2$@ one. Nothing was saved.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کلید امضای %1$@ است، نه %2$@. چیزی ذخیره نشد."
           }
         }
       }
@@ -5993,6 +7243,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "این فایل کلید JSON یک service account گوگل نیست."
+          }
+        }
+      }
+    },
+    "This key doesn't match the %@ public key built into the app, so licences signed with it would be rejected. Nothing was saved.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کلید با کلید عمومی %@ که داخل برنامه است نمی‌خواند، پس لایسنس‌هایی که با آن امضا شوند رد می‌شوند. چیزی ذخیره نشد."
+          }
+        }
+      }
+    },
+    "This key doesn't verify with the built-in %@ public key.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کلید با کلید عمومی %@ داخل برنامه تأیید نمی‌شود."
+          }
+        }
+      }
+    },
+    "This licence is for another product (%@).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این لایسنس برای محصول دیگری است (%@)."
+          }
+        }
+      }
+    },
+    "This only changes your ledger. The key can't be recalled: the customer's app keeps working until the licence expires.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این فقط دفتر شما را تغییر می‌دهد. کلید پس گرفته نمی‌شود: برنامهٔ مشتری تا ختم لایسنس کار می‌کند."
           }
         }
       }
@@ -6103,6 +7393,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "نامعلوم"
+          }
+        }
+      }
+    },
+    "Unsupported licence version %ld.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ %ld لایسنس پشتیبانی نمی‌شود."
+          }
+        }
+      }
+    },
+    "Until a date": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تا یک تاریخ"
           }
         }
       }
@@ -6219,6 +7529,26 @@
         }
       }
     },
+    "Valid: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درست: %@"
+          }
+        }
+      }
+    },
+    "Validity": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعتبار"
+          }
+        }
+      }
+    },
     "VERIFIED": {
       "localizations": {
         "fa-AF": {
@@ -6316,6 +7646,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "دیدن پست"
+          }
+        }
+      }
+    },
+    "Void": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باطل"
+          }
+        }
+      }
+    },
+    "Void %@?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ باطل شود؟"
+          }
+        }
+      }
+    },
+    "Void in Ledger…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باطل کردن در دفتر…"
           }
         }
       }
@@ -6704,6 +8064,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "«%@»"
+          }
+        }
+      }
+    },
+    "“%@” can't appear in a machine code": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«%@» در کد دستگاه نمی‌آید"
           }
         }
       }

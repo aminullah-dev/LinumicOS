@@ -63,6 +63,7 @@ struct ContentView: View {
         switch item {
         case .dashboard: DashboardView()
         case .oversight: OversightView()
+        case .licences: LicencesView()
         case .allProducts: ProductsRootView()
         case .verification: VerificationView()
         case .releases: AllReleasesView()

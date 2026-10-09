@@ -4,6 +4,7 @@ import SwiftUI
 struct DashboardView: View {
     @Environment(InventoryModel.self) private var model
     @Environment(Router.self) private var router
+    @Environment(LicenceModel.self) private var licences
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -35,6 +36,8 @@ struct DashboardView: View {
                 }
 
                 oversightCard
+
+                licencesCard
 
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: statusColumns), spacing: 12) {
                     ForEach([VerificationStatus.verified, .partiallyVerified, .unknown, .conflicting]) { status in
@@ -184,6 +187,51 @@ struct DashboardView: View {
                 }
                 Spacer()
                 Image(systemName: "chevron.right").foregroundStyle(.tertiary)
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// Licence centre summary: active licences per product and the ones ending within 30 days.
+    private var licencesCard: some View {
+        let s = licences.summary
+        return Button { router.sidebar = .licences } label: {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 6) {
+                    Image(systemName: "key.horizontal").foregroundStyle(.secondary)
+                    Text("Licences").font(.headline)
+                    Spacer()
+                    Image(systemName: "chevron.right").foregroundStyle(.tertiary)
+                }
+                if s.total == 0 {
+                    Text("No licences in the ledger yet. Open Licences to issue one or import issued.csv →")
+                        .font(.callout).foregroundStyle(.secondary)
+                } else {
+                    HStack(spacing: 16) {
+                        ForEach(LicenceProduct.allCases) { p in
+                            Text("\(p.displayName): \(s.activeByProduct[p, default: 0]) active").font(.callout).monospacedDigit()
+                        }
+                        if !s.expired.isEmpty {
+                            StatusBadge(text: String(localized: "\(s.expired.count) expired"), color: .red)
+                        }
+                    }
+                    if s.expiringSoon.isEmpty {
+                        Text("None ends in the next 30 days.").font(.callout).foregroundStyle(.secondary)
+                    } else {
+                        ForEach(s.expiringSoon.prefix(5)) { r in
+                            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                                Image(systemName: "clock.badge.exclamationmark").foregroundStyle(.orange)
+                                Text(verbatim: "\(r.customer) · \(r.product.displayName)")
+                                Spacer(minLength: 4)
+                                LicenceExpiryText(record: r).foregroundStyle(.secondary)
+                            }
+                            .font(.callout)
+                        }
+                    }
+                }
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
