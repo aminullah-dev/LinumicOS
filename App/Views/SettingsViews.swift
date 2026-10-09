@@ -153,6 +153,7 @@ struct IntegrationsSettingsView: View {
             } footer: {
                 Text("Sign in under Operations in the sidebar. Only refresh tokens are kept, in this device's Keychain (talar.admin.session, safebeauty.admin.session, velro.staff.session); the last queue counts are kept for the notifications, nothing else.")
             }
+            SiteMessagesSettingsSection()
             Section {
                 Toggle(isOn: $notifyBrief) {
                     Text("Morning Daily Brief notification")

@@ -209,7 +209,7 @@ public enum SiteMessagesError: Error, LocalizedError, Equatable, Sendable {
         case .forbidden(let code):
             LF("This WordPress user may not read form entries (403, %@). Use an Administrator's application password.", code)
         case .abilitiesOff:
-            L("SureForms abilities are off. In wp-admin open SureForms → Settings and turn on \u{2068}Enable Abilities\u{2069}.")
+            L("SureForms abilities are off. In wp-admin open SureForms → Settings and turn on “Enable Abilities”.")
         case .noAbilitiesAPI:
             L("This WordPress has no Abilities API (it needs WordPress 6.9 or later).")
         case .http(let status, let code):

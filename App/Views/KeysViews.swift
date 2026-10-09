@@ -295,7 +295,7 @@ struct KeysView: View {
                 Button("Add to registry…") { editingKey = KeyDraft(key: newKey(path: path), isNew: true) }
                     .buttonStyle(.borderless).minTapTarget()
             }
-        case .keyMissing, .keyNotBackedUp, .passphraseMissing:
+        case .keyMissing, .keyNotBackedUp, .passphraseMissing, .deletedFileBack:
             EmptyView()
         }
     }
@@ -472,6 +472,10 @@ struct KeyCard: View {
     let remove: () -> Void
 
     private var tint: Color {
+        if key.isDeleted {
+            if case .present? = result?.status { return .orange }
+            return .gray
+        }
         if case .missing? = result?.status { return .red }
         return state == .covered || state == .notApplicable ? (result == nil ? .gray : .green) : state.color
     }
@@ -492,12 +496,18 @@ struct KeyCard: View {
                 .fixedSize()
             }
             FitRow(spacing: 6) {
-                if let result {
+                if let deleted = key.deletedOn {
+                    // Deleted on purpose: its absence is expected, so "Missing" would be wrong.
+                    ReleaseBadge(text: String(localized: "Deleted \(deleted.description)"), symbol: "trash.circle", color: .gray)
+                    if case .present? = result?.status {
+                        ReleaseBadge(text: String(localized: "On this Mac again"), symbol: "exclamationmark.circle.fill", color: .orange)
+                    }
+                } else if let result {
                     ReleaseBadge(text: result.status.title, symbol: result.status.symbol, color: result.status.color)
                 } else {
                     ReleaseBadge(text: String(localized: "Not checked"), symbol: "questionmark.circle", color: .gray)
                 }
-                ReleaseBadge(text: state.title, symbol: state.symbol, color: state.color)
+                if !key.isDeleted { ReleaseBadge(text: state.title, symbol: state.symbol, color: state.color) }
                 if key.doNotDelete {
                     ReleaseBadge(text: String(localized: "Do not delete"), symbol: "hand.raised.fill", color: .red)
                 }
@@ -526,6 +536,9 @@ struct KeyCard: View {
             }
             if let note = key.note, !note.isEmpty {
                 Text(verbatim: note).font(.caption).foregroundStyle(.secondary)
+            }
+            if let deletedNote = key.deletedNote, !deletedNote.isEmpty {
+                Text(verbatim: deletedNote).font(.caption).foregroundStyle(.secondary)
             }
             Text("Source: \(key.source), recorded \(key.recordedOn.description)")
                 .font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
@@ -614,7 +627,7 @@ struct RestoreGuidePanel: View {
     var body: some View {
         DisclosureGroup(isExpanded: $isExpanded) {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Read-only. Run these yourself in Terminal; the app runs nothing. openssl asks for the passphrase (Keychain item “Linumic license backup passphrase” or the private Notion page); it never goes on the command line.")
+                Text("Read-only. Run these yourself in Terminal; the app runs nothing. openssl asks for the passphrase (Keychain item “Linumic license backup passphrase”, the private Notion page or the paper copy); it never goes on the command line.")
                     .font(.callout).foregroundStyle(.secondary)
                 step(1, "Download the backup file from Google Drive, folder Mohem.", command: nil)
                 step(2, "Make an empty private folder, move the downloaded file into it, and go there.", command: KeysRestoreGuide.makeFolderCommand())

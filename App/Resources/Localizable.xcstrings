@@ -254,6 +254,16 @@
         }
       }
     },
+    "%@ was deleted on %@ but is on this Mac again": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ در %@ پاک شده بود ولی دوباره روی این مک است"
+          }
+        }
+      }
+    },
     "%@ will be marked superseded. Its key keeps working in the customer's app until it expires.": {
       "localizations": {
         "fa-AF": {
@@ -270,6 +280,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "%@, entry %d": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@، ورودی %d"
           }
         }
       }
@@ -484,6 +504,26 @@
         }
       }
     },
+    "%d earlier messages already marked seen.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d پیام قبلی دیده‌شده علامت خورده است."
+          }
+        }
+      }
+    },
+    "%d new messages from linumic.com": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d پیام تازه از linumic.com"
+          }
+        }
+      }
+    },
     "%ld draft finding(s) haven't been reviewed and aren't reported.": {
       "extractionState": "stale",
       "localizations": {
@@ -594,6 +634,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld میلی‌ثانیه"
+          }
+        }
+      }
+    },
+    "%lld new": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld تازه"
           }
         }
       }
@@ -768,6 +818,16 @@
         }
       }
     },
+    "(no message text)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(پیام متنی ندارد)"
+          }
+        }
+      }
+    },
     "+1 Year": {
       "localizations": {
         "fa-AF": {
@@ -839,6 +899,16 @@
         }
       }
     },
+    "1. wp-admin → Users → Profile → Application Passwords: name it ⁨Linumic OS⁩ and press Add. Copy the password once. 2. SureForms → Settings: turn on ⁨Enable Abilities⁩ (leave Edit and Delete off). 3. Paste your username and the password here. It is stored only in this device's Keychain (wordpress.linumic.apppassword) and sent only to https://linumic.com. Revoke it in the same WordPress screen at any time.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "۱. در wp-admin ← Users ← Profile ← Application Passwords یک نام بنویسید (⁨Linumic OS⁩) و Add را بزنید. رمز را همان یک بار کپی کنید. ۲. در SureForms ← Settings گزینهٔ ⁨Enable Abilities⁩ را روشن کنید (Edit و Delete را خاموش بگذارید). ۳. نام کاربری و رمز را این‌جا بگذارید. رمز فقط در Keychain همین دستگاه (wordpress.linumic.apppassword) نگه داشته می‌شود و فقط به https://linumic.com فرستاده می‌شود. هر وقت خواستید، در همان صفحهٔ WordPress آن را باطل کنید."
+          }
+        }
+      }
+    },
     "; ": {
       "localizations": {
         "fa-AF": {
@@ -855,6 +925,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "لایسنسِ «%@» تمدید نمی‌شود. تازه‌ترین لایسنس همین مشتری را تمدید کنید."
+          }
+        }
+      }
+    },
+    "A local notification with the sender's name when a refresh finds a message you haven't seen. Read when the app opens and every 30 minutes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک اعلان محلی با نام فرستنده، وقتی بازخوانی پیامی پیدا کند که هنوز ندیده‌اید. هنگام باز شدن برنامه و هر ۳۰ دقیقه خوانده می‌شود."
           }
         }
       }
@@ -1126,6 +1206,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "همه (*)"
+          }
+        }
+      }
+    },
+    "All entries in wp-admin": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همهٔ ورودی‌ها در wp-admin"
           }
         }
       }
@@ -1412,6 +1502,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "برنامه"
+          }
+        }
+      }
+    },
+    "Application password": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمز برنامه (Application password)"
           }
         }
       }
@@ -2148,6 +2248,26 @@
         }
       }
     },
+    "Connected, not read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وصل است، هنوز خوانده نشده."
+          }
+        }
+      }
+    },
+    "Connected, not read yet. It is read when the app opens and every 30 minutes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وصل است، هنوز خوانده نشده. هنگام باز شدن برنامه و هر ۳۰ دقیقه خوانده می‌شود."
+          }
+        }
+      }
+    },
     "Console refresh %@: %lld updated": {
       "localizations": {
         "fa-AF": {
@@ -2325,6 +2445,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "یک ⁨service account⁩ بسازید و برایش کلید ⁨JSON⁩ دانلود کنید."
+          }
+        }
+      }
+    },
+    "Create an application password in wp-admin": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ساختن رمز برنامه در wp-admin"
           }
         }
       }
@@ -2541,6 +2671,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "این ورود حذف شود؟"
+          }
+        }
+      }
+    },
+    "Deleted %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاک‌شده %@"
           }
         }
       }
@@ -3341,6 +3481,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "رایگان و فقط‌خواندنی. کلید فقط در Keychain همین مک می‌ماند و هرگز آپلود نمی‌شود."
+          }
+        }
+      }
+    },
+    "From %@ and %d more.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از %@ و %d نفر دیگر."
+          }
+        }
+      }
+    },
+    "From %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از %@."
           }
         }
       }
@@ -4585,6 +4745,26 @@
         }
       }
     },
+    "linumic.com (WordPress)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "linumic.com (WordPress)"
+          }
+        }
+      }
+    },
+    "linumic.com, SureForms entries through the WordPress Abilities API": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "linumic.com، ورودی‌های SureForms از راه Abilities API در WordPress"
+          }
+        }
+      }
+    },
     "Listing": {
       "localizations": {
         "fa-AF": {
@@ -4882,6 +5062,26 @@
         }
       }
     },
+    "Mark all seen": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همه را دیده‌شده علامت بزن"
+          }
+        }
+      }
+    },
+    "Mark as new": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "علامت تازه"
+          }
+        }
+      }
+    },
     "Mark Published": {
       "localizations": {
         "fa-AF": {
@@ -4899,6 +5099,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "برای پیگیری، انتشار را «نامزد انتشار» علامت بزنید"
+          }
+        }
+      }
+    },
+    "Mark seen": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دیده شد"
           }
         }
       }
@@ -4991,6 +5201,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "قابل ادغام، برخی بررسی‌ها ناکام"
+          }
+        }
+      }
+    },
+    "Message from %@, %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام از %@، %@"
+          }
+        }
+      }
+    },
+    "Messages are kept in memory only. This device stores just the ids you marked seen or were notified about (site-messages.json). Nothing is changed in WordPress.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام‌ها فقط در حافظهٔ برنامه می‌مانند. این دستگاه فقط شمارهٔ پیام‌هایی را که دیده‌شده علامت زده‌اید یا برایشان اعلان آمده نگه می‌دارد (site-messages.json). در WordPress چیزی تغییر نمی‌کند."
           }
         }
       }
@@ -5158,12 +5388,32 @@
         }
       }
     },
+    "New": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه"
+          }
+        }
+      }
+    },
     "New %@★ review of %@: %@": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "نظر تازهٔ %1$@★ برای %2$@: %3$@"
+          }
+        }
+      }
+    },
+    "New message from linumic.com": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام تازه از linumic.com"
           }
         }
       }
@@ -5234,6 +5484,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نوع منبع تازه"
+          }
+        }
+      }
+    },
+    "New website messages": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام‌های تازهٔ سایت"
           }
         }
       }
@@ -5529,6 +5789,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نوع سؤال شناخته نشد"
+          }
+        }
+      }
+    },
+    "No new messages. Everything read so far is marked seen.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام تازه‌ای نیست. هرچه تا حالا خوانده شده، دیده‌شده علامت خورده است."
           }
         }
       }
@@ -5951,6 +6221,16 @@
         }
       }
     },
+    "Not connected. Add a WordPress application password in Settings → Integrations → Website messages.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وصل نیست. در تنظیمات ← Integrations ← «پیام‌های سایت» یک رمز برنامهٔ WordPress بگذارید."
+          }
+        }
+      }
+    },
     "Not connected. No data is shown until this integration is implemented and authorized.": {
       "localizations": {
         "fa-AF": {
@@ -6175,6 +6455,16 @@
         }
       }
     },
+    "Notify me about new website messages": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای پیام‌های تازهٔ سایت اعلان بده"
+          }
+        }
+      }
+    },
     "Notify me about store changes": {
       "localizations": {
         "fa-AF": {
@@ -6221,6 +6511,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "خوب"
+          }
+        }
+      }
+    },
+    "On this Mac again": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دوباره روی این مک"
           }
         }
       }
@@ -6286,6 +6586,16 @@
         }
       }
     },
+    "Open form entries in wp-admin": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن ورودی‌های فورم در wp-admin"
+          }
+        }
+      }
+    },
     "Open GitHub issues exist in %@, but their severity isn't known.": {
       "extractionState": "stale",
       "localizations": {
@@ -6317,6 +6627,16 @@
         }
       }
     },
+    "Open in wp-admin": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن در wp-admin"
+          }
+        }
+      }
+    },
     "Open pull requests": {
       "localizations": {
         "fa-AF": {
@@ -6333,6 +6653,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "PR های باز: %lld"
+          }
+        }
+      }
+    },
+    "Open Settings → Integrations": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن تنظیمات ← Integrations"
           }
         }
       }
@@ -6414,6 +6744,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "رمز کپی شد. کلیپ‌بورد پس از ۳۰ ثانیه پاک می‌شود."
+          }
+        }
+      }
+    },
+    "Password saved": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمز ذخیره است"
           }
         }
       }
@@ -7022,6 +7362,16 @@
         }
       }
     },
+    "Re: your message to Linumic": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاسخ: پیام شما به Linumic"
+          }
+        }
+      }
+    },
     "Read from public RDAP (rdap.org) every 12 hours. Hosts on web.app and cloudfunctions.net belong to Google and are not renewed by Linumic.": {
       "localizations": {
         "fa-AF": {
@@ -7102,6 +7452,26 @@
         }
       }
     },
+    "Read-only. Run these yourself in Terminal; the app runs nothing. openssl asks for the passphrase (Keychain item “Linumic license backup passphrase”, the private Notion page or the paper copy); it never goes on the command line.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط خواندنی. این فرمان‌ها را خودتان در Terminal اجرا کنید؛ برنامه چیزی اجرا نمی‌کند. openssl رمز را می‌پرسد (آیتم Keychain «Linumic license backup passphrase»، صفحهٔ خصوصی Notion یا نسخهٔ کاغذی)؛ رمز هرگز در خود فرمان نوشته نمی‌شود."
+          }
+        }
+      }
+    },
+    "Read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوانده شد."
+          }
+        }
+      }
+    },
     "Reading from RDAP…": {
       "localizations": {
         "fa-AF": {
@@ -7118,6 +7488,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "در حال خواندن فروشگاه‌ها و GitHub…"
+          }
+        }
+      }
+    },
+    "Reads contact-form entries through SureForms' read-only abilities. It never changes WordPress.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ورودی‌های فورم تماس را از راه قابلیت‌های فقط‌خواندنی SureForms می‌خواند. هیچ‌وقت WordPress را تغییر نمی‌دهد."
           }
         }
       }
@@ -7349,6 +7729,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "وضعیت فروشگاه‌ها را خودکار به‌روز کن"
+          }
+        }
+      }
+    },
+    "Refresh website messages": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازخوانی پیام‌های سایت"
           }
         }
       }
@@ -7660,6 +8050,16 @@
         }
       }
     },
+    "Remove": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حذف"
+          }
+        }
+      }
+    },
     "Remove Key": {
       "localizations": {
         "fa-AF": {
@@ -7716,6 +8116,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "از بررسی برداشته شد"
+          }
+        }
+      }
+    },
+    "Removed.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حذف شد."
           }
         }
       }
@@ -7786,6 +8196,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "جایگزین‌شده با"
+          }
+        }
+      }
+    },
+    "Reply by email": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاسخ با ایمیل"
           }
         }
       }
@@ -8099,12 +8519,32 @@
         }
       }
     },
+    "Saved and read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ذخیره و خوانده شد."
+          }
+        }
+      }
+    },
     "Saved only in this device's Keychain, never synced or uploaded. Showing, copying or filling a password asks for Touch ID or your device password.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "فقط در Keychain همین دستگاه ذخیره می‌شود، هرگز همگام یا آپلود نمی‌شود. نشان دادن، کپی یا پر کردن رمز، Touch ID یا رمز دستگاه را می‌خواهد."
+          }
+        }
+      }
+    },
+    "Saved to the Keychain.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در Keychain ذخیره شد."
           }
         }
       }
@@ -8317,6 +8757,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نشان دادن رمز %@"
+          }
+        }
+      }
+    },
+    "Shows the newest %lld of %lld entries. Older ones are in wp-admin.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه‌ترین %lld ورودی از %lld نشان داده می‌شود. قدیمی‌ترها در wp-admin هستند."
           }
         }
       }
@@ -8869,6 +9319,26 @@
         }
       }
     },
+    "SureForms abilities are off. In wp-admin open SureForms → Settings and turn on “Enable Abilities”.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قابلیت‌های SureForms خاموش است. در wp-admin بخش SureForms ← Settings را باز کنید و «Enable Abilities» را روشن کنید."
+          }
+        }
+      }
+    },
+    "SureForms settings (Enable Abilities)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تنظیمات SureForms (Enable Abilities)"
+          }
+        }
+      }
+    },
     "Survey": {
       "extractionState": "stale",
       "localizations": {
@@ -9102,6 +9572,16 @@
         }
       }
     },
+    "The brief is built on this device from what Monitor, Website messages, Releases, Licences, WorkTrack customers, Operations, Oversight and Keys & Backups last read. It makes no requests of its own. A source that was never read says so instead of showing zero.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گزارش روز روی همین دستگاه از آخرین خواندن پایش، پیام‌های سایت، انتشارها، لایسنس‌ها، مشتریان WorkTrack، عملیات، نظارت و کلیدها و پشتیبان‌ها ساخته می‌شود. خودش هیچ درخواستی نمی‌فرستد. منبعی که هرگز خوانده نشده، همین را می‌گوید، نه صفر."
+          }
+        }
+      }
+    },
     "The certificate of %@ ends in %lld days.": {
       "localizations": {
         "fa-AF": {
@@ -9128,6 +9608,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "کدی که مشتری از صفحهٔ لایسنس برنامه می‌خواند. خیاط‌یار: از دستگاه اصلی کارگاه. * یعنی هر دستگاه."
+          }
+        }
+      }
+    },
+    "The contact form's notification emails don't reach you, so the app reads the entries from WordPress. It needs an application password of an Administrator and SureForms' ⁨Enable Abilities⁩ setting.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ایمیل‌های اطلاع‌رسانی فورم تماس به شما نمی‌رسد، پس برنامه ورودی‌ها را از WordPress می‌خواند. برای این کار رمز برنامهٔ یک مدیر (Administrator) و روشن بودن ⁨Enable Abilities⁩ در SureForms لازم است."
           }
         }
       }
@@ -9229,6 +9719,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "کلید ثبت نشده است (issued.csv آن را ندارد). برای ضمیمه کردن، فایل .lnmlic همین لایسنس را از ~/.linumic/licenses وارد کنید."
+          }
+        }
+      }
+    },
+    "The last refresh failed: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین بازخوانی ناموفق بود: %@"
           }
         }
       }
@@ -9352,6 +9852,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "امضا نمی‌خواند. کلید تغییر کرده یا با کلید دیگری امضا شده است."
+          }
+        }
+      }
+    },
+    "The site address must use HTTPS.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشانی سایت باید HTTPS باشد."
           }
         }
       }
@@ -9587,6 +10097,26 @@
         }
       }
     },
+    "This WordPress has no Abilities API (it needs WordPress 6.9 or later).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این WordPress رابط Abilities ندارد (WordPress 6.9 یا تازه‌تر لازم است)."
+          }
+        }
+      }
+    },
+    "This WordPress user may not read form entries (403, %@). Use an Administrator's application password.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کاربر WordPress اجازهٔ خواندن ورودی‌های فورم را ندارد (403، %@). رمز برنامهٔ یک مدیر (Administrator) را بگذارید."
+          }
+        }
+      }
+    },
     "Title": {
       "localizations": {
         "fa-AF": {
@@ -9707,6 +10237,16 @@
         }
       }
     },
+    "Unknown sender": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فرستندهٔ نامعلوم"
+          }
+        }
+      }
+    },
     "Unknown state": {
       "localizations": {
         "fa-AF": {
@@ -9743,6 +10283,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "باز است · قفل می‌شود پس از %@"
+          }
+        }
+      }
+    },
+    "Unread in WordPress": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در WordPress خوانده نشده"
           }
         }
       }
@@ -10172,6 +10722,26 @@
         }
       }
     },
+    "Website message #%lld": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام سایت #%lld"
+          }
+        }
+      }
+    },
+    "Website messages": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام‌های سایت"
+          }
+        }
+      }
+    },
     "What changed this week?": {
       "extractionState": "stale",
       "localizations": {
@@ -10300,6 +10870,76 @@
         }
       }
     },
+    "WordPress answered with something that isn't a SureForms entry list.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاسخ WordPress فهرست ورودی‌های SureForms نبود."
+          }
+        }
+      }
+    },
+    "WordPress refused the application password (401, %@). Create a new one and save it again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WordPress رمز برنامه را نپذیرفت (401، %@). یک رمز تازه بسازید و دوباره ذخیره کنید."
+          }
+        }
+      }
+    },
+    "WordPress returned HTTP %d (%@).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WordPress پاسخ HTTP %d داد (%@)."
+          }
+        }
+      }
+    },
+    "WordPress returned HTTP %d.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WordPress پاسخ HTTP %d داد."
+          }
+        }
+      }
+    },
+    "WordPress saw no signed-in user (401). Check the username and application password; if they are right, the host may be dropping the Authorization header.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WordPress کاربر واردشده‌ای ندید (401). نام کاربری و رمز برنامه را بررسی کنید؛ اگر درست است، شاید میزبان سایت سرآیند Authorization را حذف می‌کند."
+          }
+        }
+      }
+    },
+    "WordPress user": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کاربر WordPress"
+          }
+        }
+      }
+    },
+    "WordPress username": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام کاربری WordPress"
+          }
+        }
+      }
+    },
     "Workflow: Idea → Draft → In Review → Approved → Scheduled → Published. Publishing is done by a person on the network, then recorded here with its link.": {
       "localizations": {
         "fa-AF": {
@@ -10338,6 +10978,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "پروژهٔ Xcode"
+          }
+        }
+      }
+    },
+    "xxxx xxxx xxxx xxxx xxxx xxxx": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "xxxx xxxx xxxx xxxx xxxx xxxx"
           }
         }
       }
@@ -10554,6 +11204,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "«%@» در کد دستگاه نمی‌آید"
+          }
+        }
+      }
+    },
+    "•••• •••• (stored in Keychain)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "•••• •••• (در Keychain ذخیره است)"
           }
         }
       }
@@ -17890,16 +18550,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "مسیر (با ~/ شروع شود؛ * در نام فایل مجاز است)"
-          }
-        }
-      }
-    },
-    "Read-only. Run these yourself in Terminal; the app runs nothing. openssl asks for the passphrase (Keychain item “Linumic license backup passphrase” or the private Notion page); it never goes on the command line.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "فقط خواندنی. این فرمان‌ها را خودتان در Terminal اجرا کنید؛ برنامه چیزی اجرا نمی‌کند. openssl رمز را می‌پرسد (آیتم Keychain «Linumic license backup passphrase» یا صفحهٔ خصوصی Notion)؛ رمز هرگز در خود فرمان نوشته نمی‌شود."
           }
         }
       }

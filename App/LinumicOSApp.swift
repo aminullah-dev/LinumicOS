@@ -14,6 +14,7 @@ struct LinumicOSApp: App {
     @State private var monitor: MonitorModel
     @State private var brief: BriefModel
     @State private var keys: KeysModel
+    @State private var siteMessages: SiteMessagesModel
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
@@ -44,8 +45,11 @@ struct LinumicOSApp: App {
         _monitor = State(initialValue: monitor)
         let keys = KeysModel()
         _keys = State(initialValue: keys)
+        let siteMessages = SiteMessagesModel()
+        _siteMessages = State(initialValue: siteMessages)
         _brief = State(initialValue: BriefModel(inventory: inventory, licences: licences, worktrack: worktrack,
-                                                operations: operations, releases: releases, monitor: monitor, keys: keys))
+                                                operations: operations, releases: releases, monitor: monitor, keys: keys,
+                                                siteMessages: siteMessages))
     }
 
     var body: some Scene {
@@ -62,6 +66,7 @@ struct LinumicOSApp: App {
                 .environment(monitor)
                 .environment(brief)
                 .environment(keys)
+                .environment(siteMessages)
                 .environment(router)
                 #if os(macOS)
                 .frame(minWidth: 960, minHeight: 600)
@@ -89,6 +94,8 @@ struct LinumicOSApp: App {
                         await releases.autoRefreshIfDue()
                         // Keys & Backups: file dates and sizes in the granted folders only (Mac), no network.
                         await keys.check()
+                        // Website messages: two GETs to linumic.com with the stored application password, if any.
+                        await siteMessages.refresh()
                         // Today's snapshot for "what changed since yesterday", and the morning notification.
                         await brief.record()
                         try? await Task.sleep(for: .seconds(InventoryModel.autoRefreshInterval))
