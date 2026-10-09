@@ -13,6 +13,8 @@ public enum SecretKey: String, CaseIterable, Sendable {
     /// LNM1 licence signing keys (PKCS#8 PEM), imported by the owner on the Mac. Never uploaded.
     case licenceSigningMediflow = "licence.signing.mediflow"
     case licenceSigningKhayatyar = "licence.signing.khayatyar"
+    /// WorkTrack vendor session: JSON `{environment, email, refreshToken}`. Never the password or the ID token.
+    case workTrackVendorSession = "worktrack.vendor.session"
 }
 
 /// Credential storage. Values never appear in source, logs or the inventory file.
