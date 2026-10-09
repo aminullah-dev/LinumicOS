@@ -12,6 +12,7 @@ post as Linumic, so it is treated as a production system.
 | Repositories and store listings | Unintended destructive action | Read-only integrations, per-action confirmation for writes |
 | WorkTrack customer licences (vendor account) | Wrong or accidental licence change, perpetual licence by omission | Refresh token only in the Keychain, one write (licence PUT) built from the fetched licence with `expiresAt` always sent, diff + typed confirmation in production, stale-licence check, no retry, local and server audit |
 | Talar, SafeBeauty, VELRO admin sessions (Operations) | Leaked session, accidental production write, identity documents on disk, VELRO refresh-token replay signing the owner out everywhere | Refresh token only (Keychain), read-only clients with no write calls except Talar's audited hall decision, SafeBeauty field masks that never request identity fields, VELRO rotation persisted before use and never replayed, counts the only cached data |
+| Vault (the owner's own sign-ins) | Someone at the unlocked Mac reading passwords, clipboard history keeping them, a copy leaving the device | Keychain only (device-only, not synchronizable), Touch ID or device password before any password is shown, copied or filled, 2-minute unlock, concealed clipboard cleared after 30 s |
 | Assistant | Invented status, prompt injection from ingested content | Grounded answers with verified/derived/unknown labels. Ingested text is treated as data, and actions are only proposals. |
 
 ## MVP (local app)
@@ -64,6 +65,37 @@ post as Linumic, so it is treated as a production system.
     for the 0 to more-than-0 notifications, and the hall-decision log. No names, no lists.
   - Local emulators/backend (plain HTTP to `127.0.0.1`) are offered in debug builds only; a stored local session is
     ignored by release builds. The Firebase Web API keys in the environments are public identifiers.
+- **Vault (since 2026-10-09):** the owner's own sign-in details for Linumic products and services (WorkTrack, Talar,
+  SafeBeauty, VELRO, MediFlow, KhayatYar, linumic.com, GoDaddy, Play Console, App Store Connect, GitHub, Supabase,
+  Firebase, other), typed in by the owner. It is separate from the sessions above: those keep only refresh tokens, and
+  the Vault never feeds them on its own; it only fills a sign-in form when the owner picks an entry.
+  - **Where:** only this device's Keychain, through `KeychainSecretStore` in its own service
+    `com.linumic.commandcenter.vault`: `vault.index` holds the metadata of every entry (title, product, environment,
+    sign-in URL, login, login type, notes, dates) and `vault.password.<entry id>` holds each password, one item each.
+    All items are `kSecAttrAccessibleWhenUnlockedThisDeviceOnly` and not synchronizable, so they are never in iCloud
+    Keychain or an unencrypted backup. Metadata stays in the Keychain too rather than in a file, because a login (an
+    email or phone number) together with a sign-in URL is half a credential. Nothing goes to Supabase, UserDefaults, a
+    file or a log. Passwords are written before the index, so the index never claims a password that isn't stored; a
+    failed index write removes a new password again; an index that can't be read is never overwritten.
+  - **Unlock:** showing, copying or filling a password, and replacing, removing or deleting a stored one, needs
+    LocalAuthentication `deviceOwnerAuthentication` (Touch ID, Face ID or the device password). The Vault then stays
+    unlocked for 2 minutes and locks itself; it also locks at once when the Mac sleeps, the screen sleeps or locks, the
+    user session switches, the app is hidden, or (iPhone/iPad) the app goes to the background. Switching to another
+    app on the Mac does not lock it, so the owner can paste into a browser. Revealed passwords are held in memory only
+    while unlocked and dropped on lock. Logins and URLs are shown without unlocking.
+  - **Limit:** the unlock is enforced by the app, not by a Keychain access-control flag: `SecAccessControl` with
+    `.userPresence` needs the data-protection keychain, which ad-hoc development builds fall back from. Other apps can't
+    read the items either way; a process running as the owner with this app's signature could.
+  - **Clipboard:** a copied login or password is marked `org.nspasteboard.ConcealedType` and
+    `org.nspasteboard.TransientType` on the Mac (clipboard managers skip it) and local-only with a 30-second expiry
+    on iOS (never to Universal Clipboard). After 30 seconds the app clears it if the pasteboard has not changed since
+    (same change count and, on the Mac, the same value by SHA-256; the value itself is not kept for the check).
+  - **Sign-in assist:** the WorkTrack, Talar, SafeBeauty and VELRO sign-in sheets have "Fill from Vault" (entries of
+    the same product and environment, or "any environment"). After a successful sign-in that the Vault doesn't hold
+    yet, the sheet asks "Save to Vault?"; the typed password stays in the sheet's memory only until the owner answers.
+    Saving fills a matching empty template or same-login entry and never replaces a stored password.
+  - **Templates:** empty entries (no login, no password) for sign-in URLs found in the product repositories, each
+    with its citation (`VaultTemplates.swift`). No secret was read or migrated from anywhere on the Mac.
 - **Licence signing keys (MediFlow, KhayatYar):** imported by the owner on the Mac only, checked against the
   production public key built into the app, then stored in the Keychain (`licence.signing.<product>`,
   `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`, `kSecAttrSynchronizable` false). They are never logged, never

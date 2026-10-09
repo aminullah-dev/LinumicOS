@@ -468,6 +468,45 @@ Run on 2026-10-09, all three passed:
 - **داشبورد:** کارت «منتظر شما» تعداد تالارهای در انتظار، بررسی‌های هویت و تأیید سالون‌ها، و راننده‌های در انتظار را
   با محیط و وقت خواندن نشان می‌دهد. وقتی صفی در Production از صفر بیشتر شود اطلاعیه می‌آید (تنظیمات ← Integrations ← Operations).
 
+## Vault: the owner's sign-ins (local, no integration)
+
+The Vault is not an integration: it calls no service. It keeps the owner's own sign-in details in this device's
+Keychain and helps him fill the app's sign-in sheets (WorkTrack customers, and Talar, SafeBeauty and VELRO under
+Operations). Storage, unlock and clipboard rules are in [security.md](security.md) under "Vault".
+
+- **Screen:** sidebar > Vault. Entries grouped by product, search over title, login, URL and notes. Each entry: login
+  with Copy, password as dots with Show and Copy, URL with Open, notes, and when the password was last saved. Add, edit
+  (with a password generator), delete with confirmation.
+- **Templates (empty, added once on first use; a deleted one does not return):** WorkTrack vendor console
+  `https://console.linumic.com` (WorkTrack/web/src/console/consoleHost.ts:13), Talar admin
+  `https://talar-af-prod.web.app/admin` (Talar/desktop/main.js:9, Talar/web/src/App.tsx:44), SafeBeauty admin console
+  `https://safebeauty.web.app/admin` (Safe beauty/DEPLOY.md:32), SafeBeauty salon console
+  `https://safebeauty.web.app/provider` (Safe beauty/public/provider/, ios Strings.swift:944), VELRO admin console
+  `https://admin.velro.linumic.com` (Velro/deploy/Caddyfile:24), linumic.com WordPress admin
+  `https://linumic.com/wp-admin` (WorkTrack/scripts/update-brochure.js:4), Google Play Console (Talar/docs/09-release-android.md:64),
+  App Store Connect (App/Views/SettingsViews.swift:228), Firebase console (Talar/docs/07-production-setup.md:3) and
+  GitHub (this repository's remote). GoDaddy and the Supabase dashboard appear in no repository, so they have no
+  template; add them by hand.
+- **Fill from Vault:** offers entries of the form's product whose environment matches the form's (Production, Demo,
+  Staging, Local) or is "any environment"; phone forms (SafeBeauty, VELRO) are offered only phone logins. VELRO fills
+  the phone only (it signs in with an SMS code).
+- **Save to Vault:** after a successful sign-in whose login isn't stored for that product and environment. Phone
+  numbers are compared by their national digits (0700..., 700..., +93700... are the same).
+
+### راهنمای امین‌الله: گاوصندوق (دری)
+
+- **کجاست:** نوار کنار ← «گاوصندوق».
+- **اولین بار:** چند مورد خالی آماده است (کنسول WorkTrack، ادمین تالار، کنسول‌های SafeBeauty، کنسول VELRO،
+  wp-admin سایت، Play Console، App Store Connect، Firebase، GitHub). روی «...» ← «ویرایش…» بزنید، نام کاربری یا
+  ایمیل یا شماره و رمز خود را بنویسید و «ذخیره». برای GoDaddy و Supabase با «+» مورد تازه بسازید.
+- **کپی:** کنار نام کاربری دکمهٔ کپی است (بی‌قفل). برای رمز: دکمهٔ چشم (نشان دادن) یا کپی؛ بار اول Touch ID یا رمز مک
+  را می‌خواهد. گاوصندوق دو دقیقه باز می‌ماند و بعد خودش قفل می‌شود. هر چه کپی شود پس از ۳۰ ثانیه از کلیپ‌بورد پاک می‌شود.
+- **ورود در برنامه:** در پنجرهٔ ورود WorkTrack، تالار، SafeBeauty یا VELRO دکمهٔ «پر کردن از گاوصندوق» را بزنید و
+  حساب را انتخاب کنید؛ پس از Touch ID فرم پر می‌شود، بعد «ورود». اگر ورود موفق بود و حساب در گاوصندوق نبود، برنامه
+  می‌پرسد «در گاوصندوق ذخیره شود؟».
+- **مهم:** گاوصندوق فقط در Keychain همین دستگاه است؛ به iCloud و Supabase نمی‌رود. یعنی پشتیبان نیست: رمزهای
+  مهم را در یک password manager هم نگه دارید.
+
 ## Social media (Phase 5)
 
 LinkedIn, Facebook, Instagram, X and YouTube. OAuth per network, tokens stored
