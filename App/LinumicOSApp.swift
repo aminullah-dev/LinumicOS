@@ -9,6 +9,8 @@ struct LinumicOSApp: App {
     @State private var platforms: PlatformHubModel
     @State private var worktrack: WorkTrackModel
     @State private var operations: OperationsModel
+    @State private var vault = VaultModel()
+    @Environment(\.scenePhase) private var scenePhase
 
     init() {
         // macOS has no Persian system localization, so AppKit (window controls, split views, sheets,
@@ -40,11 +42,15 @@ struct LinumicOSApp: App {
                 .environment(platforms)
                 .environment(worktrack)
                 .environment(operations)
+                .environment(vault)
                 .environment(router)
                 #if os(macOS)
                 .frame(minWidth: 960, minHeight: 600)
                 #endif
+                // The Vault locks whenever the app leaves the foreground.
+                .onChange(of: scenePhase) { _, phase in if phase == .background { vault.appMovedToBackground() } }
                 .task {
+                    vault.load()
                     await model.load()
                     await licences.load()
                     await platforms.load()

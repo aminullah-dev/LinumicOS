@@ -9,6 +9,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case licences
     case worktrackCustomers
     case operations
+    case vault
     case allProducts, verification, releases, roadmap, issues
     case repositories, builds, deployments
     case appStore, googlePlay
@@ -26,6 +27,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .licences: L("Licences")
         case .worktrackCustomers: L("WorkTrack customers")
         case .operations: L("Operations")
+        case .vault: L("Vault")
         case .allProducts: L("All Products")
         case .verification: L("Verification")
         case .releases: L("Releases")
@@ -54,6 +56,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .licences: "key.horizontal"
         case .worktrackCustomers: "person.2.badge.key"
         case .operations: "tray.full"
+        case .vault: "lock.rectangle.stack"
         case .allProducts: "shippingbox"
         case .verification: "checkmark.seal"
         case .releases: "tag"
@@ -81,7 +84,7 @@ struct SidebarSection: Identifiable {
     var id: String { title ?? "root" }
 
     static let all: [SidebarSection] = [
-        SidebarSection(title: nil, items: [.dashboard, .platforms, .oversight, .licences, .worktrackCustomers, .operations]),
+        SidebarSection(title: nil, items: [.dashboard, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .vault]),
         SidebarSection(title: "Products", items: [.allProducts, .verification, .releases, .roadmap, .issues]),
         SidebarSection(title: "Development", items: [.repositories, .builds, .deployments]),
         SidebarSection(title: "Stores", items: [.appStore, .googlePlay]),

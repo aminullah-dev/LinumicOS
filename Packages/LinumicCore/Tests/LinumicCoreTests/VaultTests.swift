@@ -46,7 +46,7 @@ struct VaultStoreTests {
 
     @Test func templateURLsAreHTTPSAndCited() {
         for t in VaultTemplates.all {
-            #expect(URL(string: t.url)?.scheme == "https", "\(t.title)")
+            #expect(URL(string: t.url)?.scheme == "https", "\(t.name)")
             #expect(!t.source.isEmpty)
         }
     }

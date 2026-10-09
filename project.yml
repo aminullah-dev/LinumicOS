@@ -42,6 +42,8 @@ targets:
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         NSHumanReadableCopyright: © Linumic
+        # The Vault asks for Face ID before it shows, copies or fills a saved password (iPhone and iPad).
+        NSFaceIDUsageDescription: Linumic OS asks for Face ID before it shows, copies or fills a password saved in the Vault.
     entitlements:
       path: App/Support/LinumicOS.entitlements
       properties:

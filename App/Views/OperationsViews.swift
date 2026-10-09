@@ -567,6 +567,8 @@ private struct OpsActionsSection: View {
 
 struct TalarSignInSheet: View {
     @Environment(OperationsModel.self) private var ops
+    @Environment(VaultModel.self) private var vault
+    @State private var saveOffer: VaultSaveOffer?
     @Environment(\.dismiss) private var dismiss
     @State private var environment: TalarEnvironment = .production
     @State private var email = ""
@@ -608,6 +610,11 @@ struct TalarSignInSheet: View {
             }
             .formStyle(.grouped)
             HStack {
+                VaultFillMenu(form: .talar(environment)) { login, password in
+                    if let login { email = login }
+                    if let password { self.password = password }
+                }
+                .disabled(isWorking)
                 if isWorking { ProgressView().controlSize(.small) }
                 Spacer()
                 Button("Cancel", role: .cancel) { dismiss() }.keyboardShortcut(.cancelAction)
@@ -621,6 +628,7 @@ struct TalarSignInSheet: View {
         .frame(minWidth: 480, minHeight: 440)
         #endif
         .onAppear { if let s = ops.talar.session { environment = s.environment; email = s.email } }
+        .vaultSaveOffer($saveOffer) { dismiss() }
     }
 
     private func signIn() async {
@@ -630,8 +638,9 @@ struct TalarSignInSheet: View {
         error = nil
         do {
             try await ops.talar.signIn(environment: environment, email: email, password: password)
+            let offer = vault.saveOffer(form: .talar(environment), login: email, password: password)
             password = ""
-            dismiss()
+            if let offer { saveOffer = offer } else { dismiss() }
         } catch {
             password = ""
             self.error = error.localizedDescription
@@ -816,6 +825,8 @@ struct SafeBeautyPersonView: View {
 
 struct SafeBeautySignInSheet: View {
     @Environment(OperationsModel.self) private var ops
+    @Environment(VaultModel.self) private var vault
+    @State private var saveOffer: VaultSaveOffer?
     @Environment(\.dismiss) private var dismiss
     @State private var environment: SafeBeautyEnvironment = .production
     @State private var phone = ""
@@ -856,6 +867,11 @@ struct SafeBeautySignInSheet: View {
             }
             .formStyle(.grouped)
             HStack {
+                VaultFillMenu(form: .safeBeauty(environment)) { login, password in
+                    if let login { phone = login }
+                    if let password { self.password = password }
+                }
+                .disabled(isWorking)
                 if isWorking { ProgressView().controlSize(.small) }
                 Spacer()
                 Button("Cancel", role: .cancel) { dismiss() }.keyboardShortcut(.cancelAction)
@@ -869,6 +885,7 @@ struct SafeBeautySignInSheet: View {
         .frame(minWidth: 480, minHeight: 440)
         #endif
         .onAppear { if let s = ops.safeBeauty.session { environment = s.environment } }
+        .vaultSaveOffer($saveOffer) { dismiss() }
     }
 
     private func signIn() async {
@@ -878,9 +895,10 @@ struct SafeBeautySignInSheet: View {
         error = nil
         do {
             try await ops.safeBeauty.signIn(environment: environment, phone: phone, password: password)
+            let offer = vault.saveOffer(form: .safeBeauty(environment), login: phone, password: password)
             phone = ""
             password = ""
-            dismiss()
+            if let offer { saveOffer = offer } else { dismiss() }
         } catch {
             password = ""
             self.error = error.localizedDescription
@@ -1169,6 +1187,8 @@ struct VelroRoutesView: View {
 /// Two steps: the phone number (VELRO sends a code), then the code. Nothing typed is stored.
 struct VelroSignInSheet: View {
     @Environment(OperationsModel.self) private var ops
+    @Environment(VaultModel.self) private var vault
+    @State private var saveOffer: VaultSaveOffer?
     @Environment(\.dismiss) private var dismiss
     @State private var environment: VelroEnvironment = .production
     @State private var phone = ""
@@ -1230,6 +1250,11 @@ struct VelroSignInSheet: View {
             }
             .formStyle(.grouped)
             HStack {
+                // VELRO signs in with a phone and an SMS code, so the Vault fills only the phone number.
+                VaultFillMenu(form: .velro(environment)) { login, _ in
+                    if let login { phone = login }
+                }
+                .disabled(isWorking || sent != nil)
                 if isWorking { ProgressView().controlSize(.small) }
                 Spacer()
                 Button("Cancel", role: .cancel) { dismiss() }.keyboardShortcut(.cancelAction)
@@ -1244,6 +1269,7 @@ struct VelroSignInSheet: View {
         #endif
         .onAppear { if let s = ops.velro.session { environment = s.environment } }
         .onDisappear { phone = ""; code = "" }
+        .vaultSaveOffer($saveOffer) { dismiss() }
     }
 
     private func requestCode() async {
@@ -1265,9 +1291,10 @@ struct VelroSignInSheet: View {
         error = nil
         do {
             try await ops.velro.verify(environment: environment, phone: phone, code: code)
+            let offer = vault.saveOffer(form: .velro(environment), login: phone, password: nil)
             phone = ""
             code = ""
-            dismiss()
+            if let offer { saveOffer = offer } else { dismiss() }
         } catch {
             code = ""
             self.error = error.localizedDescription

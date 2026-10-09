@@ -100,6 +100,26 @@
         }
       }
     },
+    "%@ and its saved password are removed from this device's Keychain. This can't be undone, and it doesn't change the account itself.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ و رمز ذخیره‌شده‌اش از Keychain همین دستگاه پاک می‌شوند. این کار برگشت ندارد و خود حساب را تغییر نمی‌دهد."
+          }
+        }
+      }
+    },
+    "%@ copied. The clipboard clears in 30 seconds.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ کپی شد. کلیپ‌بورد پس از ۳۰ ثانیه پاک می‌شود."
+          }
+        }
+      }
+    },
     "%@ is required.": {
       "extractionState": "stale",
       "localizations": {
@@ -749,6 +769,76 @@
         }
       }
     },
+    "Actions": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کارها"
+          }
+        }
+      }
+    },
+    "Add a sign-in to the Vault": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک ورود به گاوصندوق اضافه کنید"
+          }
+        }
+      }
+    },
+    "Add Sign-In": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افزودن ورود"
+          }
+        }
+      }
+    },
+    "Add the sign-ins you use, and copy them from here whenever you need them.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ورودهایی را که به کار می‌برید اضافه کنید و هر وقت لازم شد از همین‌جا کپی کنید."
+          }
+        }
+      }
+    },
+    "Address": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشانی"
+          }
+        }
+      }
+    },
+    "Address found in %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشانی از %@ گرفته شده است."
+          }
+        }
+      }
+    },
+    "Address found in %@. Add your login and password.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشانی از %@ گرفته شده است. نام کاربری و رمز خود را اضافه کنید."
+          }
+        }
+      }
+    },
     "AI Assistant": {
       "localizations": {
         "fa-AF": {
@@ -920,6 +1010,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "پاسخ‌ها فقط از سوابق همین برنامه می‌آیند: معلومات با منابعشان، تصویرهای GitHub و App Store، و انتشارها، نقشهٔ راه، مشکلات و شواهد بازار که ثبت کرده‌اید. هیچ مدل زبانی وصل نیست و هیچ چیزی از دانش عمومی گرفته نمی‌شود."
+          }
+        }
+      }
+    },
+    "Any environment": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر محیط"
           }
         }
       }
@@ -1117,6 +1217,16 @@
         }
       }
     },
+    "Avoid look-alike characters": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون حروف شبیه به هم"
+          }
+        }
+      }
+    },
     "Back to Draft": {
       "localizations": {
         "fa-AF": {
@@ -1226,6 +1336,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "بر اساس بخش"
+          }
+        }
+      }
+    },
+    "Change the saved password for %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تغییر رمز ذخیره‌شدهٔ %@"
           }
         }
       }
@@ -1548,12 +1668,42 @@
         }
       }
     },
+    "Copy %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کپی %@"
+          }
+        }
+      }
+    },
     "Copy Key": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "کاپی کلید"
+          }
+        }
+      }
+    },
+    "Copy Password": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کپی رمز"
+          }
+        }
+      }
+    },
+    "Copy the password for %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کپی رمز %@"
           }
         }
       }
@@ -1835,6 +1985,16 @@
         }
       }
     },
+    "Delete %@ from the Vault": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حذف %@ از گاوصندوق"
+          }
+        }
+      }
+    },
     "Delete %@?": {
       "localizations": {
         "fa-AF": {
@@ -1851,6 +2011,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "حذف پست"
+          }
+        }
+      }
+    },
+    "Delete this sign-in?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این ورود حذف شود؟"
           }
         }
       }
@@ -2008,6 +2178,16 @@
         }
       }
     },
+    "Digits": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عدد"
+          }
+        }
+      }
+    },
     "Documentation": {
       "localizations": {
         "fa-AF": {
@@ -2117,6 +2297,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ویرایش نام و یادداشت‌ها (⌘E). هر معلومات را از ردیف خودش ویرایش کنید."
+          }
+        }
+      }
+    },
+    "Edit, copy or delete": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ویرایش، کپی یا حذف"
           }
         }
       }
@@ -2435,6 +2625,36 @@
         }
       }
     },
+    "Fill from Vault": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پر کردن از گاوصندوق"
+          }
+        }
+      }
+    },
+    "Fill the form from a saved sign-in": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فرم را از یک ورود ذخیره‌شده پر کنید"
+          }
+        }
+      }
+    },
+    "Fill the sign-in form with %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پر کردن فرم ورود با %@"
+          }
+        }
+      }
+    },
     "Finding": {
       "localizations": {
         "fa-AF": {
@@ -2471,6 +2691,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "سلامت مخزن‌ها نامعلوم"
+          }
+        }
+      }
+    },
+    "For example: Talar admin": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مثلاً: ادمین تالار"
           }
         }
       }
@@ -2523,6 +2753,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "عمومی"
+          }
+        }
+      }
+    },
+    "Generate": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ساختن"
+          }
+        }
+      }
+    },
+    "Generate a password": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ساختن رمز"
           }
         }
       }
@@ -2645,6 +2895,16 @@
         }
       }
     },
+    "Give the entry a title.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای این مورد عنوانی بنویسید."
+          }
+        }
+      }
+    },
     "Go": {
       "localizations": {
         "fa-AF": {
@@ -2725,6 +2985,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "سالم"
+          }
+        }
+      }
+    },
+    "Hidden": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنهان"
+          }
+        }
+      }
+    },
+    "Hide Password": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنهان کردن رمز"
           }
         }
       }
@@ -3093,6 +3373,16 @@
         }
       }
     },
+    "Keep %@ for %@ · %@ in this device's Keychain, so you can fill this form next time.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ برای %2$@ · %3$@ در Keychain همین دستگاه نگه داشته شود تا دفعهٔ بعد این فرم را پر کنید؟"
+          }
+        }
+      }
+    },
     "Keep the code to renew. Enter the new code if the customer changed computer or phone.": {
       "localizations": {
         "fa-AF": {
@@ -3293,6 +3583,16 @@
         }
       }
     },
+    "Leave empty to keep the saved password. Replacing or removing it asks for Touch ID or your device password. Saving here doesn't change the password on the service itself.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اگر خالی بماند، رمز ذخیره‌شده می‌ماند. عوض کردن یا پاک کردن آن Touch ID یا رمز دستگاه می‌خواهد. ذخیره در این‌جا رمز خود سرویس را تغییر نمی‌دهد."
+          }
+        }
+      }
+    },
     "Leave it empty if the fact is unknown. Record where the value comes from below.": {
       "localizations": {
         "fa-AF": {
@@ -3320,6 +3620,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "مالک حقوقی"
+          }
+        }
+      }
+    },
+    "Length: %lld": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "طول: %lld"
           }
         }
       }
@@ -3587,6 +3897,16 @@
         }
       }
     },
+    "Local": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محلی"
+          }
+        }
+      }
+    },
     "Local data": {
       "localizations": {
         "fa-AF": {
@@ -3635,6 +3955,66 @@
           "stringUnit": {
             "state": "translated",
             "value": "مخزن محلی"
+          }
+        }
+      }
+    },
+    "Lock": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قفل"
+          }
+        }
+      }
+    },
+    "Lock Now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همین حالا قفل کن"
+          }
+        }
+      }
+    },
+    "Lock the Vault and hide every password": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گاوصندوق را قفل کن و همهٔ رمزها را پنهان کن"
+          }
+        }
+      }
+    },
+    "Locked": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قفل است"
+          }
+        }
+      }
+    },
+    "Login": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب ورود"
+          }
+        }
+      }
+    },
+    "Login type": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نوع حساب"
           }
         }
       }
@@ -3938,6 +4318,16 @@
         }
       }
     },
+    "New password": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمز تازه"
+          }
+        }
+      }
+    },
     "New Post": {
       "localizations": {
         "fa-AF": {
@@ -4224,6 +4614,16 @@
         }
       }
     },
+    "No password saved": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمزی ذخیره نشده"
+          }
+        }
+      }
+    },
     "No planned features are recorded in any product roadmap.": {
       "extractionState": "stale",
       "localizations": {
@@ -4379,6 +4779,16 @@
         }
       }
     },
+    "No saved sign-in for this product and environment yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز برای این محصول و محیط ورودی ذخیره نشده"
+          }
+        }
+      }
+    },
     "No social accounts recorded. None were found as verified evidence during discovery.": {
       "localizations": {
         "fa-AF": {
@@ -4501,6 +4911,16 @@
         }
       }
     },
+    "Not added yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز اضافه نشده"
+          }
+        }
+      }
+    },
     "not an LNM1 licence key.": {
       "localizations": {
         "fa-AF": {
@@ -4559,6 +4979,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "پیدا نشد: %@"
+          }
+        }
+      }
+    },
+    "Not Now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حالا نه"
           }
         }
       }
@@ -4641,6 +5071,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "هیچ چیزی خودکار نشر نمی‌شود. خودتان در شبکه نشر کنید، بعد این‌جا ثبت کنید."
+          }
+        }
+      }
+    },
+    "Nothing saved for %@ · %@. Add it in the Vault.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای %1$@ · %2$@ چیزی ذخیره نشده. آن را در گاوصندوق اضافه کنید."
           }
         }
       }
@@ -4732,6 +5172,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "باز کردن"
+          }
+        }
+      }
+    },
+    "Open Address": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن نشانی"
           }
         }
       }
@@ -4834,6 +5284,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "نسبتاً تأییدشده"
+          }
+        }
+      }
+    },
+    "Password copied. The clipboard clears in 30 seconds.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمز کپی شد. کلیپ‌بورد پس از ۳۰ ثانیه پاک می‌شود."
+          }
+        }
+      }
+    },
+    "Password saved %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمز ذخیره شد %@"
           }
         }
       }
@@ -5533,6 +6003,16 @@
         }
       }
     },
+    "Recovery hints, who the account belongs to…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "راهنمای بازیابی، حساب مال کیست…"
+          }
+        }
+      }
+    },
     "Refresh %@ Listings": {
       "localizations": {
         "fa-AF": {
@@ -5836,6 +6316,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "کلید امضای %@ از این مک حذف شود؟"
+          }
+        }
+      }
+    },
+    "Remove the saved password": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاک کردن رمز ذخیره‌شده"
           }
         }
       }
@@ -6159,12 +6649,52 @@
         }
       }
     },
+    "Save to Vault": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ذخیره در گاوصندوق"
+          }
+        }
+      }
+    },
+    "Save to Vault?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در گاوصندوق ذخیره شود؟"
+          }
+        }
+      }
+    },
+    "Saved only in this device's Keychain, never synced or uploaded. Showing, copying or filling a password asks for Touch ID or your device password.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط در Keychain همین دستگاه ذخیره می‌شود، هرگز همگام یا آپلود نمی‌شود. نشان دادن، کپی یا پر کردن رمز، Touch ID یا رمز دستگاه را می‌خواهد."
+          }
+        }
+      }
+    },
     "Saved to the Keychain. You can delete the downloaded key file now.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "در Keychain ذخیره شد. حالا می‌توانید فایل کلید دانلودشده را پاک کنید."
+          }
+        }
+      }
+    },
+    "Saved to the Vault.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در گاوصندوق ذخیره شد."
           }
         }
       }
@@ -6331,6 +6861,26 @@
         }
       }
     },
+    "Show Password": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشان دادن رمز"
+          }
+        }
+      }
+    },
+    "Show the password for %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشان دادن رمز %@"
+          }
+        }
+      }
+    },
     "Shows the sources, verification date and notes": {
       "localizations": {
         "fa-AF": {
@@ -6398,6 +6948,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "امضای تمدید"
+          }
+        }
+      }
+    },
+    "Sign-in address": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشانی ورود"
           }
         }
       }
@@ -6699,6 +7259,16 @@
         }
       }
     },
+    "Stored only in this device's Keychain. Saving here doesn't change the password on the service itself.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط در Keychain همین دستگاه ذخیره می‌شود. ذخیره در این‌جا رمز خود سرویس را تغییر نمی‌دهد."
+          }
+        }
+      }
+    },
     "Storefront": {
       "localizations": {
         "fa-AF": {
@@ -6786,6 +7356,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "سروی"
+          }
+        }
+      }
+    },
+    "Symbols": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشانه‌ها"
           }
         }
       }
@@ -7103,6 +7683,16 @@
         }
       }
     },
+    "The password for this entry is no longer in the Keychain. Edit the entry to save it again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمز این مورد دیگر در Keychain نیست. مورد را ویرایش کنید و دوباره ذخیره‌اش کنید."
+          }
+        }
+      }
+    },
     "The private key isn't an RSA key.": {
       "extractionState": "stale",
       "localizations": {
@@ -7146,6 +7736,26 @@
         }
       }
     },
+    "The Vault is empty": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گاوصندوق خالی است"
+          }
+        }
+      }
+    },
+    "The Vault's list in the Keychain could not be read, so nothing was changed. No entry was overwritten.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست گاوصندوق از Keychain خوانده نشد، پس چیزی تغییر نکرد. هیچ موردی بازنویسی نشد."
+          }
+        }
+      }
+    },
     "These licence ids exist on the server with different contents, so the server copy was kept: %@.": {
       "localizations": {
         "fa-AF": {
@@ -7182,6 +7792,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "فقط همین دستگاه. برای داشتن دفتر روی دستگاه‌های دیگر، در تنظیمات › حساب وارد شوید."
+          }
+        }
+      }
+    },
+    "This entry is no longer in the Vault.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این مورد دیگر در گاوصندوق نیست."
           }
         }
       }
@@ -7327,6 +7947,16 @@
         }
       }
     },
+    "Title, login, address or note": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عنوان، حساب، نشانی یا یادداشت"
+          }
+        }
+      }
+    },
     "Token removed.": {
       "localizations": {
         "fa-AF": {
@@ -7397,6 +8027,36 @@
         }
       }
     },
+    "Unlock": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن"
+          }
+        }
+      }
+    },
+    "Unlock the Vault": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن گاوصندوق"
+          }
+        }
+      }
+    },
+    "Unlocked · locks in %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز است · قفل می‌شود پس از %@"
+          }
+        }
+      }
+    },
     "Unsupported licence version %ld.": {
       "localizations": {
         "fa-AF": {
@@ -7413,6 +8073,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "تا یک تاریخ"
+          }
+        }
+      }
+    },
+    "Updated %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به‌روز شد %@"
           }
         }
       }
@@ -7529,6 +8199,16 @@
         }
       }
     },
+    "Username": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام کاربری"
+          }
+        }
+      }
+    },
     "Valid: %@": {
       "localizations": {
         "fa-AF": {
@@ -7545,6 +8225,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "اعتبار"
+          }
+        }
+      }
+    },
+    "Vault": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گاوصندوق"
           }
         }
       }
