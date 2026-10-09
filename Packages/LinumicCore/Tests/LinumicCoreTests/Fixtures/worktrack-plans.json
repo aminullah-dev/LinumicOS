@@ -1,0 +1,74 @@
+{
+ "data": {
+  "TRIAL": {
+   "id": "TRIAL",
+   "priceAfn": 0,
+   "employeeLimit": 50,
+   "deviceLimit": 50,
+   "features": [
+    "attendance",
+    "leave",
+    "shifts",
+    "announcements",
+    "payroll",
+    "finance",
+    "documents",
+    "kiosk",
+    "projects",
+    "pieceWork",
+    "faceRecognition"
+   ],
+   "purchasable": false
+  },
+  "BRONZE": {
+   "id": "BRONZE",
+   "priceAfn": 1500,
+   "employeeLimit": 20,
+   "deviceLimit": 20,
+   "features": [
+    "attendance",
+    "leave",
+    "shifts",
+    "announcements"
+   ],
+   "purchasable": true
+  },
+  "SILVER": {
+   "id": "SILVER",
+   "priceAfn": 3500,
+   "employeeLimit": 75,
+   "deviceLimit": 75,
+   "features": [
+    "attendance",
+    "leave",
+    "shifts",
+    "announcements",
+    "payroll",
+    "finance",
+    "documents",
+    "kiosk"
+   ],
+   "purchasable": true
+  },
+  "GOLD": {
+   "id": "GOLD",
+   "priceAfn": 7000,
+   "employeeLimit": 500,
+   "deviceLimit": 500,
+   "features": [
+    "attendance",
+    "leave",
+    "shifts",
+    "announcements",
+    "payroll",
+    "finance",
+    "documents",
+    "kiosk",
+    "projects",
+    "pieceWork",
+    "faceRecognition"
+   ],
+   "purchasable": true
+  }
+ }
+}

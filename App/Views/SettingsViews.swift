@@ -15,6 +15,13 @@ struct IntegrationsSettingsView: View {
     @AppStorage(InventoryModel.notifyKey) private var notifyChanges = true
     @AppStorage(InventoryModel.autoRefreshOversightKey) private var autoRefreshOversight = true
     @AppStorage(InventoryModel.notifyOversightKey) private var notifyOversight = true
+    @AppStorage(LicenceModel.notifyKey) private var notifyLicences = true
+    @AppStorage(PlatformHubModel.autoRefreshKey) private var autoRefreshPlatforms = true
+    @Environment(LicenceModel.self) private var licences
+    @Environment(WorkTrackModel.self) private var worktrack
+    @AppStorage(WorkTrackModel.notifyKey) private var notifyWorkTrack = true
+    @Environment(OperationsModel.self) private var operations
+    @AppStorage(OperationsModel.notifyKey) private var notifyOperations = true
 
     private let integrations: [(name: String, symbol: String, plan: String)] = [
         ("Social networks", "bubble.left.and.bubble.right", "Phase 5: OAuth, approval before publishing"),
@@ -76,6 +83,69 @@ struct IntegrationsSettingsView: View {
                 }
             } header: {
                 Text("Project oversight")
+            }
+            Section {
+                Toggle(isOn: $autoRefreshPlatforms) {
+                    Text("Refresh platforms automatically")
+                    Text("When the app opens, then every 30 minutes while it's open. Reads versions, releases, CI and pull requests from GitHub with conditional requests, read-only. Needs a GitHub token.")
+                }
+            } header: {
+                Text("Platforms")
+            }
+            Section {
+                Toggle(isOn: $notifyLicences) {
+                    Text("Remind me before licences expire")
+                    Text("Local notifications 30, 14, 7 and 1 days before a MediFlow or KhayatYar licence's last valid day.")
+                }
+                .onChange(of: notifyLicences) { Task { await LicenceNotifier.reschedule(for: licences.records) } }
+            } header: {
+                Text("Licences")
+            }
+            Section {
+                LabeledContent("Vendor account") {
+                    if let s = worktrack.session {
+                        HStack(spacing: 6) {
+                            WorkTrackEnvironmentBadge(environment: s.environment)
+                            Text(verbatim: s.email)
+                        }
+                    } else {
+                        Text("Not signed in").foregroundStyle(.secondary)
+                    }
+                }
+                Toggle(isOn: $notifyWorkTrack) {
+                    Text("Remind me before WorkTrack licences expire")
+                    Text("Local notifications 30, 14, 7 and 1 days before a production customer's last licensed day (TEST and DUPLICATE companies excluded). The list is read when the app opens and every 6 hours while it's open.")
+                }
+                .onChange(of: notifyWorkTrack) { Task { await WorkTrackNotifier.reschedule(for: worktrack.companies, environment: worktrack.environment) } }
+            } header: {
+                Text("WorkTrack customers")
+            } footer: {
+                Text("Sign in under WorkTrack customers in the sidebar. Only a refresh token is kept, in this device's Keychain (worktrack.vendor.session).")
+            }
+            Section {
+                LabeledContent("Talar") {
+                    if let s = operations.talar.session {
+                        HStack(spacing: 6) { OpsEnvironmentBadge(s.environment); Text(verbatim: s.email) }
+                    } else { Text("Not signed in").foregroundStyle(.secondary) }
+                }
+                LabeledContent("SafeBeauty") {
+                    if let s = operations.safeBeauty.session {
+                        HStack(spacing: 6) { OpsEnvironmentBadge(s.environment); Text(verbatim: s.name.isEmpty ? s.appUID : s.name) }
+                    } else { Text("Not signed in").foregroundStyle(.secondary) }
+                }
+                LabeledContent("VELRO") {
+                    if let s = operations.velro.session {
+                        HStack(spacing: 6) { OpsEnvironmentBadge(s.environment); Text(verbatim: s.roles.joined(separator: ", ")) }
+                    } else { Text("Not signed in").foregroundStyle(.secondary) }
+                }
+                Toggle(isOn: $notifyOperations) {
+                    Text("Notify me when a queue starts waiting")
+                    Text("A notification when a production queue goes from empty to waiting: Talar halls or reviews, SafeBeauty identity checks or salon approvals, VELRO drivers. Queues are read when the app opens and every 30 minutes while it's open.")
+                }
+            } header: {
+                Text("Operations")
+            } footer: {
+                Text("Sign in under Operations in the sidebar. Only refresh tokens are kept, in this device's Keychain (talar.admin.session, safebeauty.admin.session, velro.staff.session); the last queue counts are kept for the notifications, nothing else.")
             }
             Section {
                 ForEach(integrations, id: \.name) { i in
@@ -305,7 +375,7 @@ struct SecuritySettingsView: View {
             Section("This app") {
                 LabeledContent("App Sandbox", value: "Enabled")
                 LabeledContent("Credential storage", value: "macOS Keychain (this device only)")
-                LabeledContent("Stored credentials", value: "GitHub token only, if you saved one")
+                LabeledContent("Stored credentials", value: "Only what you added: GitHub token, store console keys, licence signing keys (Mac)")
                 LabeledContent("Network", value: "HTTPS only. GitHub read-only when you refresh")
             }
             Section("Local data") {

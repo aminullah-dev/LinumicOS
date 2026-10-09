@@ -1,0 +1,17 @@
+{
+ "data": [
+  {
+   "id": "emu_order_1",
+   "companyId": "emu_herat",
+   "plan": "SILVER",
+   "term": "MONTHLY",
+   "months": 1,
+   "amountAfn": 3500,
+   "status": "PAID",
+   "createdAt": "2026-09-19T05:00:50.756Z",
+   "paidAt": "2026-09-19T05:00:50.756Z",
+   "transactionId": "emu-tx-1",
+   "checkoutUrl": null
+  }
+ ]
+}

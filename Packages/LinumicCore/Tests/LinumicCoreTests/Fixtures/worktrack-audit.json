@@ -1,0 +1,4 @@
+{"data":[
+ {"id":"a1","actorEmail":"vendor@linumic.test","action":"license.update","companyId":"emu_herat","before":{"plan":"SILVER","deviceLimit":30,"status":"ACTIVE","expiresAt":"2026-10-19","enforceDevices":true,"enforcePlan":true,"employeeLimit":60,"extraFeatures":["projects"],"source":"SELF_SERVE"},"after":{"plan":"SILVER","deviceLimit":30,"status":"ACTIVE","expiresAt":"2026-11-19","enforceDevices":true,"enforcePlan":true,"employeeLimit":60,"extraFeatures":["projects"],"source":"VENDOR"},"at":"2026-10-09T06:00:00.000Z"},
+ {"id":"a2","actorEmail":null,"action":"plans.update","companyId":"(all)","before":null,"after":{"GOLD":{"priceAfn":7500}},"at":null}
+]}

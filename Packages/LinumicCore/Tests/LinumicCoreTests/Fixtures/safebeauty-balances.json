@@ -1,0 +1,33 @@
+{
+  "documents": [{
+    "name": "projects/demo-safebeauty/databases/(default)/documents/provider_balances/emu-kyc-2",
+    "fields": {
+      "owedAmount": {
+        "integerValue": "-300"
+      },
+      "providerId": {
+        "stringValue": "emu-kyc-2"
+      },
+      "updatedAt": {
+        "integerValue": "1791523877351"
+      }
+    },
+    "createTime": "2026-10-09T05:31:17.352742Z",
+    "updateTime": "2026-10-09T05:31:17.352742Z"
+  }, {
+    "name": "projects/demo-safebeauty/databases/(default)/documents/provider_balances/emu-provider-1",
+    "fields": {
+      "owedAmount": {
+        "integerValue": "4200"
+      },
+      "providerId": {
+        "stringValue": "emu-provider-1"
+      },
+      "updatedAt": {
+        "integerValue": "1791523877350"
+      }
+    },
+    "createTime": "2026-10-09T05:31:17.351158Z",
+    "updateTime": "2026-10-09T05:31:17.351158Z"
+  }]
+}

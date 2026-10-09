@@ -1,0 +1,56 @@
+{
+ "success": true,
+ "data": [
+  {
+   "id": "01a11f28-37c4-76ad-bde5-4a1006588a07",
+   "number": "VLR-2026-000003",
+   "status": "SCHEDULED",
+   "ride_kind": "SHARED",
+   "scheduled_departure_at": "2026-10-09T09:00:00-04:00",
+   "origin_station_name": "ایستگاه خیشکی",
+   "destination_name": "چاریکار",
+   "driver_name": null,
+   "driver_phone": null,
+   "plate_number": null,
+   "seat_capacity": 4,
+   "seats_available": 4,
+   "booked_seats": 0
+  },
+  {
+   "id": "01a11f28-37c2-7b2d-b11b-6a8469acf914",
+   "number": "VLR-2026-000002",
+   "status": "SCHEDULED",
+   "ride_kind": "SHARED",
+   "scheduled_departure_at": "2026-10-09T06:00:00-04:00",
+   "origin_station_name": "ایستگاه خیشکی",
+   "destination_name": "چاریکار",
+   "driver_name": null,
+   "driver_phone": null,
+   "plate_number": null,
+   "seat_capacity": 4,
+   "seats_available": 4,
+   "booked_seats": 0
+  },
+  {
+   "id": "01a11f28-37bf-7a2f-924a-113edb53c004",
+   "number": "VLR-2026-000001",
+   "status": "SCHEDULED",
+   "ride_kind": "SHARED",
+   "scheduled_departure_at": "2026-10-09T03:00:00-04:00",
+   "origin_station_name": "ایستگاه خیشکی",
+   "destination_name": "چاریکار",
+   "driver_name": null,
+   "driver_phone": null,
+   "plate_number": null,
+   "seat_capacity": 4,
+   "seats_available": 4,
+   "booked_seats": 0
+  }
+ ],
+ "message": null,
+ "meta": {
+  "total": 3,
+  "limit": 50,
+  "offset": 0
+ }
+}

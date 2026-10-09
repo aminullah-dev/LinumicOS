@@ -198,8 +198,9 @@ public actor RemoteInventoryStore: InventoryStore {
 
 /// Cloud inventory with the local file as an offline cache.
 ///
-/// - load: the server wins when reachable. If it's empty, the local inventory is uploaded. If an earlier
-///   upload failed (the pending flag), local edits are pushed first so they aren't lost.
+/// - load: the server wins when reachable, except for the oversight register, which is merged by repository
+///   (`OversightMerge`) so a cloud copy without it can never wipe the local one. If the server is empty, the
+///   local inventory is uploaded. If an earlier upload failed (the pending flag), local edits are pushed first.
 /// - save: always written locally, then uploaded. A failed upload leaves the pending flag for next time.
 /// Concurrent edits on two devices resolve as last-writer-wins for the whole inventory (single-owner use).
 public actor HybridInventoryStore: InventoryStore {
@@ -242,9 +243,17 @@ public actor HybridInventoryStore: InventoryStore {
                 status = .synced(now())
                 return localInventory
             }
-            if let remoteInventory = try await remote.load() {
+            if var remoteInventory = try await remote.load() {
+                // The oversight register is merged, never replaced: a server that predates it (or holds
+                // less of it) must not wipe this device's copy.
+                let cloudOversight = remoteInventory.oversight
+                remoteInventory.oversight = OversightMerge.merge(device: localInventory?.oversight ?? [], cloud: cloudOversight)
                 try await local.save(remoteInventory)
-                status = .synced(now())
+                if remoteInventory.oversight != cloudOversight {
+                    // Best effort: let the cloud catch up. A failure only leaves the upload pending.
+                    do { try await remote.save(remoteInventory) } catch { setPending(true) }
+                }
+                status = hasPendingUpload ? .pendingUpload(L("The oversight register is waiting to upload.")) : .synced(now())
                 return remoteInventory
             }
             if let localInventory {

@@ -41,12 +41,17 @@ public struct GitHubClient: RepositoryHostClient {
 
     private let transport: HTTPTransport
     private let token: String?
-    private let now: @Sendable () -> Date
+    let now: @Sendable () -> Date
+    /// Optional ETag cache. With one, every GET is conditional (`If-None-Match`) and a 304 is answered
+    /// from the cache. GitHub doesn't count an authenticated 304 against the rate limit.
+    private let cache: GitHubResponseCache?
 
     /// `token` is optional: without one, only public repositories can be read (60 requests/hour).
-    public init(token: String?, transport: HTTPTransport = URLSessionTransport(), now: @escaping @Sendable () -> Date = { .now }) {
+    public init(token: String?, transport: HTTPTransport = URLSessionTransport(), cache: GitHubResponseCache? = nil,
+                now: @escaping @Sendable () -> Date = { .now }) {
         self.token = token?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
         self.transport = transport
+        self.cache = cache
         self.now = now
     }
 
@@ -103,22 +108,42 @@ public struct GitHubClient: RepositoryHostClient {
 
     // MARK: Requests
 
-    private func get<T: Decodable>(_ path: String, query: [URLQueryItem] = [], as: T.Type) async throws -> T {
+    func get<T: Decodable>(_ path: String, query: [URLQueryItem] = [], as: T.Type) async throws -> T {
+        let data = try await getData(path, query: query)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(T.self, from: data)
+    }
+
+    /// One GET, returning the body. `accept` selects the media type (e.g. raw file contents).
+    func getData(_ path: String, query: [URLQueryItem] = [], accept: String = "application/vnd.github+json") async throws -> Data {
         var components = URLComponents(url: Self.apiBase.appending(path: path), resolvingAgainstBaseURL: false)!
         if !query.isEmpty { components.queryItems = query }
         var request = URLRequest(url: components.url!)
         request.httpMethod = "GET"
-        request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
+        request.setValue(accept, forHTTPHeaderField: "Accept")
         request.setValue("2022-11-28", forHTTPHeaderField: "X-GitHub-Api-Version")
         request.setValue("LinumicOS", forHTTPHeaderField: "User-Agent")
         if let token { request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization") }
+        // The cache key includes the media type and whether a token was used, so a public answer is never
+        // replayed for a private request (or a raw file for its JSON description).
+        let cacheKey = "\(token == nil ? "anon" : "auth") \(accept) \(components.url!.absoluteString)"
+        let cached = await cache?.entry(for: cacheKey)
+        if let cached {
+            request.setValue(cached.etag, forHTTPHeaderField: "If-None-Match")
+            request.cachePolicy = .reloadIgnoringLocalCacheData   // our ETag, not URLCache's
+        }
 
         let (data, response) = try await transport.send(request)
         switch response.statusCode {
+        case 304 where cached != nil:
+            await cache?.noteNotModified(cacheKey, at: now())
+            return cached!.body
         case 200..<300:
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            return try decoder.decode(T.self, from: data)
+            if let cache, let etag = response.value(forHTTPHeaderField: "ETag") {
+                await cache.store(.init(etag: etag, body: data, storedAt: now()), for: cacheKey)
+            }
+            return data
         case 401: throw GitHubError.unauthorized
         case 404: throw GitHubError.notFound(path)
         case 403, 429:

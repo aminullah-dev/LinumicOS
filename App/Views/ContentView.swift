@@ -62,7 +62,11 @@ struct ContentView: View {
     private func detail(for item: SidebarItem) -> some View {
         switch item {
         case .dashboard: DashboardView()
+        case .platforms: PlatformsView()
         case .oversight: OversightView()
+        case .licences: LicencesView()
+        case .worktrackCustomers: WorkTrackCustomersView()
+        case .operations: OperationsView()
         case .allProducts: ProductsRootView()
         case .verification: VerificationView()
         case .releases: AllReleasesView()
