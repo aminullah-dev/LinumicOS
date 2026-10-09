@@ -718,6 +718,48 @@ already hold in memory or in their local files.
   با کلیدهای بالا و پایین انتخاب و با Return باز کنید. حروف عربی و فارسی (ي/ی، ك/ک) فرقی نمی‌کنند. فرمان‌هایی که چیزی
   را تغییر می‌دهند فقط صفحهٔ خود را باز می‌کنند؛ تأیید همان‌جاست.
 
+## Keys & Backups (local, no integration)
+
+No service and no credential: a registry on this device and, on the Mac, file attributes in folders the owner granted.
+
+- **Screen:** sidebar > Keys & Backups («کلیدها و پشتیبان‌ها»). Reminders first, then the backups (file, Drive link,
+  size, day made and verified, encryption, where the passphrase is kept, Keychain item found or not, last restore test
+  and its age), the keys (path, on this Mac / missing / not granted, size and modification date, backed up / changed
+  after backup / not backed up, "do not delete"), key files found that the registry doesn't know, the known gaps, the
+  granted folders, and a read-only restore guide.
+- **Seed (2026-10-09):** sources `~/Keys/README.md` (written 2026-10-09), `Linumic/licensing/MAP.md` and the session
+  records of 2026-10-08/09. Android keys: WorkTrack (repository + the identical copy in `~/Keys/worktrack`), VELRO
+  (`~/.velro-keys` + `.storepass`), the second VELRO key from Downloads (origin unknown, do not delete), SafeBeauty,
+  SODER-HAKEM. Licence keys: `~/.linumic/license-keys/{mediflow,khayatyar}-private.pem`. App Store Connect:
+  `~/.appstoreconnect/private_keys/AuthKey_*.p8` (5, no backup). Backups in Google Drive > Mohem:
+  `linumic-android-signing-keys.tgz.enc` (id 1mBSWqt_JwvEU7BMSFcJ-FJucPGJeuS4q, 22,336 bytes, made 2026-10-09,
+  compared byte-identical and test-decrypted; restored by the owner 2026-10-09) and `linumic-license-keys.tar.enc`
+  (id 13YZuIKfJrlgZFH98_DeqqBUb_ZXhrd5b, made 2026-10-08, verified 2026-10-08/09, test decryption 2026-10-08, no owner
+  restore recorded). AES-256-CBC, PBKDF2 600000 iterations. Open gaps: no second off-Mac copy; ASC keys and the
+  notarytool profile not backed up; new keys (Talar) must be added.
+- **Rules:** a key is "changed after backup" when its file's modification day is later than the day its newest backup
+  was made (facts are known to the day, so a change later on the backup's own day isn't flagged). A key file found by
+  name that no registry path or pattern covers is "not covered by any backup". Reminders: restore test older than 90
+  days (or none), second copy missing, key missing, key changed after backup, key in no backup, uncovered key file,
+  passphrase Keychain item missing. They appear on the screen and as the Daily Brief's Keys section.
+- **Editing:** add/edit/remove registry keys (removing only edits the list), edit a backup's facts after making a new
+  bundle (day made, verified, size, Drive id), "Mark restore test done…" (backup, day, by whom, note; no future days),
+  "Mark second copy done…" (day and where). Every change is saved at once to `keys-registry.json`; a file that can't
+  be read is never overwritten. Command palette: "Mark restore test done…" opens that sheet.
+- **Checks run** at launch and every 30 minutes with the other refreshes, and with "Check files".
+
+### راهنمای امین‌الله: کلیدها و پشتیبان‌ها (دری)
+
+- **بار اول:** نوار کنار ← «کلیدها و پشتیبان‌ها» ← در بخش «پوشه‌هایی که برنامه می‌تواند بخواند» دکمهٔ «انتخاب پوشه…» را بزنید
+  و پوشهٔ خانه (`aminullahhashemi`) را انتخاب کنید. این یک بار همهٔ جاها را می‌پوشاند. برنامه فقط نام، اندازه و تاریخ فایل‌ها
+  را می‌بیند، نه خود کلیدها.
+- **وقتی بازیابی آزمایشی کردید:** «ثبت بازیابی آزمایشی…» (یا ⌘K و همین نام)، پشتیبان و روز را انتخاب کنید. هر ۹۰ روز یک بار
+  یادآوری می‌آید.
+- **وقتی نسخهٔ دوم (فلش‌دیسک) را ساختید:** در «کمبودهای شناخته‌شده» دکمهٔ «ثبت نسخهٔ دوم…» و بنویسید کجاست.
+- **وقتی کلید تازه ساختید (مثلاً تالار):** آن را به بستهٔ رمزگذاری‌شده اضافه کنید، فایل تازه را در Drive بگذارید، بعد در برنامه
+  «ویرایش پشتیبان…» و روز ساخت را عوض کنید و کلید را با «افزودن به فهرست…» اضافه کنید.
+- **بازیابی:** «راهنمای بازیابی» در پایین صفحه فرمان‌ها را دارد؛ رمز را openssl خودش می‌پرسد.
+
 ## Social media (Phase 5)
 
 LinkedIn, Facebook, Instagram, X and YouTube. OAuth per network, tokens stored
