@@ -11,7 +11,8 @@ struct LinumicOSApp: App {
     @State private var operations: OperationsModel
     @State private var releases: ReleaseCenterModel
     @State private var vault = VaultModel()
-    @State private var monitor = MonitorModel()
+    @State private var monitor: MonitorModel
+    @State private var brief: BriefModel
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
@@ -29,11 +30,19 @@ struct LinumicOSApp: App {
         }
         let inventory = InventoryModel(store: store)
         _model = State(initialValue: inventory)
-        _licences = State(initialValue: LicenceModel(inventory: inventory))
+        let licences = LicenceModel(inventory: inventory)
+        _licences = State(initialValue: licences)
         _platforms = State(initialValue: PlatformHubModel(inventory: inventory))
-        _worktrack = State(initialValue: WorkTrackModel(inventory: inventory))
-        _operations = State(initialValue: OperationsModel(inventory: inventory))
-        _releases = State(initialValue: ReleaseCenterModel(inventory: inventory))
+        let worktrack = WorkTrackModel(inventory: inventory)
+        _worktrack = State(initialValue: worktrack)
+        let operations = OperationsModel(inventory: inventory)
+        _operations = State(initialValue: operations)
+        let releases = ReleaseCenterModel(inventory: inventory)
+        _releases = State(initialValue: releases)
+        let monitor = MonitorModel()
+        _monitor = State(initialValue: monitor)
+        _brief = State(initialValue: BriefModel(inventory: inventory, licences: licences, worktrack: worktrack,
+                                                operations: operations, releases: releases, monitor: monitor))
     }
 
     var body: some Scene {
@@ -48,6 +57,7 @@ struct LinumicOSApp: App {
                 .environment(releases)
                 .environment(vault)
                 .environment(monitor)
+                .environment(brief)
                 .environment(router)
                 #if os(macOS)
                 .frame(minWidth: 960, minHeight: 600)
@@ -73,6 +83,8 @@ struct LinumicOSApp: App {
                         await worktrack.autoRefreshIfDue()
                         await operations.autoRefreshIfDue()
                         await releases.autoRefreshIfDue()
+                        // Today's snapshot for "what changed since yesterday", and the morning notification.
+                        await brief.record()
                         try? await Task.sleep(for: .seconds(InventoryModel.autoRefreshInterval))
                     }
                 }
@@ -83,7 +95,7 @@ struct LinumicOSApp: App {
                     .keyboardShortcut("n")
             }
             CommandMenu("Go") {
-                Button("Quick Open…") { router.isQuickOpenPresented = true }
+                Button("Command Palette…") { router.isPalettePresented = true }
                     .keyboardShortcut("k")
                 Divider()
                 ForEach(Array(goShortcuts.enumerated()), id: \.element) { index, item in
@@ -105,6 +117,6 @@ struct LinumicOSApp: App {
     }()
 
     private var goShortcuts: [SidebarItem] {
-        [.dashboard, .allProducts, .verification, .releases, .roadmap, .issues, .repositories, .aiAssistant]
+        [.dashboard, .brief, .allProducts, .verification, .releases, .roadmap, .issues, .repositories, .aiAssistant]
     }
 }

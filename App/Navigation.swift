@@ -4,6 +4,7 @@ import Observation
 
 enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case dashboard
+    case brief
     case monitor
     case releaseCenter
     case platforms
@@ -24,6 +25,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .dashboard: L("Dashboard")
+        case .brief: L("Brief")
         case .monitor: L("Monitor")
         case .releaseCenter: L("Releases")
         case .platforms: L("Platforms")
@@ -55,6 +57,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     var symbol: String {
         switch self {
         case .dashboard: "square.grid.2x2"
+        case .brief: "sun.horizon"
         case .monitor: "waveform.path.ecg"
         case .releaseCenter: "shippingbox.and.arrow.backward"
         case .platforms: "square.stack.3d.up"
@@ -90,7 +93,7 @@ struct SidebarSection: Identifiable {
     var id: String { title ?? "root" }
 
     static let all: [SidebarSection] = [
-        SidebarSection(title: nil, items: [.dashboard, .monitor, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .vault]),
+        SidebarSection(title: nil, items: [.dashboard, .brief, .monitor, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .vault]),
         SidebarSection(title: "Products", items: [.allProducts, .verification, .releases, .roadmap, .issues]),
         SidebarSection(title: "Development", items: [.repositories, .builds, .deployments]),
         SidebarSection(title: "Stores", items: [.appStore, .googlePlay]),
@@ -100,13 +103,24 @@ struct SidebarSection: Identifiable {
     ]
 }
 
-/// Navigation state shared by the sidebar, the menu commands and Quick Open.
+/// A request for the screen that opens next: show a record, or open its own sheet (where any confirmation lives).
+/// The Command Palette and the Daily Brief set it together with `sidebar`; the screen consumes it and clears it.
+enum RouterRequest: Equatable {
+    case licence(String)
+    case issueLicence
+    case worktrackCompany(String)
+    case newVaultEntry
+    case vaultSearch(String)
+}
+
+/// Navigation state shared by the sidebar, the menu commands, the Command Palette and the Daily Brief.
 @MainActor
 @Observable
 final class Router {
     var sidebar: SidebarItem? = .dashboard
     var productPath: [String] = []
-    var isQuickOpenPresented = false
+    var isPalettePresented = false
+    var request: RouterRequest?
     var isNewProductPresented = false
     /// The product tab shown in Operations.
     var operationsTab: OperationsProduct = .talar
@@ -124,5 +138,34 @@ final class Router {
     func open(productID: String) {
         sidebar = .allProducts
         productPath = [productID]
+    }
+
+    func go(_ item: SidebarItem, request: RouterRequest? = nil) {
+        productPath = []
+        sidebar = item
+        self.request = request
+    }
+
+    /// Takes the pending request if `accept` wants it, so each request is handled once.
+    func take(_ accept: (RouterRequest) -> Bool) -> RouterRequest? {
+        guard let r = request, accept(r) else { return nil }
+        request = nil
+        return r
+    }
+
+    /// Where a Daily Brief line's button goes.
+    func open(_ destination: BriefDestination) {
+        switch destination {
+        case .monitor: go(.monitor)
+        case .releaseCenter: go(.releaseCenter)
+        case .licences: go(.licences)
+        case .licence(let id): go(.licences, request: .licence(id))
+        case .worktrackCustomers: go(.worktrackCustomers)
+        case .worktrackCompany(let id): go(.worktrackCustomers, request: .worktrackCompany(id))
+        case .operations(let product):
+            if let product { operationsTab = product }
+            go(.operations)
+        case .oversight: go(.oversight)
+        }
     }
 }

@@ -15813,6 +15813,1046 @@
           }
         }
       }
+    },
+    "%@ admin, %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدیریت %1$@، %2$@"
+          }
+        }
+      }
+    },
+    "%@ is slow or degraded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ کند است یا درست کار نمی‌کند"
+          }
+        }
+      }
+    },
+    "%@ licence %@ for %@ ends in %d days (%@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس %1$@ با شمارهٔ %2$@ برای %3$@ تا %4$d روز دیگر ختم می‌شود (%5$@)"
+          }
+        }
+      }
+    },
+    "%@ licence %@ for %@ has expired (%@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس %1$@ با شمارهٔ %2$@ برای %3$@ ختم شده است (%4$@)"
+          }
+        }
+      }
+    },
+    "%@ licence %@ issued to %@ on %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس %1$@ با شمارهٔ %2$@ برای %3$@ در %4$@ صادر شد"
+          }
+        }
+      }
+    },
+    "%@ on Google Play: %@ → %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ در Google Play: %2$@ ← %3$@"
+          }
+        }
+      }
+    },
+    "%@ on the App Store: %@ → %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ در App Store: %2$@ ← %3$@"
+          }
+        }
+      }
+    },
+    "%@ was down in %d of %d checks in the last 24 hours": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ در %2$d بررسی از %3$d بررسی ۲۴ ساعت گذشته از کار افتاده بود"
+          }
+        }
+      }
+    },
+    "%@: CI on the default branch %@ → %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: CI شاخهٔ اصلی %2$@ ← %3$@"
+          }
+        }
+      }
+    },
+    "%@: PR #%@ was merged or closed, %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: PR #%2$@ ادغام یا بسته شد، %3$@"
+          }
+        }
+      }
+    },
+    "%@: WorkTrack licence expired (%@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: لایسنس WorkTrack ختم شده است (%2$@)"
+          }
+        }
+      }
+    },
+    "%@: WorkTrack renewal due in %d days (%@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: تمدید WorkTrack تا %2$d روز دیگر (%3$@)"
+          }
+        }
+      }
+    },
+    "%@: could not be read (%@).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: خوانده نشد (%2$@)."
+          }
+        }
+      }
+    },
+    "%@: new PR #%@, %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: PR تازه #%2$@، %3$@"
+          }
+        }
+      }
+    },
+    "%@: not signed in, queues unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: وارد نشده‌اید؛ صف‌ها نامعلوم است."
+          }
+        }
+      }
+    },
+    "%@: queues not read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: صف‌ها هنوز خوانده نشده‌اند."
+          }
+        }
+      }
+    },
+    "%d default branches are not protected": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d شاخهٔ اصلی محافظت نشده است"
+          }
+        }
+      }
+    },
+    "%d items need you: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d مورد منتظر شماست: %2$@"
+          }
+        }
+      }
+    },
+    "%d local repositories have uncommitted changes": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d مخزن محلی تغییرات commit نشده دارد"
+          }
+        }
+      }
+    },
+    "%d ms": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d میلی‌ثانیه"
+          }
+        }
+      }
+    },
+    "%d of %d endpoints have not been checked yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d نشانی از %2$d نشانی هنوز بررسی نشده است."
+          }
+        }
+      }
+    },
+    "%d open security alerts in %d repositories": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d هشدار امنیتی باز در %2$d مخزن"
+          }
+        }
+      }
+    },
+    "%lld for information": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld برای اطلاع"
+          }
+        }
+      }
+    },
+    "%lld need you": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld منتظر شما"
+          }
+        }
+      }
+    },
+    "%lld now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld فوری"
+          }
+        }
+      }
+    },
+    "%lld soon": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld به‌زودی"
+          }
+        }
+      }
+    },
+    "%lld sources not read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld منبع خوانده نشده"
+          }
+        }
+      }
+    },
+    "Actions that change something open their screen first, with its confirmation.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کارهایی که چیزی را تغییر می‌دهند، اول صفحهٔ خود را با تأییدش باز می‌کنند."
+          }
+        }
+      }
+    },
+    "Active licences: %d → %d": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس‌های فعال: %1$d ← %2$d"
+          }
+        }
+      }
+    },
+    "All clear": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همه چیز درست است"
+          }
+        }
+      }
+    },
+    "App Store Connect not read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App Store Connect هنوز خوانده نشده است."
+          }
+        }
+      }
+    },
+    "As of %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت %@."
+          }
+        }
+      }
+    },
+    "Brief": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گزارش روز"
+          }
+        }
+      }
+    },
+    "Command Palette…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جستجو و فرمان‌ها…"
+          }
+        }
+      }
+    },
+    "Could not read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوانده نشد"
+          }
+        }
+      }
+    },
+    "Daily Brief": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گزارش روز"
+          }
+        }
+      }
+    },
+    "Daily snapshots on this device (brief-snapshots.json)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عکس‌های روزانهٔ وضعیت در همین دستگاه (brief-snapshots.json)"
+          }
+        }
+      }
+    },
+    "Days as counted by WorkTrack at the time of reading.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روزها همان‌طور که WorkTrack در زمان خواندن شمرده است."
+          }
+        }
+      }
+    },
+    "Expired WorkTrack licences: %d → %d": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس‌های ختم‌شدهٔ WorkTrack: %1$d ← %2$d"
+          }
+        }
+      }
+    },
+    "GitHub not read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub هنوز خوانده نشده است."
+          }
+        }
+      }
+    },
+    "Go to": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رفتن به"
+          }
+        }
+      }
+    },
+    "Google Play not read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Play هنوز خوانده نشده است."
+          }
+        }
+      }
+    },
+    "HTTP %d": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HTTP %d"
+          }
+        }
+      }
+    },
+    "Issue licence…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صدور لایسنس…"
+          }
+        }
+      }
+    },
+    "Items": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "موارد"
+          }
+        }
+      }
+    },
+    "Last failure %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین خطا %@"
+          }
+        }
+      }
+    },
+    "Licence ledger (synced with Supabase)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر لایسنس‌ها (همگام با Supabase)"
+          }
+        }
+      }
+    },
+    "Licence ledger on this device (not synced)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر لایسنس‌ها در همین دستگاه (همگام نشده)"
+          }
+        }
+      }
+    },
+    "Licences in the ledger: %d → %d": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس‌های دفتر: %1$d ← %2$d"
+          }
+        }
+      }
+    },
+    "Local Git scan of the chosen folder": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی Git محلی در پوشهٔ انتخاب‌شده"
+          }
+        }
+      }
+    },
+    "Lock vault": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قفل کردن گاوصندوق"
+          }
+        }
+      }
+    },
+    "Monitor checks on this device (monitor.json)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی‌های پایش در همین دستگاه (monitor.json)"
+          }
+        }
+      }
+    },
+    "Monitor history, last 24 hours (monitor.json)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخچهٔ پایش، ۲۴ ساعت گذشته (monitor.json)"
+          }
+        }
+      }
+    },
+    "Morning Daily Brief notification": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعلان صبحگاهی گزارش روز"
+          }
+        }
+      }
+    },
+    "Morning notification is off. Turn it on in Settings → Integrations.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعلان صبحگاهی خاموش است. در تنظیمات ← اتصال‌ها روشنش کنید."
+          }
+        }
+      }
+    },
+    "Morning notification is on but not scheduled yet (it is scheduled after the first refresh, if notifications are allowed).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعلان صبحگاهی روشن است ولی هنوز زمان‌بندی نشده (پس از اولین تازه‌سازی، اگر اجازهٔ اعلان داده شده باشد، زمان‌بندی می‌شود)."
+          }
+        }
+      }
+    },
+    "Morning notification: next on %@. Change it in Settings → Integrations.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعلان صبحگاهی: بعدی در %@. در تنظیمات ← اتصال‌ها تغییرش دهید."
+          }
+        }
+      }
+    },
+    "Needs you now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همین حالا منتظر شما"
+          }
+        }
+      }
+    },
+    "Needs you soon": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به‌زودی منتظر شما"
+          }
+        }
+      }
+    },
+    "New vault entry…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب تازه در گاوصندوق…"
+          }
+        }
+      }
+    },
+    "Next": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بعدی"
+          }
+        }
+      }
+    },
+    "No oversight sweep yet. It needs a GitHub token.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز بررسی نظارت انجام نشده است. برای آن توکن GitHub لازم است."
+          }
+        }
+      }
+    },
+    "No snapshot from an earlier day yet. Changes show from tomorrow.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز عکس وضعیتی از روزهای قبل نیست. تغییرها از فردا نشان داده می‌شوند."
+          }
+        }
+      }
+    },
+    "Not checked yet. The Monitor checks when the app opens.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز بررسی نشده است. پایش با باز شدن برنامه بررسی می‌کند."
+          }
+        }
+      }
+    },
+    "Not read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوانده نشده"
+          }
+        }
+      }
+    },
+    "Not read yet. Open Releases and press Refresh.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز خوانده نشده است. «انتشارها» را باز کنید و «تازه‌سازی» را بزنید."
+          }
+        }
+      }
+    },
+    "Not read: %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوانده نشده: %@."
+          }
+        }
+      }
+    },
+    "Not signed in to Talar, SafeBeauty or VELRO, so their queues are unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به تالار، SafeBeauty یا VELRO وارد نشده‌اید، بنابراین صف‌های آن‌ها نامعلوم است."
+          }
+        }
+      }
+    },
+    "Not signed in to WorkTrack customers, so renewals are unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به «مشتریان WorkTrack» وارد نشده‌اید، بنابراین تمدیدها نامعلوم است."
+          }
+        }
+      }
+    },
+    "Nothing matches “%@”.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چیزی با «%@» جور نیامد."
+          }
+        }
+      }
+    },
+    "Nothing needs you": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چیزی منتظر شما نیست"
+          }
+        }
+      }
+    },
+    "Nothing needs you in what was last read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در آخرین خوانده‌ها چیزی منتظر شما نیست."
+          }
+        }
+      }
+    },
+    "One local notification a day with what needs you, worded from what the app last read and saying when. Nothing is fetched for it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روزی یک اعلان محلی با کارهایی که منتظر شماست، از آخرین خوانده‌های برنامه و با زمان آن. برای آن چیزی از اینترنت گرفته نمی‌شود."
+          }
+        }
+      }
+    },
+    "Open %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن %@"
+          }
+        }
+      }
+    },
+    "Open PR in %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن PR در %@"
+          }
+        }
+      }
+    },
+    "Open the screen this line comes from": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صفحه‌ای را که این خط از آن آمده باز کن"
+          }
+        }
+      }
+    },
+    "Operations queue counts (Talar, SafeBeauty, VELRO)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شمار صف‌های عملیات (تالار، SafeBeauty، VELRO)"
+          }
+        }
+      }
+    },
+    "Oversight sweep of GitHub (read-only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی نظارت GitHub (فقط خواندن)"
+          }
+        }
+      }
+    },
+    "Read from the %@ environment, not production.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از محیط %@ خوانده شده، نه production."
+          }
+        }
+      }
+    },
+    "Recent": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اخیر"
+          }
+        }
+      }
+    },
+    "Refresh releases": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه‌سازی انتشارها"
+          }
+        }
+      }
+    },
+    "Release Center (release-center.json)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرکز انتشار (release-center.json)"
+          }
+        }
+      }
+    },
+    "Results": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نتیجه‌ها"
+          }
+        }
+      }
+    },
+    "Search and commands": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جستجو و فرمان‌ها"
+          }
+        }
+      }
+    },
+    "Search screens, records and commands": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جستجوی صفحه‌ها، رکوردها و فرمان‌ها"
+          }
+        }
+      }
+    },
+    "Search screens, records and commands (⌘K)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جستجوی صفحه‌ها، رکوردها و فرمان‌ها (⌘K)"
+          }
+        }
+      }
+    },
+    "Signed in, but the company list has not been read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وارد شده‌اید، ولی فهرست شرکت‌ها هنوز خوانده نشده است."
+          }
+        }
+      }
+    },
+    "Snapshot of %@ compared with now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عکس وضعیت %@ در مقایسه با اکنون"
+          }
+        }
+      }
+    },
+    "TLS handshake with %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اتصال TLS با %@"
+          }
+        }
+      }
+    },
+    "The TLS certificate of %@ ends in %d days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گواهی TLS ‏%1$@ تا %2$d روز دیگر ختم می‌شود"
+          }
+        }
+      }
+    },
+    "The TLS certificate of %@ has expired": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گواهی TLS ‏%@ ختم شده است"
+          }
+        }
+      }
+    },
+    "The brief and its notification are built on this device. A small snapshot per day (brief-snapshots.json, last 8 days) is kept for \"what changed since yesterday\".": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گزارش روز و اعلان آن در همین دستگاه ساخته می‌شوند. برای «از دیروز چه تغییر کرد» روزی یک عکس کوچک از وضعیت نگه داشته می‌شود (brief-snapshots.json، ۸ روز آخر)."
+          }
+        }
+      }
+    },
+    "The brief is built on this device from what Monitor, Releases, Licences, WorkTrack customers, Operations and Oversight last read. It makes no requests of its own. A source that was never read says so instead of showing zero.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گزارش روز در همین دستگاه از آخرین خوانده‌های پایش، انتشارها، لایسنس‌ها، مشتریان WorkTrack، عملیات و نظارت ساخته می‌شود و خودش هیچ درخواستی نمی‌فرستد. منبعی که هرگز خوانده نشده، به‌جای صفر همین را می‌گوید."
+          }
+        }
+      }
+    },
+    "The ledger is empty on this device.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر در همین دستگاه خالی است."
+          }
+        }
+      }
+    },
+    "The licence ledger has not been read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر لایسنس‌ها هنوز خوانده نشده است."
+          }
+        }
+      }
+    },
+    "The registration of %@ ends in %d days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت %1$@ تا %2$d روز دیگر ختم می‌شود"
+          }
+        }
+      }
+    },
+    "The registration of %@ has expired": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت %@ ختم شده است"
+          }
+        }
+      }
+    },
+    "Time": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زمان"
+          }
+        }
+      }
+    },
+    "Type to filter. Up and down arrows choose, Return opens, Escape closes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای جستجو بنویسید. با کلیدهای بالا و پایین انتخاب کنید، Return باز می‌کند و Escape می‌بندد."
+          }
+        }
+      }
+    },
+    "What changed since yesterday": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از دیروز چه تغییر کرد"
+          }
+        }
+      }
+    },
+    "WorkTrack companies: %d → %d": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شرکت‌های WorkTrack: %1$d ← %2$d"
+          }
+        }
+      }
+    },
+    "WorkTrack customer": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مشتری WorkTrack"
+          }
+        }
+      }
+    },
+    "WorkTrack vendor API (%@), /vendor/companies": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API فروشندهٔ WorkTrack (%@)، /vendor/companies"
+          }
+        }
+      }
+    },
+    "↑↓ choose · ↩ open · esc close": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "↑↓ انتخاب · ↩ باز کردن · esc بستن"
+          }
+        }
+      }
     }
   },
   "version": "1.1"
