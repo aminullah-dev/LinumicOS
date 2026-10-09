@@ -1,0 +1,70 @@
+{
+ "objectClassName": "domain",
+ "handle": "3132679788_DOMAIN_COM-VRSN",
+ "ldhName": "LINUMIC.COM",
+ "events": [
+  {
+   "eventAction": "registration",
+   "eventDate": "2026-08-15T23:22:47Z"
+  },
+  {
+   "eventAction": "expiration",
+   "eventDate": "2029-08-15T23:22:47Z"
+  },
+  {
+   "eventAction": "last changed",
+   "eventDate": "2026-08-15T23:22:47Z"
+  },
+  {
+   "eventAction": "last update of RDAP database",
+   "eventDate": "2026-10-09T17:54:32Z"
+  }
+ ],
+ "status": [
+  "client delete prohibited",
+  "client renew prohibited",
+  "client transfer prohibited",
+  "client update prohibited"
+ ],
+ "nameservers": [
+  {
+   "objectClassName": "nameserver",
+   "ldhName": "NS73.DOMAINCONTROL.COM"
+  },
+  {
+   "objectClassName": "nameserver",
+   "ldhName": "NS74.DOMAINCONTROL.COM"
+  }
+ ],
+ "rdapConformance": [
+  "rdap_level_0",
+  "icann_rdap_technical_implementation_guide_1",
+  "icann_rdap_response_profile_1"
+ ],
+ "entities": [
+  {
+   "objectClassName": "entity",
+   "handle": "146",
+   "roles": [
+    "registrar"
+   ],
+   "vcardArray": [
+    "vcard",
+    [
+     [
+      "version",
+      {},
+      "text",
+      "4.0"
+     ],
+     [
+      "fn",
+      {},
+      "text",
+      "GoDaddy.com, LLC"
+     ]
+    ]
+   ]
+  }
+ ]
+}
