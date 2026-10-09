@@ -11223,6 +11223,16 @@
           }
         }
       }
+    },
+    "Issuing new licences is available in Linumic OS on the Mac, where the signing keys are kept. Here you can see the ledger.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صدور لایسنس تازه در Linumic OS روی مک است، جایی که کلیدهای امضا نگه داشته می‌شوند. این‌جا دفتر را می‌بینید."
+          }
+        }
+      }
     }
   },
   "version": "1.1"
