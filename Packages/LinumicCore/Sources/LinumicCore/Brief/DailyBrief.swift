@@ -9,7 +9,7 @@ import Foundation
 
 /// Where a line or section comes from. The order is the order of the sections on screen.
 public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiable {
-    case monitor, releases, licences, worktrack, operations, oversight, changes
+    case monitor, releases, licences, worktrack, operations, oversight, keys, changes
 
     public var id: String { rawValue }
 
@@ -21,6 +21,7 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .worktrack: L("WorkTrack customers")
         case .operations: L("Operations")
         case .oversight: L("Oversight")
+        case .keys: L("Keys & Backups")
         case .changes: L("What changed since yesterday")
         }
     }
@@ -33,6 +34,7 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .worktrack: "person.2.badge.key"
         case .operations: "tray.full"
         case .oversight: "scope"
+        case .keys: "externaldrive.badge.checkmark"
         case .changes: "clock.arrow.circlepath"
         }
     }
@@ -48,6 +50,7 @@ public enum BriefDestination: Hashable, Sendable {
     case worktrackCompany(String)
     case operations(OperationsProduct?)
     case oversight
+    case keys
 }
 
 public enum BriefSeverity: Int, Codable, Sendable, Comparable {
@@ -207,6 +210,18 @@ public struct BriefOversightInput: Sendable {
     }
 }
 
+/// Keys & Backups as the App holds it: the registry facts plus, on the Mac, the last local check.
+public struct BriefKeysInput: Sendable {
+    public var check: KeysCheckInput
+    /// Scan locations the app may not read (home-relative), shown as a note.
+    public var notGranted: [String]
+
+    public init(check: KeysCheckInput, notGranted: [String] = []) {
+        self.check = check
+        self.notGranted = notGranted
+    }
+}
+
 public struct BriefInput: Sendable {
     public var now: Date
     public var monitor: MonitorSnapshot
@@ -216,10 +231,12 @@ public struct BriefInput: Sendable {
     public var worktrack: BriefWorkTrackInput
     public var operations: [BriefOperationsInput]
     public var oversight: BriefOversightInput
+    /// Nil when the Keys & Backups registry has not been loaded.
+    public var keys: BriefKeysInput?
 
     public init(now: Date, monitor: MonitorSnapshot, monitorTargets: [MonitorTarget] = MonitorCatalog.targets,
                 releases: ReleaseCenterSnapshot, licences: BriefLicenceInput, worktrack: BriefWorkTrackInput,
-                operations: [BriefOperationsInput], oversight: BriefOversightInput) {
+                operations: [BriefOperationsInput], oversight: BriefOversightInput, keys: BriefKeysInput? = nil) {
         self.now = now
         self.monitor = monitor
         self.monitorTargets = monitorTargets
@@ -228,6 +245,7 @@ public struct BriefInput: Sendable {
         self.worktrack = worktrack
         self.operations = operations
         self.oversight = oversight
+        self.keys = keys
     }
 }
 
@@ -248,6 +266,7 @@ public enum DailyBriefBuilder {
             worktrack(input),
             operations(input),
             oversight(input),
+            keys(input),
         ]
         sections.append(changesSection(changes, now: input.now))
         return DailyBrief(sections: sections, generatedAt: input.now)
@@ -481,6 +500,28 @@ public enum DailyBriefBuilder {
                                    source: source, readAt: change.detectedAt, destination: .oversight))
         }
         return finish(.oversight, lines: lines, readAt: lastScan, source: source)
+    }
+
+    // MARK: Keys & Backups
+
+    static func keys(_ input: BriefInput) -> BriefSection {
+        let source = L("Keys & Backups registry and local file checks")
+        guard let k = input.keys else {
+            return BriefSection(kind: .keys, state: .neverRead(L("The Keys & Backups registry has not been loaded yet.")),
+                                readAt: nil, source: source)
+        }
+        let lines = KeysRules.reminders(k.check).map { r in
+            BriefLine(id: r.id, kind: .keys, severity: r.severity, text: r.text, detail: r.detail, source: r.source,
+                      readAt: r.readAt, destination: .keys)
+        }
+        var notes: [String] = []
+        if k.check.checkedAt == nil {
+            notes.append(L("Files on this Mac have not been checked; only the registry facts are used."))
+        }
+        if !k.notGranted.isEmpty {
+            notes.append(LF("Not granted, so not checked: %@.", k.notGranted.joined(separator: ", ")))
+        }
+        return finish(.keys, lines: lines, readAt: k.check.checkedAt, source: source, notes: notes)
     }
 
     // MARK: Changes
