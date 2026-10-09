@@ -14,7 +14,9 @@ let package = Package(
         ),
         .testTarget(
             name: "LinumicCoreTests",
-            dependencies: ["LinumicCore"]
+            dependencies: ["LinumicCore"],
+            // licensing-test-vectors.json: copy of licensing/test-vectors.json (a throwaway TEST key pair).
+            resources: [.copy("Fixtures")]
         ),
     ]
 )

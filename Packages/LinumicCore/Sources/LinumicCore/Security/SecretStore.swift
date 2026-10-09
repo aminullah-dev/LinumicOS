@@ -10,6 +10,9 @@ public enum SecretKey: String, CaseIterable, Sendable {
     case appStoreConnectKey = "appstoreconnect.key"
     /// Google Play service-account JSON key.
     case googlePlayServiceAccount = "googleplay.serviceaccount"
+    /// LNM1 licence signing keys (PKCS#8 PEM), imported by the owner on the Mac. Never uploaded.
+    case licenceSigningMediflow = "licence.signing.mediflow"
+    case licenceSigningKhayatyar = "licence.signing.khayatyar"
 }
 
 /// Credential storage. Values never appear in source, logs or the inventory file.
@@ -105,6 +108,7 @@ public struct KeychainSecretStore: SecretStore {
             var add = baseQuery(key)
             add[kSecValueData as String] = data
             add[kSecAttrAccessible as String] = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+            add[kSecAttrSynchronizable as String] = false
             let addStatus = SecItemAdd(add as CFDictionary, nil)
             guard addStatus == errSecSuccess else { throw KeychainError(status: addStatus) }
         } else if status != errSecSuccess {

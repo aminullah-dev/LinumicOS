@@ -1,0 +1,115 @@
+{
+ "note": "TEST key pair for unit tests only. Never use the test public key in a shipped build.",
+ "test_public_key_pem": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE67E5DnyHMQ/q+n5x0/aT89n0K+QK\nKaCAJDn/AoDbNzp+rUzlXF+rR2oKfKVrEIWoQ6dST85z6Sn4ydl3PEP4Kw==\n-----END PUBLIC KEY-----\n",
+ "test_private_key_pem": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg4VkX6OXicILpF4Lw\nTKJZbD0b2rwdQylY/ttOlaBDy6ChRANCAATrsTkOfIcxD+r6fnHT9pPz2fQr5Aop\noIAkOf8CgNs3On6tTOVcX6tHagp8pWsQhahDp1JPznPpKfjJ2Xc8Q/gr\n-----END PRIVATE KEY-----\n",
+ "machine_codes": [
+  {
+   "product": "mediflow",
+   "platform_id": "test-device-1",
+   "code": "4HDG-0NK5-EAKX-GQVR"
+  },
+  {
+   "product": "mediflow",
+   "platform_id": "3F2504E0-4F89-11D3-9A0C-0305E82C3301",
+   "code": "QRK7-PK6P-V2WY-XYXM"
+  },
+  {
+   "product": "mediflow",
+   "platform_id": "9774d56d682e549c",
+   "code": "JYJP-RA22-2MPB-P8N9"
+  },
+  {
+   "product": "khayatyar",
+   "platform_id": "test-device-1",
+   "code": "BDZ2-PWKS-XGAW-3YGB"
+  },
+  {
+   "product": "khayatyar",
+   "platform_id": "3F2504E0-4F89-11D3-9A0C-0305E82C3301",
+   "code": "Y5XX-H0AY-2634-X0AQ"
+  },
+  {
+   "product": "khayatyar",
+   "platform_id": "9774d56d682e549c",
+   "code": "9CRF-0ZJX-FWKR-XB6T"
+  }
+ ],
+ "keys": [
+  {
+   "case": "valid_perpetual",
+   "product": "mediflow",
+   "machine": "4HDG-0NK5-EAKX-GQVR",
+   "key": "LNM1.eyJjIjoi2qnZhNuM2YbbjNqpINii2LLZhdin24zYtNuMIC8gVGVzdCIsImUiOm51bGwsImVkIjoic3RhbmRhcmQiLCJmIjpbIioiXSwiaSI6IjIwMjYtMTAtMDgiLCJpZCI6Ik1GLVRFU1QtMDAwMSIsIm0iOiI0SERHLTBOSzUtRUFLWC1HUVZSIiwicCI6Im1lZGlmbG93IiwidiI6MX0.MEYCIQCpP8KjxPPLU3Mig16O24TallVQuaR77JXnpEdDv9cCCAIhAKMUd19SX8yeDy_ZG7D3fy2DN_mHAyb-FisDo31RT4z8"
+  },
+  {
+   "case": "valid_expires_2026_12_31",
+   "product": "mediflow",
+   "machine": "4HDG-0NK5-EAKX-GQVR",
+   "key": "LNM1.eyJjIjoi2qnZhNuM2YbbjNqpINii2LLZhdin24zYtNuMIC8gVGVzdCIsImUiOiIyMDI2LTEyLTMxIiwiZWQiOiJzdGFuZGFyZCIsImYiOlsiKiJdLCJpIjoiMjAyNi0xMC0wOCIsImlkIjoiTUYtVEVTVC0wMDAxIiwibSI6IjRIREctME5LNS1FQUtYLUdRVlIiLCJwIjoibWVkaWZsb3ciLCJ2IjoxfQ.MEYCIQCls8ZkdWfIZEaOnCI2aRhCtXWmSWOCzcbpR46SGs7cBgIhAOq4sB_xYEcEXl_-RKYdCJIcH5RTNU0M5K0udrpXTnHz"
+  },
+  {
+   "case": "valid_any_machine",
+   "product": "mediflow",
+   "machine": "*",
+   "key": "LNM1.eyJjIjoi2qnZhNuM2YbbjNqpINii2LLZhdin24zYtNuMIC8gVGVzdCIsImUiOm51bGwsImVkIjoic3RhbmRhcmQiLCJmIjpbIioiXSwiaSI6IjIwMjYtMTAtMDgiLCJpZCI6Ik1GLVRFU1QtMDAwMSIsIm0iOiIqIiwicCI6Im1lZGlmbG93IiwidiI6MX0.MEYCIQDZDA8i21lQa1p9Rb9eTKjCcqU49QJi36uHwzJnJgFR2QIhAMPJGPbbZAyOUQi0gxeMibx9diXi0Sshz53L3vnQZO86"
+  },
+  {
+   "case": "wrong_product",
+   "product": "mediflow",
+   "key": "LNM1.eyJjIjoi2qnZhNuM2YbbjNqpINii2LLZhdin24zYtNuMIC8gVGVzdCIsImUiOm51bGwsImVkIjoic3RhbmRhcmQiLCJmIjpbIioiXSwiaSI6IjIwMjYtMTAtMDgiLCJpZCI6Ik1GLVRFU1QtMDAwMSIsIm0iOiI0SERHLTBOSzUtRUFLWC1HUVZSIiwicCI6ImtoYXlhdHlhciIsInYiOjF9.MEQCIAJ4dIPpbihdrPHp_GPNPh1gka9-22JrhGZrSKjXaYxkAiBnKyWldyFj640WbKZ0gEkLJfNygIB9bJeSgdHZ7TcLNA"
+  },
+  {
+   "case": "tampered_payload",
+   "product": "mediflow",
+   "key": "LNM1.eyJjIjoiVGFtcGVyZWQiLCJlIjpudWxsLCJlZCI6InN0YW5kYXJkIiwiZiI6WyIqIl0sImkiOiIyMDI2LTEwLTA4IiwiaWQiOiJNRi1URVNULTAwMDEiLCJtIjoiNEhERy0wTks1LUVBS1gtR1FWUiIsInAiOiJtZWRpZmxvdyIsInYiOjF9.MEUCIEbRohvIiQWVVvCqIW3hIhATMW4cDZ3KBYaMKLuNsIlsAiEAh7E3MFS-rugncQEeBCBH1hUIlbsPqL2WBLwqLSz_vLc"
+  },
+  {
+   "case": "wrong_version",
+   "product": "mediflow",
+   "key": "LNM1.eyJjIjoi2qnZhNuM2YbbjNqpINii2LLZhdin24zYtNuMIC8gVGVzdCIsImUiOm51bGwsImVkIjoic3RhbmRhcmQiLCJmIjpbIioiXSwiaSI6IjIwMjYtMTAtMDgiLCJpZCI6Ik1GLVRFU1QtMDAwMSIsIm0iOiI0SERHLTBOSzUtRUFLWC1HUVZSIiwicCI6Im1lZGlmbG93IiwidiI6Mn0.MEYCIQC8aGmJ59LCHwwCtGU5eKZr4e1jqD6v9CtC5kIFnoAqpQIhAPXSOgcULsZ-V2Yuu2Zwd6pZNWYACj9AzB9zEa_AQaIl"
+  },
+  {
+   "case": "with_whitespace_valid",
+   "product": "mediflow",
+   "key": "LNM1.eyJjIjoi2qnZhNuM2YbbjNqpINii2LLZhdi\n  n24zYtNuMIC8gVGVzdCIsImUiOm51bGwsImVkIjoic3RhbmRhcmQiLCJmIjpbIioiXSwiaSI6IjIwMjY tMTAtMDgiLCJpZCI6Ik1GLVRFU1QtMDAwMSIsIm0iOiI0SERHLTBOSzUtRUFLWC1HUVZSIiwicCI6Im1lZGlmbG93IiwidiI6MX0.MEUCIEbRohvIiQWVVvCqIW3hIhATMW4cDZ3KBYaMKLuNsIlsAiEAh7E3MFS-rugncQEeBCBH1hUIlbsPqL2WBLwqLSz_vLc"
+  },
+  {
+   "case": "valid_perpetual",
+   "product": "khayatyar",
+   "machine": "BDZ2-PWKS-XGAW-3YGB",
+   "key": "LNM1.eyJjIjoi2qnZhNuM2YbbjNqpINii2LLZhdin24zYtNuMIC8gVGVzdCIsImUiOm51bGwsImVkIjoic3RhbmRhcmQiLCJmIjpbIioiXSwiaSI6IjIwMjYtMTAtMDgiLCJpZCI6IktZLVRFU1QtMDAwMSIsIm0iOiJCRFoyLVBXS1MtWEdBVy0zWUdCIiwicCI6ImtoYXlhdHlhciIsInYiOjF9.MEUCIQDffJ6NaqAvbr_6ggiy0Qc2Wv7_CFy5j1ISbKX3VPEZCAIgYefrlVPyWpcMfKg1E5RQYkFBBanlGINoG_-IZ6O51IQ"
+  },
+  {
+   "case": "valid_expires_2026_12_31",
+   "product": "khayatyar",
+   "machine": "BDZ2-PWKS-XGAW-3YGB",
+   "key": "LNM1.eyJjIjoi2qnZhNuM2YbbjNqpINii2LLZhdin24zYtNuMIC8gVGVzdCIsImUiOiIyMDI2LTEyLTMxIiwiZWQiOiJzdGFuZGFyZCIsImYiOlsiKiJdLCJpIjoiMjAyNi0xMC0wOCIsImlkIjoiS1ktVEVTVC0wMDAxIiwibSI6IkJEWjItUFdLUy1YR0FXLTNZR0IiLCJwIjoia2hheWF0eWFyIiwidiI6MX0.MEQCIDBOKUMPeYspacsNmyuBlyNvipjWkpeAZckuW8btEYaUAiAPPfQl4DbxLk9WRUZywsuP5veQCcfg4lFdDLuqBDLhqg"
+  },
+  {
+   "case": "valid_any_machine",
+   "product": "khayatyar",
+   "machine": "*",
+   "key": "LNM1.eyJjIjoi2qnZhNuM2YbbjNqpINii2LLZhdin24zYtNuMIC8gVGVzdCIsImUiOm51bGwsImVkIjoic3RhbmRhcmQiLCJmIjpbIioiXSwiaSI6IjIwMjYtMTAtMDgiLCJpZCI6IktZLVRFU1QtMDAwMSIsIm0iOiIqIiwicCI6ImtoYXlhdHlhciIsInYiOjF9.MEYCIQDyH6HEs4ezonL18P80IO6YjBeWAkJ5RMLK-aICAb3nIAIhAP5PZ_mOTinoOrFIU6g2ODxBuXRgRFKYc_EXYNRM8508"
+  },
+  {
+   "case": "wrong_product",
+   "product": "khayatyar",
+   "key": "LNM1.eyJjIjoi2qnZhNuM2YbbjNqpINii2LLZhdin24zYtNuMIC8gVGVzdCIsImUiOm51bGwsImVkIjoic3RhbmRhcmQiLCJmIjpbIioiXSwiaSI6IjIwMjYtMTAtMDgiLCJpZCI6IktZLVRFU1QtMDAwMSIsIm0iOiJCRFoyLVBXS1MtWEdBVy0zWUdCIiwicCI6Im1lZGlmbG93IiwidiI6MX0.MEUCIQDUpR2qg5x90fJ8zfCjPKmSCJ2Fsylpj49o-WkamtwMyQIgIn1fGI4yC-6eO1Onn2_4NX4pWQNbS-j-EYrxYYYdJeE"
+  },
+  {
+   "case": "tampered_payload",
+   "product": "khayatyar",
+   "key": "LNM1.eyJjIjoiVGFtcGVyZWQiLCJlIjpudWxsLCJlZCI6InN0YW5kYXJkIiwiZiI6WyIqIl0sImkiOiIyMDI2LTEwLTA4IiwiaWQiOiJLWS1URVNULTAwMDEiLCJtIjoiQkRaMi1QV0tTLVhHQVctM1lHQiIsInAiOiJraGF5YXR5YXIiLCJ2IjoxfQ.MEUCIQDu7wuT5SuZI4xBWP5GTIePB4sUdaZcyAwL_bsv0NTe-gIgWLQpfS2A-GpVdhP6PsOz9qzyB-kUb3D8AL_JJbzEB9g"
+  },
+  {
+   "case": "wrong_version",
+   "product": "khayatyar",
+   "key": "LNM1.eyJjIjoi2qnZhNuM2YbbjNqpINii2LLZhdin24zYtNuMIC8gVGVzdCIsImUiOm51bGwsImVkIjoic3RhbmRhcmQiLCJmIjpbIioiXSwiaSI6IjIwMjYtMTAtMDgiLCJpZCI6IktZLVRFU1QtMDAwMSIsIm0iOiJCRFoyLVBXS1MtWEdBVy0zWUdCIiwicCI6ImtoYXlhdHlhciIsInYiOjJ9.MEQCIE3yYjrOylkAxjzSxcu9nOAjM2k1VgOrd_DlhB0hvi8RAiBCQ9YhyBel_EZ4ZAmWUDqlSXwNjrsPZKcRVtXFFPqAew"
+  },
+  {
+   "case": "with_whitespace_valid",
+   "product": "khayatyar",
+   "key": "LNM1.eyJjIjoi2qnZhNuM2YbbjNqpINii2LLZhdi\n  n24zYtNuMIC8gVGVzdCIsImUiOm51bGwsImVkIjoic3RhbmRhcmQiLCJmIjpbIioiXSwiaSI6IjIwMjY tMTAtMDgiLCJpZCI6IktZLVRFU1QtMDAwMSIsIm0iOiJCRFoyLVBXS1MtWEdBVy0zWUdCIiwicCI6ImtoYXlhdHlhciIsInYiOjF9.MEUCIQDu7wuT5SuZI4xBWP5GTIePB4sUdaZcyAwL_bsv0NTe-gIgWLQpfS2A-GpVdhP6PsOz9qzyB-kUb3D8AL_JJbzEB9g"
+  }
+ ]
+}
