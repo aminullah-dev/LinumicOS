@@ -9,6 +9,13 @@ struct LinumicOSApp: App {
     @State private var platforms: PlatformHubModel
     @State private var worktrack: WorkTrackModel
     @State private var operations: OperationsModel
+    @State private var releases: ReleaseCenterModel
+    @State private var vault = VaultModel()
+    @State private var monitor: MonitorModel
+    @State private var brief: BriefModel
+    @State private var keys: KeysModel
+    @State private var siteMessages: SiteMessagesModel
+    @Environment(\.scenePhase) private var scenePhase
 
     init() {
         // macOS has no Persian system localization, so AppKit (window controls, split views, sheets,
@@ -25,10 +32,24 @@ struct LinumicOSApp: App {
         }
         let inventory = InventoryModel(store: store)
         _model = State(initialValue: inventory)
-        _licences = State(initialValue: LicenceModel(inventory: inventory))
+        let licences = LicenceModel(inventory: inventory)
+        _licences = State(initialValue: licences)
         _platforms = State(initialValue: PlatformHubModel(inventory: inventory))
-        _worktrack = State(initialValue: WorkTrackModel(inventory: inventory))
-        _operations = State(initialValue: OperationsModel(inventory: inventory))
+        let worktrack = WorkTrackModel(inventory: inventory)
+        _worktrack = State(initialValue: worktrack)
+        let operations = OperationsModel(inventory: inventory)
+        _operations = State(initialValue: operations)
+        let releases = ReleaseCenterModel(inventory: inventory)
+        _releases = State(initialValue: releases)
+        let monitor = MonitorModel()
+        _monitor = State(initialValue: monitor)
+        let keys = KeysModel()
+        _keys = State(initialValue: keys)
+        let siteMessages = SiteMessagesModel()
+        _siteMessages = State(initialValue: siteMessages)
+        _brief = State(initialValue: BriefModel(inventory: inventory, licences: licences, worktrack: worktrack,
+                                                operations: operations, releases: releases, monitor: monitor, keys: keys,
+                                                siteMessages: siteMessages))
     }
 
     var body: some Scene {
@@ -40,16 +61,28 @@ struct LinumicOSApp: App {
                 .environment(platforms)
                 .environment(worktrack)
                 .environment(operations)
+                .environment(releases)
+                .environment(vault)
+                .environment(monitor)
+                .environment(brief)
+                .environment(keys)
+                .environment(siteMessages)
                 .environment(router)
                 #if os(macOS)
                 .frame(minWidth: 960, minHeight: 600)
                 #endif
+                // The Vault locks whenever the app leaves the foreground.
+                .onChange(of: scenePhase) { _, phase in if phase == .background { vault.appMovedToBackground() } }
+                // Monitor: public health checks on open, then every 5 minutes, alongside the slower refresh loop below.
+                .task { await monitor.run() }
                 .task {
+                    vault.load()
                     await model.load()
                     await licences.load()
                     await platforms.load()
                     await worktrack.load()
                     await operations.load()
+                    await releases.load()
                     // Store status on launch, then every 30 minutes while the app is open.
                     while !Task.isCancelled {
                         await model.autoRefreshStoresIfDue()
@@ -58,6 +91,13 @@ struct LinumicOSApp: App {
                         await licences.sync()
                         await worktrack.autoRefreshIfDue()
                         await operations.autoRefreshIfDue()
+                        await releases.autoRefreshIfDue()
+                        // Keys & Backups: file dates and sizes in the granted folders only (Mac), no network.
+                        await keys.check()
+                        // Website messages: two GETs to linumic.com with the stored application password, if any.
+                        await siteMessages.refresh()
+                        // Today's snapshot for "what changed since yesterday", and the morning notification.
+                        await brief.record()
                         try? await Task.sleep(for: .seconds(InventoryModel.autoRefreshInterval))
                     }
                 }
@@ -68,7 +108,7 @@ struct LinumicOSApp: App {
                     .keyboardShortcut("n")
             }
             CommandMenu("Go") {
-                Button("Quick Open…") { router.isQuickOpenPresented = true }
+                Button("Command Palette…") { router.isPalettePresented = true }
                     .keyboardShortcut("k")
                 Divider()
                 ForEach(Array(goShortcuts.enumerated()), id: \.element) { index, item in
@@ -90,6 +130,6 @@ struct LinumicOSApp: App {
     }()
 
     private var goShortcuts: [SidebarItem] {
-        [.dashboard, .allProducts, .verification, .releases, .roadmap, .issues, .repositories, .aiAssistant]
+        [.dashboard, .brief, .allProducts, .verification, .releases, .roadmap, .issues, .repositories, .aiAssistant]
     }
 }

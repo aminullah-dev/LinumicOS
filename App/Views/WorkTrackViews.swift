@@ -107,6 +107,7 @@ struct WorkTrackMarks: View {
 
 struct WorkTrackCustomersView: View {
     @Environment(WorkTrackModel.self) private var worktrack
+    @Environment(Router.self) private var router
     @State private var filter: WTCompanyFilter = .all
     @State private var search = ""
     @State private var path: [String] = []
@@ -133,6 +134,12 @@ struct WorkTrackCustomersView: View {
             .toolbar { toolbar }
         }
         .sheet(isPresented: $isSigningIn) { WorkTrackSignInSheet() }
+        // From the Command Palette or the Daily Brief: open one company (read-only until a renewal is confirmed there).
+        .onChange(of: router.request, initial: true) {
+            if case .worktrackCompany(let id) = router.take({ if case .worktrackCompany = $0 { true } else { false } }) {
+                path = [id]
+            }
+        }
         .confirmationDialog("Sign out of WorkTrack?", isPresented: $confirmSignOut) {
             Button("Sign Out", role: .destructive) { worktrack.signOut() }
         } message: {
@@ -384,6 +391,8 @@ private struct WorkTrackAuditSection: View {
 
 struct WorkTrackSignInSheet: View {
     @Environment(WorkTrackModel.self) private var worktrack
+    @Environment(VaultModel.self) private var vault
+    @State private var saveOffer: VaultSaveOffer?
     @Environment(\.dismiss) private var dismiss
     @State private var environment: WorkTrackEnvironment = .production
     @State private var email = ""
@@ -428,6 +437,11 @@ struct WorkTrackSignInSheet: View {
             }
             .formStyle(.grouped)
             HStack {
+                VaultFillMenu(form: .worktrack(environment)) { login, password in
+                    if let login { email = login }
+                    if let password { self.password = password }
+                }
+                .disabled(isWorking)
                 if isWorking { ProgressView().controlSize(.small) }
                 Spacer()
                 Button("Cancel", role: .cancel) { dismiss() }.keyboardShortcut(.cancelAction)
@@ -443,6 +457,7 @@ struct WorkTrackSignInSheet: View {
         .onAppear {
             if let s = worktrack.session { environment = s.environment; email = s.email }
         }
+        .vaultSaveOffer($saveOffer) { dismiss() }
     }
 
     private func signIn() async {
@@ -452,8 +467,9 @@ struct WorkTrackSignInSheet: View {
         error = nil
         do {
             try await worktrack.signIn(environment: environment, email: email, password: password)
+            let offer = vault.saveOffer(form: .worktrack(environment), login: email, password: password)
             password = ""
-            dismiss()
+            if let offer { saveOffer = offer } else { dismiss() }
         } catch {
             password = ""
             self.error = error.localizedDescription

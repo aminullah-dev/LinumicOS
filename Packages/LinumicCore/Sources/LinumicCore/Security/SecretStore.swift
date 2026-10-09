@@ -22,6 +22,9 @@ public enum SecretKey: String, CaseIterable, Sendable {
     /// VELRO staff session: JSON `{environment, userID, roles, refreshToken, deviceID}`, rewritten after every
     /// successful refresh (the token rotates). Never the phone number or the access token.
     case velroStaffSession = "velro.staff.session"
+    /// linumic.com WordPress application password: JSON `{username, password}` (`WordPressAppPassword`). Used only for
+    /// GET requests that read contact-form entries. Never logged.
+    case wordPressLinumic = "wordpress.linumic.apppassword"
 }
 
 /// Credential storage. Values never appear in source, logs or the inventory file.
@@ -29,6 +32,26 @@ public protocol SecretStore: Sendable {
     func read(_ key: SecretKey) throws -> String?
     func write(_ value: String, for key: SecretKey) throws
     func delete(_ key: SecretKey) throws
+}
+
+/// Credential storage addressed by a free-form account name, for stores whose items aren't known at compile time
+/// (the Vault keeps one item per entry). Same Keychain rules as `SecretStore`.
+public protocol AccountSecretStore: Sendable {
+    func read(account: String) throws -> String?
+    func write(_ value: String, account: String) throws
+    func delete(account: String) throws
+}
+
+/// An in-memory `AccountSecretStore` for tests and previews. Nothing leaves the process.
+public final class InMemoryAccountSecretStore: AccountSecretStore, @unchecked Sendable {
+    private let lock = NSLock()
+    private var values: [String: String] = [:]
+    public init() {}
+    public func read(account: String) throws -> String? { lock.withLock { values[account] } }
+    public func write(_ value: String, account: String) throws { lock.withLock { values[account] = value } }
+    public func delete(account: String) throws { _ = lock.withLock { values.removeValue(forKey: account) } }
+    /// The account names currently stored (tests only check that nothing is left behind).
+    public var accounts: [String] { lock.withLock { values.keys.sorted() } }
 }
 
 public struct KeychainError: Error, LocalizedError, Equatable {
@@ -44,7 +67,7 @@ public struct KeychainError: Error, LocalizedError, Equatable {
 /// It prefers the data-protection keychain. Builds signed without a team (ad-hoc local
 /// development) lack the entitlement for it (`errSecMissingEntitlement`), and those fall
 /// back to the login keychain, which is still device-local and encrypted.
-public struct KeychainSecretStore: SecretStore {
+public struct KeychainSecretStore: SecretStore, AccountSecretStore {
     public let service: String
     private let useDataProtection: Bool
 
@@ -61,38 +84,42 @@ public struct KeychainSecretStore: SecretStore {
         useDataProtection ? KeychainSecretStore(service: service, useDataProtection: false) : nil
     }
 
-    private func baseQuery(_ key: SecretKey) -> [String: Any] {
+    private func baseQuery(_ account: String) -> [String: Any] {
         var q: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
-            kSecAttrAccount as String: key.rawValue,
+            kSecAttrAccount as String: account,
         ]
         if useDataProtection { q[kSecUseDataProtectionKeychain as String] = true }
         return q
     }
 
-    public func read(_ key: SecretKey) throws -> String? {
+    public func read(_ key: SecretKey) throws -> String? { try read(account: key.rawValue) }
+    public func write(_ value: String, for key: SecretKey) throws { try write(value, account: key.rawValue) }
+    public func delete(_ key: SecretKey) throws { try delete(account: key.rawValue) }
+
+    public func read(account key: String) throws -> String? {
         do { return try readOnce(key) } catch let e as KeychainError where e.status == errSecMissingEntitlement {
             guard let fallback else { throw e }
-            return try fallback.read(key)
+            return try fallback.read(account: key)
         }
     }
 
-    public func write(_ value: String, for key: SecretKey) throws {
+    public func write(_ value: String, account key: String) throws {
         do { try writeOnce(value, for: key) } catch let e as KeychainError where e.status == errSecMissingEntitlement {
             guard let fallback else { throw e }
-            try fallback.write(value, for: key)
+            try fallback.write(value, account: key)
         }
     }
 
-    public func delete(_ key: SecretKey) throws {
+    public func delete(account key: String) throws {
         do { try deleteOnce(key) } catch let e as KeychainError where e.status == errSecMissingEntitlement {
             guard let fallback else { throw e }
-            try fallback.delete(key)
+            try fallback.delete(account: key)
         }
     }
 
-    private func readOnce(_ key: SecretKey) throws -> String? {
+    private func readOnce(_ key: String) throws -> String? {
         var query = baseQuery(key)
         query[kSecReturnData as String] = true
         query[kSecMatchLimit as String] = kSecMatchLimitOne
@@ -109,7 +136,7 @@ public struct KeychainSecretStore: SecretStore {
         }
     }
 
-    private func writeOnce(_ value: String, for key: SecretKey) throws {
+    private func writeOnce(_ value: String, for key: String) throws {
         let data = Data(value.utf8)
         let update = [kSecValueData as String: data]
         let status = SecItemUpdate(baseQuery(key) as CFDictionary, update as CFDictionary)
@@ -125,7 +152,7 @@ public struct KeychainSecretStore: SecretStore {
         }
     }
 
-    private func deleteOnce(_ key: SecretKey) throws {
+    private func deleteOnce(_ key: String) throws {
         let status = SecItemDelete(baseQuery(key) as CFDictionary)
         guard status == errSecSuccess || status == errSecItemNotFound else { throw KeychainError(status: status) }
     }

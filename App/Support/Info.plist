@@ -31,6 +31,8 @@
 	<string>https://mczuclgfqxffcbiwvecf.supabase.co</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.developer-tools</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Linumic OS asks for Face ID before it shows, copies or fills a password saved in the Vault.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>© Linumic</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
