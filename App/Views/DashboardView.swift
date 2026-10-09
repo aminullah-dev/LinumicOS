@@ -40,6 +40,8 @@ struct DashboardView: View {
 
                 MonitorStatusStrip()
 
+                WaitingOnYouCard()
+
                 platformsCard
 
                 oversightCard

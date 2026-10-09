@@ -9,6 +9,7 @@ struct LinumicOSApp: App {
     @State private var platforms: PlatformHubModel
     @State private var worktrack: WorkTrackModel
     @State private var operations: OperationsModel
+    @State private var releases: ReleaseCenterModel
     @State private var vault = VaultModel()
     @State private var monitor = MonitorModel()
     @Environment(\.scenePhase) private var scenePhase
@@ -32,6 +33,7 @@ struct LinumicOSApp: App {
         _platforms = State(initialValue: PlatformHubModel(inventory: inventory))
         _worktrack = State(initialValue: WorkTrackModel(inventory: inventory))
         _operations = State(initialValue: OperationsModel(inventory: inventory))
+        _releases = State(initialValue: ReleaseCenterModel(inventory: inventory))
     }
 
     var body: some Scene {
@@ -43,6 +45,7 @@ struct LinumicOSApp: App {
                 .environment(platforms)
                 .environment(worktrack)
                 .environment(operations)
+                .environment(releases)
                 .environment(vault)
                 .environment(monitor)
                 .environment(router)
@@ -60,6 +63,7 @@ struct LinumicOSApp: App {
                     await platforms.load()
                     await worktrack.load()
                     await operations.load()
+                    await releases.load()
                     // Store status on launch, then every 30 minutes while the app is open.
                     while !Task.isCancelled {
                         await model.autoRefreshStoresIfDue()
@@ -68,6 +72,7 @@ struct LinumicOSApp: App {
                         await licences.sync()
                         await worktrack.autoRefreshIfDue()
                         await operations.autoRefreshIfDue()
+                        await releases.autoRefreshIfDue()
                         try? await Task.sleep(for: .seconds(InventoryModel.autoRefreshInterval))
                     }
                 }

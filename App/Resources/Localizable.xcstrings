@@ -14,6 +14,16 @@
         }
       }
     },
+    "%@ %@ %@ (build %@) will go live on the App Store for everyone. This can't be undone from here. Apple only accepts it from an App Manager or Admin key; with a Developer key it refuses and nothing changes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ %3$@ (بیلد %4$@) برای همه در App Store منتشر می‌شود. این کار از این‌جا برگشت ندارد. اپل آن را فقط از کلید App Manager یا Admin می‌پذیرد؛ با کلید Developer رد می‌کند و چیزی تغییر نمی‌کند."
+          }
+        }
+      }
+    },
     "%@ %@ (%@) is blocked.": {
       "extractionState": "stale",
       "localizations": {
@@ -191,6 +201,16 @@
         }
       }
     },
+    "%@ on %@ is rolled out to %@ of users": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ در %2$@ به %3$@ کاربران رسیده است"
+          }
+        }
+      }
+    },
     "%@ on %@: %@ → %@": {
       "extractionState": "stale",
       "localizations": {
@@ -250,6 +270,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "%@, uploaded %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@، بارگذاری %2$@"
           }
         }
       }
@@ -444,6 +474,16 @@
         }
       }
     },
+    "%d dependency updates are ready to merge": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d به‌روزرسانی وابستگی آمادهٔ ادغام است"
+          }
+        }
+      }
+    },
     "%ld draft finding(s) haven't been reviewed and aren't reported.": {
       "extractionState": "stale",
       "localizations": {
@@ -524,6 +564,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld هشدار انقضا"
+          }
+        }
+      }
+    },
+    "%lld more": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مورد دیگر"
+          }
+        }
+      }
+    },
+    "%lld more on GitHub": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مورد دیگر در GitHub"
           }
         }
       }
@@ -1244,12 +1304,52 @@
         }
       }
     },
+    "App Store %@ · Google Play %@ · GitHub %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App Store %1$@ · Google Play %2$@ · GitHub %3$@"
+          }
+        }
+      }
+    },
     "App Store Connect": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "App Store Connect"
+          }
+        }
+      }
+    },
+    "App Store Connect and Google Play are read with the keys in Settings → Integrations, GitHub with its token. Google Play is read through an edit that is deleted right away and never committed. The only change this screen can make is releasing an approved App Store version, after you confirm it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App Store Connect و Google Play با کلیدهای تنظیمات ← Integrations خوانده می‌شوند و GitHub با توکن خودش. Google Play از راه یک edit خوانده می‌شود که فوراً پاک می‌شود و هرگز commit نمی‌شود. تنها تغییری که این صفحه می‌تواند بدهد، انتشار یک نسخهٔ تأییدشدهٔ App Store پس از تأیید شماست."
+          }
+        }
+      }
+    },
+    "App Store Connect refused the release (403): the API key in Settings → Integrations can read but not release. Releasing needs a key with the App Manager or Admin role. Nothing was changed. %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App Store Connect انتشار را رد کرد (403): کلید API در تنظیمات ← Integrations فقط می‌خواند و نمی‌تواند منتشر کند. برای انتشار کلیدی با نقش App Manager یا Admin لازم است. چیزی تغییر نکرد. %@"
+          }
+        }
+      }
+    },
+    "App Store Connect refused the release (HTTP %d). Nothing was changed. %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App Store Connect انتشار را رد کرد (HTTP %1$d). چیزی تغییر نکرد. %2$@"
           }
         }
       }
@@ -1271,6 +1371,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "نام برنامه"
+          }
+        }
+      }
+    },
+    "Apple accepted the request, but the version still reads %@. Check again in a few minutes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپل درخواست را پذیرفت، اما نسخه هنوز %@ است. چند دقیقه بعد دوباره ببینید."
+          }
+        }
+      }
+    },
+    "Apple accepted the request; reading it back failed: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپل درخواست را پذیرفت؛ خواندن دوباره ناکام شد: %@"
           }
         }
       }
@@ -1327,6 +1447,26 @@
         }
       }
     },
+    "Approved, Apple releases it": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید شده، اپل منتشرش می‌کند"
+          }
+        }
+      }
+    },
+    "Approved, waiting for you to release": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید شده، منتظر انتشار از سوی شما"
+          }
+        }
+      }
+    },
     "Ask": {
       "localizations": {
         "fa-AF": {
@@ -1347,12 +1487,32 @@
         }
       }
     },
+    "Asks for confirmation, then asks App Store Connect to release this version": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اول تأیید می‌خواهد، بعد از App Store Connect انتشار این نسخه را درخواست می‌کند"
+          }
+        }
+      }
+    },
     "Authentication, roles, audit logging and server-side secret management arrive with the backend phase. See docs/security.md.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "احراز هویت، نقش‌ها، سابقهٔ حسابرسی و مدیریت رمزها در سرور با مرحلهٔ سرور اضافه می‌شوند. docs/security.md را ببینید."
+          }
+        }
+      }
+    },
+    "Automatic after approval": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خودکار پس از تأیید"
           }
         }
       }
@@ -1408,6 +1568,16 @@
         }
       }
     },
+    "Behind its base branch": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از شاخهٔ پایه عقب است"
+          }
+        }
+      }
+    },
     "Beta": {
       "extractionState": "stale",
       "localizations": {
@@ -1430,6 +1600,16 @@
         }
       }
     },
+    "Blocked by branch rules": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قانون‌های شاخه جلویش را گرفته"
+          }
+        }
+      }
+    },
     "Blocked releases": {
       "localizations": {
         "fa-AF": {
@@ -1440,12 +1620,32 @@
         }
       }
     },
+    "bot": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ربات"
+          }
+        }
+      }
+    },
     "Build": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "بیلد"
+          }
+        }
+      }
+    },
+    "Build %@ failed processing (%@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پردازش بیلد %1$@ ناکام شد (%2$@)"
           }
         }
       }
@@ -1667,6 +1867,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "CI در %@ ناکام است"
+          }
+        }
+      }
+    },
+    "CI is failing on %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI روی %@ ناکام است"
+          }
+        }
+      }
+    },
+    "CI on %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI روی %@"
+          }
+        }
+      }
+    },
+    "CI passing, no conflicts.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI سبز، بدون تداخل."
           }
         }
       }
@@ -2580,6 +2810,16 @@
         }
       }
     },
+    "Draft %@ on %@ waits for you to start the rollout": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیش‌نویس %1$@ در %2$@ منتظر است که شما پخش را شروع کنید"
+          }
+        }
+      }
+    },
     "Draft a product or release announcement, send it for review, and schedule it once approved.": {
       "localizations": {
         "fa-AF": {
@@ -3075,6 +3315,16 @@
         }
       }
     },
+    "For information": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای اطلاع"
+          }
+        }
+      }
+    },
     "Found during discovery, but the evidence can't settle whether they belong to Linumic. See docs/product-discovery-report.md.": {
       "localizations": {
         "fa-AF": {
@@ -3185,6 +3435,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "GitHub شدت مشکل را نشان نمی‌دهد. برای دسته‌بندی، آن‌ها را برچسب بزنید یا به‌عنوان مشکل ثبت کنید."
+          }
+        }
+      }
+    },
+    "GitHub is still checking": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GitHub هنوز بررسی می‌کند"
           }
         }
       }
@@ -3354,6 +3614,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "پیکربندی Gradle"
+          }
+        }
+      }
+    },
+    "Halted": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متوقف"
+          }
+        }
+      }
+    },
+    "Has conflicts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تداخل دارد"
           }
         }
       }
@@ -3554,6 +3834,16 @@
         }
       }
     },
+    "In progress": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در جریان"
+          }
+        }
+      }
+    },
     "In Review": {
       "extractionState": "stale",
       "localizations": {
@@ -3571,6 +3861,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "در حال توسعه (ثبت‌شده)"
+          }
+        }
+      }
+    },
+    "In review": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در بررسی"
+          }
+        }
+      }
+    },
+    "Increase or complete the rollout in Play Console when it looks healthy.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی سالم به نظر رسید، پخش را در Play Console بیشتر یا کامل کنید."
           }
         }
       }
@@ -3933,6 +4243,16 @@
         }
       }
     },
+    "Last release": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین انتشار"
+          }
+        }
+      }
+    },
     "Last snapshot: %@. Refresh from Development → Repositories (read-only).": {
       "localizations": {
         "fa-AF": {
@@ -4003,12 +4323,32 @@
         }
       }
     },
+    "Latest builds": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین بیلدها"
+          }
+        }
+      }
+    },
     "Latest commit": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "آخرین کامیت"
+          }
+        }
+      }
+    },
+    "Latest run %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین اجرا %@"
           }
         }
       }
@@ -4251,6 +4591,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "لیست"
+          }
+        }
+      }
+    },
+    "Listing source: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع فهرست: %@"
           }
         }
       }
@@ -4522,6 +4872,16 @@
         }
       }
     },
+    "Manual release": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشار دستی"
+          }
+        }
+      }
+    },
     "Mark Published": {
       "localizations": {
         "fa-AF": {
@@ -4601,6 +4961,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "متوسط"
+          }
+        }
+      }
+    },
+    "Merge from the top of the stack down, using Merge commit, not squash.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از بالای زنجیره به پایین ادغام کنید، با Merge commit، نه squash."
+          }
+        }
+      }
+    },
+    "Mergeable": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قابل ادغام"
+          }
+        }
+      }
+    },
+    "Mergeable, some checks failing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قابل ادغام، برخی بررسی‌ها ناکام"
           }
         }
       }
@@ -4930,6 +5320,56 @@
         }
       }
     },
+    "No App Store Connect key. Add it in Settings → Integrations.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید App Store Connect نیست. در تنظیمات ← Integrations اضافه کنید."
+          }
+        }
+      }
+    },
+    "No app with bundle id %@ in this App Store Connect account.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در این حساب App Store Connect اپی با bundle id %@ نیست."
+          }
+        }
+      }
+    },
+    "No app with package %@ in this Play account.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در این حساب Play اپی با package %@ نیست."
+          }
+        }
+      }
+    },
+    "No build attached": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیلدی وصل نیست"
+          }
+        }
+      }
+    },
+    "No CI runs": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI اجرا نشده"
+          }
+        }
+      }
+    },
     "No GitHub description": {
       "localizations": {
         "fa-AF": {
@@ -4988,6 +5428,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "هیچ شاهدی ثبت نشده"
+          }
+        }
+      }
+    },
+    "No Google Play service account. Add it in Settings → Integrations.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب سرویس Google Play نیست. در تنظیمات ← Integrations اضافه کنید."
           }
         }
       }
@@ -5104,6 +5554,16 @@
         }
       }
     },
+    "No open pull requests": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PR باز نیست"
+          }
+        }
+      }
+    },
     "No password saved": {
       "localizations": {
         "fa-AF": {
@@ -5188,6 +5648,26 @@
         }
       }
     },
+    "No release notes": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یادداشت انتشار ندارد"
+          }
+        }
+      }
+    },
+    "No release notes yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز یادداشت انتشار ندارد."
+          }
+        }
+      }
+    },
     "No release records exist for %ld products (%@), so their release state is unknown.": {
       "extractionState": "stale",
       "localizations": {
@@ -5205,6 +5685,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "هیچ نسخهٔ نشرشده‌ای ثبت نشده."
+          }
+        }
+      }
+    },
+    "No releases on any track.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در هیچ track انتشاری نیست."
           }
         }
       }
@@ -5503,12 +5993,52 @@
         }
       }
     },
+    "Not live": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منتشر نشده"
+          }
+        }
+      }
+    },
     "Not Now": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "حالا نه"
+          }
+        }
+      }
+    },
+    "Not read yet. Open Releases →": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز خوانده نشده. «انتشارها» را باز کنید ←"
+          }
+        }
+      }
+    },
+    "Not read yet. Press Refresh.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز خوانده نشده. «تازه‌سازی» را بزنید."
+          }
+        }
+      }
+    },
+    "Not released": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منتشر نشد"
           }
         }
       }
@@ -5595,6 +6125,16 @@
         }
       }
     },
+    "Nothing read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز چیزی خوانده نشده."
+          }
+        }
+      }
+    },
     "Nothing saved for %@ · %@. Add it in the Vault.": {
       "localizations": {
         "fa-AF": {
@@ -5611,6 +6151,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "چیزی برای تأیید نیست"
+          }
+        }
+      }
+    },
+    "Nothing waits on you in what was last read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در آخرین خواندن، چیزی منتظر شما نیست."
+          }
+        }
+      }
+    },
+    "Nothing was sent": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چیزی فرستاده نشد"
           }
         }
       }
@@ -5747,12 +6307,32 @@
         }
       }
     },
+    "Open in browser": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن در مرورگر"
+          }
+        }
+      }
+    },
     "Open pull requests": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "درخواست‌های ادغام باز"
+          }
+        }
+      }
+    },
+    "Open pull requests: %lld": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PR های باز: %lld"
           }
         }
       }
@@ -5854,6 +6434,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "دائمی"
+          }
+        }
+      }
+    },
+    "Play didn't open a read-only edit (HTTP %d), so rollout share and release notes aren't shown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play یک edit فقط‌خواندنی باز نکرد (HTTP %d)، پس درصد پخش و یادداشت‌های انتشار نشان داده نمی‌شوند."
+          }
+        }
+      }
+    },
+    "PR #%d is ready to merge: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PR #%1$d آمادهٔ ادغام است: %2$@"
+          }
+        }
+      }
+    },
+    "Preparing for submission": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آماده‌سازی برای ارسال"
+          }
+        }
+      }
+    },
+    "Processing for the App Store": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال پردازش برای App Store"
           }
         }
       }
@@ -6422,6 +7042,16 @@
         }
       }
     },
+    "Read the message in App Store Connect's App Review section, fix, and resubmit.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام را در بخش App Review در App Store Connect بخوانید، اصلاح کنید و دوباره بفرستید."
+          }
+        }
+      }
+    },
     "Read the public App Store lookup for each bundle ID (no credentials)": {
       "localizations": {
         "fa-AF": {
@@ -6432,12 +7062,32 @@
         }
       }
     },
+    "Read the stores and GitHub now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اکنون فروشگاه‌ها و GitHub را بخوان"
+          }
+        }
+      }
+    },
     "Read versions and review states with the read-only key in Settings → Integrations": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "خواندن نسخه‌ها و وضعیت بررسی با کلید فقط‌خواندنی در تنظیمات ← اتصال‌ها"
+          }
+        }
+      }
+    },
+    "Read when the app opens and every 30 minutes while it runs. Each value shows where it was read and when.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "با باز شدن برنامه و تا باز است هر ۳۰ دقیقه خوانده می‌شود. هر مقدار نشان می‌دهد از کجا و کی خوانده شده."
           }
         }
       }
@@ -6458,6 +7108,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "در حال خواندن از RDAP…"
+          }
+        }
+      }
+    },
+    "Reading the stores and GitHub…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال خواندن فروشگاه‌ها و GitHub…"
           }
         }
       }
@@ -6785,6 +7445,26 @@
         }
       }
     },
+    "Release %@ %@ now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اکنون %1$@ %2$@ را منتشر کن"
+          }
+        }
+      }
+    },
+    "Release %@ %@?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ منتشر شود؟"
+          }
+        }
+      }
+    },
     "Release announcement": {
       "extractionState": "stale",
       "localizations": {
@@ -6816,6 +7496,26 @@
         }
       }
     },
+    "Release notes: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یادداشت انتشار: %@"
+          }
+        }
+      }
+    },
+    "Release notes: unknown (not in this read)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یادداشت انتشار: نامعلوم (در این خواندن نبود)"
+          }
+        }
+      }
+    },
     "Release record in Linumic OS (manual entry)": {
       "extractionState": "stale",
       "localizations": {
@@ -6827,6 +7527,16 @@
         }
       }
     },
+    "Release records": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سوابق انتشار"
+          }
+        }
+      }
+    },
     "Release repository": {
       "extractionState": "stale",
       "localizations": {
@@ -6834,6 +7544,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "مخزن انتشار"
+          }
+        }
+      }
+    },
+    "Release this version…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشار این نسخه…"
           }
         }
       }
@@ -6876,6 +7596,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "انتشارها دستی ثبت می‌شوند. هنوز پیگیری انتشار بیرون از Linumic OS وجود ندارد."
+          }
+        }
+      }
+    },
+    "Releases: waiting on you": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشارها: منتظر شما"
+          }
+        }
+      }
+    },
+    "Releasing…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال انتشار…"
           }
         }
       }
@@ -6950,6 +7690,16 @@
         }
       }
     },
+    "Removed from review": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از بررسی برداشته شد"
+          }
+        }
+      }
+    },
     "Remove…": {
       "localizations": {
         "fa-AF": {
@@ -6996,6 +7746,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "تمدیدِ"
+          }
+        }
+      }
+    },
+    "Replaced": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جایگزین‌شده"
           }
         }
       }
@@ -7078,6 +7838,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "برگرداندن به پیش‌نویس"
+          }
+        }
+      }
+    },
+    "Resume or replace it in Play Console.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در Play Console آن را ادامه دهید یا جایگزین کنید."
           }
         }
       }
@@ -7183,6 +7953,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "جمع‌بندی همهٔ تأییدهای معلومات، پلتفرم‌ها، مخزن‌ها و لیست‌ها"
+          }
+        }
+      }
+    },
+    "Rolled out": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پخش شده"
           }
         }
       }
@@ -7426,6 +8206,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "فروشنده: %@"
+          }
+        }
+      }
+    },
+    "Sent, not confirmed yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فرستاده شد، هنوز تأیید نشده"
           }
         }
       }
@@ -7767,12 +8557,42 @@
         }
       }
     },
+    "Stack of %d PRs ready: merge #%d first": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زنجیرهٔ %1$d PR آماده است: اول #%2$d را ادغام کنید"
+          }
+        }
+      }
+    },
+    "Stacked, in merge order": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زنجیره‌ای، به ترتیب ادغام"
+          }
+        }
+      }
+    },
     "Stage": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "مرحله"
+          }
+        }
+      }
+    },
+    "Staged rollout": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پخش مرحله‌ای"
           }
         }
       }
@@ -7804,6 +8624,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "وضعیت"
+          }
+        }
+      }
+    },
+    "State now: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت کنونی: %@"
           }
         }
       }
@@ -8080,6 +8910,16 @@
         }
       }
     },
+    "tag": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تگ"
+          }
+        }
+      }
+    },
     "Tags, separated by commas": {
       "localizations": {
         "fa-AF": {
@@ -8201,6 +9041,16 @@
         }
       }
     },
+    "The %@ release %@ is halted": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتشار %2$@ در %1$@ متوقف است"
+          }
+        }
+      }
+    },
     "The .p8 file isn't an App Store Connect private key.": {
       "extractionState": "stale",
       "localizations": {
@@ -8208,6 +9058,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "فایل ‎.p8 کلید خصوصی App Store Connect نیست."
+          }
+        }
+      }
+    },
+    "The App Store Connect key can't be used: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید App Store Connect قابل استفاده نیست: %@"
+          }
+        }
+      }
+    },
+    "The bottom PR targets %@, not %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PR پایینی به %1$@ می‌رود، نه %2$@."
           }
         }
       }
@@ -8258,6 +9128,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "تاریخ ختم درست نیست."
+          }
+        }
+      }
+    },
+    "The Google Play service account can't be used: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب سرویس Google Play قابل استفاده نیست: %@"
           }
         }
       }
@@ -8516,6 +9396,16 @@
         }
       }
     },
+    "This device's own log of store actions sent (release-actions.json, never deleted).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر همین دستگاه از کارهای فرستاده‌شده به فروشگاه (release-actions.json، هرگز پاک نمی‌شود)."
+          }
+        }
+      }
+    },
     "This entry is no longer in the Vault.": {
       "localizations": {
         "fa-AF": {
@@ -8657,6 +9547,26 @@
         }
       }
     },
+    "This repository has no CI.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این مخزن CI ندارد."
+          }
+        }
+      }
+    },
+    "This version is no longer waiting for a manual release (its state is now %@). Nothing was sent.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این نسخه دیگر منتظر انتشار دستی نیست (وضعیتش اکنون %@ است). چیزی فرستاده نشد."
+          }
+        }
+      }
+    },
     "Title": {
       "localizations": {
         "fa-AF": {
@@ -8747,6 +9657,16 @@
         }
       }
     },
+    "Two PRs build on the same PR; merge order is shown depth-first.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دو PR روی یک PR ساخته شده‌اند؛ ترتیب ادغام عمقی نشان داده شده."
+          }
+        }
+      }
+    },
     "Type": {
       "localizations": {
         "fa-AF": {
@@ -8763,6 +9683,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نامعلوم"
+          }
+        }
+      }
+    },
+    "Unknown state": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت نامعلوم"
           }
         }
       }
@@ -8843,6 +9773,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "برقراری ۲۴ ساعت"
+          }
+        }
+      }
+    },
+    "Urgent": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فوری"
           }
         }
       }
@@ -9080,6 +10020,26 @@
         }
       }
     },
+    "Version %@ is approved and waits for you to release it": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ %@ تأیید شده و منتظر است که شما منتشرش کنید"
+          }
+        }
+      }
+    },
+    "Version %@ was rejected (%@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ %1$@ رد شد (%2$@)"
+          }
+        }
+      }
+    },
     "Version in build config": {
       "localizations": {
         "fa-AF": {
@@ -9136,6 +10096,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "باطل کردن در دفتر…"
+          }
+        }
+      }
+    },
+    "Waiting for review": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منتظر بررسی"
+          }
+        }
+      }
+    },
+    "Waiting on you": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منتظر شما"
           }
         }
       }

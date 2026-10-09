@@ -5,6 +5,7 @@ import Observation
 enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case dashboard
     case monitor
+    case releaseCenter
     case platforms
     case oversight
     case licences
@@ -24,6 +25,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         switch self {
         case .dashboard: L("Dashboard")
         case .monitor: L("Monitor")
+        case .releaseCenter: L("Releases")
         case .platforms: L("Platforms")
         case .oversight: L("Oversight")
         case .licences: L("Licences")
@@ -32,7 +34,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .vault: L("Vault")
         case .allProducts: L("All Products")
         case .verification: L("Verification")
-        case .releases: L("Releases")
+        case .releases: L("Release records")
         case .roadmap: L("Roadmap")
         case .issues: L("Issues")
         case .repositories: L("Repositories")
@@ -54,6 +56,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         switch self {
         case .dashboard: "square.grid.2x2"
         case .monitor: "waveform.path.ecg"
+        case .releaseCenter: "shippingbox.and.arrow.backward"
         case .platforms: "square.stack.3d.up"
         case .oversight: "scope"
         case .licences: "key.horizontal"
@@ -87,7 +90,7 @@ struct SidebarSection: Identifiable {
     var id: String { title ?? "root" }
 
     static let all: [SidebarSection] = [
-        SidebarSection(title: nil, items: [.dashboard, .monitor, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .vault]),
+        SidebarSection(title: nil, items: [.dashboard, .monitor, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .vault]),
         SidebarSection(title: "Products", items: [.allProducts, .verification, .releases, .roadmap, .issues]),
         SidebarSection(title: "Development", items: [.repositories, .builds, .deployments]),
         SidebarSection(title: "Stores", items: [.appStore, .googlePlay]),
