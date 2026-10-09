@@ -26,6 +26,7 @@ struct CommandPaletteView: View {
     @Environment(ReleaseCenterModel.self) private var releases
     @Environment(VaultModel.self) private var vault
     @Environment(MonitorModel.self) private var monitor
+    @Environment(KeysModel.self) private var keys
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
 
@@ -209,6 +210,10 @@ struct CommandPaletteView: View {
             add(PaletteCandidate(id: "action.vault.lock", title: String(localized: "Lock vault"), subtitle: SidebarItem.vault.title,
                                  keywords: ["vault", "lock"], group: .action, symbol: "lock"), .lockVault)
         }
+        // Opens the sheet in Keys & Backups; the sheet saves only after Save.
+        add(PaletteCandidate(id: "action.keys.restoretest", title: String(localized: "Mark restore test done…"), subtitle: SidebarItem.keys.title,
+                             keywords: ["keys", "backup", "restore", "test", "keystore"], group: .action, symbol: "checkmark.circle"),
+            .go(.keys, .markRestoreTest))
         add(PaletteCandidate(id: "action.product.new", title: String(localized: "New Product…"), keywords: ["product", "add"],
                              group: .action, symbol: "plus.square"), .newProduct)
         // "Open <console URL>": the sign-in addresses kept in the Vault (addresses only) and the monitored pages.
@@ -247,6 +252,12 @@ struct CommandPaletteView: View {
             add(PaletteCandidate(id: "vault.\(e.id.uuidString)", title: e.title, subtitle: "\(SidebarItem.vault.title) · \(e.product.title)",
                                  keywords: [e.product.rawValue, "vault"], group: .entity, symbol: "lock.rectangle.stack"),
                 .go(.vault, .vaultSearch(e.title)))
+        }
+        // Keys & Backups: titles and products only (the path is shown on the screen, never a key's content).
+        for k in keys.registry.keys {
+            add(PaletteCandidate(id: "keys.\(k.id)", title: L(k.title), subtitle: "\(SidebarItem.keys.title) · \(k.kind.title)",
+                                 keywords: [k.product ?? "", "key", "keystore", "backup"], group: .entity, symbol: k.kind.symbol),
+                .go(.keys, nil))
         }
         for t in monitor.targets {
             add(PaletteCandidate(id: "monitor.\(t.id)", title: "\(t.product.title) \(L(t.name))", subtitle: t.host,

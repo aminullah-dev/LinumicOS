@@ -13,6 +13,7 @@ struct LinumicOSApp: App {
     @State private var vault = VaultModel()
     @State private var monitor: MonitorModel
     @State private var brief: BriefModel
+    @State private var keys: KeysModel
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
@@ -41,8 +42,10 @@ struct LinumicOSApp: App {
         _releases = State(initialValue: releases)
         let monitor = MonitorModel()
         _monitor = State(initialValue: monitor)
+        let keys = KeysModel()
+        _keys = State(initialValue: keys)
         _brief = State(initialValue: BriefModel(inventory: inventory, licences: licences, worktrack: worktrack,
-                                                operations: operations, releases: releases, monitor: monitor))
+                                                operations: operations, releases: releases, monitor: monitor, keys: keys))
     }
 
     var body: some Scene {
@@ -58,6 +61,7 @@ struct LinumicOSApp: App {
                 .environment(vault)
                 .environment(monitor)
                 .environment(brief)
+                .environment(keys)
                 .environment(router)
                 #if os(macOS)
                 .frame(minWidth: 960, minHeight: 600)
@@ -83,6 +87,8 @@ struct LinumicOSApp: App {
                         await worktrack.autoRefreshIfDue()
                         await operations.autoRefreshIfDue()
                         await releases.autoRefreshIfDue()
+                        // Keys & Backups: file dates and sizes in the granted folders only (Mac), no network.
+                        await keys.check()
                         // Today's snapshot for "what changed since yesterday", and the morning notification.
                         await brief.record()
                         try? await Task.sleep(for: .seconds(InventoryModel.autoRefreshInterval))

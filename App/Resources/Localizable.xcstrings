@@ -16853,6 +16853,1426 @@
           }
         }
       }
+    },
+    "%@ changed on %@, after the backup of %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ در %2$@ تغییر کرده، پس از پشتیبان %3$@"
+          }
+        }
+      }
+    },
+    "%@ is missing at %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ در %2$@ پیدا نشد"
+          }
+        }
+      }
+    },
+    "%@ is no longer on this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ دیگر روی این مک نیست"
+          }
+        }
+      }
+    },
+    "%@ is not in any backup": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ در هیچ پشتیبانی نیست"
+          }
+        }
+      }
+    },
+    "%@ is only removed from this list. The key file itself is not touched.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ فقط از این فهرست برداشته می‌شود. به خود فایل کلید دست زده نمی‌شود."
+          }
+        }
+      }
+    },
+    "%@ · modified %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · تغییر: %2$@"
+          }
+        }
+      }
+    },
+    "%@: last restore test was %d days ago (%@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: آخرین بازیابی آزمایشی %2$d روز پیش بود (%3$@)"
+          }
+        }
+      }
+    },
+    "%@: no restore test recorded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: هیچ بازیابی آزمایشی ثبت نشده است"
+          }
+        }
+      }
+    },
+    "%lld files found; the source lists %lld.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld فایل پیدا شد؛ منبع %2$lld فایل می‌گوید."
+          }
+        }
+      }
+    },
+    "Add key…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افزودن کلید…"
+          }
+        }
+      }
+    },
+    "Add to registry…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افزودن به فهرست…"
+          }
+        }
+      }
+    },
+    "After a new backup, set the day it was made so the staleness check compares against it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پس از ساختن پشتیبان تازه، روز ساختنش را بنویسید تا بررسی کهنگی با آن مقایسه کند."
+          }
+        }
+      }
+    },
+    "Android signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای اندروید"
+          }
+        }
+      }
+    },
+    "Android signing keys": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهای امضای اندروید"
+          }
+        }
+      }
+    },
+    "App Store Connect API key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید API برای App Store Connect"
+          }
+        }
+      }
+    },
+    "App Store Connect API keys": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهای API برای App Store Connect"
+          }
+        }
+      }
+    },
+    "App Store Connect keys and the notarytool profile are not backed up": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهای App Store Connect و پروفایل notarytool پشتیبان ندارند"
+          }
+        }
+      }
+    },
+    "Backed up": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبان دارد"
+          }
+        }
+      }
+    },
+    "Backup": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبان"
+          }
+        }
+      }
+    },
+    "Backup passphrase as a plain-text file": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمز پشتیبان به‌شکل فایل متنی ساده"
+          }
+        }
+      }
+    },
+    "By": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توسط"
+          }
+        }
+      }
+    },
+    "Changed after backup": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پس از پشتیبان تغییر کرده"
+          }
+        }
+      }
+    },
+    "Check each key file's existence, size and date now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بودن، اندازه و تاریخ هر فایل کلید را همین حالا بررسی کن"
+          }
+        }
+      }
+    },
+    "Check files": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی فایل‌ها"
+          }
+        }
+      }
+    },
+    "Check that the keys are there (names only), then mark the restore test done here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ببینید کلیدها آنجا هستند (فقط نام‌ها)، بعد اینجا بازیابی آزمایشی را ثبت کنید."
+          }
+        }
+      }
+    },
+    "Checked": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی شد"
+          }
+        }
+      }
+    },
+    "Checking key files…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال بررسی فایل‌های کلید…"
+          }
+        }
+      }
+    },
+    "Choose a folder that holds keys. Linumic OS reads only file names, sizes and dates in it, never the files.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشه‌ای را که کلیدها در آن است انتخاب کنید. Linumic OS فقط نام، اندازه و تاریخ فایل‌ها را می‌خواند، هرگز خود فایل‌ها را."
+          }
+        }
+      }
+    },
+    "Choose another folder…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتخاب پوشهٔ دیگر…"
+          }
+        }
+      }
+    },
+    "Choose folder…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتخاب پوشه…"
+          }
+        }
+      }
+    },
+    "Copy": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کپی"
+          }
+        }
+      }
+    },
+    "Copy the command": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کپی فرمان"
+          }
+        }
+      }
+    },
+    "Decrypt and unpack %@:": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن رمز و استخراج %@:"
+          }
+        }
+      }
+    },
+    "Delete the folder afterwards, so no plain copy of the keys stays on disk.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پس از کار پوشه را پاک کنید تا هیچ نسخهٔ بی‌رمز از کلیدها روی دیسک نماند."
+          }
+        }
+      }
+    },
+    "Do not delete": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاک نکنید"
+          }
+        }
+      }
+    },
+    "Done %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انجام شد %@"
+          }
+        }
+      }
+    },
+    "Done on": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ انجام"
+          }
+        }
+      }
+    },
+    "Download the backup file from Google Drive, folder Mohem.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل پشتیبان را از Google Drive، پوشهٔ Mohem دانلود کنید."
+          }
+        }
+      }
+    },
+    "Edit backup": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ویرایش پشتیبان"
+          }
+        }
+      }
+    },
+    "Edit backup…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ویرایش پشتیبان…"
+          }
+        }
+      }
+    },
+    "Encryption": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمزگذاری"
+          }
+        }
+      }
+    },
+    "Entered in Linumic OS": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت‌شده در Linumic OS"
+          }
+        }
+      }
+    },
+    "File check on this Mac (date and size only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی فایل روی این مک (فقط تاریخ و اندازه)"
+          }
+        }
+      }
+    },
+    "File name": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام فایل"
+          }
+        }
+      }
+    },
+    "Files can only be checked on the Mac. The registry is shown here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل‌ها فقط روی مک بررسی می‌شوند. اینجا فقط فهرست نشان داده می‌شود."
+          }
+        }
+      }
+    },
+    "Files checked %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل‌ها بررسی شدند: %@"
+          }
+        }
+      }
+    },
+    "Files not checked yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل‌ها هنوز بررسی نشده‌اند."
+          }
+        }
+      }
+    },
+    "Files on this Mac have not been checked; only the registry facts are used.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل‌های این مک بررسی نشده‌اند؛ فقط واقعیت‌های فهرست به کار رفته‌اند."
+          }
+        }
+      }
+    },
+    "Forget the folders chosen here (the Oversight workspace stays)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشه‌هایی را که اینجا انتخاب شده فراموش کن (پوشهٔ کاری نظارت می‌ماند)"
+          }
+        }
+      }
+    },
+    "Found by file name only (*.jks, *.keystore, *-private.pem, AuthKey_*.p8). No backup is known for them.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط از روی نام فایل پیدا شدند (*.jks، *.keystore، *-private.pem، AuthKey_*.p8). هیچ پشتیبانی برایشان شناخته نیست."
+          }
+        }
+      }
+    },
+    "Google Drive file id": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شناسهٔ فایل در Google Drive"
+          }
+        }
+      }
+    },
+    "Grant read access": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازهٔ خواندن"
+          }
+        }
+      }
+    },
+    "Granted: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازه داده‌شده: %@"
+          }
+        }
+      }
+    },
+    "How it was verified": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چگونه تأیید شد"
+          }
+        }
+      }
+    },
+    "How was it done?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چگونه انجام شد؟"
+          }
+        }
+      }
+    },
+    "In backups": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در پشتیبان‌ها"
+          }
+        }
+      }
+    },
+    "In: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در: %@"
+          }
+        }
+      }
+    },
+    "Key file not covered by any backup: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل کلیدی که در هیچ پشتیبانی نیست: %@"
+          }
+        }
+      }
+    },
+    "Keychain item found": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آیتم Keychain پیدا شد"
+          }
+        }
+      }
+    },
+    "Keychain item not checked": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آیتم Keychain بررسی نشده"
+          }
+        }
+      }
+    },
+    "Keychain item “%@” not found": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آیتم Keychain «%@» پیدا نشد"
+          }
+        }
+      }
+    },
+    "Keychain item “%@” was not found": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آیتم Keychain «%@» پیدا نشد"
+          }
+        }
+      }
+    },
+    "Keychain lookup (attributes only, never the passphrase)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جستجو در Keychain (فقط مشخصات، هرگز خود رمز)"
+          }
+        }
+      }
+    },
+    "Keys & Backups": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدها و پشتیبان‌ها"
+          }
+        }
+      }
+    },
+    "Keys & Backups registry (keys-registry.json)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست کلیدها و پشتیبان‌ها (keys-registry.json)"
+          }
+        }
+      }
+    },
+    "Keys & Backups registry and local file checks": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست کلیدها و پشتیبان‌ها و بررسی فایل‌های همین مک"
+          }
+        }
+      }
+    },
+    "Keystore password file": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل رمز keystore"
+          }
+        }
+      }
+    },
+    "KhayatYar licence signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای لایسنس خیاط‌یار"
+          }
+        }
+      }
+    },
+    "Last restore test": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین بازیابی آزمایشی"
+          }
+        }
+      }
+    },
+    "Last restore test: %@, %@, by %@ (%lld days ago).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین بازیابی آزمایشی: %1$@، %2$@، توسط %3$@ (%4$lld روز پیش)."
+          }
+        }
+      }
+    },
+    "Licence signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای لایسنس"
+          }
+        }
+      }
+    },
+    "Licence signing keys": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهای امضای لایسنس"
+          }
+        }
+      }
+    },
+    "Linumic OS never opens, copies, hashes or uploads a key, keystore, .p8, .pem, password file or the backup passphrase. On this Mac it reads only whether each file exists, its size and its modification date, in folders you granted. For the passphrase it only asks the Keychain whether the item exists.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Linumic OS هیچ کلید، keystore، فایل .p8 و .pem، فایل رمز یا رمز پشتیبان را باز، کپی، hash یا آپلود نمی‌کند. روی این مک فقط بودن هر فایل، اندازه و تاریخ تغییرش را در پوشه‌هایی که اجازه داده‌اید می‌خواند. برای رمز پشتیبان فقط از Keychain می‌پرسد که آیتم هست یا نه."
+          }
+        }
+      }
+    },
+    "Made": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ساخته‌شده"
+          }
+        }
+      }
+    },
+    "Made on": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ ساخت"
+          }
+        }
+      }
+    },
+    "Make an empty private folder, move the downloaded file into it, and go there.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک پوشهٔ خالی و خصوصی بسازید، فایل دانلودشده را به آن ببرید و وارد آن شوید."
+          }
+        }
+      }
+    },
+    "Mark done…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت انجام…"
+          }
+        }
+      }
+    },
+    "Mark restore test done": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت بازیابی آزمایشی"
+          }
+        }
+      }
+    },
+    "Mark restore test done…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت بازیابی آزمایشی…"
+          }
+        }
+      }
+    },
+    "Mark second copy done": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت نسخهٔ دوم"
+          }
+        }
+      }
+    },
+    "Mark second copy done…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت نسخهٔ دوم…"
+          }
+        }
+      }
+    },
+    "MediFlow licence signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای لایسنس MediFlow"
+          }
+        }
+      }
+    },
+    "Modified %@, after the backup of %@. Make a new backup.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در %1$@ تغییر کرده، پس از پشتیبان %2$@. پشتیبان تازه بسازید."
+          }
+        }
+      }
+    },
+    "New keys must be added to the bundle": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهای تازه باید به بستهٔ پشتیبان اضافه شوند"
+          }
+        }
+      }
+    },
+    "No backup needed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبان لازم نیست"
+          }
+        }
+      }
+    },
+    "No restore test": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون بازیابی آزمایشی"
+          }
+        }
+      }
+    },
+    "No second copy of the backups off this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از پشتیبان‌ها نسخهٔ دومی بیرون از این مک نیست"
+          }
+        }
+      }
+    },
+    "No second copy off this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ دوم بیرون از این مک نیست"
+          }
+        }
+      }
+    },
+    "No such folder": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چنین پوشه‌ای نیست"
+          }
+        }
+      }
+    },
+    "Not backed up": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبان ندارد"
+          }
+        }
+      }
+    },
+    "Not granted": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازه داده نشده"
+          }
+        }
+      }
+    },
+    "Not granted — choose folder…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازه داده نشده — انتخاب پوشه…"
+          }
+        }
+      }
+    },
+    "Not granted, so not checked: %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازه داده نشده، پس بررسی نشد: %@."
+          }
+        }
+      }
+    },
+    "Not saved. The date can't be in the future.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ذخیره نشد. تاریخ نمی‌تواند در آینده باشد."
+          }
+        }
+      }
+    },
+    "Note": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یادداشت"
+          }
+        }
+      }
+    },
+    "Nothing needs you: every key is backed up, unchanged, and a restore was tested in the last 90 days.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کاری با شما نیست: همهٔ کلیدها پشتیبان دارند، تغییر نکرده‌اند و در ۹۰ روز گذشته بازیابی آزمایش شده است."
+          }
+        }
+      }
+    },
+    "On this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روی این مک"
+          }
+        }
+      }
+    },
+    "Only the path is stored. The app never opens the key file.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط مسیر ذخیره می‌شود. برنامه هرگز فایل کلید را باز نمی‌کند."
+          }
+        }
+      }
+    },
+    "Open in Drive": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن در Drive"
+          }
+        }
+      }
+    },
+    "Other key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید دیگر"
+          }
+        }
+      }
+    },
+    "Partly: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بخشی: %@"
+          }
+        }
+      }
+    },
+    "Passphrase copy": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ رمز پشتیبان"
+          }
+        }
+      }
+    },
+    "Passphrase in": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جای رمز"
+          }
+        }
+      }
+    },
+    "Path (starts with ~/; * allowed in the file name)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مسیر (با ~/ شروع شود؛ * در نام فایل مجاز است)"
+          }
+        }
+      }
+    },
+    "Read-only. Run these yourself in Terminal; the app runs nothing. openssl asks for the passphrase (Keychain item “Linumic license backup passphrase” or the private Notion page); it never goes on the command line.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط خواندنی. این فرمان‌ها را خودتان در Terminal اجرا کنید؛ برنامه چیزی اجرا نمی‌کند. openssl رمز را می‌پرسد (آیتم Keychain «Linumic license backup passphrase» یا صفحهٔ خصوصی Notion)؛ رمز هرگز در خود فرمان نوشته نمی‌شود."
+          }
+        }
+      }
+    },
+    "Record only a restore that was really done: the file was downloaded, decrypted and the keys were there.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط بازیابی‌ای را ثبت کنید که واقعاً انجام شده: فایل دانلود شد، رمزش باز شد و کلیدها در آن بودند."
+          }
+        }
+      }
+    },
+    "Recorded on": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ ثبت"
+          }
+        }
+      }
+    },
+    "Registry as seeded from ~/Keys/README.md (2026-10-09) and the session record. Edits are saved on this device (keys-registry.json).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست از ~/Keys/README.md (۲۰۲۶-۱۰-۰۹) و گزارش جلسه پر شده است. ویرایش‌ها روی همین دستگاه ذخیره می‌شوند (keys-registry.json)."
+          }
+        }
+      }
+    },
+    "Registry last changed %@ (keys-registry.json, this device).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین تغییر فهرست: %@ (keys-registry.json، همین دستگاه)."
+          }
+        }
+      }
+    },
+    "Reminders": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یادآوری‌ها"
+          }
+        }
+      }
+    },
+    "Remove access": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برداشتن اجازه"
+          }
+        }
+      }
+    },
+    "Remove from the registry": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برداشتن از فهرست"
+          }
+        }
+      }
+    },
+    "Remove from the registry…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برداشتن از فهرست…"
+          }
+        }
+      }
+    },
+    "Remove this key from the registry?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کلید از فهرست برداشته شود؟"
+          }
+        }
+      }
+    },
+    "Reopen": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن دوباره"
+          }
+        }
+      }
+    },
+    "Restore guide": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "راهنمای بازیابی"
+          }
+        }
+      }
+    },
+    "Restore tested %lld days ago": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازیابی %lld روز پیش آزمایش شد"
+          }
+        }
+      }
+    },
+    "Restored on": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ بازیابی"
+          }
+        }
+      }
+    },
+    "SODER-HAKEM signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای SODER-HAKEM"
+          }
+        }
+      }
+    },
+    "SafeBeauty signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای SafeBeauty"
+          }
+        }
+      }
+    },
+    "Scan of key folders on this Mac (file names only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جستجوی پوشه‌های کلید در این مک (فقط نام فایل‌ها)"
+          }
+        }
+      }
+    },
+    "Second VELRO key (from Downloads)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید دوم VELRO (از Downloads)"
+          }
+        }
+      }
+    },
+    "Size": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اندازه"
+          }
+        }
+      }
+    },
+    "Size in bytes": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اندازه به بایت"
+          }
+        }
+      }
+    },
+    "Source: %@, recorded %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع: %1$@، ثبت: %2$@"
+          }
+        }
+      }
+    },
+    "Test a restore at least every %d days.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دست‌کم هر %d روز یک بار بازیابی را آزمایش کنید."
+          }
+        }
+      }
+    },
+    "The Keys & Backups registry has not been loaded yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست کلیدها و پشتیبان‌ها هنوز بارگذاری نشده است."
+          }
+        }
+      }
+    },
+    "The app is sandboxed: it can only look in folders you choose. Choosing your home folder once covers every location below. Access is read-only and limited to names, sizes and dates.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برنامه در sandbox است: فقط در پوشه‌هایی که شما انتخاب کنید نگاه می‌کند. یک بار انتخاب پوشهٔ خانه همهٔ جاهای زیر را می‌پوشاند. دسترسی فقط خواندنی و محدود به نام، اندازه و تاریخ است."
+          }
+        }
+      }
+    },
+    "The backup %@ may be stale. Make a new one.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبان %@ شاید کهنه باشد. یکی تازه بسازید."
+          }
+        }
+      }
+    },
+    "The restore test was not saved. The date can't be in the future.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازیابی آزمایشی ذخیره نشد. تاریخ نمی‌تواند در آینده باشد."
+          }
+        }
+      }
+    },
+    "Tick a backup only if this key was really put into it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبانی را فقط وقتی علامت بزنید که این کلید واقعاً در آن گذاشته شده باشد."
+          }
+        }
+      }
+    },
+    "VELRO keystore password file": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل رمز keystore برای VELRO"
+          }
+        }
+      }
+    },
+    "VELRO signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای VELRO"
+          }
+        }
+      }
+    },
+    "Where": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کجا"
+          }
+        }
+      }
+    },
+    "Where is the second copy? (e.g. USB drive at home)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ دوم کجاست؟ (مثلاً فلش‌دیسک در خانه)"
+          }
+        }
+      }
+    },
+    "Without the passphrase the backups can't be opened. Check the Keychain and the private Notion page.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون رمز، پشتیبان‌ها باز نمی‌شوند. Keychain و صفحهٔ خصوصی Notion را بررسی کنید."
+          }
+        }
+      }
+    },
+    "WorkTrack upload key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید آپلود WorkTrack"
+          }
+        }
+      }
+    },
+    "WorkTrack upload key (backup copy)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید آپلود WorkTrack (نسخهٔ پشتیبان)"
+          }
+        }
+      }
+    },
+    "keys-registry.json could not be read. The seeded facts are shown and nothing is saved until the file is fixed or removed.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل keys-registry.json خوانده نشد. واقعیت‌های اولیه نشان داده می‌شوند و تا فایل درست یا پاک نشود چیزی ذخیره نمی‌شود."
+          }
+        }
+      }
+    },
+    "Both backups are only in Google Drive. Keep a second copy elsewhere, e.g. a USB drive at home.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر دو پشتیبان فقط در Google Drive هستند. یک نسخهٔ دوم جای دیگری نگه دارید، مثلاً فلش‌دیسکی در خانه."
+          }
+        }
+      }
+    },
+    "The 5 AuthKey .p8 files and the notarytool keychain profile are in no backup.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنج فایل AuthKey با پسوند .p8 و پروفایل notarytool در Keychain در هیچ پشتیبانی نیستند."
+          }
+        }
+      }
+    },
+    "Any new key (the Talar release key is not created yet) must go into the encrypted bundle.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر کلید تازه (کلید انتشار تالار هنوز ساخته نشده) باید به بستهٔ رمزگذاری‌شده اضافه شود."
+          }
+        }
+      }
     }
   },
   "version": "1.1"
