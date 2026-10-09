@@ -5,6 +5,30 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: licence centre for MediFlow and KhayatYar (platform control, phase 1)
+- A new **Licences** screen issues and renews offline LNM1 licences from inside the app, replacing the terminal
+  tool (`licensing/linumic_license.py`) for daily use. Issue sheet with live machine-code validation, perpetual or
+  dated expiry (+1 year), edition and notes; the signed key can be copied, saved as `.lnmlic` or shared.
+  **Renew / Re-issue** gives a new licence id for the same customer (and, if needed, a new machine code) and marks
+  the old one superseded. **Void** marks a licence in the ledger only: offline keys can't be recalled.
+- `LinumicCore/Licensing`: LNM1 payload, canonical JSON byte-identical to the Python tool, base64url, ECDSA P-256 /
+  SHA-256 DER signing and verification with CryptoKit, machine-code normalisation, next id per product and year,
+  renewal, CSV import/export and a merge that never drops a licence.
+- Signing keys (Mac only): imported by the owner from the PEM file, refused unless the public half matches the
+  production public key built into the app, stored in the Keychain (this device, not synced). iOS shows the
+  ledger only.
+- Supabase `licences` table with admin-only RLS, no delete policy, audit trigger and a guard trigger (signed
+  fields immutable, status only moves forward). Synced record by record through `export_licences` /
+  `upsert_licences`; `export_inventory()` now also includes the ledger as a backup.
+- Import `issued.csv` (and `.lnmlic` files to attach their keys); export CSV. Rows from `issued.csv` keep the key
+  and features **Unknown** until the matching `.lnmlic` is imported.
+- Dashboard card (active licences per product, the ones ending within 30 days) and local reminders 30/14/7/1 days
+  before a licence's last valid day (Settings → Integrations → Licences).
+- The macOS sandbox entitlement moved from user-selected files read-only to read-write, to save `.lnmlic` and CSV.
+- 33 tests (160 in total): all 14 protocol test vectors, machine-code vectors, canonical JSON against Python bytes
+  for a Persian name, signing, ledger rules, CSV and sync. `tools/licensing/python_crosscheck.sh` (dev check, not
+  CI) confirms Swift-signed keys verify with Python `cryptography`.
+
 ### Added: project oversight across every repository ("from 0 to 100")
 - A new **Oversight** screen and a live **Project oversight** card on the dashboard put every repository you own
   under scrutiny, read-only, in one place: a 0–100 fleet-health score, per-repo health (critical / needs attention /

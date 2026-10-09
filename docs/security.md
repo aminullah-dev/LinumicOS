@@ -15,7 +15,7 @@ post as Linumic, so it is treated as a production system.
 ## MVP (local app)
 
 - **App Sandbox** is enabled. Entitlements: outgoing network (for future
-  read-only integrations) and user-selected files (read-only).
+  read-only integrations) and user-selected files (read-write since 2026-10-09, see below).
 - **Secrets** go through `SecretStore` → `KeychainSecretStore` (Security
   framework, generic-password items, service `com.linumic.commandcenter`,
   `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`, not synced to iCloud). The store prefers the
@@ -25,6 +25,17 @@ post as Linumic, so it is treated as a production system.
   token (`github.token`), the App Store Connect API key (`appstoreconnect.key`, Developer role) and the
   Google Play service account (`googleplay.serviceaccount`, "View app information"), plus the Supabase
   session. The console clients only read: GET requests, and Play's release list needs no edit.
+- **Licence signing keys (MediFlow, KhayatYar):** imported by the owner on the Mac only, checked against the
+  production public key built into the app, then stored in the Keychain (`licence.signing.<product>`,
+  `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`, `kSecAttrSynchronizable` false). They are never logged, never
+  written to the ledger, `licences.json` or `inventory.json`, and never sent to Supabase or iCloud. The master
+  copies stay in `~/.linumic/license-keys/` with their encrypted backup (see `licensing/MAP.md`); the app does not
+  read that folder. Removing a key from the app doesn't affect issued licences.
+- **Licence ledger:** Supabase `licences` holds customer, machine code, dates, edition, features, the issued
+  key text, status and notes. Admin-only RLS, no delete policy, an audit trigger, and a guard trigger that makes
+  the signed fields immutable. The issued key text is not a secret (the customer holds it); a private key is.
+- **Sandbox:** user-selected files are read-write (not read-only) since 2026-10-09, so the owner can save
+  `.lnmlic` and CSV files with the save panel. The app still reads or writes only files the owner picks.
 - **No secrets in source or Git.** `.gitignore` blocks `.env*`, `*.p8`, `*.p12`,
   `*.pem`, `*.key`, keystores, provisioning profiles and service-account JSON.
   Check `git diff --cached` before each commit.

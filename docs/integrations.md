@@ -100,6 +100,46 @@ only when explicit credentials and authorization are provided.
 - Changes are listed in the dashboard ("Store changes", kept per device) and posted as local
   notifications, which never leave the device.
 
+## Licences (LNM1, MediFlow and KhayatYar)
+
+- **Protocol:** `licensing/PROTOCOL.md` next to this repository. `LinumicCore/Licensing` implements it in Swift
+  with CryptoKit and produces the same keys as `linumic_license.py` (canonical JSON byte-identical, ECDSA P-256 /
+  SHA-256, DER signature, base64url without padding). The production **public** keys are embedded in
+  `LicenceProduct.productionPublicKeyPEM` (copied from `licensing/public/*.pem` on 2026-10-08; a test pins their
+  SHA-256 fingerprints).
+- **Signing keys:** imported by the owner on the Mac (Licences → Signing keys → Import Signing Key…). The key is
+  refused unless its public half equals the embedded production public key. It is stored in the Keychain as
+  `licence.signing.mediflow` / `licence.signing.khayatyar`. Issuing is Mac-only; iOS shows the ledger.
+- **Ledger:** Supabase table `licences` (admin-only RLS, no delete policy, audit trigger, guard trigger). The app
+  calls `export_licences()` and `upsert_licences(rows)`; it keeps a local copy (`licences.json` next to
+  `inventory.json`) so it works offline. Sync merges record by record and never deletes: a status only moves
+  forward (active → superseded → void), a known key never changes, notes come from the copy edited last. A
+  licence id reused with different signed contents is refused by the server and shown as a conflict.
+- **What is in Supabase:** customer name, machine code, dates, edition, features, the issued licence key (the
+  customer already holds it), status, notes, who recorded it. **Never in Supabase:** private signing keys or the
+  backup passphrase.
+- **Import / export:** `issued.csv` from `~/.linumic/licenses/` (picked by the owner; the sandbox can't read it
+  otherwise). That file has no key or features, so they stay Unknown until the matching `.lnmlic` files are
+  imported too; each key is verified before it is attached. Export CSV writes the whole ledger.
+- **Reminders:** local notifications at 09:00 30, 14, 7 and 1 days before the last valid day of each active licence.
+- **Dev check:** `tools/licensing/python_crosscheck.sh` signs with the TEST key in Swift and verifies with Python
+  `cryptography` from the licensing venv. Not a CI dependency.
+
+### راهنمای کوتاه برای امین‌الله (دری)
+
+- **یک بار، روی مک:** Linumic OS ← «لایسنس‌ها» ← «کلیدهای امضا» ← «وارد کردن کلید امضا…» و فایل
+  `~/.linumic/license-keys/mediflow-private.pem` را انتخاب کنید. همین کار را برای خیاط‌یار با
+  `khayatyar-private.pem` بکنید. برنامه کلید را با کلید عمومیِ داخل خودش مقایسه می‌کند؛ اگر نخواند، چیزی ذخیره
+  نمی‌شود. کلید فقط در Keychain همین مک می‌ماند و هرگز به Supabase نمی‌رود.
+- **لایسنس تازه:** «صدور لایسنس» (دکمهٔ +)، محصول، نام مشتری و کد دستگاه را بنویسید، دائمی یا تا یک تاریخ
+  (دکمهٔ «+۱ سال»)، بعد «امضا و صدور». کلید را کاپی کنید، فایل `.lnmlic` ذخیره کنید یا مستقیم بفرستید.
+- **تمدید یا عوض شدن دستگاه:** روی لایسنس بزنید ← «تمدید یا صدور دوباره…». شمارهٔ تازه می‌گیرد و قبلی
+  «جایگزین‌شده» می‌شود.
+- **باطل:** فقط در دفتر شما علامت می‌خورد. کلید آفلاین پس گرفته نمی‌شود و تا ختم اعتبارش در برنامهٔ مشتری کار می‌کند.
+- **لایسنس‌های قبلی:** «بیشتر» ← «وارد کردن issued.csv…» و فایل `~/.linumic/licenses/issued.csv` را (و اگر خواستید
+  فایل‌های `.lnmlic` کنارش را) انتخاب کنید. بدون فایل `.lnmlic`، کلید آن لایسنس «نامعلوم» می‌ماند.
+- **یادآوری:** ۳۰، ۱۴، ۷ و ۱ روز پیش از ختم هر لایسنس اطلاعیه می‌آید. روی آیفون فقط دفتر دیده می‌شود؛ صدور فقط روی مک است.
+
 ## Social media (Phase 5)
 
 LinkedIn, Facebook, Instagram, X and YouTube. OAuth per network, tokens stored

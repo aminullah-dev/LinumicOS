@@ -31,6 +31,12 @@ the app.
 - [x] Periodic oversight sweep (launch + every 30 min while open) and change alerts with local notifications (Increment 3)
 - [ ] Background sweep while the app is closed (needs BGTaskScheduler / a login item)
 
+## Platform control (manage every Linumic platform from Linumic OS)
+
+- [x] Phase 1: licence centre for MediFlow and KhayatYar: issue, renew, void, ledger on Supabase, signing keys in the Mac Keychain, expiry reminders (2026-10-09, PR "Platform control, phase 1")
+- [ ] Phase 2: versions and releases of every platform in one place
+- [ ] WorkTrack licences (granted through its own vendor console; not LNM1)
+
 ## Phase 3: Backend (deferred at the owner's instruction; see docs/backend-plan.md)
 
 - [ ] Choose a backend (see ARCHITECTURE.md), authentication, roles, audit log
