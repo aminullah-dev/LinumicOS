@@ -23,6 +23,7 @@ struct IntegrationsSettingsView: View {
     @Environment(OperationsModel.self) private var operations
     @AppStorage(OperationsModel.notifyKey) private var notifyOperations = true
     @AppStorage(MonitorModel.notifyKey) private var notifyMonitor = true
+    @AppStorage(ReleaseCenterModel.autoRefreshKey) private var autoRefreshReleases = true
 
     private let integrations: [(name: String, symbol: String, plan: String)] = [
         ("Social networks", "bubble.left.and.bubble.right", "Phase 5: OAuth, approval before publishing"),
@@ -157,6 +158,16 @@ struct IntegrationsSettingsView: View {
                 Text("Monitor")
             } footer: {
                 Text("Public pages and health endpoints only, with no credentials. Checked when the app opens and every 5 minutes while it runs; the last 24 hours stay on this device (monitor.json).")
+            }
+            Section {
+                Toggle(isOn: $autoRefreshReleases) {
+                    Text("Refresh releases automatically")
+                    Text("When the app opens, then every 30 minutes while it's open. Reads App Store Connect, Google Play and GitHub with the credentials above.")
+                }
+            } header: {
+                Text("Releases")
+            } footer: {
+                Text("Reads only. The one write is releasing an approved App Store version, which you confirm each time; it needs an App Store Connect key with the App Manager or Admin role.")
             }
             Section {
                 ForEach(integrations, id: \.name) { i in

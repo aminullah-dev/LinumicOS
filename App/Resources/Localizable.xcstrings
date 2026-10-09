@@ -7122,6 +7122,16 @@
         }
       }
     },
+    "Reads only. The one write is releasing an approved App Store version, which you confirm each time; it needs an App Store Connect key with the App Manager or Admin role.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط خواندن. تنها نوشتن، انتشار یک نسخهٔ تأییدشدهٔ App Store است که هر بار خودتان تأیید می‌کنید؛ کلید App Store Connect با نقش App Manager یا Admin لازم دارد."
+          }
+        }
+      }
+    },
     "Reads repository metadata, commits, releases, PRs, issues and CI. It never writes.": {
       "localizations": {
         "fa-AF": {
@@ -7319,6 +7329,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "به‌روزرسانی از Play Console"
+          }
+        }
+      }
+    },
+    "Refresh releases automatically": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه‌سازی خودکار انتشارها"
           }
         }
       }
@@ -10211,6 +10231,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "هنگام باز شدن برنامه و بعد هر ۳۰ دقیقه تا وقتی باز است. فقط فروشگاه‌های وصل خوانده می‌شوند."
+          }
+        }
+      }
+    },
+    "When the app opens, then every 30 minutes while it's open. Reads App Store Connect, Google Play and GitHub with the credentials above.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "با باز شدن برنامه و بعد تا باز است هر ۳۰ دقیقه. App Store Connect، Google Play و GitHub را با همین اعتبارنامه‌های بالا می‌خواند."
           }
         }
       }
