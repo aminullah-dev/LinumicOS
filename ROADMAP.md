@@ -34,7 +34,8 @@ the app.
 ## Platform control (manage every Linumic platform from Linumic OS)
 
 - [x] Phase 1: licence centre for MediFlow and KhayatYar: issue, renew, void, ledger on Supabase, signing keys in the Mac Keychain, expiry reminders (2026-10-09, PR "Platform control, phase 1")
-- [ ] Phase 2: versions and releases of every platform in one place
+- [x] Phase 2: platforms hub: version on main, latest release and downloads, CI per workflow, open PRs, store versions, drift flags, business model and links for 9 products (2026-10-09, PR "Platform control, phase 2")
+- [ ] Phase 3: admin actions per platform (renewals, approvals), read-only first; see research/platform-admin-apis.md §7
 - [ ] WorkTrack licences (granted through its own vendor console; not LNM1)
 
 ## Phase 3: Backend (deferred at the owner's instruction; see docs/backend-plan.md)

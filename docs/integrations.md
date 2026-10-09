@@ -100,6 +100,69 @@ only when explicit credentials and authorization are provided.
 - Changes are listed in the dashboard ("Store changes", kept per device) and posted as local
   notifications, which never leave the device.
 
+## Platforms hub (versions, releases, CI, links)
+
+- **What it is:** Platforms (پلتفرم‌ها) in the sidebar, one card per product: WorkTrack, SafeBeauty, Talar, VELRO,
+  MediFlow, Tailor ERP / KhayatYar, NerkhTimes, Afghan Prayer Times (Namazia), DukanPro. Only existing inventory
+  products appear; a profile whose product isn't in the inventory is skipped.
+- **Reference facts** (`LinumicCore/Services/PlatformCatalog.swift`): where each product's version lives on `main`,
+  its business model (self-serve sign-up, licence, consumer app, or Unknown) and its admin and public links. Every
+  entry cites its source: `research/platform-admin-apis.md` (2026-10-08), the GitHub contents API, or a live check.
+  Each link was opened on 2026-10-09 and answered HTTP 200 (the page title is quoted). Links that answered 404
+  (linumic.com pages for Namazia, DukanPro and KhayatYar under `/khayatyar/`) are left out.
+- **GitHub reads** (`GitHubClient.releaseTracking`, GET only), per code repository of each product:
+  `/repos/{r}` (default branch), `/releases/latest` (404 = "no release", a fact), `/releases?per_page=10` (drafts
+  dropped; asset names and download counts), `/pulls?state=open` (count), `/actions/workflows` (only
+  `.github/workflows/*`, active; GitHub's dynamic Dependabot/Pages workflows are left out), then
+  `/actions/workflows/{id}/runs?branch={default}&per_page=1` per workflow, and
+  `/contents/{path}?ref={default}` with `Accept: application/vnd.github.raw+json` for each version file. A workflow
+  that never ran on main shows "No run on main", not a status.
+- **Version files:** WorkTrack `app/build.gradle.kts`, `ios/project.yml`; SafeBeauty `app/build.gradle.kts`,
+  `ios/project.yml`; Talar `android/app/build.gradle.kts` (releases in `talar-releases`); VELRO
+  `mobile/gradle.properties` (`velro.versionName`/`velro.versionCode`), `ios/project.yml` per bundle id (Ride,
+  Driver, Ops); MediFlow `pyproject.toml`; KhayatYar `gradle.properties` (`appVersion`/`appVersionCode`);
+  NerkhTimes `app/build.gradle.kts`, `ios/project.yml`; DukanPro `app/pubspec.yaml`. Namazia's `main` holds only
+  `README.md`, so it has no version file. XcodeGen files are read per bundle id: the target's own
+  `MARKETING_VERSION` wins, otherwise the project-wide one.
+- **Drift flags** (`PlatformDrift`), computed and never guessed: *main is ahead of the latest release* (the
+  version file is higher than the release tag, for components shipped as GitHub releases), *store version older
+  than main* (the live version in the store listing, from App Store Connect / Play / the public lookup, is lower
+  than main), *CI failing on main* (the latest run of a workflow on the default branch concluded failure, timed out
+  or failed to start). A comparison is made only between two real version numbers: a tag like `android-app`, a
+  store label holding two different versions, or an unknown value is never compared. Each flag lists where both
+  values came from and when.
+- **Rate limits:** every request is conditional. The client keeps each response's ETag (`GitHubResponseCache`) and
+  sends `If-None-Match`; a 304 is answered from the cache and doesn't count against an authenticated rate limit.
+  A refresh stops as soon as GitHub reports the limit, and keeps the previous data.
+- **Refresh:** Platforms → Refresh from GitHub (⌘R), and automatically on launch and every 30 minutes with the
+  store and oversight refresh (Settings → Integrations → Platforms). The automatic refresh needs the GitHub token;
+  without one, a manual refresh reads public repositories only and the private ones show the error.
+- **Storage:** `platform-hub.json` next to `inventory.json` (tracking per repository + ETags, entries older than 14
+  days dropped). It's a per-device cache of observations, not synced to Supabase; the next refresh rebuilds it.
+- **Licence products** (MediFlow, KhayatYar) show the ledger's active, ending-soon and expired counts and open the
+  Licences screen.
+- **Live check (2026-10-09):** an opt-in test (`LCC_LIVE_HUB=1 GITHUB_TOKEN=… swift test --package-path
+  Packages/LinumicCore --filter liveSweep`) read all 10 repositories without a failure.
+
+### راهنمای کوتاه (دری)
+
+- در نوار کنار «پلتفرم‌ها» را باز کنید. برای هر محصول یک کارت است: نسخه روی main، آخرین انتشار GitHub و تعداد دانلود،
+  نسخهٔ فروشگاه‌ها، CI و PR های باز. روی کارت بزنید تا جزئیات، منبع و تاریخ هر عدد را ببینید.
+- «عقب‌ماندگی» فقط وقتی نشان داده می‌شود که دو نسخهٔ واقعی مقایسه شوند: main جلوتر از آخرین انتشار، نسخهٔ فروشگاه کهنه‌تر از
+  main، یا CI روی main ناکام. چیزی که خوانده نشده «نامعلوم» می‌ماند.
+- به‌روزرسانی خودکار هر ۳۰ دقیقه است و توکن GitHub می‌خواهد (تنظیمات ← Integrations). بدون توکن فقط مخزن‌های عمومی خوانده می‌شوند.
+
+## Oversight register in the cloud
+
+- Until 2026-10-09 `export_inventory()` had no `oversight` section, so a signed-in cloud load replaced the local
+  register with an empty one. Migration `20261009043412_oversight_sync` adds the `oversight_repos` table (admin RLS,
+  no delete policy, no audit trigger because it is a regenerated cache of GitHub observations), includes
+  `oversight` in `export_inventory()`, and merges it on `import_inventory()` by slug: nothing is deleted, an entry
+  only changes when the incoming copy was observed at the same time or later, and an upload without `oversight`
+  changes nothing. The old functions are kept as `export_inventory_core()` / `import_inventory_core()` and wrapped.
+- The client also merges (`OversightMerge` in `HybridInventoryStore.load`): union by slug, later observation wins,
+  and this device's own working-copy scan is kept. If the cloud had less, the merged register is uploaded.
+
 ## Licences (LNM1, MediFlow and KhayatYar)
 
 - **Protocol:** `licensing/PROTOCOL.md` next to this repository. `LinumicCore/Licensing` implements it in Swift

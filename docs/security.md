@@ -43,6 +43,9 @@ post as Linumic, so it is treated as a production system.
   exceptions).
 - **Local data** (`inventory.json`) sits inside the sandbox container and is
   protected by FileVault at rest. It holds no secrets.
+- **Platforms cache** (`platform-hub.json`, same folder) keeps GitHub responses for conditional requests,
+  including version files of private repositories (build settings such as `gradle.properties`). Never the token.
+  Entries older than 14 days are dropped; deleting the file only costs one full refresh.
 
 ## Backend (Supabase, created 2026-09-23)
 

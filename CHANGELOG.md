@@ -5,6 +5,27 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: platforms hub (platform control, phase 2)
+- A new **Platforms** screen (پلتفرم‌ها) with one card per product: WorkTrack, SafeBeauty, Talar, VELRO, MediFlow,
+  Tailor ERP / KhayatYar, NerkhTimes, Afghan Prayer Times (Namazia) and DukanPro. Each shows the version on `main`,
+  the latest GitHub release with its download count, live store versions, CI on main and open pull requests, plus
+  drift chips and a business-model badge (self-serve sign-up, licence, consumer app).
+- The detail view lists the drift flags with both compared values and their sources, the version per file
+  (`repo path:line @ main`, read date), store versions with their evidence, GitHub releases with asset download
+  counts, the latest run of every workflow on main, repositories, licence counts (opens Licences) and the admin and
+  public links, each with its source and check date.
+- Drift is computed, never guessed: *main is ahead of the latest release*, *store version older than main*, *CI
+  failing on main*. Only real version numbers are compared.
+- Reads are GET only and conditional (ETags), on launch and every 30 minutes with a token, or with ⌘R. The data is a
+  per-device cache (`platform-hub.json`).
+- A **Platforms** card on the dashboard counts platforms with CI failing, release drift and store drift.
+- 24 tests (191 in total, one of them the opt-in live sweep). English and Dari strings.
+
+### Fixed: a cloud load could wipe the oversight register
+- `export_inventory()` didn't include the oversight register, so loading from the cloud while signed in replaced
+  the local register with an empty list. The server now stores it (`oversight_repos`, merged by slug, never deleted)
+  and the client merges instead of replacing, keeping this device's local scan. 6 tests.
+
 ### Added: licence centre for MediFlow and KhayatYar (platform control, phase 1)
 - A new **Licences** screen issues and renews offline LNM1 licences from inside the app, replacing the terminal
   tool (`licensing/linumic_license.py`) for daily use. Issue sheet with live machine-code validation, perpetual or
