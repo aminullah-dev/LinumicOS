@@ -11,6 +11,7 @@ post as Linumic, so it is treated as a production system.
 | Inventory data | Tampering, loss | Sandboxed app container, and later a backend with audit log and backups |
 | Repositories and store listings | Unintended destructive action | Read-only integrations, per-action confirmation for writes |
 | WorkTrack customer licences (vendor account) | Wrong or accidental licence change, perpetual licence by omission | Refresh token only in the Keychain, one write (licence PUT) built from the fetched licence with `expiresAt` always sent, diff + typed confirmation in production, stale-licence check, no retry, local and server audit |
+| Talar, SafeBeauty, VELRO admin sessions (Operations) | Leaked session, accidental production write, identity documents on disk, VELRO refresh-token replay signing the owner out everywhere | Refresh token only (Keychain), read-only clients with no write calls except Talar's audited hall decision, SafeBeauty field masks that never request identity fields, VELRO rotation persisted before use and never replayed, counts the only cached data |
 | Assistant | Invented status, prompt injection from ingested content | Grounded answers with verified/derived/unknown labels. Ingested text is treated as data, and actions are only proposals. |
 
 ## MVP (local app)
@@ -38,6 +39,31 @@ post as Linumic, so it is treated as a production system.
   write is recorded in the local append-only `worktrack-actions.json` and in WorkTrack's own two audit trails.
   The Firebase Web API keys in `WorkTrackEnvironment` are public identifiers (shipped in every WorkTrack client), not
   secrets. The local emulator environment exists in debug builds only and speaks plain HTTP to `127.0.0.1`.
+- **Operations sessions (Talar, SafeBeauty, VELRO):** one Keychain item each, `talar.admin.session`
+  (`{environment, email, refreshToken}`), `safebeauty.admin.session` (`{environment, appUID, name, refreshToken}`) and
+  `velro.staff.session` (`{environment, userID, roles, refreshToken, deviceID}`), all
+  `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`, not synchronizable, deleted on sign-out. Never stored: passwords,
+  SafeBeauty's salt or derived Firebase password, phone numbers, ID/access tokens. The Talar and SafeBeauty passwords
+  are sent once (Talar: in Firebase's sign-in body; SafeBeauty: to its `authenticateWithPassword` callable, as its own
+  console does, then the PBKDF2-derived password to Firebase). The VELRO phone number is sent to request and verify the
+  code and kept only in the sheet's memory; the app never logs it.
+  - **Read-only by construction:** the Talar client has one write (`POST /admin/halls/:id/review`, audited by Talar,
+    sent once, never retried, typed confirmation in production, logged in `operations-actions.json`); the SafeBeauty
+    client calls no admin callable and no Firestore write; the VELRO client has no POST/PATCH under `/admin` and no
+    `DELETE /auth/me`.
+  - **SafeBeauty identity documents:** the KYC queue is read with a Firestore field mask (`name, role, status,
+    kycStatus, createdAt`), so tazkira numbers, photo paths, selfies, addresses and birth years are never downloaded,
+    shown or cached. The phone numbers of people in the queues aren't requested either. VELRO driver phone numbers are
+    returned by the API but not decoded; document images are never fetched.
+  - **VELRO refresh rotation:** VELRO replaces the refresh token on every use and treats a replayed one as theft. The
+    client runs one refresh at a time, writes the new token to the Keychain before using the new access token (and only
+    after a 200), and, if a refresh was sent but its answer lost (timeout, dropped connection, 502/504), deletes the
+    local session instead of ever sending the old token again. A refresh that never left the device keeps the session.
+    Local test 2026-10-09: VELRO's own "revoke every session on replay" is rolled back with the 401 (see integrations).
+  - **On disk:** only the last queue counts (UserDefaults `LCCOperationsLastCounts`, numbers with environment and time)
+    for the 0 to more-than-0 notifications, and the hall-decision log. No names, no lists.
+  - Local emulators/backend (plain HTTP to `127.0.0.1`) are offered in debug builds only; a stored local session is
+    ignored by release builds. The Firebase Web API keys in the environments are public identifiers.
 - **Licence signing keys (MediFlow, KhayatYar):** imported by the owner on the Mac only, checked against the
   production public key built into the app, then stored in the Keychain (`licence.signing.<product>`,
   `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`, `kSecAttrSynchronizable` false). They are never logged, never

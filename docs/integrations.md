@@ -1,7 +1,9 @@
 # Integrations
 
 **Connected:** GitHub (read-only), the public App Store lookup (read-only, no credentials), and the WorkTrack vendor
-API (read, plus licence renewals confirmed per action; the owner signs in with his vendor account).
+API (read, plus licence renewals confirmed per action; the owner signs in with his vendor account), and the Talar,
+SafeBeauty and VELRO admin overviews under Operations (read-only except Talar's audited hall approve/reject; the owner
+signs in to each).
 **Built, waiting for the owner's keys:** App Store Connect and Google Play Console (both read-only, both free).
 **Not connected:** social networks, AI providers. Each one is added
 only when explicit credentials and authorization are provided.
@@ -306,6 +308,165 @@ after a renewal from `expiresAt=2026-10-19`.
   می‌شود.
 - **یادآوری:** ۳۰، ۱۴، ۷ و ۱ روز پیش از ختم لایسنس هر مشتری Production اطلاعیه می‌آید (تنظیمات ← Integrations).
 - حذف یا پاک کردن شرکت در این مرحله نیست؛ برای آن از کنسول WorkTrack استفاده کنید.
+
+## Operations: Talar, SafeBeauty and VELRO (admin overview)
+
+- **What it is:** Operations (عملیات) in the sidebar, one tab per product, plus the dashboard card **Waiting for you**
+  and a notification when a production queue goes from 0 to more than 0. Read-only. The one exception is Talar's
+  hall approve/reject, which Talar audits. Every other action is an "Open admin panel" link. Research input:
+  `research/platform-admin-apis.md` §2–4 (2026-10-08); every route and field below was re-checked against source on
+  2026-10-09.
+- **Code:** `FirestoreREST`, `FirebaseSession` (in `FirebaseAuthREST.swift`), `TalarAdminClient`, `SafeBeautyAdminClient`,
+  `VelroStaffClient` (`LinumicCore/Integrations`), queues and the counts store in `LinumicCore/Services/Operations.swift`,
+  `App/OperationsModel.swift`, `App/Views/OperationsViews.swift`.
+- **Refresh:** on launch, every 30 minutes while the app is open, and with ⌘R. Nothing read is written to disk except
+  the queue counts (for the notification rule) and the local hall-decision log `operations-actions.json`.
+
+### Talar
+
+- **Source:** Talar repository, `origin/main` @ `7989747` (main is production): `backend/functions/src/modules/admin/routes.ts`,
+  `lib/auth.ts`, `lib/errors.ts`, `lib/audit.ts`, `modules/halls/routes.ts`, `modules/payments/routes.ts` and
+  `payouts.ts`, `backend/firestore.rules`, `web/.env.production`, `web/.env.demo`, `desktop/main.js`.
+- **Environments:** Production `https://asia-south1-talar-af-prod.cloudfunctions.net/api/v1`, Demo
+  `https://asia-south1-talar-demo-af.cloudfunctions.net/api/v1` (runs older code than production), Local emulator
+  `http://127.0.0.1:5001/demo-talar/asia-south1/api/v1` (debug builds; auth 9099, Firestore 8080 per
+  `backend/firebase.json`).
+- **Sign-in:** Firebase email/password over REST, then the ID token must carry `role: "admin"` (`lib/auth.ts`); the
+  app also reads `/admin/dashboard` before keeping the session. Use a dedicated admin account: creating or joining an
+  organisation replaces the claim (`setUserClaims`).
+- **Reads:** `GET /admin/dashboard`, `/admin/halls/pending` (up to 50), `/admin/reviews` (pending, up to 50);
+  organisations from Firestore `organizations` (admins may read them; field mask `name, status, commissionPct`), then
+  `GET /orgs/:orgId/payments/payouts` for each active one (first 50). There is no cross-organisation payout list in Talar.
+- **The write:** `POST /admin/halls/:hallId/review` `{decision: "approve"|"reject", reason?}`. Talar refuses it with 409
+  unless the hall is `pending_review` and writes `hall.review_approve|reject` to `auditLogs` (best-effort: a failed
+  audit write is swallowed, and the reason isn't in the audit entry). No notification to the hall owner. The app asks
+  for the hall name typed in production (a tick elsewhere), sends once, never retries (not even after a 401), re-reads
+  the queue and records the result in `operations-actions.json`.
+- **Never called:** `payouts/run`, `payouts/:org/:id/mark-paid` (move money, no idempotency or transaction),
+  `reviews/moderate`, cities, coupons, featured, bootstrap.
+- **Admin panel:** `https://talar-af-prod.web.app/admin` (200 on 2026-10-09). The demo project's Hosting answered 404.
+
+### SafeBeauty
+
+- **Source:** SafeBeauty repository, `origin/main` @ `efe5bdf`: `public/admin/index.html` (sign-in 382-399 and
+  1082-1107, stats 1203-1236, queues 1349-1402, money 3424-3497), `functions/domains/identity.js`
+  (`authenticateWithPassword`, `syncUidMap`), `functions/shared.js` (`pbkdf2Hash`, `assertAdmin`),
+  `functions/domains/payments.js` (`getCommissionPercent`), `firestore.rules`, `DEPLOY.md`,
+  `ios/SafeBeautyCore/.../PinHasher.swift` and `PhoneUtils.swift`. Production may lag `main` (manual deploys).
+- **Environments:** Production (project `safebeauty`), Staging (`safebeauty-staging`; functions deployment
+  unverified, needs its own admin account), Local emulator (`--project demo-safebeauty`, ports 9099/5001/8080; debug builds).
+- **Sign-in (the console's five steps):** normalise the phone (port of `PhoneUtils.normalizeForLogin`), callable
+  `authenticateWithPassword {phone, password}` (must return `mode: REAL`, `role: ADMIN`), Firebase password =
+  base64(PBKDF2-HMAC-SHA256("AUTH:" + password, salt, 65,536, 32 bytes)) (port of `PinHasher.deriveAuthPassword`,
+  checked against SafeBeauty's own test vectors), Firebase sign-in with `firebaseEmail`, callable `syncUidMap
+  {appUid}` (without it the rules can't see the admin). Login limits: 30 per IP, 10 per number, per 15 minutes.
+- **Reads (Firestore REST under the rules, read-only):** counts by aggregation query: `users` kycStatus PENDING,
+  `users` status PENDING, `salons` and `salons` isVerified true, `appointments` with `appointmentDate` (epoch ms) in
+  Kabul's day and in the week from Saturday, `refund_requests` PENDING. Queues: `users` where kycStatus or status is
+  PENDING, **field mask `name, role, status, kycStatus, createdAt`** (identity fields are never requested). Payouts
+  owed: `provider_balances` above zero with the owner's name (batch get, mask `name`). Commission:
+  `platform_config/general` (`commissionPercent`, `maxDiscountFraction`), shown as stored and as the server applies it
+  (outside 0–100 or missing = 10%).
+- **No writes.** Provider approval, salon verification and the commission are raw Firestore writes in SafeBeauty with
+  no audit; `reviewKyc` and `recordProviderPayout` are callables without audit. They stay in the console.
+- **Admin panel:** `https://safebeauty.web.app/admin` (the documented permanent path; 200 on 2026-10-09).
+
+### VELRO
+
+- **Source:** Velro repository, `main` @ `b9891a3`: `backend/ui/api/routers/auth.py`, `schemas/auth.py`,
+  `application/use_cases/authenticate.py`, `ui/api/deps.py`, `ui/api/errors.py`, `ui/api/session_scope.py`,
+  `ui/api/routers/admin.py`, `ui/api/opscentre.py`, `ui/api/routers/documents.py`, `infrastructure/services/settings.py`.
+- **Why a port and not VelroCore:** `ios/VelroCore` lives in another private repository with no licence file and no
+  published package, so depending on it would tie this app's build to a Velro checkout at a fixed path. Its
+  `APIClient` is bound to URLSession (no injectable transport for fixture tests), its `KeychainSessionStore` uses its
+  own Keychain service with AfterFirstUnlock and a "first launch wipes" marker, and the package exposes every write
+  (approve, suspend, settings PATCH, delete account). `VelroAdmin.swift` ports only the read calls and VelroCore's
+  single-refresh rule, so the read-only promise holds by construction.
+- **Environments:** Production `https://api.velro.linumic.com/api/v1` (no staging exists), Local backend
+  `http://127.0.0.1:8000/api/v1` (debug builds).
+- **Sign-in:** `POST /auth/otp/request {phone, locale, channel: "sms", audience: "staff"}` (VELRO sends a code only to a
+  number that already holds a staff role; 3 codes a minute; 5 digits, 5 minutes, 5 tries), then `POST /auth/otp/verify
+  {phone, code, device_id, locale}`. A session without a staff role is refused and not kept. Access token 15 minutes,
+  refresh token 180 days, **rotated on every use**.
+- **Rotation handling:** one refresh in flight (concurrent requests wait for it); the new refresh token goes to the
+  Keychain before the new access token is used, and only after a 200; a refused refresh (401) ends the session; a
+  refresh that was sent but whose answer was lost (timeout, dropped connection, 502/504 from the proxy, or an unreadable
+  200) deletes the local session instead of ever replaying the old token; a refresh that never left the device (no
+  network, host not found) or that the backend refused with 429/500/503 keeps it.
+- **Reads (GET only):** `/admin/dashboard` (attention, today, live, drivers, finance, network), `/admin/drivers?approval_status=PENDING`
+  (phone numbers in the answer are not decoded), `/admin/drivers/:id/documents` (statuses only; operations roles),
+  `/admin/trips?active_only=true`, `/admin/trips?departing_within_hours=24`, `/admin/stations`, `/admin/routes`
+  (VELRO has no corridor entity; routes are the corridors), `/admin/settings` for `commission.rate_basis_points`
+  (ADMIN or SUPER_ADMIN; read only, flagged if outside 0–10000).
+- **Never called:** any POST/PATCH under `/admin`, `/dispatch`, settlements, `DELETE /auth/me`, `/auth/logout-all`.
+- **Admin panel:** `https://admin.velro.linumic.com` (200 on 2026-10-09).
+
+### Operations: testing locally (never production)
+
+Each product ran from a copy of its `origin/main` source in a scratch folder (so nothing was written into the product
+repositories), with test accounts created only there. All three were stopped afterwards.
+
+1. **Talar:** `git archive origin/main backend` into a scratch folder, link `functions/node_modules`, `npx tsc`, dummy
+   values in `functions/.secret.local`, then `firebase emulators:start --config <copy without predeploy> --project demo-talar --only functions,firestore,auth`.
+   Talar's own seed: `FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 GCLOUD_PROJECT=demo-talar node scripts/seed.js`.
+   Then `node tools/talar/emulator-setup.js` (same hosts): `admin@linumic.test` (role admin), `customer@linumic.test`,
+   two halls pending review, a pending review, a pending and a paid payout.
+   `LCC_TALAR_EMULATOR=1 swift test --package-path Packages/LinumicCore --filter liveTalar`.
+2. **SafeBeauty:** `git archive origin/main functions firestore.rules firestore.indexes.json storage.rules`, link
+   `functions/node_modules`, dummy secrets in `functions/.secret.local` and `HESAB_BASE_URL`/`HESAB_REDIRECT_BASE` in
+   `functions/.env.demo-safebeauty`, a `firebase.json` with emulator ports 9099/5001/8080, then
+   `firebase emulators:start --project demo-safebeauty --only functions,firestore,auth`. The repository has no seed for
+   these collections, so `node tools/safebeauty/emulator-setup.js` writes accounts the way registration does (admin
+   `+93700000099`, a customer, two KYC submissions with made-up identity fields, two pending approvals, three salons,
+   four appointments, balances, refunds, `platform_config/general` 12%).
+   `LCC_SAFEBEAUTY_EMULATOR=1 swift test --package-path Packages/LinumicCore --filter liveSafeBeauty`.
+3. **VELRO:** a throw-away PostgreSQL 16 cluster on `127.0.0.1:55432`, then from `backend/` with
+   `VELRO_DATABASE_URL`, a development `VELRO_JWT_SECRET`, `VELRO_STORAGE_ROOT` in the scratch folder and
+   `PYTHONDONTWRITEBYTECODE=1`: `.venv/bin/python -m alembic upgrade head`, `.venv/bin/python scripts/seed.py`,
+   `.venv/bin/python scripts/grant-admin.py +93700000077 --role SUPER_ADMIN`, the API with
+   `VELRO_OTP_DEBUG_ECHO=true .venv/bin/python -m uvicorn --factory ui.api.app:create_app --host 127.0.0.1 --port 8000`
+   (the venv's script shebangs point at an old path, so `python -m` is used). `python3 tools/velro/local-setup.py`
+   registers two driver applications (refuses any non-local URL).
+   `LCC_VELRO_LOCAL=1 swift test --package-path Packages/LinumicCore --filter liveVelro`.
+
+Run on 2026-10-09, all three passed:
+- Talar: dashboard `publishedHalls 4, hallsAwaitingReview 2, confirmedBookings 1, openTickets 0`; both pending halls,
+  the pending review and one pending payout (net 95,000 AFN) read; approve and reject each added exactly one
+  `auditLogs` entry (`hall.review_approve`, `hall.review_reject`); a second decision on the same hall got 409; wrong
+  password, a non-admin account and a revoked refresh token were refused; a restored session worked.
+- SafeBeauty: the five-step sign-in with the phone typed as `0700 000 099`; KYC 2, approvals 2, salons 3 (1 verified),
+  bookings today 2, this week 2, payouts owed 4,200 AFN to one salon, 1 pending refund, commission 12%. Every request
+  was recorded: no request asked for a tazkira or selfie field, and the only callables were the two sign-in steps.
+  Wrong password, a customer account and a revoked token were refused.
+- VELRO: staff sign-in with the echoed code; dashboard (2 drivers pending, 3 trips today), pending drivers with their
+  missing documents, 427 stations, 78 routes, commission 1000 basis points; a forced refresh rotated the token and
+  stored it first; two concurrent forced refreshes sent one request; a wrong code, the OTP rate limit (3 a minute) and a
+  driver number on the staff door (no code sent) behaved as the source says.
+- **Finding (VELRO backend):** replaying an already-rotated refresh token is refused (`REFRESH_TOKEN_REVOKED`), but the
+  "revoke every session of this user" in `authenticate.py` is rolled back with the 401 (`session_scope.py` commits only
+  responses under 400), so the user's other sessions survived. The same class of bug the OTP attempt counter already
+  fixed with its own transaction (`deps.otp_attempt_recorder`). Linumic OS never replays either way.
+
+### راهنمای امین‌الله: عملیات (دری)
+
+- **کجاست:** نوار کنار ← «عملیات». بالای صفحه سه زبانه است: تالار، SafeBeauty و VELRO. هر کدام جدا وارد می‌شود.
+- **تالار:** «ورود…» ← محیط «Production» ← ایمیل و رمز حساب مدیر تالار (حسابی که نشان `role: "admin"` دارد و مالک
+  هیچ سازمانی نیست). رمز ذخیره نمی‌شود. می‌بینید: تالارهای در انتظار تأیید (با جزئیات)، نظرهای در انتظار بررسی،
+  تسویه‌های در انتظار هر سازمان. روی تالار بزنید ← «تأیید…» یا «رد…»؛ در Production باید نام تالار را دقیقاً بنویسید.
+  تالار این کار را در دفتر بازرسی خود ثبت می‌کند ولی به مالک تالار خبر نمی‌دهد؛ خودتان خبر بدهید. اجرای تسویه و
+  «پرداخت‌شده» فقط در پنل وب تالار است.
+- **SafeBeauty:** «ورود…» ← همان شمارهٔ تلفن و رمزی که در کنسول مدیریت SafeBeauty می‌زنید (0700… یا +93700…).
+  نه شماره ذخیره می‌شود نه رمز. می‌بینید: صف بررسی هویت (فقط نام، نقش و وضعیت؛ تذکره و سلفی هرگز به این دستگاه
+  نمی‌آیند)، صاحبان سالون در انتظار تأیید، نوبت‌های امروز و این هفته (هفته از شنبه)، پرداخت‌های بدهکار به سالون‌ها و
+  کمیشن. هر تأیید و تغییر را در کنسول SafeBeauty انجام دهید (دکمهٔ «باز کردن پنل مدیریت»).
+- **VELRO:** «ورود…» ← شمارهٔ تلفن کارمندی خود ← «فرستادن کد» ← کدی که با پیامک می‌آید ← «ورود». VELRO فقط به شماره‌ای
+  کد می‌فرستد که نقش کارمندی دارد (با `scripts/grant-admin.py` روی سرور). شماره ذخیره نمی‌شود. می‌بینید: راننده‌های در
+  انتظار تأیید و وضعیت اسنادشان، سفرهای در جریان و ۲۴ ساعت آینده، ایستگاه‌ها، مسیرها و کمیشن. VELRO محیط آزمایشی
+  ندارد، پس این برنامه فقط می‌خواند؛ تأیید راننده در کنسول وب VELRO است.
+- **اگر از VELRO خارج شدید:** اگر هنگام تازه کردن نشست اینترنت قطع شود، برنامه نشست همین دستگاه را پاک می‌کند تا توکن
+  کهنه دوباره فرستاده نشود؛ با کد تازه دوباره وارد شوید. کنسول وب شما دست نمی‌خورد.
+- **داشبورد:** کارت «منتظر شما» تعداد تالارهای در انتظار، بررسی‌های هویت و تأیید سالون‌ها، و راننده‌های در انتظار را
+  با محیط و وقت خواندن نشان می‌دهد. وقتی صفی در Production از صفر بیشتر شود اطلاعیه می‌آید (تنظیمات ← Integrations ← Operations).
 
 ## Social media (Phase 5)
 
