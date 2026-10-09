@@ -38,6 +38,8 @@ struct DashboardView: View {
                     .buttonStyle(.plain)
                 }
 
+                MonitorStatusStrip()
+
                 platformsCard
 
                 oversightCard

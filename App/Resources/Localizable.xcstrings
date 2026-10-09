@@ -90,6 +90,26 @@
         }
       }
     },
+    "%@ (%@) answers again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ (%2$@) دوباره پاسخ می‌دهد."
+          }
+        }
+      }
+    },
+    "%@ (%@) failed two checks in a row.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ (%2$@) در دو بررسی پشت سر هم پاسخ نداد."
+          }
+        }
+      }
+    },
     "%@ / %@": {
       "localizations": {
         "fa-AF": {
@@ -116,6 +136,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ کپی شد. کلیپ‌بورد پس از ۳۰ ثانیه پاک می‌شود."
+          }
+        }
+      }
+    },
+    "%@ is back up": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ دوباره برقرار است"
+          }
+        }
+      }
+    },
+    "%@ is down": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ قطع است"
           }
         }
       }
@@ -458,12 +498,42 @@
         }
       }
     },
+    "%lld days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld روز"
+          }
+        }
+      }
+    },
     "%lld expired": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "%lld ختم‌شده"
+          }
+        }
+      }
+    },
+    "%lld expiry warnings": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld هشدار انقضا"
+          }
+        }
+      }
+    },
+    "%lld ms": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld میلی‌ثانیه"
           }
         }
       }
@@ -604,6 +674,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld انتشار · آخرین %2$@"
+          }
+        }
+      }
+    },
+    "%lld seconds": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ثانیه"
           }
         }
       }
@@ -839,6 +919,56 @@
         }
       }
     },
+    "Admin console": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنسول مدیریت"
+          }
+        }
+      }
+    },
+    "Admin console (custom domain)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنسول مدیریت (دامنهٔ اختصاصی)"
+          }
+        }
+      }
+    },
+    "Admin panel": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنل مدیریت"
+          }
+        }
+      }
+    },
+    "After two failed checks in a row, when it is back, and when a TLS certificate or the linumic.com registration enters the 30, 14 or 7-day window.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پس از دو بررسی ناموفق پشت سر هم، وقتی دوباره برقرار شد، و وقتی گواهی TLS یا ثبت دامنهٔ linumic.com به ۳۰، ۱۴ یا ۷ روز مانده به پایان رسید."
+          }
+        }
+      }
+    },
+    "Age": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عمر نسخه"
+          }
+        }
+      }
+    },
     "AI Assistant": {
       "localizations": {
         "fa-AF": {
@@ -1050,6 +1180,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "هر وضعیت"
+          }
+        }
+      }
+    },
+    "API health": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سلامت API"
+          }
+        }
+      }
+    },
+    "API liveness": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زنده بودن API"
+          }
+        }
+      }
+    },
+    "API readiness (database)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آمادگی API (پایگاه داده)"
           }
         }
       }
@@ -1340,12 +1500,132 @@
         }
       }
     },
+    "Cache-Control": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cache-Control"
+          }
+        }
+      }
+    },
+    "Cached for a day or less.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک روز یا کمتر نگه داشته می‌شود."
+          }
+        }
+      }
+    },
+    "Caching of the home page": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نگه‌داری صفحهٔ اصلی در کش"
+          }
+        }
+      }
+    },
+    "Certificate": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گواهی"
+          }
+        }
+      }
+    },
+    "cf-cache-status": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cf-cache-status"
+          }
+        }
+      }
+    },
     "Change the saved password for %@": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "تغییر رمز ذخیره‌شدهٔ %@"
+          }
+        }
+      }
+    },
+    "Check every endpoint now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همین حالا همهٔ نشانی‌ها را بررسی کن"
+          }
+        }
+      }
+    },
+    "Check now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اکنون بررسی کن"
+          }
+        }
+      }
+    },
+    "Checked %@ ago": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ پیش بررسی شد"
+          }
+        }
+      }
+    },
+    "Checked %@, public endpoints only": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی در %@، فقط نشانی‌های عمومی"
+          }
+        }
+      }
+    },
+    "Checked when the app opens and every 5 minutes while it runs (less often in Low Power Mode or when nothing answers). A notification comes after two failed checks in a row, and when a certificate or domain enters the 30, 14 or 7-day window.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "با باز شدن برنامه و تا وقتی باز است هر ۵ دقیقه بررسی می‌شود (در حالت کم‌مصرف یا وقتی هیچ نشانی پاسخ ندهد، کمتر). پس از دو بررسی ناموفق پشت سر هم، و وقتی گواهی یا دامنه به ۳۰، ۱۴ یا ۷ روز مانده رسید، اعلان می‌آید."
+          }
+        }
+      }
+    },
+    "Checking every endpoint…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال بررسی همهٔ نشانی‌ها…"
+          }
+        }
+      }
+    },
+    "Checking…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال بررسی…"
           }
         }
       }
@@ -1903,6 +2183,16 @@
         }
       }
     },
+    "Customer portal": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پورتال مشتریان"
+          }
+        }
+      }
+    },
     "Customer, licence id or machine code": {
       "localizations": {
         "fa-AF": {
@@ -2031,6 +2321,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "حذف…"
+          }
+        }
+      }
+    },
+    "Demo API health": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سلامت API دمو"
           }
         }
       }
@@ -2198,6 +2498,36 @@
         }
       }
     },
+    "Domain": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دامنه"
+          }
+        }
+      }
+    },
+    "Domain registration ending": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت دامنه رو به پایان است"
+          }
+        }
+      }
+    },
+    "Domain registrations": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت دامنه‌ها"
+          }
+        }
+      }
+    },
     "Done": {
       "extractionState": "stale",
       "localizations": {
@@ -2215,6 +2545,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "برای ویرایش روی ردیف دو بار کلیک کنید. برای گزینه‌های بیشتر کلیک راست کنید. برای دیدن شواهد روی نشان کلیک کنید."
+          }
+        }
+      }
+    },
+    "Down": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قطع"
           }
         }
       }
@@ -2351,6 +2691,16 @@
         }
       }
     },
+    "Ends %@; read %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پایان %1$@؛ خوانده‌شده %2$@"
+          }
+        }
+      }
+    },
     "Ends in %lld days": {
       "localizations": {
         "fa-AF": {
@@ -2407,6 +2757,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "خطا"
+          }
+        }
+      }
+    },
+    "Every check is a plain GET to a public page or health endpoint listed in MonitorCatalog (each with the repository file and line it comes from). No sign-in, cookie or token is sent, and nothing is written. Uptime is the share of checks that answered in the last 24 hours while this app was open; the history stays on this device.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر بررسی یک درخواست سادهٔ GET به یک صفحهٔ عمومی یا نشانی سلامت است که در MonitorCatalog آمده (هرکدام با فایل و خط مخزنی که از آن گرفته شده). هیچ ورود، کوکی یا توکنی فرستاده نمی‌شود و چیزی نوشته نمی‌شود. «برقراری» سهم بررسی‌هایی است که در ۲۴ ساعت گذشته، وقتی این برنامه باز بود، پاسخ گرفتند؛ تاریخچه فقط روی همین دستگاه می‌ماند."
           }
         }
       }
@@ -2488,6 +2848,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "منقضی شده"
+          }
+        }
+      }
+    },
+    "Expires": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ پایان"
           }
         }
       }
@@ -2925,6 +3295,16 @@
         }
       }
     },
+    "Google": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google"
+          }
+        }
+      }
+    },
     "Google Cloud → create a service account and a JSON key, enable the Google Play Android Developer API. Then Play Console → Users and permissions → invite the service account's email with \"View app information (read-only)\". Free.": {
       "extractionState": "stale",
       "localizations": {
@@ -2974,6 +3354,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "پیکربندی Gradle"
+          }
+        }
+      }
+    },
+    "Health answer unreadable": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاسخ سلامت خوانا نیست"
           }
         }
       }
@@ -3031,12 +3421,32 @@
         }
       }
     },
+    "Home page": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صفحهٔ اصلی"
+          }
+        }
+      }
+    },
     "Host": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "میزبان"
+          }
+        }
+      }
+    },
+    "HTTP error": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خطای HTTP"
           }
         }
       }
@@ -3493,6 +3903,16 @@
         }
       }
     },
+    "Last checked %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین بررسی: %@"
+          }
+        }
+      }
+    },
     "Last day today": {
       "localizations": {
         "fa-AF": {
@@ -3549,6 +3969,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "آخرین تأیید %@"
+          }
+        }
+      }
+    },
+    "Latency": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زمان پاسخ"
+          }
+        }
+      }
+    },
+    "Latency over %lld checks: %lld to %lld milliseconds": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زمان پاسخ در %1$lld بررسی: از %2$lld تا %3$lld میلی‌ثانیه"
           }
         }
       }
@@ -3851,6 +4291,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نسخهٔ فعال (تولید)"
+          }
+        }
+      }
+    },
+    "Live status": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت زنده"
           }
         }
       }
@@ -4197,6 +4647,16 @@
         }
       }
     },
+    "Monitor": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پایش"
+          }
+        }
+      }
+    },
     "Monorepo": {
       "extractionState": "stale",
       "localizations": {
@@ -4399,6 +4859,16 @@
         }
       }
     },
+    "Next expiry": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نزدیک‌ترین پایان"
+          }
+        }
+      }
+    },
     "Next version": {
       "extractionState": "stale",
       "localizations": {
@@ -4446,6 +4916,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "کلید امضای %@ روی این مک نیست. اول آن را در بخش کلیدهای امضا وارد کنید."
+          }
+        }
+      }
+    },
+    "No answer": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بی‌پاسخ"
           }
         }
       }
@@ -4528,6 +5008,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "هیچ مشکلی ثبت نشده. همگام‌سازی مشکلات GitHub در برنامه است."
+          }
+        }
+      }
+    },
+    "No latency recorded yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز زمان پاسخی ثبت نشده"
           }
         }
       }
@@ -4931,6 +5421,36 @@
         }
       }
     },
+    "Not checked": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی نشده"
+          }
+        }
+      }
+    },
+    "Not checked yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز بررسی نشده."
+          }
+        }
+      }
+    },
+    "Not checked yet. Open Monitor →": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز بررسی نشده. «پایش» را باز کنید ←"
+          }
+        }
+      }
+    },
     "Not connected": {
       "localizations": {
         "fa-AF": {
@@ -5105,6 +5625,16 @@
         }
       }
     },
+    "Notify me when a platform goes down": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی یک پلتفرم قطع شد، خبرم کن"
+          }
+        }
+      }
+    },
     "Offline keys can't be recalled. Voiding only marks the licence in your ledger; the customer's app keeps accepting a valid key until it expires.": {
       "localizations": {
         "fa-AF": {
@@ -5274,6 +5804,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "تأیید مالک"
+          }
+        }
+      }
+    },
+    "Pages may be cached for %lld days, so an edit can take that long to reach visitors who already have the page. The GoDaddy CDN sets this and the plan has no setting for it; purge the cache from the GoDaddy dashboard after an important edit. For information only.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صفحه‌ها ممکن است تا %lld روز در کش بمانند، پس یک ویرایش ممکن است همین‌قدر طول بکشد تا به بازدیدکنندگانی برسد که صفحه را قبلاً دارند. این را CDN گودادی تعیین می‌کند و پلن تنظیمی برای آن ندارد؛ پس از ویرایش مهم، کش را از داشبورد گودادی پاک کنید. فقط برای آگاهی."
           }
         }
       }
@@ -5750,6 +6290,16 @@
         }
       }
     },
+    "Public pages and health endpoints only, with no credentials. Checked when the app opens and every 5 minutes while it runs; the last 24 hours stay on this device (monitor.json).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط صفحه‌های عمومی و نشانی‌های سلامت، بدون هیچ رمز یا توکن. با باز شدن برنامه و تا وقتی باز است هر ۵ دقیقه بررسی می‌شود؛ ۲۴ ساعت آخر روی همین دستگاه می‌ماند (monitor.json)."
+          }
+        }
+      }
+    },
     "Public repositories only": {
       "localizations": {
         "fa-AF": {
@@ -5842,6 +6392,36 @@
         }
       }
     },
+    "RDAP returned HTTP %d.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RDAP کد HTTP %d برگرداند."
+          }
+        }
+      }
+    },
+    "Read from public RDAP (rdap.org) every 12 hours. Hosts on web.app and cloudfunctions.net belong to Google and are not renewed by Linumic.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر ۱۲ ساعت از RDAP عمومی (rdap.org) خوانده می‌شود. میزبان‌های web.app و cloudfunctions.net مال Google هستند و لینومیک آن‌ها را تمدید نمی‌کند."
+          }
+        }
+      }
+    },
+    "Read now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اکنون بخوان"
+          }
+        }
+      }
+    },
     "Read the public App Store lookup for each bundle ID (no credentials)": {
       "localizations": {
         "fa-AF": {
@@ -5868,6 +6448,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "به‌روزرسانی فقط‌خواندنی همهٔ مخزن‌های GitHub (⌘R)"
+          }
+        }
+      }
+    },
+    "Reading from RDAP…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال خواندن از RDAP…"
           }
         }
       }
@@ -6119,6 +6709,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "پیش از ثبت شواهد، یک منبع ثبت کنید."
+          }
+        }
+      }
+    },
+    "Registrar": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت‌کننده"
           }
         }
       }
@@ -6410,6 +7010,16 @@
         }
       }
     },
+    "Reports unhealthy": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گزارش ناسالم"
+          }
+        }
+      }
+    },
     "Repos": {
       "localizations": {
         "fa-AF": {
@@ -6605,6 +7215,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "در حال اجرا"
+          }
+        }
+      }
+    },
+    "Salon console": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنسول آرایشگاه"
+          }
+        }
+      }
+    },
+    "Salon console (custom domain)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنسول آرایشگاه (دامنهٔ اختصاصی)"
           }
         }
       }
@@ -7035,6 +7665,26 @@
         }
       }
     },
+    "Slow": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کند"
+          }
+        }
+      }
+    },
+    "Slower than expected": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کندتر از انتظار"
+          }
+        }
+      }
+    },
     "Snapshot age": {
       "extractionState": "stale",
       "localizations": {
@@ -7093,6 +7743,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "منبع"
+          }
+        }
+      }
+    },
+    "Source: %@, read %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع: %1$@، خوانده‌شده %2$@"
           }
         }
       }
@@ -7184,6 +7844,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "تأیید وضعیت: %@"
+          }
+        }
+      }
+    },
+    "Status: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت: %@"
           }
         }
       }
@@ -7542,6 +8212,26 @@
         }
       }
     },
+    "The certificate of %@ ends in %lld days.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گواهی %1$@ تا %2$lld روز دیگر تمام می‌شود."
+          }
+        }
+      }
+    },
+    "The certificate of %@ has expired.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گواهی %@ تمام شده است."
+          }
+        }
+      }
+    },
     "The code the customer reads from the licence screen of the app. KhayatYar: from the main device of the workshop. * means any machine.": {
       "localizations": {
         "fa-AF": {
@@ -7726,6 +8416,36 @@
         }
       }
     },
+    "The RDAP answer was not RDAP JSON.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاسخ RDAP، JSON معتبر RDAP نبود."
+          }
+        }
+      }
+    },
+    "The registration of %@ ends in %lld days. Renew it at the registrar.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت %1$@ تا %2$lld روز دیگر تمام می‌شود. آن را نزد ثبت‌کننده تمدید کنید."
+          }
+        }
+      }
+    },
+    "The registration of %@ has expired.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت %@ تمام شده است."
+          }
+        }
+      }
+    },
     "The signature doesn't match. The key was changed, or signed with a different key.": {
       "localizations": {
         "fa-AF": {
@@ -7822,6 +8542,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "این فایل کلید خصوصی P-256 در قالب PEM نیست. فایل <product>-private.pem را انتخاب کنید."
+          }
+        }
+      }
+    },
+    "This host is on a Google-owned domain (web.app or cloudfunctions.net).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این میزبان روی دامنهٔ Google است (web.app یا cloudfunctions.net)."
           }
         }
       }
@@ -7957,6 +8687,16 @@
         }
       }
     },
+    "TLS certificate ending": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گواهی TLS رو به پایان است"
+          }
+        }
+      }
+    },
     "Token removed.": {
       "localizations": {
         "fa-AF": {
@@ -8077,12 +8817,32 @@
         }
       }
     },
+    "Up": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برقرار"
+          }
+        }
+      }
+    },
     "Updated %@": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "به‌روز شد %@"
+          }
+        }
+      }
+    },
+    "Uptime 24h": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برقراری ۲۴ ساعت"
           }
         }
       }
@@ -8239,6 +8999,16 @@
         }
       }
     },
+    "Vendor console": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنسول فروشنده"
+          }
+        }
+      }
+    },
     "VERIFIED": {
       "localizations": {
         "fa-AF": {
@@ -8377,6 +9147,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "وب"
+          }
+        }
+      }
+    },
+    "Web panel": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنل وب"
           }
         }
       }

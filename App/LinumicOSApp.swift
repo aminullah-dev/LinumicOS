@@ -10,6 +10,7 @@ struct LinumicOSApp: App {
     @State private var worktrack: WorkTrackModel
     @State private var operations: OperationsModel
     @State private var vault = VaultModel()
+    @State private var monitor = MonitorModel()
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
@@ -43,12 +44,15 @@ struct LinumicOSApp: App {
                 .environment(worktrack)
                 .environment(operations)
                 .environment(vault)
+                .environment(monitor)
                 .environment(router)
                 #if os(macOS)
                 .frame(minWidth: 960, minHeight: 600)
                 #endif
                 // The Vault locks whenever the app leaves the foreground.
                 .onChange(of: scenePhase) { _, phase in if phase == .background { vault.appMovedToBackground() } }
+                // Monitor: public health checks on open, then every 5 minutes, alongside the slower refresh loop below.
+                .task { await monitor.run() }
                 .task {
                     vault.load()
                     await model.load()

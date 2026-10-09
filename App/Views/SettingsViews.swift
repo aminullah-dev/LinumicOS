@@ -22,6 +22,7 @@ struct IntegrationsSettingsView: View {
     @AppStorage(WorkTrackModel.notifyKey) private var notifyWorkTrack = true
     @Environment(OperationsModel.self) private var operations
     @AppStorage(OperationsModel.notifyKey) private var notifyOperations = true
+    @AppStorage(MonitorModel.notifyKey) private var notifyMonitor = true
 
     private let integrations: [(name: String, symbol: String, plan: String)] = [
         ("Social networks", "bubble.left.and.bubble.right", "Phase 5: OAuth, approval before publishing"),
@@ -146,6 +147,16 @@ struct IntegrationsSettingsView: View {
                 Text("Operations")
             } footer: {
                 Text("Sign in under Operations in the sidebar. Only refresh tokens are kept, in this device's Keychain (talar.admin.session, safebeauty.admin.session, velro.staff.session); the last queue counts are kept for the notifications, nothing else.")
+            }
+            Section {
+                Toggle(isOn: $notifyMonitor) {
+                    Text("Notify me when a platform goes down")
+                    Text("After two failed checks in a row, when it is back, and when a TLS certificate or the linumic.com registration enters the 30, 14 or 7-day window.")
+                }
+            } header: {
+                Text("Monitor")
+            } footer: {
+                Text("Public pages and health endpoints only, with no credentials. Checked when the app opens and every 5 minutes while it runs; the last 24 hours stay on this device (monitor.json).")
             }
             Section {
                 ForEach(integrations, id: \.name) { i in
