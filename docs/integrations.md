@@ -674,6 +674,50 @@ release-only repositories are left out.
 - **Google Play:** فقط خواندن. برنامه یک edit باز می‌کند، trackها را می‌خواند و همان لحظه پاکش می‌کند؛ هرگز commit نمی‌شود.
 - **کلیدها:** همان کلیدهای تنظیمات ← Integrations. چیز تازه‌ای ذخیره نمی‌شود.
 
+## Daily Brief and Command Palette (local, no integration)
+
+Neither feature is an integration: they call no service and add no credential. They only read what the other models
+already hold in memory or in their local files.
+
+- **Daily Brief:** sidebar > Brief («گزارش روز»), right under Dashboard. Sections, in order: Monitor (anything down or
+  slow now, downtime in the last 24 hours, TLS certificates and domain registrations within 30 days), Releases (the
+  Release Center's "Waiting on you" items), Licences (MediFlow and KhayatYar licences expired or ending within 30 days,
+  and those issued in the last 7 days), WorkTrack customers (renewals due within 30 days and expired licences, TEST and
+  DUPLICATE companies excluded), Operations (Talar, SafeBeauty and VELRO queues above zero), Oversight (open security
+  alerts, unprotected default branches, uncommitted local work, changes of the last 24 hours) and "What changed since
+  yesterday". Every line has its source and read time and an Open button to its screen. A section with nothing to
+  report says "All clear"; a source that was never read (not signed in, no key, not checked yet) says so instead of
+  showing zero. Logic: `LinumicCore/Brief` (`DailyBriefBuilder`, `BriefDiff`, `BriefSnapshotHistory`); App:
+  `BriefModel`, `BriefViews`.
+- **Snapshots:** after every refresh round (launch, then every 30 minutes) the app stores one small snapshot per day in
+  `brief-snapshots.json` next to `inventory.json` (monitor states, App Store and Play states per app, open PR numbers
+  and titles, CI on the default branch, licence counts, WorkTrack company and expired counts, Operations queue counts;
+  last 8 days). "What changed since yesterday" compares the latest snapshot of an earlier day with now, field by field,
+  and only for fields read on both days.
+- **Morning notification:** Settings > Integrations > Daily Brief, on by default at 08:00 local time. One pending local
+  notification, rebuilt after every refresh with the brief as it is then; the text ends with "As of <time>" so an old
+  brief (the app was closed overnight) is never presented as fresh.
+- **Command Palette:** ⌘K (Go menu), the magnifier in the sidebar toolbar on the Mac and on iPhone/iPad. Fuzzy search
+  over every sidebar destination (also by its English name in Dari), products, WorkTrack companies, licences, Vault
+  entries (title and product only, never a login or password), monitor targets, Release Center apps and open PRs, and
+  the actions that already exist: Check now, Refresh releases, Issue licence…, New vault entry…, Lock vault, New
+  Product…, and "Open <host>" for the Vault's sign-in addresses and the monitored pages. Nothing writes from the palette:
+  Issue licence and New vault entry open their own sheet, where saving needs the owner; Check now and Refresh releases
+  only read. Arrow keys move, Return opens, Escape closes; the last 12 choices (ids only, UserDefaults
+  `LCCPaletteRecents`) come first. Matching (`LinumicCore/Palette`) folds case, accents, Arabic/Persian letter forms
+  (ي/ی، ك/ک، ة/ه، أ/ا), harakat, tatweel, ZWNJ, bidi marks and Persian digits.
+
+### راهنمای امین‌الله: گزارش روز و جستجو (دری)
+
+- **گزارش روز:** نوار کنار ← «گزارش روز» (زیر داشبورد). هر بخش یا «همه چیز درست است» می‌گوید، یا خط‌هایی با منبع و زمان
+  خواندن و دکمهٔ «باز کردن». اگر به محصولی وارد نشده‌اید، همان را می‌گوید، نه صفر. بخش «از دیروز چه تغییر کرد» از روز دوم
+  کار می‌کند.
+- **اعلان صبح:** تنظیمات ← Integrations ← «گزارش روز». روشن یا خاموش، و ساعت آن (پیش‌فرض ۸ صبح). متن اعلان می‌گوید وضعیت
+  مال چه ساعتی است.
+- **جستجو و فرمان‌ها:** ⌘K یا دکمهٔ ذره‌بین. نام صفحه، مشتری، شمارهٔ لایسنس، نام حساب گاوصندوق یا شمارهٔ PR را بنویسید؛
+  با کلیدهای بالا و پایین انتخاب و با Return باز کنید. حروف عربی و فارسی (ي/ی، ك/ک) فرقی نمی‌کنند. فرمان‌هایی که چیزی
+  را تغییر می‌دهند فقط صفحهٔ خود را باز می‌کنند؛ تأیید همان‌جاست.
+
 ## Social media (Phase 5)
 
 LinkedIn, Facebook, Instagram, X and YouTube. OAuth per network, tokens stored

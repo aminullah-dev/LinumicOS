@@ -17,7 +17,9 @@ sign-ins in this device's Keychain, with Touch ID, copy buttons and "Fill from V
 live health of every public Linumic endpoint (plain GETs, no credentials) with TLS certificate and linumic.com domain
 expiry, 24-hour uptime and down/expiry notifications. Releases: every app in App Store Connect and Google Play, open
 PRs (stacks in merge order) and CI of every product repository, and a "Waiting on you" list, read-only except
-releasing an approved App Store version after a confirmation. See
+releasing an approved App Store version after a confirmation. Daily Brief: one page (and an optional morning
+notification) summarising what all of these last read, with sources, read times and "what changed since yesterday".
+Command Palette (⌘K): fuzzy search over screens, records and existing actions, English and Dari. See
 [docs/integrations.md](docs/integrations.md) and [docs/security.md](docs/security.md).
 
 ## Layout
