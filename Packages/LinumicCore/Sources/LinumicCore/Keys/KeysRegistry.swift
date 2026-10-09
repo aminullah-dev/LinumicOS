@@ -122,9 +122,15 @@ public struct TrackedKey: Codable, Identifiable, Hashable, Sendable {
     public var doNotDelete: Bool
     public var source: String
     public var recordedOn: KeyDay
+    /// The day the file was deliberately deleted. A deleted key is expected to be absent: no "missing" reminder, and a
+    /// reminder only if it shows up on this Mac again. Nil for a key that should exist.
+    public var deletedOn: KeyDay?
+    /// Why and how it was deleted, e.g. "its hash matched the Keychain item first".
+    public var deletedNote: String?
 
     public init(id: String, title: String, product: String? = nil, kind: KeyKind, path: String, expectedCount: Int? = nil,
-                backupIDs: [String] = [], note: String? = nil, doNotDelete: Bool = false, source: String, recordedOn: KeyDay) {
+                backupIDs: [String] = [], note: String? = nil, doNotDelete: Bool = false, source: String, recordedOn: KeyDay,
+                deletedOn: KeyDay? = nil, deletedNote: String? = nil) {
         self.id = id
         self.title = title
         self.product = product
@@ -136,7 +142,11 @@ public struct TrackedKey: Codable, Identifiable, Hashable, Sendable {
         self.doNotDelete = doNotDelete
         self.source = source
         self.recordedOn = recordedOn
+        self.deletedOn = deletedOn
+        self.deletedNote = deletedNote
     }
+
+    public var isDeleted: Bool { deletedOn != nil }
 
     public var isPattern: Bool { (path as NSString).lastPathComponent.contains("*") }
 }
@@ -351,6 +361,34 @@ public extension KeysRegistry {
     static let androidBundleID = "android-signing-keys"
     static let licenceBundleID = "licence-keys"
     static let passphraseService = "Linumic license backup passphrase"
+    /// Where the backup passphrase is kept (session record 2026-10-09). The plain-text file is not one of them any more.
+    static let passphraseLocations = ["macOS Keychain", "Private Notion page", "Paper"]
+    static let deletedPassphraseNote = "Deleted on purpose on 2026-10-09 after its hash matched the Keychain item “Linumic license backup passphrase”. The passphrase is kept in that Keychain item, the owner's private Notion page and on paper."
+
+    /// Applies facts recorded after a registry was first saved, so a `keys-registry.json` written from an older seed
+    /// does not keep warning about them: a key the seed records as deleted is marked deleted (if the saved one isn't),
+    /// and backups that use the seed's passphrase item list every place the passphrase is kept. Returns true when
+    /// something changed. It never removes anything the owner added.
+    @discardableResult
+    mutating func applySeedCorrections() -> Bool {
+        let seed = KeysRegistry.seed
+        var changed = false
+        for s in seed.keys where s.deletedOn != nil {
+            guard let i = keys.firstIndex(where: { $0.id == s.id }), keys[i].deletedOn == nil else { continue }
+            keys[i].deletedOn = s.deletedOn
+            keys[i].deletedNote = s.deletedNote
+            keys[i].note = s.note
+            keys[i].source = s.source
+            changed = true
+        }
+        for i in backups.indices where backups[i].passphraseKeychainService == KeysRegistry.passphraseService {
+            for place in KeysRegistry.passphraseLocations where !backups[i].passphraseKeptIn.contains(place) {
+                backups[i].passphraseKeptIn.append(place)
+                changed = true
+            }
+        }
+        return changed
+    }
 
     /// The facts as recorded on 2026-10-09. Sources: `~/Keys/README.md` (written 2026-10-09), the licensing map
     /// (`Linumic/licensing/MAP.md`) and the session record of the backups.
@@ -393,10 +431,13 @@ public extension KeysRegistry {
             TrackedKey(id: "asc-api-keys", title: "App Store Connect API keys", kind: .appStoreConnectAPI,
                        path: "~/.appstoreconnect/private_keys/AuthKey_*.p8", expectedCount: 5,
                        note: "Not in any backup yet.", source: readme, recordedOn: d9),
+            // Deleted on purpose on 2026-10-09 after its hash matched the Keychain item. Kept in the registry so the
+            // deletion is on record; it is expected to be absent.
             TrackedKey(id: "licence-passphrase-file", title: "Backup passphrase as a plain-text file", kind: .passphraseCopy,
                        path: "~/.linumic/license-backup-passphrase.txt",
-                       note: "A plain-text copy of the backup passphrase on this Mac. The app checks only that it exists; it never opens it.",
-                       source: map, recordedOn: d8),
+                       note: "Was a plain-text copy of the backup passphrase on this Mac. The app never opened it.",
+                       source: "\(map); \(session)", recordedOn: d8, deletedOn: d9,
+                       deletedNote: deletedPassphraseNote),
         ]
 
         let backups: [BackupRecord] = [
@@ -405,7 +446,7 @@ public extension KeysRegistry {
                          sizeBytes: 22_336, archive: .tarGzip, createdOn: d9, verifiedOn: d9,
                          verification: "Downloaded from Drive and compared byte-identical with the original; test-decrypted.",
                          encryption: "AES-256-CBC, PBKDF2 600000 iterations", passphraseKeychainService: passphraseService,
-                         passphraseKeptIn: ["macOS Keychain", "Private Notion page"],
+                         passphraseKeptIn: passphraseLocations,
                          restoreTests: [
                              RestoreTest(id: UUID(uuidString: "5B0E7C2A-4D1F-4C6E-9A3B-2F8D1E0A9C01")!, on: d9, by: "Owner",
                                          note: "Downloaded and restored by the owner himself.", source: session),
@@ -416,7 +457,7 @@ public extension KeysRegistry {
                          archive: .tar, createdOn: d8, verifiedOn: d9,
                          verification: "Verified on 2026-10-08 and 2026-10-09: byte-identical with the original and decryptable.",
                          encryption: "AES-256-CBC, PBKDF2 600000 iterations", passphraseKeychainService: passphraseService,
-                         passphraseKeptIn: ["macOS Keychain", "Private Notion page"],
+                         passphraseKeptIn: passphraseLocations,
                          restoreTests: [
                              RestoreTest(id: UUID(uuidString: "5B0E7C2A-4D1F-4C6E-9A3B-2F8D1E0A9C02")!, on: d8, by: "Claude session (test decryption)",
                                          note: "Test decryption when the backup was made. No restore by the owner is recorded.",
@@ -456,7 +497,9 @@ public struct KeysRegistryStore: Sendable {
     /// caller never overwrites it with the seed by accident.
     public func load() -> KeysRegistry? {
         guard let data = try? Data(contentsOf: fileURL) else { return .seed }
-        return try? Self.decoder.decode(KeysRegistry.self, from: data)
+        guard var registry = try? Self.decoder.decode(KeysRegistry.self, from: data) else { return nil }
+        registry.applySeedCorrections()
+        return registry
     }
 
     public func save(_ registry: KeysRegistry) throws {
