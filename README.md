@@ -13,7 +13,9 @@ Afghanistan.
 lookup, App Store Connect and Google Play (with the owner's keys), and Supabase for the shared inventory and licence
 ledger. WorkTrack customers: the vendor API, read plus licence renewals confirmed per action. Operations: Talar,
 SafeBeauty and VELRO admin overviews, read-only except Talar's audited hall approve/reject. Vault: the owner's own
-sign-ins in this device's Keychain, with Touch ID, copy buttons and "Fill from Vault" in the sign-in sheets. See
+sign-ins in this device's Keychain, with Touch ID, copy buttons and "Fill from Vault" in the sign-in sheets. Monitor:
+live health of every public Linumic endpoint (plain GETs, no credentials) with TLS certificate and linumic.com domain
+expiry, 24-hour uptime and down/expiry notifications. See
 [docs/integrations.md](docs/integrations.md) and [docs/security.md](docs/security.md).
 
 ## Layout

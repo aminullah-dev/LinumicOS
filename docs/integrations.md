@@ -507,6 +507,71 @@ Operations). Storage, unlock and clipboard rules are in [security.md](security.m
 - **مهم:** گاوصندوق فقط در Keychain همین دستگاه است؛ به iCloud و Supabase نمی‌رود. یعنی پشتیبان نیست: رمزهای
   مهم را در یک password manager هم نگه دارید.
 
+## Monitor: live health, TLS and domain expiry (public endpoints only)
+
+Sidebar > Monitor («پایش»), plus a "Live status" strip at the top of the Dashboard. Every check is a plain `GET` to a
+public, unauthenticated URL on an ephemeral `URLSession` (no cookies, no credential storage, no cache, a
+`LinumicOS-Monitor/1` user agent); any password or client-certificate challenge is refused. Nothing is written to
+any service. Logic lives in `LinumicCore/Monitor` (`MonitorCatalog`, `MonitorEvaluator`, `MonitorSnapshot`,
+`RDAPClient`); the URLSession probe that reads the certificate is `App/MonitorModel.swift`.
+
+**Targets** (`MonitorCatalog.targets`, each with its source in a code comment; all answered 200 to `curl` on 2026-10-09):
+
+| Product | URL | Check | Source |
+|---|---|---|---|
+| VELRO | `https://api.velro.linumic.com/healthz` | `data.status == "alive"` | Velro/backend/ui/api/app.py:118, Velro/deploy/Caddyfile:6 |
+| VELRO | `https://api.velro.linumic.com/readyz` | `data.status == "ready"`, `data.database == "ok"` | Velro/backend/ui/api/app.py:123 |
+| VELRO | `https://admin.velro.linumic.com/` | page | Velro/deploy/Caddyfile:24 |
+| SafeBeauty | `https://safebeauty.web.app/get` (the root 302s here) | page | Safe beauty/.firebaserc:11, firebase.json:26 |
+| SafeBeauty | `https://safebeauty-admin.web.app/` and `https://9sg9ceuj.linumic.com/` | page | Safe beauty/.firebaserc:14, DEPLOY.md:27 |
+| SafeBeauty | `https://safebeauty-salon.web.app/` and `https://salon.linumic.com/` | page | Safe beauty/.firebaserc:17, DEPLOY.md:28 |
+| WorkTrack | `https://worktrack-prod.web.app/v1/health` | `data.status == "ok"` | WorkTrack/backend/functions/src/app.ts:57, backend/monitoring/setup-alerts.sh:108 |
+| WorkTrack | `https://worktrack-prod.web.app/` (portal) | page | WorkTrack/.firebaserc:3 |
+| WorkTrack | `https://console.linumic.com/` | page | WorkTrack/web/src/console/consoleHost.ts:13 |
+| WorkTrack (demo) | `https://demo.linumic.com/v1/health` | `data.status == "ok"` | WorkTrack/app/build.gradle.kts:148 |
+| Talar | `https://talar-af-prod.web.app/` | page | Talar/desktop/main.js:9, Talar/web/.firebaserc:3 |
+| Talar | `https://asia-south1-talar-af-prod.cloudfunctions.net/api/v1/health` | `ok == true` | Talar/web/.env.production:8, backend/functions/src/index.ts:35 |
+| linumic.com | `https://linumic.com/` (+ caching headers) | page | Web/Linumic-Website-Design/wordpress/tools/LANDING_SPEC.md:4 |
+
+Not monitored: SafeBeauty's Cloud Functions (callables, POST only), `api.linumic.com` (DukanPro, does not resolve),
+`api.worktrack.app`, `worktrack.af`, `portal.worktrack.af`, `api.talar.af` (design docs and examples only; none
+resolves as a Linumic host).
+
+- **Status:** up (2xx/3xx, and for a health endpoint the expected status), slow (answered correctly but slower than
+  3 s; 8 s for WorkTrack's API, 10 s for Talar's API and the demo, which are Cloud Functions with cold starts),
+  down (no answer, 4xx/5xx, unhealthy status, or a body that is not the health JSON).
+- **TLS certificate:** the leaf certificate's notAfter (`SecCertificateCopyNotValidAfterDate`) is read in the
+  server-trust challenge before the system evaluates trust as usual; an invalid certificate still fails the check.
+  Each probe uses its own session so every request makes a handshake. Last reading per host, with its time.
+- **Domain expiry:** `https://rdap.org/domain/linumic.com` (redirects to `rdap.verisign.com`), every 12 hours or on
+  "Read now"; the panel shows the expiry, the registrar and the URL that answered with the fetch time. On 2026-10-09:
+  expires 2029-08-15, registrar GoDaddy.com, LLC. Only linumic.com is a registrable domain Linumic renews: every
+  other host is a subdomain of it or Google's (`web.app`, `cloudfunctions.net`). `.af` has no RDAP service.
+- **Warnings:** 30, 14 and 7 days, and expired, for certificates and domains.
+- **linumic.com caching:** `Cache-Control`, `cf-cache-status` and `Age` of the home page, flagged when `max-age` or
+  `s-maxage` is over a day. On 2026-10-09: `public, max-age=2678400` (31 days), `HIT`. The GoDaddy CDN sets this
+  and the plan has no setting; informational only.
+- **Schedule:** a round when the app opens, on "Check now", and every 5 minutes while it runs; after a round where
+  nothing answered (offline) the wait doubles up to 30 minutes, and Low Power Mode doubles it again.
+- **History:** `monitor.json` next to `inventory.json`: the last result per target, 24 hours of samples (state and
+  latency only, no response bodies), the certificate and domain readings and the alert state. Uptime is the share of
+  checks that answered in the last 24 hours (the app only checks while it is open).
+- **Notifications** (Settings > Integrations > Monitor, on by default): a target down on two consecutive checks
+  (one blip never alerts; a round where nothing answered never alerts), its recovery, and a certificate or the domain
+  entering the 30/14/7-day window (once per window; a renewal resets it).
+
+### راهنمای امین‌الله: پایش (دری)
+
+- **کجاست:** نوار کنار ← «پایش». بالای داشبورد هم نوار «وضعیت زنده» است.
+- **چه می‌بیند:** برای هر محصول (VELRO، SafeBeauty، WorkTrack، تالار، linumic.com) کارت‌هایی با وضعیت (برقرار، کند،
+  قطع)، زمان پاسخ، درصد برقراری در ۲۴ ساعت، نمودار کوچک زمان پاسخ، روزهای باقی‌ماندهٔ گواهی TLS و دامنه، و منبع هر نشانی.
+- **کی بررسی می‌شود:** با باز شدن برنامه، با دکمهٔ «اکنون بررسی کن»، و تا برنامه باز است هر ۵ دقیقه.
+- **اعلان:** اگر یک نشانی دو بار پشت سر هم پاسخ ندهد، و وقتی دوباره برقرار شد. همچنین وقتی گواهی یا ثبت linumic.com
+  به ۳۰، ۱۴ یا ۷ روز مانده رسید. خاموش کردن: تنظیمات ← Integrations ← Monitor.
+- **کش سایت:** صفحهٔ اصلی linumic.com تا ۳۱ روز در کش CDN گودادی می‌ماند و پلن تنظیمی برایش ندارد. پس از ویرایش
+  مهم، کش را از داشبورد گودادی پاک کنید.
+- **امنیت:** هیچ رمز، کوکی یا توکنی فرستاده نمی‌شود و چیزی در سرورها تغییر نمی‌کند.
+
 ## Social media (Phase 5)
 
 LinkedIn, Facebook, Instagram, X and YouTube. OAuth per network, tokens stored
