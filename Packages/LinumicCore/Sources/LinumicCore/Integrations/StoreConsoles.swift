@@ -2,8 +2,11 @@ import CryptoKit
 import Foundation
 import Security
 
-// Read-only clients for the two store consoles. Both use only GET requests (plus Google's token
-// exchange), never create an "edit", and never change a listing, a release or a review.
+// Clients for the two store consoles. The store sync below uses only GET requests (plus Google's token
+// exchange), never creates an "edit", and never changes a listing, a release or a review.
+// The Release Center adds, in Releases/ReleaseCenterClients.swift: more GETs, a Play edit that is opened only to read
+// tracks and then deleted (never committed), and exactly one write, App Store Connect's
+// `POST /v1/appStoreVersionReleaseRequests`, sent only after the owner confirms it in a dialog.
 //
 // - App Store Connect API: a team key with the Developer role (Issuer ID, Key ID, .p8 file).
 // - Google Play Developer API: a service account with "View app information (read-only)",
@@ -162,15 +165,25 @@ public struct AppStoreConnectClient: Sendable {
         return "\(input).\(signature.rawRepresentation.base64URL())"
     }
 
-    private func get(_ path: String, query: [URLQueryItem]) async throws -> Data {
-        var c = URLComponents(url: base.appending(path: path), resolvingAgainstBaseURL: false)!
-        c.queryItems = query
-        var request = URLRequest(url: c.url!)
-        request.httpMethod = "GET"
-        request.setValue("Bearer \(try token())", forHTTPHeaderField: "Authorization")
-        let (data, response) = try await transport.send(request)
-        guard (200..<300).contains(response.statusCode) else { throw StoreConsoleError.from(status: response.statusCode, service: Self.service, path: path) }
+    func get(_ path: String, query: [URLQueryItem]) async throws -> Data {
+        let (data, status) = try await send("GET", path, query: query)
+        guard (200..<300).contains(status) else { throw StoreConsoleError.from(status: status, service: Self.service, path: path) }
         return data
+    }
+
+    /// One request; the caller interprets the status. Only the Release Center's release request uses a method other than GET.
+    func send(_ method: String, _ path: String, query: [URLQueryItem] = [], body: Data? = nil) async throws -> (Data, Int) {
+        var c = URLComponents(url: base.appending(path: path), resolvingAgainstBaseURL: false)!
+        if !query.isEmpty { c.queryItems = query }
+        var request = URLRequest(url: c.url!)
+        request.httpMethod = method
+        request.setValue("Bearer \(try token())", forHTTPHeaderField: "Authorization")
+        if let body {
+            request.httpBody = body
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        }
+        let (data, response) = try await transport.send(request)
+        return (data, response.statusCode)
     }
 
     private struct Page<Attributes: Decodable>: Decodable {
@@ -401,7 +414,7 @@ public actor GooglePlayClient {
     public static let scope = "https://www.googleapis.com/auth/androidpublisher"
 
     private let credentials: GooglePlayCredentials
-    private let transport: HTTPTransport
+    let transport: HTTPTransport
     private let now: @Sendable () -> Date
     private var cached: (token: String, expiresAt: Date)?
 

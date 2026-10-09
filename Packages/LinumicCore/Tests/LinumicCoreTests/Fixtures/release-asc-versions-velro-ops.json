@@ -1,0 +1,64 @@
+{
+ "data": [
+  {
+   "type": "appStoreVersions",
+   "id": "f2d2aa09-8364-4b31-93f9-4088566b19f2",
+   "attributes": {
+    "platform": "MAC_OS",
+    "versionString": "1.0",
+    "appStoreState": "PREPARE_FOR_SUBMISSION",
+    "appVersionState": "PREPARE_FOR_SUBMISSION",
+    "releaseType": "AFTER_APPROVAL",
+    "earliestReleaseDate": null,
+    "createdDate": "2026-09-14T23:40:28-07:00"
+   },
+   "relationships": {
+    "build": {
+     "data": null,
+     "links": {
+      "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/f2d2aa09-8364-4b31-93f9-4088566b19f2/relationships/build",
+      "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/f2d2aa09-8364-4b31-93f9-4088566b19f2/build"
+     }
+    }
+   },
+   "links": {
+    "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/f2d2aa09-8364-4b31-93f9-4088566b19f2"
+   }
+  },
+  {
+   "type": "appStoreVersions",
+   "id": "e9ad76e1-aeda-4aa1-a118-eb2354626423",
+   "attributes": {
+    "platform": "IOS",
+    "versionString": "1.0",
+    "appStoreState": "PREPARE_FOR_SUBMISSION",
+    "appVersionState": "PREPARE_FOR_SUBMISSION",
+    "releaseType": "AFTER_APPROVAL",
+    "earliestReleaseDate": null,
+    "createdDate": "2026-09-14T23:40:28-07:00"
+   },
+   "relationships": {
+    "build": {
+     "data": null,
+     "links": {
+      "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/e9ad76e1-aeda-4aa1-a118-eb2354626423/relationships/build",
+      "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/e9ad76e1-aeda-4aa1-a118-eb2354626423/build"
+     }
+    }
+   },
+   "links": {
+    "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/e9ad76e1-aeda-4aa1-a118-eb2354626423"
+   }
+  }
+ ],
+ "included": [],
+ "links": {
+  "self": "https://api.appstoreconnect.apple.com/v1/apps/6812222882/appStoreVersions?fields%5BappStoreVersions%5D=earliestReleaseDate%2CcreatedDate%2CversionString%2Cbuild%2CreleaseType%2CappStoreState%2Cplatform%2CappVersionState&fields%5Bbuilds%5D=processingState%2CuploadedDate%2Cversion&include=build&limit=10"
+ },
+ "meta": {
+  "paging": {
+   "total": 2,
+   "limit": 10
+  }
+ }
+}
