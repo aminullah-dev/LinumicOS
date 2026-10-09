@@ -36,7 +36,8 @@ the app.
 - [x] Phase 1: licence centre for MediFlow and KhayatYar: issue, renew, void, ledger on Supabase, signing keys in the Mac Keychain, expiry reminders (2026-10-09, PR "Platform control, phase 1")
 - [x] Phase 2: platforms hub: version on main, latest release and downloads, CI per workflow, open PRs, store versions, drift flags, business model and links for 9 products (2026-10-09, PR "Platform control, phase 2")
 - [x] Phase 3: WorkTrack customers and renewals: vendor sign-in, companies, detail, orders, revenue, audit, licence renewal with diff and confirmation, reminders (2026-10-09, PR "Platform control, phase 3"; tested on the local emulator only)
-- [ ] Next: approvals and admin actions for Velro, Talar and SafeBeauty, read-only first; see research/platform-admin-apis.md §7
+- [x] Phase 4: Operations: Talar, SafeBeauty and VELRO admin overview (queues, details, settlements/payouts, trips, network, commissions read only), Talar hall approve/reject (audited by Talar), "Waiting for you" dashboard card, queue notifications (2026-10-09, PR "Platform control, phase 4"; tested on local emulators and a local VELRO backend only)
+- [ ] Operations writes, after the product fixes: SafeBeauty audited callables for provider approval and platform config; Talar idempotent settlements; VELRO staging (research/platform-admin-apis.md §7)
 - [ ] WorkTrack: sync the local action log to Supabase; TEST / DUPLICATE marks from the app
 
 ## Phase 3: Backend (deferred at the owner's instruction; see docs/backend-plan.md)

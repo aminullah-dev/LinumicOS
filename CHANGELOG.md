@@ -5,6 +5,28 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Operations, Talar, SafeBeauty and VELRO overview (platform control, phase 4)
+- A new **Operations** screen (عملیات) with a tab per product, read-only, every value with its environment and read time.
+  - **Talar** (Firebase email/password, the `role: "admin"` claim checked): dashboard numbers, halls awaiting approval
+    with their details, reviews awaiting moderation, and settlements per organisation (pending count and net). The one
+    write: approve or reject a hall, because Talar audits it (`hall.review_approve|reject`); confirmation with the hall
+    name typed in production, sent once, re-read, logged in `operations-actions.json`. Settlement run and mark-paid
+    stay in the web panel (not idempotent in Talar).
+  - **SafeBeauty** (the admin console's own sign-in: `authenticateWithPassword`, PBKDF2 "AUTH:" derivation ported from
+    SafeBeautyCore with its test vectors, Firebase, `syncUidMap`): KYC queue and salon-owner approvals by name, role and
+    status only (a Firestore field mask means identity documents are never downloaded), bookings today and this week
+    (Kabul, week from Saturday), salons, payouts owed, pending refunds, and the commission as the server applies it.
+  - **VELRO** (staff phone OTP; the rotating refresh token is written to the Keychain before it is used, one refresh at
+    a time, and a refresh whose answer was lost drops the session instead of replaying the old token): drivers awaiting
+    approval with their document statuses, trips under way and departing in 24 hours, stations, routes, and
+    `commission.rate_basis_points` read only. A minimal port, not a dependency on VelroCore (see docs/integrations.md).
+- Dashboard card **Waiting for you**: Talar halls, SafeBeauty KYC and salon approvals, VELRO drivers.
+- A notification when a production queue goes from 0 to more than 0 (Settings → Integrations → Operations, on by
+  default). Only the counts are kept, for that comparison.
+- Tested only locally: Talar and SafeBeauty Firebase emulators and a VELRO backend on 127.0.0.1, with test admin
+  accounts created there (`tools/talar`, `tools/safebeauty`, `tools/velro`; opt-in `liveTalar`, `liveSafeBeauty`,
+  `liveVelro`). 32 new tests (29 unit, 3 opt-in), 252 in total. English and Dari strings.
+
 ### Added: WorkTrack customers and renewals (platform control, phase 3)
 - A new **WorkTrack customers** screen (مشتریان WorkTrack). The owner signs in with his WorkTrack vendor account
   (Firebase email and password over REST; Production, Demo, and Local emulator in debug builds). The password is

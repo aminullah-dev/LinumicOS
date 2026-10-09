@@ -1,0 +1,47 @@
+{
+ "success": true,
+ "data": [
+  {
+   "id": "01a11f28-36e0-7199-aa8f-43292ac1121e",
+   "code": "GRB-SHA-001-S1",
+   "name": "ایستگاه بازار شیخ‌علی",
+   "village_id": "01a11f28-36dc-7018-b36f-121097aacd10",
+   "village_name": "بازار شیخ‌علی",
+   "district_name": "شیخ‌علی",
+   "is_primary": true,
+   "status": "ACTIVE",
+   "latitude": 34.896136,
+   "longitude": 68.453977
+  },
+  {
+   "id": "01a11f28-36e0-7890-b010-8e64a739c75a",
+   "code": "GRB-SHA-002-S1",
+   "name": "ایستگاه ترکمن",
+   "village_id": "01a11f28-36dc-7652-8599-adc56fb5cae0",
+   "village_name": "ترکمن",
+   "district_name": "شیخ‌علی",
+   "is_primary": true,
+   "status": "ACTIVE",
+   "latitude": 34.812057,
+   "longitude": 68.35338
+  },
+  {
+   "id": "01a11f28-3812-776b-9894-cc5e7e0b5592",
+   "code": "GRB-SHA-003-S1",
+   "name": "ایستگاه آرال",
+   "village_id": "01a11f28-37cd-7484-baab-faa12e4a8a12",
+   "village_name": "آرال",
+   "district_name": "شیخ‌علی",
+   "is_primary": true,
+   "status": "ACTIVE",
+   "latitude": null,
+   "longitude": null
+  }
+ ],
+ "message": null,
+ "meta": {
+  "total": 427,
+  "limit": 200,
+  "offset": 0
+ }
+}

@@ -1,0 +1,18 @@
+{
+  "documents": [{
+    "name": "projects/demo-talar/databases/(default)/documents/organizations/org-demo",
+    "fields": {
+      "name": {
+        "stringValue": "شرکت تالارهای آریانا"
+      },
+      "status": {
+        "stringValue": "active"
+      },
+      "commissionPct": {
+        "integerValue": "5"
+      }
+    },
+    "createTime": "2026-10-09T05:24:21.539740Z",
+    "updateTime": "2026-10-09T05:24:21.539740Z"
+  }]
+}
