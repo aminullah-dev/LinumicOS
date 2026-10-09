@@ -8,6 +8,7 @@ struct LinumicOSApp: App {
     @State private var licences: LicenceModel
     @State private var platforms: PlatformHubModel
     @State private var worktrack: WorkTrackModel
+    @State private var operations: OperationsModel
 
     init() {
         // macOS has no Persian system localization, so AppKit (window controls, split views, sheets,
@@ -27,6 +28,7 @@ struct LinumicOSApp: App {
         _licences = State(initialValue: LicenceModel(inventory: inventory))
         _platforms = State(initialValue: PlatformHubModel(inventory: inventory))
         _worktrack = State(initialValue: WorkTrackModel(inventory: inventory))
+        _operations = State(initialValue: OperationsModel(inventory: inventory))
     }
 
     var body: some Scene {
@@ -37,6 +39,7 @@ struct LinumicOSApp: App {
                 .environment(licences)
                 .environment(platforms)
                 .environment(worktrack)
+                .environment(operations)
                 .environment(router)
                 #if os(macOS)
                 .frame(minWidth: 960, minHeight: 600)
@@ -46,6 +49,7 @@ struct LinumicOSApp: App {
                     await licences.load()
                     await platforms.load()
                     await worktrack.load()
+                    await operations.load()
                     // Store status on launch, then every 30 minutes while the app is open.
                     while !Task.isCancelled {
                         await model.autoRefreshStoresIfDue()
@@ -53,6 +57,7 @@ struct LinumicOSApp: App {
                         await platforms.autoRefreshIfDue()
                         await licences.sync()
                         await worktrack.autoRefreshIfDue()
+                        await operations.autoRefreshIfDue()
                         try? await Task.sleep(for: .seconds(InventoryModel.autoRefreshInterval))
                     }
                 }

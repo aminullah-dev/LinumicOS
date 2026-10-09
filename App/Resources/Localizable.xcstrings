@@ -10804,16 +10804,6 @@
         }
       }
     },
-    "The WorkTrack session has ended (the password was changed, the account was disabled, or the session expired). Sign in again.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "نشست WorkTrack تمام شده است (رمز عوض شده، حساب غیرفعال شده یا نشست ختم شده). دوباره وارد شوید."
-          }
-        }
-      }
-    },
     "The current employee cap (%ld) is outside 1 to 100,000; WorkTrack would refuse it.": {
       "localizations": {
         "fa-AF": {
@@ -11230,6 +11220,2116 @@
           "stringUnit": {
             "state": "translated",
             "value": "صدور لایسنس تازه در Linumic OS روی مک است، جایی که کلیدهای امضا نگه داشته می‌شوند. این‌جا دفتر را می‌بینید."
+          }
+        }
+      }
+    },
+    "%@: %@, not read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: %@، خوانده نشده"
+          }
+        }
+      }
+    },
+    "%lld (%lld verified)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld (%lld تأییدشده)"
+          }
+        }
+      }
+    },
+    "%lld guests": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مهمان"
+          }
+        }
+      }
+    },
+    "%lld min": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld دقیقه"
+          }
+        }
+      }
+    },
+    "%lld total · %lld men · %lld women": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مجموع %lld · مردانه %lld · زنانه %lld"
+          }
+        }
+      }
+    },
+    "%lld%% if cancelled %lld+ days before": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% اگر %lld روز یا بیشتر پیش لغو شود"
+          }
+        }
+      }
+    },
+    "%lld/%lld seats": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld/%lld چوکی"
+          }
+        }
+      }
+    },
+    "(no name yet)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(هنوز نام ندارد)"
+          }
+        }
+      }
+    },
+    "(no name)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(بی‌نام)"
+          }
+        }
+      }
+    },
+    "A Talar platform admin account (Firebase email and password with the role \"admin\" claim). Use one that owns no organisation: creating or joining one replaces the claim. The password goes to Firebase once and is not stored.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب مدیر پلتفورم تالار (ایمیل و رمز Firebase با نشان role «admin»). حسابی را به کار ببرید که مالک هیچ سازمانی نیست: ساختن یا پیوستن به سازمان این نشان را عوض می‌کند. رمز فقط یک بار به Firebase می‌رود و ذخیره نمی‌شود."
+          }
+        }
+      }
+    },
+    "A notification when a production queue goes from empty to waiting: Talar halls or reviews, SafeBeauty identity checks or salon approvals, VELRO drivers. Queues are read when the app opens and every 30 minutes while it's open.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی یک صف Production از خالی به انتظار می‌رسد اطلاعیه می‌آید: تالارها یا نظرهای تالار، بررسی هویت یا تأیید سالون‌های SafeBeauty، راننده‌های VELRO. صف‌ها هنگام باز شدن برنامه و هر ۳۰ دقیقه خوانده می‌شوند."
+          }
+        }
+      }
+    },
+    "Account id": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شناسهٔ حساب"
+          }
+        }
+      }
+    },
+    "Amenities": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امکانات"
+          }
+        }
+      }
+    },
+    "Appointments scheduled in Kabul's day and in the week from Saturday %@, any status (appointmentDate).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نوبت‌های روز کابل و هفتهٔ شروع‌شده از شنبه %@، با هر وضعیت (appointmentDate)."
+          }
+        }
+      }
+    },
+    "Approval": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید"
+          }
+        }
+      }
+    },
+    "Approvals": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأییدها"
+          }
+        }
+      }
+    },
+    "Approve hall": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید تالار"
+          }
+        }
+      }
+    },
+    "Approve or reject in the SafeBeauty admin console (Approvals tab). SafeBeauty doesn't audit that change, so it isn't offered here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید یا رد را در کنسول مدیریت SafeBeauty (بخش Approvals) انجام دهید. SafeBeauty این تغییر را در دفتر بازرسی ثبت نمی‌کند، پس اینجا پیشنهاد نمی‌شود."
+          }
+        }
+      }
+    },
+    "Approve publishes the hall; reject returns it to draft. Talar records the decision in its audit log. It does not notify the owner, so tell them yourself.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید، تالار را منتشر می‌کند؛ رد آن را به پیش‌نویس برمی‌گرداند. تالار تصمیم را در دفتر بازرسی ثبت می‌کند، ولی به مالک خبر نمی‌دهد؛ خودتان به او بگویید."
+          }
+        }
+      }
+    },
+    "Approve…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأیید…"
+          }
+        }
+      }
+    },
+    "Availability": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دسترس‌بودن"
+          }
+        }
+      }
+    },
+    "Awaiting review": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در انتظار بررسی"
+          }
+        }
+      }
+    },
+    "Bookings": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نوبت‌ها"
+          }
+        }
+      }
+    },
+    "Bookings today": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نوبت‌های امروز"
+          }
+        }
+      }
+    },
+    "Can work": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازهٔ کار"
+          }
+        }
+      }
+    },
+    "Capacity": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گنجایش"
+          }
+        }
+      }
+    },
+    "City": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شهر"
+          }
+        }
+      }
+    },
+    "Code": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کد"
+          }
+        }
+      }
+    },
+    "Commission": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کمیشن"
+          }
+        }
+      }
+    },
+    "Commission (read only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کمیشن (فقط خواندن)"
+          }
+        }
+      }
+    },
+    "Commission applied": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کمیشن اجراشده"
+          }
+        }
+      }
+    },
+    "Completed today": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تکمیل‌شده امروز"
+          }
+        }
+      }
+    },
+    "Completed trips": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سفرهای تکمیل‌شده"
+          }
+        }
+      }
+    },
+    "Confirmed bookings": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رزروهای تأییدشده"
+          }
+        }
+      }
+    },
+    "Couldn't reach Firestore: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به Firestore وصل نشد: %@"
+          }
+        }
+      }
+    },
+    "Couldn't reach SafeBeauty: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به SafeBeauty وصل نشد: %@"
+          }
+        }
+      }
+    },
+    "Couldn't reach Talar: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به تالار وصل نشد: %@"
+          }
+        }
+      }
+    },
+    "Couldn't reach VELRO: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به VELRO وصل نشد: %@"
+          }
+        }
+      }
+    },
+    "Departing in the next 24 hours": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حرکت در ۲۴ ساعت آینده"
+          }
+        }
+      }
+    },
+    "Deposit": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیش‌پرداخت"
+          }
+        }
+      }
+    },
+    "Documents": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اسناد"
+          }
+        }
+      }
+    },
+    "Documents waiting for review: %lld · vehicles: %lld · documents expiring soon: %lld. Review and approve in the VELRO web console.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اسناد در انتظار بررسی: %lld · موترها: %lld · اسنادی که به‌زودی ختم می‌شوند: %lld. بررسی و تأیید را در کنسول وب VELRO انجام دهید."
+          }
+        }
+      }
+    },
+    "Done. Read back from Talar: the hall has left the queue.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انجام شد. دوباره از تالار خوانده شد: تالار از صف بیرون شده است."
+          }
+        }
+      }
+    },
+    "Driver": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "راننده"
+          }
+        }
+      }
+    },
+    "Driver id": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شناسهٔ راننده"
+          }
+        }
+      }
+    },
+    "Drivers awaiting approval": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "راننده‌های در انتظار تأیید"
+          }
+        }
+      }
+    },
+    "Drivers to approve": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "راننده‌ها برای تأیید"
+          }
+        }
+      }
+    },
+    "Enter the phone number and password.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شمارهٔ تلفن و رمز را بنویسید."
+          }
+        }
+      }
+    },
+    "Environment: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محیط: %@"
+          }
+        }
+      }
+    },
+    "Firestore answered in a form this app doesn't understand: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firestore جوابی داد که این برنامه نمی‌فهمد: %@"
+          }
+        }
+      }
+    },
+    "Firestore can't run this query: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firestore این پرس‌وجو را اجرا کرده نمی‌تواند: %@"
+          }
+        }
+      }
+    },
+    "Firestore refused the session (401). Sign in again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firestore نشست را رد کرد (401). دوباره وارد شوید."
+          }
+        }
+      }
+    },
+    "Firestore returned HTTP %1$ld: %2$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firestore کد HTTP %1$ld برگرداند: %2$@"
+          }
+        }
+      }
+    },
+    "Firestore's security rules refused this read (403): %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قواعد امنیتی Firestore این خواندن را رد کرد (403): %@"
+          }
+        }
+      }
+    },
+    "GET /admin/halls/pending: status pending_review, up to 50, as Talar returns them.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GET /admin/halls/pending: وضعیت pending_review، تا ۵۰ مورد، به همان ترتیبی که تالار برمی‌گرداند."
+          }
+        }
+      }
+    },
+    "Hall": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تالار"
+          }
+        }
+      }
+    },
+    "Hall fee": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کرایهٔ تالار"
+          }
+        }
+      }
+    },
+    "Hall id": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شناسهٔ تالار"
+          }
+        }
+      }
+    },
+    "Halls awaiting approval": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تالارهای در انتظار تأیید"
+          }
+        }
+      }
+    },
+    "Halls to approve": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تالارها برای تأیید"
+          }
+        }
+      }
+    },
+    "I've checked the hall above": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تالار بالا را بررسی کردم"
+          }
+        }
+      }
+    },
+    "Identity check (KYC)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی هویت (KYC)"
+          }
+        }
+      }
+    },
+    "Identity checks (KYC) to review": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی‌های هویت (KYC) در انتظار"
+          }
+        }
+      }
+    },
+    "Instant booking": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رزرو فوری"
+          }
+        }
+      }
+    },
+    "Joined": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ پیوستن"
+          }
+        }
+      }
+    },
+    "KYC to review": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KYC در انتظار"
+          }
+        }
+      }
+    },
+    "Largest discount allowed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیشترین تخفیف مجاز"
+          }
+        }
+      }
+    },
+    "Local backend": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرور محلی"
+          }
+        }
+      }
+    },
+    "Local backend echoed the code: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرور محلی کد را برگرداند: %@"
+          }
+        }
+      }
+    },
+    "Missing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کم‌بود"
+          }
+        }
+      }
+    },
+    "Name (Dari)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام (دری)"
+          }
+        }
+      }
+    },
+    "Name (English)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام (انگلیسی)"
+          }
+        }
+      }
+    },
+    "Name (Pashto)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام (پښتو)"
+          }
+        }
+      }
+    },
+    "No admin panel link for this environment": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای این محیط پیوند پنل مدیریت نیست"
+          }
+        }
+      }
+    },
+    "No departure in the next 24 hours.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در ۲۴ ساعت آینده حرکتی نیست."
+          }
+        }
+      }
+    },
+    "No driver is waiting for approval.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ راننده‌ای در انتظار تأیید نیست."
+          }
+        }
+      }
+    },
+    "No hall is waiting for approval.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ تالاری در انتظار تأیید نیست."
+          }
+        }
+      }
+    },
+    "No longer in the queue.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دیگر در صف نیست."
+          }
+        }
+      }
+    },
+    "No review is waiting for moderation.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ نظری در انتظار بررسی نیست."
+          }
+        }
+      }
+    },
+    "No trip is under way.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ سفری در جریان نیست."
+          }
+        }
+      }
+    },
+    "Nobody is waiting.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کسی در انتظار نیست."
+          }
+        }
+      }
+    },
+    "Not found in Talar (404): %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در تالار پیدا نشد (404): %@"
+          }
+        }
+      }
+    },
+    "Not signed in to %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به %@ وارد نشده‌اید"
+          }
+        }
+      }
+    },
+    "Not signed in to SafeBeauty.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به SafeBeauty وارد نشده‌اید."
+          }
+        }
+      }
+    },
+    "Not signed in to Talar.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به تالار وارد نشده‌اید."
+          }
+        }
+      }
+    },
+    "Not signed in to VELRO.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به VELRO وارد نشده‌اید."
+          }
+        }
+      }
+    },
+    "Note (optional)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یادداشت (اختیاری)"
+          }
+        }
+      }
+    },
+    "Notify me when a queue starts waiting": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی صفی منتظر شد، خبرم کن"
+          }
+        }
+      }
+    },
+    "Only the first %lld active organisations were read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط %lld سازمان فعال اول خوانده شد."
+          }
+        }
+      }
+    },
+    "Open %@ admin panel": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن پنل مدیریت %@"
+          }
+        }
+      }
+    },
+    "Open tickets": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تکت‌های باز"
+          }
+        }
+      }
+    },
+    "Operations": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عملیات"
+          }
+        }
+      }
+    },
+    "Organisation": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سازمان"
+          }
+        }
+      }
+    },
+    "Organisations read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سازمان‌های خوانده‌شده"
+          }
+        }
+      }
+    },
+    "Outside 0–10000: VELRO refuses every trip completion with this value.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیرون از ۰ تا ۱۰۰۰۰: با این مقدار VELRO تکمیل هر سفر را رد می‌کند."
+          }
+        }
+      }
+    },
+    "Payouts owed to salons": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پرداخت‌های بدهکار به سالون‌ها"
+          }
+        }
+      }
+    },
+    "Pending settlements": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تسویه‌های در انتظار"
+          }
+        }
+      }
+    },
+    "Pending to %@: net %@ (gross %@, commission %@, %lld payments)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در انتظار تا %@: خالص %@ (ناخالص %@، کمیشن %@، %lld پرداخت)"
+          }
+        }
+      }
+    },
+    "Per organisation from GET /orgs/:id/payments/payouts. Running a settlement and marking a payout paid move money and are not idempotent in Talar, so they stay in the web panel.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای هر سازمان از GET /orgs/:id/payments/payouts. اجرای تسویه و علامت «پرداخت‌شده» پول جابه‌جا می‌کنند و در تالار در برابر تکرار امن نیستند، پس در پنل وب می‌مانند."
+          }
+        }
+      }
+    },
+    "Phone number": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شمارهٔ تلفن"
+          }
+        }
+      }
+    },
+    "Photos, menus and packages are in the Talar admin panel.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عکس‌ها، منوها و بسته‌ها در پنل مدیریت تالار هستند."
+          }
+        }
+      }
+    },
+    "Production holds real halls. Approving or rejecting a hall here changes it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Production تالارهای واقعی دارد. تأیید یا رد تالار در اینجا آن را تغییر می‌دهد."
+          }
+        }
+      }
+    },
+    "Published halls": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تالارهای منتشرشده"
+          }
+        }
+      }
+    },
+    "Rating %lld of 5": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امتیاز %lld از ۵"
+          }
+        }
+      }
+    },
+    "Read %@, from each product's own admin API": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوانده‌شده %@، از API مدیریت خود هر محصول"
+          }
+        }
+      }
+    },
+    "Read again (read-only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دوباره خواندن (فقط خواندن)"
+          }
+        }
+      }
+    },
+    "Read from %@ at %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوانده‌شده از %@ در %@"
+          }
+        }
+      }
+    },
+    "Read-only here. Publish or reject reviews in the Talar admin panel.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اینجا فقط خواندن است. انتشار یا رد نظرها را در پنل مدیریت تالار انجام دهید."
+          }
+        }
+      }
+    },
+    "Reading…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال خواندن…"
+          }
+        }
+      }
+    },
+    "Reason (optional, shown to nobody automatically)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دلیل (اختیاری، خودکار به کسی نشان داده نمی‌شود)"
+          }
+        }
+      }
+    },
+    "Recorded in this device's action log; Talar wrote its own audit entry.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در دفتر کارهای همین دستگاه ثبت شد؛ تالار هم در دفتر بازرسی خود نوشت."
+          }
+        }
+      }
+    },
+    "Refund requests pending": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درخواست‌های بازپرداخت در انتظار"
+          }
+        }
+      }
+    },
+    "Refund rule": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قاعدهٔ بازپرداخت"
+          }
+        }
+      }
+    },
+    "Reject": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رد"
+          }
+        }
+      }
+    },
+    "Reject hall": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رد تالار"
+          }
+        }
+      }
+    },
+    "Reject…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رد…"
+          }
+        }
+      }
+    },
+    "Required": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لازم"
+          }
+        }
+      }
+    },
+    "Reviews awaiting moderation": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نظرهای در انتظار بررسی"
+          }
+        }
+      }
+    },
+    "Reviews to moderate": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نظرها برای بررسی"
+          }
+        }
+      }
+    },
+    "Role": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نقش"
+          }
+        }
+      }
+    },
+    "Routes (corridors)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مسیرها (دهلیزها)"
+          }
+        }
+      }
+    },
+    "SafeBeauty answered in a form this app doesn't understand: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SafeBeauty جوابی داد که این برنامه نمی‌فهمد: %@"
+          }
+        }
+      }
+    },
+    "SafeBeauty is limiting sign-in attempts: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SafeBeauty تلاش‌های ورود را محدود کرده است: %@"
+          }
+        }
+      }
+    },
+    "SafeBeauty returned %1$@: %2$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SafeBeauty این را برگرداند: %1$@: %2$@"
+          }
+        }
+      }
+    },
+    "SafeBeauty's uid bridge (syncUidMap) failed, so its security rules can't see this admin: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پل شناسهٔ SafeBeauty (syncUidMap) ناکام شد، پس قواعد امنیتی آن این مدیر را نمی‌بینند: %@"
+          }
+        }
+      }
+    },
+    "SafeBeauty: %ld identity checks waiting for review": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SafeBeauty: %ld بررسی هویت در انتظار"
+          }
+        }
+      }
+    },
+    "SafeBeauty: %ld salon owners waiting for approval": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SafeBeauty: %ld صاحب سالون در انتظار تأیید"
+          }
+        }
+      }
+    },
+    "Salon owners awaiting approval": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صاحبان سالون در انتظار تأیید"
+          }
+        }
+      }
+    },
+    "Salons": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سالون‌ها"
+          }
+        }
+      }
+    },
+    "Salons and money": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سالون‌ها و پول"
+          }
+        }
+      }
+    },
+    "Send Code": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فرستادن کد"
+          }
+        }
+      }
+    },
+    "Sent by %@. It works for %lld minutes and 5 tries.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "با %@ فرستاده شد. %lld دقیقه و تا ۵ بار تلاش اعتبار دارد."
+          }
+        }
+      }
+    },
+    "Sent, not verified.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فرستاده شد، تأیید نشد."
+          }
+        }
+      }
+    },
+    "Settlements": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تسویه‌ها"
+          }
+        }
+      }
+    },
+    "Shifts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نوبت‌های کاری"
+          }
+        }
+      }
+    },
+    "Showing %lld of %lld.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نمایش %lld از %lld."
+          }
+        }
+      }
+    },
+    "Showing the first %lld of %lld, by code.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نمایش %lld مورد اول از %lld، به ترتیب کد."
+          }
+        }
+      }
+    },
+    "Showing the first %lld of %lld.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نمایش %lld مورد اول از %lld."
+          }
+        }
+      }
+    },
+    "Sign In to SafeBeauty": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ورود به SafeBeauty"
+          }
+        }
+      }
+    },
+    "Sign In to Talar": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ورود به تالار"
+          }
+        }
+      }
+    },
+    "Sign In to VELRO": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ورود به VELRO"
+          }
+        }
+      }
+    },
+    "Sign in under Operations in the sidebar. Only refresh tokens are kept, in this device's Keychain (talar.admin.session, safebeauty.admin.session, velro.staff.session); the last queue counts are kept for the notifications, nothing else.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در نوار کنار از «عملیات» وارد شوید. فقط refresh token ها در Keychain همین دستگاه می‌مانند (talar.admin.session، safebeauty.admin.session، velro.staff.session)؛ برای اطلاعیه‌ها فقط آخرین شمار صف‌ها نگه داشته می‌شود، نه چیز دیگر."
+          }
+        }
+      }
+    },
+    "Sign in with a dedicated Talar platform admin account (role \"admin\") to see the hall approval queue, reviews awaiting moderation and settlement status. The password goes to Firebase once and is not stored; only a refresh token is kept in this device's Keychain.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "با یک حساب جداگانهٔ مدیر پلتفورم تالار (role «admin») وارد شوید تا صف تأیید تالارها، نظرهای در انتظار و وضعیت تسویه‌ها را ببینید. رمز فقط یک بار به Firebase می‌رود و ذخیره نمی‌شود؛ فقط یک refresh token در Keychain همین دستگاه می‌ماند."
+          }
+        }
+      }
+    },
+    "Sign in with your SafeBeauty admin phone number and password to see the identity (KYC) queue, salon owners awaiting approval, bookings, payouts owed and the commission. Identity documents are never downloaded. Neither the phone number nor the password is stored; only a refresh token is kept in this device's Keychain.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "با شمارهٔ تلفن و رمز مدیر SafeBeauty وارد شوید تا صف بررسی هویت (KYC)، صاحبان سالون در انتظار تأیید، نوبت‌ها، پرداخت‌های بدهکار و کمیشن را ببینید. اسناد هویت هرگز دانلود نمی‌شوند. نه شمارهٔ تلفن ذخیره می‌شود نه رمز؛ فقط یک refresh token در Keychain همین دستگاه می‌ماند."
+          }
+        }
+      }
+    },
+    "Sign in with your VELRO staff phone number: VELRO sends a code, you type it here. See drivers awaiting approval, trips, stations, routes and the commission. Read-only: VELRO has no staging, so every action stays in the web console. The phone number is not stored.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "با شمارهٔ تلفن کارمندی VELRO وارد شوید: VELRO کدی می‌فرستد و شما آن را اینجا می‌نویسید. راننده‌های در انتظار تأیید، سفرها، ایستگاه‌ها، مسیرها و کمیشن را ببینید. فقط خواندن: VELRO محیط آزمایشی ندارد، پس هر کاری در کنسول وب می‌ماند. شمارهٔ تلفن ذخیره نمی‌شود."
+          }
+        }
+      }
+    },
+    "Sign out of SafeBeauty?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از SafeBeauty خارج می‌شوید؟"
+          }
+        }
+      }
+    },
+    "Sign out of Talar?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از تالار خارج می‌شوید؟"
+          }
+        }
+      }
+    },
+    "Sign out of VELRO?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از VELRO خارج می‌شوید؟"
+          }
+        }
+      }
+    },
+    "Signed in, but this account isn't a Talar platform admin (no role \\\"admin\\\" claim, or 403). The claim is set once by /v1/admin/bootstrap or an Admin SDK script; an account that owns or joins an organisation loses it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وارد شدید، ولی این حساب مدیر پلتفورم تالار نیست (نشان role «admin» ندارد، یا 403). این نشان یک بار با /v1/admin/bootstrap یا یک اسکریپت Admin SDK داده می‌شود؛ حسابی که مالک سازمان شود یا به سازمانی بپیوندد آن را از دست می‌دهد."
+          }
+        }
+      }
+    },
+    "Staff phone number": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شمارهٔ تلفن کارمند"
+          }
+        }
+      }
+    },
+    "Staging needs its own admin account, and whether its functions are deployed is unverified.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Staging حساب مدیر جداگانه می‌خواهد، و اینکه functions آن نصب شده‌اند یا نه تأیید نشده است."
+          }
+        }
+      }
+    },
+    "Stations": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ایستگاه‌ها"
+          }
+        }
+      }
+    },
+    "Stations no active route leaves from": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ایستگاه‌هایی که هیچ مسیر فعالی از آن‌ها حرکت نمی‌کند"
+          }
+        }
+      }
+    },
+    "Statuses only (GET /admin/drivers/:id/documents). The document images are not downloaded; review them and approve the driver in the VELRO web console.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط وضعیت‌ها (GET /admin/drivers/:id/documents). تصویر اسناد دانلود نمی‌شود؛ بررسی آن‌ها و تأیید راننده را در کنسول وب VELRO انجام دهید."
+          }
+        }
+      }
+    },
+    "Stored on the hall as reviewNote. Talar's audit entry doesn't include it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روی تالار به‌شکل reviewNote ذخیره می‌شود. ثبت بازرسی تالار آن را ندارد."
+          }
+        }
+      }
+    },
+    "Stored value": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مقدار ذخیره‌شده"
+          }
+        }
+      }
+    },
+    "Submitted %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فرستاده‌شده %@"
+          }
+        }
+      }
+    },
+    "Talar accepted it, but the hall is still in the queue.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تالار قبول کرد، ولی تالار هنوز در صف است."
+          }
+        }
+      }
+    },
+    "Talar answered in a form this app doesn't understand: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تالار جوابی داد که این برنامه نمی‌فهمد: %@"
+          }
+        }
+      }
+    },
+    "Talar is rate limiting requests. Wait a minute and try again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تالار درخواست‌ها را محدود کرده است. یک دقیقه صبر کنید و دوباره کوشش کنید."
+          }
+        }
+      }
+    },
+    "Talar refused it (409): %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تالار آن را رد کرد (409): %@"
+          }
+        }
+      }
+    },
+    "Talar refused the request: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تالار درخواست را رد کرد: %@"
+          }
+        }
+      }
+    },
+    "Talar rejected the session (401): the token is invalid, expired or revoked. Sign in again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تالار نشست را رد کرد (401): توکن نادرست، ختم‌شده یا باطل است. دوباره وارد شوید."
+          }
+        }
+      }
+    },
+    "Talar returned HTTP %1$ld %2$@: %3$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تالار کد HTTP %1$ld %2$@ برگرداند: %3$@"
+          }
+        }
+      }
+    },
+    "Talar: %ld halls waiting for approval": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تالار: %ld تالار در انتظار تأیید"
+          }
+        }
+      }
+    },
+    "Talar: %ld reviews waiting for moderation": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تالار: %ld نظر در انتظار بررسی"
+          }
+        }
+      }
+    },
+    "That code has expired (codes last 5 minutes). Ask for a new one.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کد ختم شده است (کدها ۵ دقیقه اعتبار دارند). کد تازه بخواهید."
+          }
+        }
+      }
+    },
+    "That code is wrong. Check it and try again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کد نادرست است. بررسی کنید و دوباره کوشش کنید."
+          }
+        }
+      }
+    },
+    "The connection dropped while renewing the VELRO session, so it isn't known whether VELRO already replaced the token. To avoid replaying an old token (which would sign you out of every device, the web console included), this device's session was removed. Sign in again with a new code.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنگام تازه کردن نشست VELRO اتصال قطع شد، پس معلوم نیست VELRO توکن را عوض کرده یا نه. برای اینکه توکن کهنه دوباره فرستاده نشود (که شما را از همهٔ دستگاه‌ها، کنسول وب هم، خارج می‌کند)، نشست این دستگاه پاک شد. با کد تازه دوباره وارد شوید."
+          }
+        }
+      }
+    },
+    "The phone number or password is wrong.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شمارهٔ تلفن یا رمز نادرست است."
+          }
+        }
+      }
+    },
+    "The reason is %ld characters; Talar accepts at most 500.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دلیل %ld حرف است؛ تالار حداکثر ۵۰۰ حرف قبول می‌کند."
+          }
+        }
+      }
+    },
+    "The refresh token is removed from this device's Keychain. SafeBeauty itself is not changed.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "refresh token از Keychain همین دستگاه پاک می‌شود. خود SafeBeauty تغییر نمی‌کند."
+          }
+        }
+      }
+    },
+    "The refresh token is removed from this device's Keychain. Talar itself is not changed.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "refresh token از Keychain همین دستگاه پاک می‌شود. خود تالار تغییر نمی‌کند."
+          }
+        }
+      }
+    },
+    "The same phone and password as the SafeBeauty admin console. 0700…, 700… and +93700… all work; an international number needs its +. SafeBeauty allows 10 attempts per number every 15 minutes. Nothing typed here is stored.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همان تلفن و رمز کنسول مدیریت SafeBeauty. ‎0700…، ‎700… و ‎+93700… همه کار می‌کنند؛ شمارهٔ بین‌المللی باید + داشته باشد. SafeBeauty برای هر شماره در هر ۱۵ دقیقه ۱۰ تلاش اجازه می‌دهد. چیزی که اینجا می‌نویسید ذخیره نمی‌شود."
+          }
+        }
+      }
+    },
+    "The session has ended (the password was changed, the account was disabled, or the session expired). Sign in again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشست تمام شده است (رمز عوض شده، حساب غیرفعال شده یا نشست ختم شده). دوباره وارد شوید."
+          }
+        }
+      }
+    },
+    "The session is removed from this device's Keychain. Your other VELRO sessions (the web console) are not affected.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشست از Keychain همین دستگاه پاک می‌شود. نشست‌های دیگر شما در VELRO (کنسول وب) دست نمی‌خورند."
+          }
+        }
+      }
+    },
+    "The sign-in password couldn't be derived: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمز ورود ساخته نشد: %@"
+          }
+        }
+      }
+    },
+    "The stored value is outside 0–100, so SafeBeauty uses its default of 10%.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مقدار ذخیره‌شده بیرون از ۰ تا ۱۰۰ است، پس SafeBeauty پیش‌فرض ۱۰٪ را به کار می‌برد."
+          }
+        }
+      }
+    },
+    "The tazkira and selfie are not downloaded to this device. Review them, and approve or reject, in the SafeBeauty admin console (KYC tab).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تذکره و عکس سلفی به این دستگاه دانلود نمی‌شوند. بررسی، تأیید یا رد را در کنسول مدیریت SafeBeauty (بخش KYC) انجام دهید."
+          }
+        }
+      }
+    },
+    "This SafeBeauty account isn't an administrator (users.role is not ADMIN).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این حساب SafeBeauty مدیر نیست (users.role برابر ADMIN نیست)."
+          }
+        }
+      }
+    },
+    "This changes a real hall in production.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کار یک تالار واقعی را در Production تغییر می‌دهد."
+          }
+        }
+      }
+    },
+    "This device's own log of decisions sent (operations-actions.json, never deleted).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر خود همین دستگاه از تصمیم‌های فرستاده‌شده (operations-actions.json، هرگز پاک نمی‌شود)."
+          }
+        }
+      }
+    },
+    "This hall is no longer in the queue.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این تالار دیگر در صف نیست."
+          }
+        }
+      }
+    },
+    "This number signed in, but it holds no VELRO staff role. Roles are granted only on the server with scripts/grant-admin.py.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این شماره وارد شد، ولی نقش کارمندی VELRO ندارد. نقش‌ها فقط روی سرور با scripts/grant-admin.py داده می‌شوند."
+          }
+        }
+      }
+    },
+    "This week": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این هفته"
+          }
+        }
+      }
+    },
+    "Today": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امروز"
+          }
+        }
+      }
+    },
+    "Today's commission %@ of %@ in fares · drivers online %lld of %lld": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کمیشن امروز %@ از %@ کرایه · راننده‌های آنلاین %lld از %lld"
+          }
+        }
+      }
+    },
+    "Too many wrong codes for this one. Ask for a new code.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای این کد تلاش‌های نادرست زیاد شد. کد تازه بخواهید."
+          }
+        }
+      }
+    },
+    "Trips today": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سفرهای امروز"
+          }
+        }
+      }
+    },
+    "Trips under way": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سفرهای در جریان"
+          }
+        }
+      }
+    },
+    "Type the hall name to confirm": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای تأیید، نام تالار را بنویسید"
+          }
+        }
+      }
+    },
+    "Use Another Number": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شمارهٔ دیگر"
+          }
+        }
+      }
+    },
+    "VELRO answered in a form this app doesn't understand: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VELRO جوابی داد که این برنامه نمی‌فهمد: %@"
+          }
+        }
+      }
+    },
+    "VELRO ended the session (%@). Sign in again with a new code.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VELRO نشست را تمام کرد (%@). با کد تازه دوباره وارد شوید."
+          }
+        }
+      }
+    },
+    "VELRO has no separate corridor entity; routes (station to destination, generated from route templates) are the corridors.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VELRO چیزی جداگانه به نام دهلیز ندارد؛ مسیرها (از ایستگاه تا مقصد، ساخته‌شده از قالب‌های مسیر) همان دهلیزها هستند."
+          }
+        }
+      }
+    },
+    "VELRO has no staging: this is the live system. Linumic OS only reads from it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VELRO محیط آزمایشی ندارد: این سیستم زنده است. Linumic OS فقط از آن می‌خواند."
+          }
+        }
+      }
+    },
+    "VELRO returned HTTP %1$ld (%2$@).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VELRO کد HTTP %1$ld برگرداند (%2$@)."
+          }
+        }
+      }
+    },
+    "VELRO sends a code only to a number that already holds a staff role, and at most 3 codes a minute. A code costs VELRO an SMS.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VELRO فقط به شماره‌ای کد می‌فرستد که نقش کارمندی دارد، و در هر دقیقه حداکثر ۳ کد. هر کد برای VELRO هزینهٔ یک پیامک دارد."
+          }
+        }
+      }
+    },
+    "VELRO sends at most 3 codes a minute to a number. Wait a minute and ask again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VELRO به هر شماره در دقیقه حداکثر ۳ کد می‌فرستد. یک دقیقه صبر کنید و دوباره بخواهید."
+          }
+        }
+      }
+    },
+    "VELRO: %ld drivers waiting for approval": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VELRO: %ld راننده در انتظار تأیید"
+          }
+        }
+      }
+    },
+    "Vehicle": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "موتر"
+          }
+        }
+      }
+    },
+    "Waiting for you": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منتظر شما"
+          }
+        }
+      }
+    },
+    "Your VELRO staff role can't read this (403). Settings, including the commission, need ADMIN or SUPER_ADMIN.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نقش کارمندی شما در VELRO این را خوانده نمی‌تواند (403). تنظیمات، از جمله کمیشن، نقش ADMIN یا SUPER_ADMIN می‌خواهند."
+          }
+        }
+      }
+    },
+    "Your staff role can't read driver documents (needs an operations role).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نقش کارمندی شما اسناد راننده را خوانده نمی‌تواند (نقش عملیاتی لازم است)."
+          }
+        }
+      }
+    },
+    "commission.rate_basis_points from GET /admin/settings, read at each trip completion. Change it only in the VELRO web console.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "commission.rate_basis_points از GET /admin/settings، که هنگام تکمیل هر سفر خوانده می‌شود. تغییرش را فقط در کنسول وب VELRO انجام دهید."
+          }
+        }
+      }
+    },
+    "expires %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ختم %@"
+          }
+        }
+      }
+    },
+    "not set (default 10%)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعیین نشده (پیش‌فرض ۱۰٪)"
+          }
+        }
+      }
+    },
+    "platform_config/general, interpreted the way the server does (payments.js getCommissionPercent). Change it only in the admin console.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "platform_config/general، به همان شکلی که سرور می‌فهمد (payments.js getCommissionPercent). تغییرش را فقط در کنسول مدیریت انجام دهید."
+          }
+        }
+      }
+    },
+    "provider_balances above zero (the platform owes the salon) and refund_requests PENDING. Mark payouts paid only in the admin console: SafeBeauty doesn't audit that action.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "provider_balances بالاتر از صفر (پلتفورم به سالون بدهکار است) و refund_requests در حالت PENDING. علامت «پرداخت‌شده» را فقط در کنسول مدیریت بزنید: SafeBeauty این کار را در دفتر بازرسی ثبت نمی‌کند."
+          }
+        }
+      }
+    },
+    "users where kycStatus is PENDING. Name, role and status only: tazkira numbers, photos and selfies are reviewed only in the SafeBeauty admin console.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کاربرانی که kycStatus آن‌ها PENDING است. فقط نام، نقش و وضعیت: شمارهٔ تذکره، عکس‌ها و سلفی فقط در کنسول مدیریت SafeBeauty بررسی می‌شوند."
+          }
+        }
+      }
+    },
+    "users where status is PENDING (the console's Approvals tab).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کاربرانی که status آن‌ها PENDING است (بخش Approvals کنسول)."
           }
         }
       }
