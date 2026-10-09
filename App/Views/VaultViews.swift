@@ -7,6 +7,7 @@ import SwiftUI
 /// owner unlocks with Touch ID or the device password.
 struct VaultView: View {
     @Environment(VaultModel.self) private var vault
+    @Environment(Router.self) private var router
     @State private var search = ""
     @State private var editing: VaultEntry?
     @State private var isAdding = false
@@ -65,6 +66,14 @@ struct VaultView: View {
             .overlay(alignment: .bottom) { VaultCopyNotice() }
         }
         .sheet(isPresented: $isAdding) { VaultEntryEditor(entry: nil) }
+        // From the Command Palette: the editor for a new entry (saved only when the owner presses Save), or a search.
+        .onChange(of: router.request, initial: true) {
+            switch router.take({ if case .vaultSearch = $0 { true } else { $0 == .newVaultEntry } }) {
+            case .newVaultEntry: isAdding = true
+            case .vaultSearch(let text): search = text
+            default: break
+            }
+        }
         .sheet(item: $editing) { VaultEntryEditor(entry: $0) }
         .confirmationDialog("Delete this sign-in?", isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }),
                             titleVisibility: .visible, presenting: deleting) { entry in

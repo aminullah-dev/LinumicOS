@@ -1,0 +1,69 @@
+{
+ "kind": "androidpublisher#tracksListResponse",
+ "tracks": [
+  {
+   "track": "production",
+   "releases": [
+    {
+     "name": "2.1.5",
+     "versionCodes": [
+      "22"
+     ],
+     "releaseNotes": [
+      {
+       "language": "en-US",
+       "text": "• Fixed the \"Update\" button that sometimes did nothing when tapped."
+      },
+      {
+       "language": "fa-AF",
+       "text": "• رفع دکمهٔ «به‌روزرسانی» که گاهی هنگام زدن، کاری انجام نمی‌داد."
+      },
+      {
+       "language": "ps-AF",
+       "text": "• د «تازه کړئ» تڼۍ به کله ناکله کار نه کاوه؛ دا ستونزه اوس حل شوه."
+      }
+     ],
+     "status": "completed"
+    }
+   ]
+  },
+  {
+   "track": "beta",
+   "releases": [
+    {
+     "status": "draft"
+    }
+   ]
+  },
+  {
+   "track": "alpha",
+   "releases": [
+    {
+     "name": "14 (1.9)",
+     "versionCodes": [
+      "14"
+     ],
+     "releaseNotes": [
+      {
+       "language": "fa-AF",
+       "text": "Welcome to SafeBeauty — the easiest way to find and book trusted beauty salons in Kabul.\n\n• Browse verified salons by service, area, price and rating\n• Book the time and stylist you want\n• Pay in cash at the salon or online with HesabPay\n• Read and write reviews from real customers\n• Salon owners can manage bookings, staff and working hours\n\nAvailable in Dari, Pashto and English."
+      }
+     ],
+     "status": "completed"
+    }
+   ]
+  },
+  {
+   "track": "internal",
+   "releases": [
+    {
+     "name": "3 (1.0)",
+     "versionCodes": [
+      "3"
+     ],
+     "status": "completed"
+    }
+   ]
+  }
+ ]
+}

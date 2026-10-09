@@ -1,0 +1,8 @@
+{
+ "releases": [
+  {
+   "releaseLifecycleState": "RELEASE_LIFECYCLE_STATE_DRAFT",
+   "track": "beta"
+  }
+ ]
+}

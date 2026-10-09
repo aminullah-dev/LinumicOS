@@ -1,0 +1,135 @@
+{
+ "data": [
+  {
+   "type": "appStoreVersions",
+   "id": "0bbd80b9-fe5e-45b1-9142-86abbf374878",
+   "attributes": {
+    "platform": "IOS",
+    "versionString": "1.0.2",
+    "appStoreState": "WAITING_FOR_REVIEW",
+    "appVersionState": "WAITING_FOR_REVIEW",
+    "releaseType": "MANUAL",
+    "earliestReleaseDate": null,
+    "createdDate": "2026-10-09T09:40:32-07:00"
+   },
+   "relationships": {
+    "build": {
+     "data": {
+      "type": "builds",
+      "id": "87c02e66-5662-4c28-97d4-f757190d683c"
+     },
+     "links": {
+      "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/0bbd80b9-fe5e-45b1-9142-86abbf374878/relationships/build",
+      "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/0bbd80b9-fe5e-45b1-9142-86abbf374878/build"
+     }
+    }
+   },
+   "links": {
+    "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/0bbd80b9-fe5e-45b1-9142-86abbf374878"
+   }
+  },
+  {
+   "type": "appStoreVersions",
+   "id": "096085be-37f8-4a0f-a84b-ad8dccd2aa9c",
+   "attributes": {
+    "platform": "IOS",
+    "versionString": "1.0.1",
+    "appStoreState": "READY_FOR_SALE",
+    "appVersionState": "READY_FOR_DISTRIBUTION",
+    "releaseType": "MANUAL",
+    "earliestReleaseDate": null,
+    "createdDate": "2026-09-21T17:35:27-07:00"
+   },
+   "relationships": {
+    "build": {
+     "data": {
+      "type": "builds",
+      "id": "79f5b2e9-9e27-4398-91e5-985555a01e6c"
+     },
+     "links": {
+      "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/096085be-37f8-4a0f-a84b-ad8dccd2aa9c/relationships/build",
+      "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/096085be-37f8-4a0f-a84b-ad8dccd2aa9c/build"
+     }
+    }
+   },
+   "links": {
+    "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/096085be-37f8-4a0f-a84b-ad8dccd2aa9c"
+   }
+  },
+  {
+   "type": "appStoreVersions",
+   "id": "975ad131-3403-4a3f-a740-86613dd62b79",
+   "attributes": {
+    "platform": "IOS",
+    "versionString": "1.0",
+    "appStoreState": "READY_FOR_SALE",
+    "appVersionState": "READY_FOR_DISTRIBUTION",
+    "releaseType": "MANUAL",
+    "earliestReleaseDate": null,
+    "createdDate": "2026-09-08T20:47:16-07:00"
+   },
+   "relationships": {
+    "build": {
+     "data": {
+      "type": "builds",
+      "id": "b06db996-0e58-417c-9239-2800dcc2d575"
+     },
+     "links": {
+      "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/975ad131-3403-4a3f-a740-86613dd62b79/relationships/build",
+      "related": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/975ad131-3403-4a3f-a740-86613dd62b79/build"
+     }
+    }
+   },
+   "links": {
+    "self": "https://api.appstoreconnect.apple.com/v1/appStoreVersions/975ad131-3403-4a3f-a740-86613dd62b79"
+   }
+  }
+ ],
+ "included": [
+  {
+   "type": "builds",
+   "id": "87c02e66-5662-4c28-97d4-f757190d683c",
+   "attributes": {
+    "version": "9",
+    "uploadedDate": "2026-10-09T09:36:41-07:00",
+    "processingState": "VALID"
+   },
+   "links": {
+    "self": "https://api.appstoreconnect.apple.com/v1/builds/87c02e66-5662-4c28-97d4-f757190d683c"
+   }
+  },
+  {
+   "type": "builds",
+   "id": "79f5b2e9-9e27-4398-91e5-985555a01e6c",
+   "attributes": {
+    "version": "8",
+    "uploadedDate": "2026-09-21T23:26:02-07:00",
+    "processingState": "VALID"
+   },
+   "links": {
+    "self": "https://api.appstoreconnect.apple.com/v1/builds/79f5b2e9-9e27-4398-91e5-985555a01e6c"
+   }
+  },
+  {
+   "type": "builds",
+   "id": "b06db996-0e58-417c-9239-2800dcc2d575",
+   "attributes": {
+    "version": "6",
+    "uploadedDate": "2026-09-17T08:13:30-07:00",
+    "processingState": "VALID"
+   },
+   "links": {
+    "self": "https://api.appstoreconnect.apple.com/v1/builds/b06db996-0e58-417c-9239-2800dcc2d575"
+   }
+  }
+ ],
+ "links": {
+  "self": "https://api.appstoreconnect.apple.com/v1/apps/6810050614/appStoreVersions?fields%5BappStoreVersions%5D=earliestReleaseDate%2CcreatedDate%2CversionString%2Cbuild%2CreleaseType%2CappStoreState%2Cplatform%2CappVersionState&fields%5Bbuilds%5D=processingState%2CuploadedDate%2Cversion&include=build&limit=10"
+ },
+ "meta": {
+  "paging": {
+   "total": 3,
+   "limit": 10
+  }
+ }
+}

@@ -22,6 +22,12 @@ struct IntegrationsSettingsView: View {
     @AppStorage(WorkTrackModel.notifyKey) private var notifyWorkTrack = true
     @Environment(OperationsModel.self) private var operations
     @AppStorage(OperationsModel.notifyKey) private var notifyOperations = true
+    @AppStorage(MonitorModel.notifyKey) private var notifyMonitor = true
+    @AppStorage(ReleaseCenterModel.autoRefreshKey) private var autoRefreshReleases = true
+    @Environment(BriefModel.self) private var brief
+    @AppStorage(BriefModel.notifyKey) private var notifyBrief = true
+    @AppStorage(BriefModel.hourKey) private var briefHour = BriefSchedule.defaultHour
+    @AppStorage(BriefModel.minuteKey) private var briefMinute = BriefSchedule.defaultMinute
 
     private let integrations: [(name: String, symbol: String, plan: String)] = [
         ("Social networks", "bubble.left.and.bubble.right", "Phase 5: OAuth, approval before publishing"),
@@ -147,6 +153,45 @@ struct IntegrationsSettingsView: View {
             } footer: {
                 Text("Sign in under Operations in the sidebar. Only refresh tokens are kept, in this device's Keychain (talar.admin.session, safebeauty.admin.session, velro.staff.session); the last queue counts are kept for the notifications, nothing else.")
             }
+            SiteMessagesSettingsSection()
+            Section {
+                Toggle(isOn: $notifyBrief) {
+                    Text("Morning Daily Brief notification")
+                    Text("One local notification a day with what needs you, worded from what the app last read and saying when. Nothing is fetched for it.")
+                }
+                DatePicker("Time", selection: briefTime, displayedComponents: .hourAndMinute)
+                    .disabled(!notifyBrief)
+                if notifyBrief, let next = brief.nextNotification {
+                    LabeledContent("Next") { Text(next.formatted(date: .abbreviated, time: .shortened)) }
+                }
+            } header: {
+                Text("Daily Brief")
+            } footer: {
+                Text("The brief and its notification are built on this device. A small snapshot per day (brief-snapshots.json, last 8 days) is kept for \"what changed since yesterday\".")
+            }
+            .onChange(of: notifyBrief) { Task { await brief.reschedule() } }
+            .onChange(of: briefHour) { Task { await brief.reschedule() } }
+            .onChange(of: briefMinute) { Task { await brief.reschedule() } }
+            Section {
+                Toggle(isOn: $notifyMonitor) {
+                    Text("Notify me when a platform goes down")
+                    Text("After two failed checks in a row, when it is back, and when a TLS certificate or the linumic.com registration enters the 30, 14 or 7-day window.")
+                }
+            } header: {
+                Text("Monitor")
+            } footer: {
+                Text("Public pages and health endpoints only, with no credentials. Checked when the app opens and every 5 minutes while it runs; the last 24 hours stay on this device (monitor.json).")
+            }
+            Section {
+                Toggle(isOn: $autoRefreshReleases) {
+                    Text("Refresh releases automatically")
+                    Text("When the app opens, then every 30 minutes while it's open. Reads App Store Connect, Google Play and GitHub with the credentials above.")
+                }
+            } header: {
+                Text("Releases")
+            } footer: {
+                Text("Reads only. The one write is releasing an approved App Store version, which you confirm each time; it needs an App Store Connect key with the App Manager or Admin role.")
+            }
             Section {
                 ForEach(integrations, id: \.name) { i in
                     LabeledContent {
@@ -165,6 +210,18 @@ struct IntegrationsSettingsView: View {
         .formStyle(.grouped)
         .navigationTitle("Integrations")
         .onAppear { hasToken = ((try? model.secrets.read(.gitHubToken)) ?? nil) != nil }
+    }
+
+    /// Hour and minute of the morning notification, as a time-of-day for the picker (local time zone).
+    private var briefTime: Binding<Date> {
+        Binding(
+            get: { Calendar.current.date(bySettingHour: briefHour, minute: briefMinute, second: 0, of: .now) ?? .now },
+            set: {
+                let c = Calendar.current.dateComponents([.hour, .minute], from: $0)
+                briefHour = c.hour ?? BriefSchedule.defaultHour
+                briefMinute = c.minute ?? BriefSchedule.defaultMinute
+            }
+        )
     }
 
     private func saveToken() {

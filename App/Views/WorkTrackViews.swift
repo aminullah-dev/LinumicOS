@@ -107,6 +107,7 @@ struct WorkTrackMarks: View {
 
 struct WorkTrackCustomersView: View {
     @Environment(WorkTrackModel.self) private var worktrack
+    @Environment(Router.self) private var router
     @State private var filter: WTCompanyFilter = .all
     @State private var search = ""
     @State private var path: [String] = []
@@ -133,6 +134,12 @@ struct WorkTrackCustomersView: View {
             .toolbar { toolbar }
         }
         .sheet(isPresented: $isSigningIn) { WorkTrackSignInSheet() }
+        // From the Command Palette or the Daily Brief: open one company (read-only until a renewal is confirmed there).
+        .onChange(of: router.request, initial: true) {
+            if case .worktrackCompany(let id) = router.take({ if case .worktrackCompany = $0 { true } else { false } }) {
+                path = [id]
+            }
+        }
         .confirmationDialog("Sign out of WorkTrack?", isPresented: $confirmSignOut) {
             Button("Sign Out", role: .destructive) { worktrack.signOut() }
         } message: {

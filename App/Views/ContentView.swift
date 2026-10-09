@@ -10,7 +10,7 @@ struct ContentView: View {
         @Bindable var model = model
 
         NavigationSplitView {
-            // Picking a sidebar item resets the product path; programmatic navigation (Quick Open) sets both.
+            // Picking a sidebar item resets the product path; programmatic navigation (Command Palette, Brief) sets both.
             List(selection: Binding(
                 get: { router.sidebar },
                 set: { router.sidebar = $0; router.productPath = [] }
@@ -24,10 +24,18 @@ struct ContentView: View {
                 }
             }
             .navigationSplitViewColumnWidth(min: 190, ideal: 220)
+            .toolbar {
+                ToolbarItem {
+                    Button { router.isPalettePresented = true } label: {
+                        Label("Search and commands", systemImage: "magnifyingglass")
+                    }
+                    .help("Search screens, records and commands (⌘K)")
+                }
+            }
         } detail: {
             detail(for: router.sidebar ?? .dashboard)
         }
-        .sheet(isPresented: $router.isQuickOpenPresented) { QuickOpenView() }
+        .sheet(isPresented: $router.isPalettePresented) { CommandPaletteView() }
         .sheet(isPresented: $router.isNewProductPresented) {
             ProductEditor(product: nil) { product in
                 model.upsert(product)
@@ -62,12 +70,17 @@ struct ContentView: View {
     private func detail(for item: SidebarItem) -> some View {
         switch item {
         case .dashboard: DashboardView()
+        case .brief: DailyBriefView()
+        case .monitor: MonitorView()
+        case .releaseCenter: ReleaseCenterView()
         case .platforms: PlatformsView()
         case .oversight: OversightView()
         case .licences: LicencesView()
         case .worktrackCustomers: WorkTrackCustomersView()
         case .operations: OperationsView()
+        case .siteMessages: SiteMessagesView()
         case .vault: VaultView()
+        case .keys: KeysView()
         case .allProducts: ProductsRootView()
         case .verification: VerificationView()
         case .releases: AllReleasesView()

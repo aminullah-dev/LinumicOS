@@ -8,6 +8,7 @@ struct DashboardView: View {
     @Environment(PlatformHubModel.self) private var platforms
     @Environment(WorkTrackModel.self) private var worktrack
     @Environment(OperationsModel.self) private var operations
+    @Environment(SiteMessagesModel.self) private var siteMessages
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -37,6 +38,10 @@ struct DashboardView: View {
                     }
                     .buttonStyle(.plain)
                 }
+
+                MonitorStatusStrip()
+
+                WaitingOnYouCard()
 
                 platformsCard
 
@@ -370,6 +375,7 @@ struct DashboardView: View {
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(line.count.map { Text(verbatim: line.queue.sentence($0.count)) } ?? Text("\(line.queue.product.title): \(line.queue.title), not read"))
             }
+            siteMessagesRow
             if let newest = operations.waiting.compactMap(\.count?.readAt).max() {
                 Text("Read \(newest.formatted(date: .abbreviated, time: .shortened)), from each product's own admin API").font(.caption).foregroundStyle(.tertiary)
             }
@@ -377,6 +383,33 @@ struct DashboardView: View {
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+    }
+
+    /// Website messages not marked seen: a waiting item, because the form's emails don't reach the owner.
+    private var siteMessagesRow: some View {
+        Button { router.go(.siteMessages) } label: {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Image(systemName: SidebarItem.siteMessages.symbol).foregroundStyle(.secondary).frame(width: 18)
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("New website messages")
+                    Text(verbatim: "linumic.com").font(.caption).foregroundStyle(.secondary)
+                }
+                Spacer(minLength: 6)
+                if let n = siteMessages.newCount {
+                    Text(verbatim: "\(n)").font(.title3.weight(.semibold)).monospacedDigit()
+                        .foregroundStyle(n > 0 ? .orange : .secondary)
+                } else if siteMessages.isConfigured {
+                    Text("Not read yet").font(.callout).foregroundStyle(.secondary)
+                } else {
+                    Text("Not connected").font(.callout).foregroundStyle(.secondary)
+                }
+                Image(systemName: "chevron.right").foregroundStyle(.tertiary).accessibilityHidden(true)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
     }
 
     private func releaseRow(_ ref: DashboardSummary.ReleaseRef) -> some View {
