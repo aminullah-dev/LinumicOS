@@ -297,8 +297,9 @@ public enum TalarMoney {
 
 // MARK: - Hall review (the one write)
 
-public enum TalarHallDecision: String, Codable, Sendable, CaseIterable {
+public enum TalarHallDecision: String, Codable, Sendable, CaseIterable, Identifiable {
     case approve, reject
+    public var id: String { rawValue }
 }
 
 /// The body of `POST /admin/halls/:hallId/review` (`{decision, reason?: ≤500}`, strict).

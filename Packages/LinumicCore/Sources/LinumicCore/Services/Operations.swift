@@ -140,3 +140,83 @@ public struct OperationsCountStore: Sendable {
         save(load().filter { $0.queue.product != product })
     }
 }
+
+// MARK: - Local action log
+
+/// Linumic OS's own record of an operations write it sent (today only Talar's hall approve/reject): who, where,
+/// what, the outcome. The product keeps its own audit trail too; this is the owner's copy on this device.
+public struct OperationsActionRecord: Codable, Equatable, Sendable, Identifiable {
+    public enum Outcome: String, Codable, Sendable {
+        /// Accepted, and a fresh read no longer lists the item in the queue.
+        case verified
+        /// Accepted, but the re-read failed or still lists it.
+        case unverified
+        /// Refused, or it never arrived.
+        case failed
+    }
+
+    public var id: UUID
+    public var at: Date
+    public var product: OperationsProduct
+    public var environment: String
+    public var actor: String
+    /// e.g. `hall.review_approve`, the name the product's own audit log uses.
+    public var action: String
+    public var targetID: String
+    public var targetName: String
+    public var detail: String?
+    public var outcome: Outcome
+    public var message: String?
+
+    public init(id: UUID = UUID(), at: Date, product: OperationsProduct, environment: String, actor: String, action: String,
+                targetID: String, targetName: String, detail: String?, outcome: Outcome, message: String?) {
+        self.id = id
+        self.at = at
+        self.product = product
+        self.environment = environment
+        self.actor = actor
+        self.action = action
+        self.targetID = targetID
+        self.targetName = targetName
+        self.detail = detail
+        self.outcome = outcome
+        self.message = message
+    }
+}
+
+/// Append-only JSON file next to `inventory.json` (`operations-actions.json`). Entries are never removed.
+public actor OperationsActionLog {
+    public let fileURL: URL
+
+    public init(fileURL: URL) { self.fileURL = fileURL }
+
+    public static func defaultFileURL() throws -> URL {
+        try JSONFileInventoryStore.defaultFileURL().deletingLastPathComponent().appending(path: "operations-actions.json")
+    }
+
+    private static let encoder: JSONEncoder = {
+        let e = JSONEncoder()
+        e.dateEncodingStrategy = .iso8601
+        e.outputFormatting = [.prettyPrinted, .sortedKeys]
+        return e
+    }()
+
+    private static let decoder: JSONDecoder = {
+        let d = JSONDecoder()
+        d.dateDecodingStrategy = .iso8601
+        return d
+    }()
+
+    /// Newest first. A missing file is an empty log.
+    public func load() throws -> [OperationsActionRecord] {
+        guard FileManager.default.fileExists(atPath: fileURL.path) else { return [] }
+        return try Self.decoder.decode([OperationsActionRecord].self, from: Data(contentsOf: fileURL)).sorted { $0.at > $1.at }
+    }
+
+    public func append(_ record: OperationsActionRecord) throws {
+        var all = try load()
+        all.append(record)
+        try FileManager.default.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try Self.encoder.encode(all.sorted { $0.at < $1.at }).write(to: fileURL, options: .atomic)
+    }
+}

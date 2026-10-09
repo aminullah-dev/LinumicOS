@@ -505,3 +505,22 @@ struct OperationsQueueTests {
         #expect(OperationsQueue.velroDrivers.sentence(3) == "VELRO: 3 drivers waiting for approval")
     }
 }
+
+@Suite("Operations action log")
+struct OperationsActionLogTests {
+    @Test func appendsAndNeverDrops() async throws {
+        let url = FileManager.default.temporaryDirectory.appending(path: "ops-log-\(UUID().uuidString).json")
+        defer { try? FileManager.default.removeItem(at: url) }
+        let log = OperationsActionLog(fileURL: url)
+        #expect(try await log.load().isEmpty)
+        let a = OperationsActionRecord(at: Date(timeIntervalSince1970: 10), product: .talar, environment: "localEmulator", actor: "admin@linumic.test",
+                                       action: "hall.review_approve", targetID: "h1", targetName: "Hall", detail: nil, outcome: .verified, message: nil)
+        var b = a
+        b.id = UUID()
+        b.at = Date(timeIntervalSince1970: 20)
+        b.outcome = .failed
+        try await log.append(a)
+        try await log.append(b)
+        #expect(try await log.load().map(\.outcome) == [.failed, .verified], "newest first")
+    }
+}
