@@ -1,0 +1,172 @@
+{
+ "success": true,
+ "data": {
+  "generated_at": "2026-10-09T05:35:53.695335Z",
+  "live": {
+   "on_the_way": 0,
+   "at_the_station": 0,
+   "moving": 0,
+   "departing_soon": 1
+  },
+  "attention": {
+   "unassigned_trips": 3,
+   "departures_at_risk": 0,
+   "overdue_trips": 0,
+   "open_requests": 0,
+   "unanswered_requests": 0,
+   "pending_drivers": 2,
+   "pending_vehicles": 0,
+   "pending_documents": 0,
+   "expiring_documents": 0,
+   "open_tickets": 0,
+   "stale_gps_drivers": 0
+  },
+  "today": {
+   "trips": 3,
+   "bookings": 0,
+   "completed_trips": 0,
+   "cancellations": 0,
+   "seats_capacity": 12,
+   "seats_sold": 0,
+   "utilisation_percent": 0
+  },
+  "capacity": {
+   "upcoming_trips": 3,
+   "nearly_full_trips": 0,
+   "empty_departures": 1
+  },
+  "drivers": {
+   "online": 0,
+   "on_trip": 0,
+   "offline": 2,
+   "pending": 2,
+   "suspended": 0,
+   "total": 4,
+   "without_fix": 0
+  },
+  "finance": {
+   "currency": "AFN",
+   "revenue_today_minor": 0,
+   "commission_today_minor": 0,
+   "driver_earnings_today_minor": 0,
+   "cash_owed_minor": 0,
+   "payouts_due_minor": 0,
+   "settlements_open": 0
+  },
+  "network": {
+   "routes_active": 78,
+   "stations": 427,
+   "villages": 427,
+   "villages_without_coordinates": 372,
+   "villages_without_stations": 0,
+   "stations_without_routes": 415,
+   "routes_without_upcoming_trips": 77
+  },
+  "people": {
+   "passengers": 3,
+   "drivers": 4
+  },
+  "passengers": {
+   "total": 1,
+   "new_today": 1,
+   "new_7d": 1,
+   "active_7d": 0,
+   "active_30d": 0,
+   "repeat_30d": 0,
+   "suspended": 0,
+   "with_open_request": 0
+  },
+  "history": {
+   "currency": "AFN",
+   "days": [
+    {
+     "date": "2026-10-03",
+     "trips": 0,
+     "bookings": 0,
+     "completed_trips": 0,
+     "cancellations": 0,
+     "revenue_minor": 0,
+     "commission_minor": 0,
+     "new_passengers": 0,
+     "new_drivers": 0
+    },
+    {
+     "date": "2026-10-04",
+     "trips": 0,
+     "bookings": 0,
+     "completed_trips": 0,
+     "cancellations": 0,
+     "revenue_minor": 0,
+     "commission_minor": 0,
+     "new_passengers": 0,
+     "new_drivers": 0
+    },
+    {
+     "date": "2026-10-05",
+     "trips": 0,
+     "bookings": 0,
+     "completed_trips": 0,
+     "cancellations": 0,
+     "revenue_minor": 0,
+     "commission_minor": 0,
+     "new_passengers": 0,
+     "new_drivers": 0
+    },
+    {
+     "date": "2026-10-06",
+     "trips": 0,
+     "bookings": 0,
+     "completed_trips": 0,
+     "cancellations": 0,
+     "revenue_minor": 0,
+     "commission_minor": 0,
+     "new_passengers": 0,
+     "new_drivers": 0
+    },
+    {
+     "date": "2026-10-07",
+     "trips": 0,
+     "bookings": 0,
+     "completed_trips": 0,
+     "cancellations": 0,
+     "revenue_minor": 0,
+     "commission_minor": 0,
+     "new_passengers": 0,
+     "new_drivers": 0
+    },
+    {
+     "date": "2026-10-08",
+     "trips": 0,
+     "bookings": 0,
+     "completed_trips": 0,
+     "cancellations": 0,
+     "revenue_minor": 0,
+     "commission_minor": 0,
+     "new_passengers": 0,
+     "new_drivers": 0
+    },
+    {
+     "date": "2026-10-09",
+     "trips": 3,
+     "bookings": 0,
+     "completed_trips": 0,
+     "cancellations": 0,
+     "revenue_minor": 0,
+     "commission_minor": 0,
+     "new_passengers": 1,
+     "new_drivers": 4
+    }
+   ]
+  },
+  "apps": {
+   "window_days": 7,
+   "latest": {
+    "passenger": null,
+    "driver": null
+   },
+   "versions": []
+  }
+ },
+ "message": null,
+ "meta": {}
+}

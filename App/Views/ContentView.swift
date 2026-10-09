@@ -65,6 +65,8 @@ struct ContentView: View {
         case .platforms: PlatformsView()
         case .oversight: OversightView()
         case .licences: LicencesView()
+        case .worktrackCustomers: WorkTrackCustomersView()
+        case .operations: OperationsView()
         case .allProducts: ProductsRootView()
         case .verification: VerificationView()
         case .releases: AllReleasesView()

@@ -13,6 +13,15 @@ public enum SecretKey: String, CaseIterable, Sendable {
     /// LNM1 licence signing keys (PKCS#8 PEM), imported by the owner on the Mac. Never uploaded.
     case licenceSigningMediflow = "licence.signing.mediflow"
     case licenceSigningKhayatyar = "licence.signing.khayatyar"
+    /// WorkTrack vendor session: JSON `{environment, email, refreshToken}`. Never the password or the ID token.
+    case workTrackVendorSession = "worktrack.vendor.session"
+    /// Talar admin session: JSON `{environment, email, refreshToken}`. Never the password or the ID token.
+    case talarAdminSession = "talar.admin.session"
+    /// SafeBeauty admin session: JSON `{environment, appUID, name, refreshToken}`. Never the phone, password or salt.
+    case safeBeautyAdminSession = "safebeauty.admin.session"
+    /// VELRO staff session: JSON `{environment, userID, roles, refreshToken, deviceID}`, rewritten after every
+    /// successful refresh (the token rotates). Never the phone number or the access token.
+    case velroStaffSession = "velro.staff.session"
 }
 
 /// Credential storage. Values never appear in source, logs or the inventory file.

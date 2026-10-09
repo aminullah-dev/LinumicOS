@@ -6,6 +6,8 @@ struct DashboardView: View {
     @Environment(Router.self) private var router
     @Environment(LicenceModel.self) private var licences
     @Environment(PlatformHubModel.self) private var platforms
+    @Environment(WorkTrackModel.self) private var worktrack
+    @Environment(OperationsModel.self) private var operations
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -41,6 +43,10 @@ struct DashboardView: View {
                 oversightCard
 
                 licencesCard
+
+                worktrackCard
+
+                waitingCard
 
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: statusColumns), spacing: 12) {
                     ForEach([VerificationStatus.verified, .partiallyVerified, .unknown, .conflicting]) { status in
@@ -272,6 +278,105 @@ struct DashboardView: View {
             .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(.plain)
+    }
+
+    /// WorkTrack customers whose licence ends within 30 days (TEST / DUPLICATE left out), with where and when it was read.
+    private var worktrackCard: some View {
+        let s = worktrack.summary
+        return Button { router.sidebar = .worktrackCustomers } label: {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 6) {
+                    Image(systemName: SidebarItem.worktrackCustomers.symbol).foregroundStyle(.secondary)
+                    Text("WorkTrack customers").font(.headline)
+                    if let env = worktrack.environment { WorkTrackEnvironmentBadge(environment: env) }
+                    Spacer()
+                    Image(systemName: "chevron.right").foregroundStyle(.tertiary)
+                }
+                if !worktrack.isSignedIn {
+                    Text("Not signed in. Open WorkTrack customers to sign in with your vendor account →")
+                        .font(.callout).foregroundStyle(.secondary)
+                } else if let error = worktrack.loadError {
+                    Label(error, systemImage: "exclamationmark.triangle.fill").font(.callout).foregroundStyle(.red)
+                } else if worktrack.lastRead == nil {
+                    Text(worktrack.isRefreshing ? "Reading from WorkTrack…" : "Not read yet.").font(.callout).foregroundStyle(.secondary)
+                } else {
+                    HStack(spacing: 16) {
+                        Text("\(s.total) companies").font(.callout).monospacedDigit()
+                        if !s.expired.isEmpty {
+                            StatusBadge(text: String(localized: "\(s.expired.count) expired"), color: .red)
+                        }
+                    }
+                    if s.expiringSoon.isEmpty {
+                        Text("No customer licence ends in the next 30 days.").font(.callout).foregroundStyle(.secondary)
+                    } else {
+                        ForEach(s.expiringSoon.prefix(5)) { c in
+                            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                                Image(systemName: "clock.badge.exclamationmark").foregroundStyle(.orange)
+                                Text(verbatim: "\(c.name) · \(c.license.plan.rawValue)")
+                                Spacer(minLength: 4)
+                                WorkTrackExpiryText(company: c).foregroundStyle(.secondary)
+                            }
+                            .font(.callout)
+                        }
+                    }
+                    if let at = worktrack.lastRead {
+                        Text("Read \(at.formatted(date: .abbreviated, time: .shortened))").font(.caption).foregroundStyle(.tertiary)
+                    }
+                }
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// "Waiting for you": the Talar, SafeBeauty and VELRO queues that block someone from starting, each with its
+    /// environment and the time it was read. A product that isn't signed in says so instead of showing a number.
+    private var waitingCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Image(systemName: SidebarItem.operations.symbol).foregroundStyle(.secondary)
+                Text("Waiting for you").font(.headline)
+                Spacer()
+            }
+            ForEach(operations.waiting, id: \.queue) { line in
+                Button {
+                    router.operationsTab = line.queue.product
+                    router.sidebar = .operations
+                } label: {
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Image(systemName: line.queue.product.symbol).foregroundStyle(.secondary).frame(width: 18)
+                            .accessibilityHidden(true)
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(verbatim: line.queue.title)
+                            Text(verbatim: line.queue.product.title).font(.caption).foregroundStyle(.secondary)
+                        }
+                        Spacer(minLength: 6)
+                        if let c = line.count {
+                            if !c.isProduction { OpsEnvironmentBadge(rawEnvironment: c.environment) }
+                            Text(verbatim: "\(c.count)").font(.title3.weight(.semibold)).monospacedDigit()
+                                .foregroundStyle(c.count > 0 ? .orange : .secondary)
+                        } else if operations.isSignedIn(line.queue.product) {
+                            Text("Not read yet").font(.callout).foregroundStyle(.secondary)
+                        } else {
+                            Text("Not signed in").font(.callout).foregroundStyle(.secondary)
+                        }
+                        Image(systemName: "chevron.right").foregroundStyle(.tertiary).accessibilityHidden(true)
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(line.count.map { Text(verbatim: line.queue.sentence($0.count)) } ?? Text("\(line.queue.product.title): \(line.queue.title), not read"))
+            }
+            if let newest = operations.waiting.compactMap(\.count?.readAt).max() {
+                Text("Read \(newest.formatted(date: .abbreviated, time: .shortened)), from each product's own admin API").font(.caption).foregroundStyle(.tertiary)
+            }
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
     }
 
     private func releaseRow(_ ref: DashboardSummary.ReleaseRef) -> some View {

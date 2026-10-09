@@ -18,6 +18,10 @@ struct IntegrationsSettingsView: View {
     @AppStorage(LicenceModel.notifyKey) private var notifyLicences = true
     @AppStorage(PlatformHubModel.autoRefreshKey) private var autoRefreshPlatforms = true
     @Environment(LicenceModel.self) private var licences
+    @Environment(WorkTrackModel.self) private var worktrack
+    @AppStorage(WorkTrackModel.notifyKey) private var notifyWorkTrack = true
+    @Environment(OperationsModel.self) private var operations
+    @AppStorage(OperationsModel.notifyKey) private var notifyOperations = true
 
     private let integrations: [(name: String, symbol: String, plan: String)] = [
         ("Social networks", "bubble.left.and.bubble.right", "Phase 5: OAuth, approval before publishing"),
@@ -96,6 +100,52 @@ struct IntegrationsSettingsView: View {
                 .onChange(of: notifyLicences) { Task { await LicenceNotifier.reschedule(for: licences.records) } }
             } header: {
                 Text("Licences")
+            }
+            Section {
+                LabeledContent("Vendor account") {
+                    if let s = worktrack.session {
+                        HStack(spacing: 6) {
+                            WorkTrackEnvironmentBadge(environment: s.environment)
+                            Text(verbatim: s.email)
+                        }
+                    } else {
+                        Text("Not signed in").foregroundStyle(.secondary)
+                    }
+                }
+                Toggle(isOn: $notifyWorkTrack) {
+                    Text("Remind me before WorkTrack licences expire")
+                    Text("Local notifications 30, 14, 7 and 1 days before a production customer's last licensed day (TEST and DUPLICATE companies excluded). The list is read when the app opens and every 6 hours while it's open.")
+                }
+                .onChange(of: notifyWorkTrack) { Task { await WorkTrackNotifier.reschedule(for: worktrack.companies, environment: worktrack.environment) } }
+            } header: {
+                Text("WorkTrack customers")
+            } footer: {
+                Text("Sign in under WorkTrack customers in the sidebar. Only a refresh token is kept, in this device's Keychain (worktrack.vendor.session).")
+            }
+            Section {
+                LabeledContent("Talar") {
+                    if let s = operations.talar.session {
+                        HStack(spacing: 6) { OpsEnvironmentBadge(s.environment); Text(verbatim: s.email) }
+                    } else { Text("Not signed in").foregroundStyle(.secondary) }
+                }
+                LabeledContent("SafeBeauty") {
+                    if let s = operations.safeBeauty.session {
+                        HStack(spacing: 6) { OpsEnvironmentBadge(s.environment); Text(verbatim: s.name.isEmpty ? s.appUID : s.name) }
+                    } else { Text("Not signed in").foregroundStyle(.secondary) }
+                }
+                LabeledContent("VELRO") {
+                    if let s = operations.velro.session {
+                        HStack(spacing: 6) { OpsEnvironmentBadge(s.environment); Text(verbatim: s.roles.joined(separator: ", ")) }
+                    } else { Text("Not signed in").foregroundStyle(.secondary) }
+                }
+                Toggle(isOn: $notifyOperations) {
+                    Text("Notify me when a queue starts waiting")
+                    Text("A notification when a production queue goes from empty to waiting: Talar halls or reviews, SafeBeauty identity checks or salon approvals, VELRO drivers. Queues are read when the app opens and every 30 minutes while it's open.")
+                }
+            } header: {
+                Text("Operations")
+            } footer: {
+                Text("Sign in under Operations in the sidebar. Only refresh tokens are kept, in this device's Keychain (talar.admin.session, safebeauty.admin.session, velro.staff.session); the last queue counts are kept for the notifications, nothing else.")
             }
             Section {
                 ForEach(integrations, id: \.name) { i in

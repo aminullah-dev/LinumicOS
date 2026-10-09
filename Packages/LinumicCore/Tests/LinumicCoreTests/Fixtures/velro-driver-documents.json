@@ -1,0 +1,20 @@
+{
+ "success": true,
+ "data": {
+  "required": [
+   "LICENSE",
+   "NATIONAL_ID",
+   "SELFIE"
+  ],
+  "missing": [
+   "LICENSE",
+   "NATIONAL_ID",
+   "SELFIE"
+  ],
+  "documents": [],
+  "approval_status": "PENDING",
+  "can_work": false
+ },
+ "message": null,
+ "meta": {}
+}

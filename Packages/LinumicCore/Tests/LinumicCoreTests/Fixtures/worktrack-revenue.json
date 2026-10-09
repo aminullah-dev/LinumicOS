@@ -1,0 +1,46 @@
+{
+ "data": {
+  "currency": "AFN",
+  "earned": {
+   "totalAfn": 3500,
+   "orderCount": 1,
+   "byMonth": [
+    {
+     "year": 1405,
+     "month": 6,
+     "totalAfn": 3500,
+     "orderCount": 1
+    }
+   ],
+   "byPlan": [
+    {
+     "plan": "SILVER",
+     "totalAfn": 3500,
+     "orderCount": 1
+    }
+   ]
+  },
+  "expected": {
+   "windowDays": 30,
+   "totalAfn": 3500,
+   "renewals": [
+    {
+     "companyId": "emu_herat",
+     "name": "\u0634\u0631\u06a9\u062a \u0622\u0632\u0645\u0627\u06cc\u0634\u06cc \u0647\u0631\u0627\u062a",
+     "plan": "SILVER",
+     "expiresAt": "2026-10-19",
+     "daysUntilExpiry": 10,
+     "term": "MONTHLY",
+     "months": 1,
+     "amountAfn": 3500,
+     "basis": "LAST_PAID_TERM"
+    }
+   ]
+  },
+  "excluded": {
+   "companyCount": 1,
+   "orderCount": 0,
+   "amountAfn": 0
+  }
+ }
+}
