@@ -12,7 +12,9 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case licences
     case worktrackCustomers
     case operations
+    case siteMessages
     case vault
+    case keys
     case allProducts, verification, releases, roadmap, issues
     case repositories, builds, deployments
     case appStore, googlePlay
@@ -33,7 +35,9 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .licences: L("Licences")
         case .worktrackCustomers: L("WorkTrack customers")
         case .operations: L("Operations")
+        case .siteMessages: L("Website messages")
         case .vault: L("Vault")
+        case .keys: L("Keys & Backups")
         case .allProducts: L("All Products")
         case .verification: L("Verification")
         case .releases: L("Release records")
@@ -65,7 +69,9 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .licences: "key.horizontal"
         case .worktrackCustomers: "person.2.badge.key"
         case .operations: "tray.full"
+        case .siteMessages: "envelope"
         case .vault: "lock.rectangle.stack"
+        case .keys: "externaldrive.badge.checkmark"
         case .allProducts: "shippingbox"
         case .verification: "checkmark.seal"
         case .releases: "tag"
@@ -93,7 +99,7 @@ struct SidebarSection: Identifiable {
     var id: String { title ?? "root" }
 
     static let all: [SidebarSection] = [
-        SidebarSection(title: nil, items: [.dashboard, .brief, .monitor, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .vault]),
+        SidebarSection(title: nil, items: [.dashboard, .brief, .monitor, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys]),
         SidebarSection(title: "Products", items: [.allProducts, .verification, .releases, .roadmap, .issues]),
         SidebarSection(title: "Development", items: [.repositories, .builds, .deployments]),
         SidebarSection(title: "Stores", items: [.appStore, .googlePlay]),
@@ -111,6 +117,8 @@ enum RouterRequest: Equatable {
     case worktrackCompany(String)
     case newVaultEntry
     case vaultSearch(String)
+    /// Opens the "Mark restore test done" sheet in Keys & Backups (the sheet saves, never the palette).
+    case markRestoreTest
 }
 
 /// Navigation state shared by the sidebar, the menu commands, the Command Palette and the Daily Brief.
@@ -166,6 +174,8 @@ final class Router {
             if let product { operationsTab = product }
             go(.operations)
         case .oversight: go(.oversight)
+        case .keys: go(.keys)
+        case .siteMessages: go(.siteMessages)
         }
     }
 }

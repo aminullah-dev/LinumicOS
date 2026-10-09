@@ -22,6 +22,9 @@ public enum SecretKey: String, CaseIterable, Sendable {
     /// VELRO staff session: JSON `{environment, userID, roles, refreshToken, deviceID}`, rewritten after every
     /// successful refresh (the token rotates). Never the phone number or the access token.
     case velroStaffSession = "velro.staff.session"
+    /// linumic.com WordPress application password: JSON `{username, password}` (`WordPressAppPassword`). Used only for
+    /// GET requests that read contact-form entries. Never logged.
+    case wordPressLinumic = "wordpress.linumic.apppassword"
 }
 
 /// Credential storage. Values never appear in source, logs or the inventory file.

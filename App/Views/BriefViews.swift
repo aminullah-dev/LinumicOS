@@ -44,7 +44,7 @@ struct DailyBriefView: View {
                 ForEach(brief.sections) { section in
                     BriefSectionCard(section: section) { router.open($0) }
                 }
-                Text("The brief is built on this device from what Monitor, Releases, Licences, WorkTrack customers, Operations and Oversight last read. It makes no requests of its own. A source that was never read says so instead of showing zero.")
+                Text("The brief is built on this device from what Monitor, Website messages, Releases, Licences, WorkTrack customers, Operations, Oversight and Keys & Backups last read. It makes no requests of its own. A source that was never read says so instead of showing zero.")
                     .font(.caption).foregroundStyle(.secondary)
             }
             .padding(20)
@@ -177,6 +177,16 @@ struct BriefLineRow: View {
                 Text(verbatim: line.text).fixedSize(horizontal: false, vertical: true)
                 if let detail = line.detail, !detail.isEmpty {
                     Text(verbatim: detail).font(.caption).foregroundStyle(.secondary).lineLimit(3)
+                }
+                if !line.links.isEmpty {
+                    FitRow(spacing: 12) {
+                        ForEach(line.links) { link in
+                            Link(destination: link.url) { Label(link.title, systemImage: link.symbol) }
+                                .buttonStyle(.borderless)
+                                .font(.callout)
+                                .minTapTarget()
+                        }
+                    }
                 }
                 if let at = line.readAt {
                     ReleaseSourceLine(source: line.source, at: at)

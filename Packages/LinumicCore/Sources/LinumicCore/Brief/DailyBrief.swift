@@ -9,18 +9,20 @@ import Foundation
 
 /// Where a line or section comes from. The order is the order of the sections on screen.
 public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiable {
-    case monitor, releases, licences, worktrack, operations, oversight, changes
+    case monitor, siteMessages, releases, licences, worktrack, operations, oversight, keys, changes
 
     public var id: String { rawValue }
 
     public var title: String {
         switch self {
         case .monitor: L("Monitor")
+        case .siteMessages: L("Website messages")
         case .releases: L("Releases")
         case .licences: L("Licences")
         case .worktrack: L("WorkTrack customers")
         case .operations: L("Operations")
         case .oversight: L("Oversight")
+        case .keys: L("Keys & Backups")
         case .changes: L("What changed since yesterday")
         }
     }
@@ -28,11 +30,13 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
     public var symbol: String {
         switch self {
         case .monitor: "waveform.path.ecg"
+        case .siteMessages: "envelope"
         case .releases: "shippingbox.and.arrow.backward"
         case .licences: "key.horizontal"
         case .worktrack: "person.2.badge.key"
         case .operations: "tray.full"
         case .oversight: "scope"
+        case .keys: "externaldrive.badge.checkmark"
         case .changes: "clock.arrow.circlepath"
         }
     }
@@ -48,6 +52,8 @@ public enum BriefDestination: Hashable, Sendable {
     case worktrackCompany(String)
     case operations(OperationsProduct?)
     case oversight
+    case keys
+    case siteMessages
 }
 
 public enum BriefSeverity: Int, Codable, Sendable, Comparable {
@@ -61,6 +67,20 @@ public enum BriefSeverity: Int, Codable, Sendable, Comparable {
     public static func < (a: BriefSeverity, b: BriefSeverity) -> Bool { a.rawValue < b.rawValue }
 }
 
+/// An extra link on a line (open a record on the web, reply by email).
+public struct BriefLink: Hashable, Sendable, Identifiable {
+    public var title: String
+    public var url: URL
+    public var symbol: String
+    public var id: String { url.absoluteString }
+
+    public init(title: String, url: URL, symbol: String) {
+        self.title = title
+        self.url = url
+        self.symbol = symbol
+    }
+}
+
 /// One sentence of the brief, with where it was read and when.
 public struct BriefLine: Identifiable, Hashable, Sendable {
     public var id: String
@@ -72,9 +92,11 @@ public struct BriefLine: Identifiable, Hashable, Sendable {
     /// When the underlying fact was read. Nil only for facts of the local ledger that was never synced.
     public var readAt: Date?
     public var destination: BriefDestination
+    /// Links shown beside the Open button.
+    public var links: [BriefLink]
 
     public init(id: String, kind: BriefSourceKind, severity: BriefSeverity, text: String, detail: String? = nil,
-                source: String, readAt: Date?, destination: BriefDestination) {
+                source: String, readAt: Date?, destination: BriefDestination, links: [BriefLink] = []) {
         self.id = id
         self.kind = kind
         self.severity = severity
@@ -83,6 +105,7 @@ public struct BriefLine: Identifiable, Hashable, Sendable {
         self.source = source
         self.readAt = readAt
         self.destination = destination
+        self.links = links
     }
 }
 
@@ -207,6 +230,34 @@ public struct BriefOversightInput: Sendable {
     }
 }
 
+/// Keys & Backups as the App holds it: the registry facts plus, on the Mac, the last local check.
+public struct BriefKeysInput: Sendable {
+    public var check: KeysCheckInput
+    /// Scan locations the app may not read (home-relative), shown as a note.
+    public var notGranted: [String]
+
+    public init(check: KeysCheckInput, notGranted: [String] = []) {
+        self.check = check
+        self.notGranted = notGranted
+    }
+}
+
+/// Website messages as the App holds them: whether a password is stored, the last reading (in memory only) and the
+/// ids the owner has seen.
+public struct BriefSiteMessagesInput: Sendable {
+    public var isConfigured: Bool
+    public var reading: SiteMessagesReading?
+    public var seenIDs: Set<Int>
+    public var loadError: String?
+
+    public init(isConfigured: Bool, reading: SiteMessagesReading?, seenIDs: Set<Int>, loadError: String? = nil) {
+        self.isConfigured = isConfigured
+        self.reading = reading
+        self.seenIDs = seenIDs
+        self.loadError = loadError
+    }
+}
+
 public struct BriefInput: Sendable {
     public var now: Date
     public var monitor: MonitorSnapshot
@@ -216,10 +267,15 @@ public struct BriefInput: Sendable {
     public var worktrack: BriefWorkTrackInput
     public var operations: [BriefOperationsInput]
     public var oversight: BriefOversightInput
+    /// Nil when the Keys & Backups registry has not been loaded.
+    public var keys: BriefKeysInput?
+    /// Nil when the App has no Website messages model.
+    public var siteMessages: BriefSiteMessagesInput?
 
     public init(now: Date, monitor: MonitorSnapshot, monitorTargets: [MonitorTarget] = MonitorCatalog.targets,
                 releases: ReleaseCenterSnapshot, licences: BriefLicenceInput, worktrack: BriefWorkTrackInput,
-                operations: [BriefOperationsInput], oversight: BriefOversightInput) {
+                operations: [BriefOperationsInput], oversight: BriefOversightInput, keys: BriefKeysInput? = nil,
+                siteMessages: BriefSiteMessagesInput? = nil) {
         self.now = now
         self.monitor = monitor
         self.monitorTargets = monitorTargets
@@ -228,6 +284,8 @@ public struct BriefInput: Sendable {
         self.worktrack = worktrack
         self.operations = operations
         self.oversight = oversight
+        self.keys = keys
+        self.siteMessages = siteMessages
     }
 }
 
@@ -243,11 +301,13 @@ public enum DailyBriefBuilder {
     public static func build(_ input: BriefInput, changes: [BriefLine]?) -> DailyBrief {
         var sections = [
             monitor(input),
+            siteMessages(input),
             releases(input),
             licences(input),
             worktrack(input),
             operations(input),
             oversight(input),
+            keys(input),
         ]
         sections.append(changesSection(changes, now: input.now))
         return DailyBrief(sections: sections, generatedAt: input.now)
@@ -314,6 +374,39 @@ public enum DailyBriefBuilder {
         let unchecked = input.monitorTargets.count { s.latest[$0.id] == nil }
         let notes = unchecked > 0 ? [LF("%d of %d endpoints have not been checked yet.", unchecked, input.monitorTargets.count)] : []
         return finish(.monitor, lines: lines, readAt: lastRound, source: source, notes: notes)
+    }
+
+    // MARK: Website messages
+
+    static func siteMessages(_ input: BriefInput) -> BriefSection {
+        let source = SiteMessagesSource.sourceText
+        guard let m = input.siteMessages, m.isConfigured else {
+            return BriefSection(kind: .siteMessages, state: .neverRead(L("Not connected. Add a WordPress application password in Settings → Integrations → Website messages.")),
+                                readAt: nil, source: source)
+        }
+        guard let reading = m.reading else {
+            if let error = m.loadError { return BriefSection(kind: .siteMessages, state: .unavailable(error), readAt: nil, source: source) }
+            return BriefSection(kind: .siteMessages, state: .neverRead(L("Connected, not read yet. It is read when the app opens and every 30 minutes.")),
+                                readAt: nil, source: source)
+        }
+        let new = SiteMessagesRules.new(reading.messages, seen: m.seenIDs)
+        let lines = new.map { msg in
+            var links = [BriefLink(title: L("Open in wp-admin"), url: msg.adminURL(), symbol: "safari")]
+            if let reply = msg.replyURL { links.append(BriefLink(title: L("Reply by email"), url: reply, symbol: "arrowshape.turn.up.left")) }
+            let when = msg.createdAt.map { $0.formatted(date: .abbreviated, time: .shortened) } ?? msg.createdAtText
+            return BriefLine(id: "site.\(msg.id)", kind: .siteMessages, severity: .normal,
+                             text: LF("Message from %@, %@", msg.sender, when),
+                             detail: msg.excerpt.isEmpty ? nil : msg.excerpt,
+                             source: LF("%@, entry %d", source, msg.id), readAt: reading.readAt,
+                             destination: .siteMessages, links: links)
+        }
+        var notes: [String] = []
+        if let error = m.loadError { notes.append(LF("The last refresh failed: %@", error)) }
+        let seen = reading.messages.count - new.count
+        if seen > 0 { notes.append(LF("%d earlier messages already marked seen.", seen)) }
+        // Keep newest first rather than sorting by text.
+        return BriefSection(kind: .siteMessages, state: lines.isEmpty ? .allClear : .items, lines: lines,
+                            readAt: reading.readAt, source: source, notes: notes)
     }
 
     // MARK: Release Center
@@ -481,6 +574,28 @@ public enum DailyBriefBuilder {
                                    source: source, readAt: change.detectedAt, destination: .oversight))
         }
         return finish(.oversight, lines: lines, readAt: lastScan, source: source)
+    }
+
+    // MARK: Keys & Backups
+
+    static func keys(_ input: BriefInput) -> BriefSection {
+        let source = L("Keys & Backups registry and local file checks")
+        guard let k = input.keys else {
+            return BriefSection(kind: .keys, state: .neverRead(L("The Keys & Backups registry has not been loaded yet.")),
+                                readAt: nil, source: source)
+        }
+        let lines = KeysRules.reminders(k.check).map { r in
+            BriefLine(id: r.id, kind: .keys, severity: r.severity, text: r.text, detail: r.detail, source: r.source,
+                      readAt: r.readAt, destination: .keys)
+        }
+        var notes: [String] = []
+        if k.check.checkedAt == nil {
+            notes.append(L("Files on this Mac have not been checked; only the registry facts are used."))
+        }
+        if !k.notGranted.isEmpty {
+            notes.append(LF("Not granted, so not checked: %@.", k.notGranted.joined(separator: ", ")))
+        }
+        return finish(.keys, lines: lines, readAt: k.check.checkedAt, source: source, notes: notes)
     }
 
     // MARK: Changes

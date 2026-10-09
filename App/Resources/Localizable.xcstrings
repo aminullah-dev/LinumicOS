@@ -254,6 +254,16 @@
         }
       }
     },
+    "%@ was deleted on %@ but is on this Mac again": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ در %@ پاک شده بود ولی دوباره روی این مک است"
+          }
+        }
+      }
+    },
     "%@ will be marked superseded. Its key keeps working in the customer's app until it expires.": {
       "localizations": {
         "fa-AF": {
@@ -270,6 +280,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "%@, entry %d": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@، ورودی %d"
           }
         }
       }
@@ -484,6 +504,26 @@
         }
       }
     },
+    "%d earlier messages already marked seen.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d پیام قبلی دیده‌شده علامت خورده است."
+          }
+        }
+      }
+    },
+    "%d new messages from linumic.com": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d پیام تازه از linumic.com"
+          }
+        }
+      }
+    },
     "%ld draft finding(s) haven't been reviewed and aren't reported.": {
       "extractionState": "stale",
       "localizations": {
@@ -594,6 +634,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld میلی‌ثانیه"
+          }
+        }
+      }
+    },
+    "%lld new": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld تازه"
           }
         }
       }
@@ -768,6 +818,16 @@
         }
       }
     },
+    "(no message text)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(پیام متنی ندارد)"
+          }
+        }
+      }
+    },
     "+1 Year": {
       "localizations": {
         "fa-AF": {
@@ -839,6 +899,16 @@
         }
       }
     },
+    "1. wp-admin → Users → Profile → Application Passwords: name it ⁨Linumic OS⁩ and press Add. Copy the password once. 2. SureForms → Settings: turn on ⁨Enable Abilities⁩ (leave Edit and Delete off). 3. Paste your username and the password here. It is stored only in this device's Keychain (wordpress.linumic.apppassword) and sent only to https://linumic.com. Revoke it in the same WordPress screen at any time.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "۱. در wp-admin ← Users ← Profile ← Application Passwords یک نام بنویسید (⁨Linumic OS⁩) و Add را بزنید. رمز را همان یک بار کپی کنید. ۲. در SureForms ← Settings گزینهٔ ⁨Enable Abilities⁩ را روشن کنید (Edit و Delete را خاموش بگذارید). ۳. نام کاربری و رمز را این‌جا بگذارید. رمز فقط در Keychain همین دستگاه (wordpress.linumic.apppassword) نگه داشته می‌شود و فقط به https://linumic.com فرستاده می‌شود. هر وقت خواستید، در همان صفحهٔ WordPress آن را باطل کنید."
+          }
+        }
+      }
+    },
     "; ": {
       "localizations": {
         "fa-AF": {
@@ -855,6 +925,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "لایسنسِ «%@» تمدید نمی‌شود. تازه‌ترین لایسنس همین مشتری را تمدید کنید."
+          }
+        }
+      }
+    },
+    "A local notification with the sender's name when a refresh finds a message you haven't seen. Read when the app opens and every 30 minutes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک اعلان محلی با نام فرستنده، وقتی بازخوانی پیامی پیدا کند که هنوز ندیده‌اید. هنگام باز شدن برنامه و هر ۳۰ دقیقه خوانده می‌شود."
           }
         }
       }
@@ -1126,6 +1206,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "همه (*)"
+          }
+        }
+      }
+    },
+    "All entries in wp-admin": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همهٔ ورودی‌ها در wp-admin"
           }
         }
       }
@@ -1412,6 +1502,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "برنامه"
+          }
+        }
+      }
+    },
+    "Application password": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمز برنامه (Application password)"
           }
         }
       }
@@ -2148,6 +2248,26 @@
         }
       }
     },
+    "Connected, not read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وصل است، هنوز خوانده نشده."
+          }
+        }
+      }
+    },
+    "Connected, not read yet. It is read when the app opens and every 30 minutes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وصل است، هنوز خوانده نشده. هنگام باز شدن برنامه و هر ۳۰ دقیقه خوانده می‌شود."
+          }
+        }
+      }
+    },
     "Console refresh %@: %lld updated": {
       "localizations": {
         "fa-AF": {
@@ -2325,6 +2445,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "یک ⁨service account⁩ بسازید و برایش کلید ⁨JSON⁩ دانلود کنید."
+          }
+        }
+      }
+    },
+    "Create an application password in wp-admin": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ساختن رمز برنامه در wp-admin"
           }
         }
       }
@@ -2541,6 +2671,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "این ورود حذف شود؟"
+          }
+        }
+      }
+    },
+    "Deleted %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاک‌شده %@"
           }
         }
       }
@@ -3341,6 +3481,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "رایگان و فقط‌خواندنی. کلید فقط در Keychain همین مک می‌ماند و هرگز آپلود نمی‌شود."
+          }
+        }
+      }
+    },
+    "From %@ and %d more.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از %@ و %d نفر دیگر."
+          }
+        }
+      }
+    },
+    "From %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از %@."
           }
         }
       }
@@ -4585,6 +4745,26 @@
         }
       }
     },
+    "linumic.com (WordPress)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "linumic.com (WordPress)"
+          }
+        }
+      }
+    },
+    "linumic.com, SureForms entries through the WordPress Abilities API": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "linumic.com، ورودی‌های SureForms از راه Abilities API در WordPress"
+          }
+        }
+      }
+    },
     "Listing": {
       "localizations": {
         "fa-AF": {
@@ -4882,6 +5062,26 @@
         }
       }
     },
+    "Mark all seen": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همه را دیده‌شده علامت بزن"
+          }
+        }
+      }
+    },
+    "Mark as new": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "علامت تازه"
+          }
+        }
+      }
+    },
     "Mark Published": {
       "localizations": {
         "fa-AF": {
@@ -4899,6 +5099,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "برای پیگیری، انتشار را «نامزد انتشار» علامت بزنید"
+          }
+        }
+      }
+    },
+    "Mark seen": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دیده شد"
           }
         }
       }
@@ -4991,6 +5201,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "قابل ادغام، برخی بررسی‌ها ناکام"
+          }
+        }
+      }
+    },
+    "Message from %@, %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام از %@، %@"
+          }
+        }
+      }
+    },
+    "Messages are kept in memory only. This device stores just the ids you marked seen or were notified about (site-messages.json). Nothing is changed in WordPress.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام‌ها فقط در حافظهٔ برنامه می‌مانند. این دستگاه فقط شمارهٔ پیام‌هایی را که دیده‌شده علامت زده‌اید یا برایشان اعلان آمده نگه می‌دارد (site-messages.json). در WordPress چیزی تغییر نمی‌کند."
           }
         }
       }
@@ -5158,12 +5388,32 @@
         }
       }
     },
+    "New": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه"
+          }
+        }
+      }
+    },
     "New %@★ review of %@: %@": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "نظر تازهٔ %1$@★ برای %2$@: %3$@"
+          }
+        }
+      }
+    },
+    "New message from linumic.com": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام تازه از linumic.com"
           }
         }
       }
@@ -5234,6 +5484,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نوع منبع تازه"
+          }
+        }
+      }
+    },
+    "New website messages": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام‌های تازهٔ سایت"
           }
         }
       }
@@ -5529,6 +5789,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نوع سؤال شناخته نشد"
+          }
+        }
+      }
+    },
+    "No new messages. Everything read so far is marked seen.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام تازه‌ای نیست. هرچه تا حالا خوانده شده، دیده‌شده علامت خورده است."
           }
         }
       }
@@ -5951,6 +6221,16 @@
         }
       }
     },
+    "Not connected. Add a WordPress application password in Settings → Integrations → Website messages.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وصل نیست. در تنظیمات ← Integrations ← «پیام‌های سایت» یک رمز برنامهٔ WordPress بگذارید."
+          }
+        }
+      }
+    },
     "Not connected. No data is shown until this integration is implemented and authorized.": {
       "localizations": {
         "fa-AF": {
@@ -6175,6 +6455,16 @@
         }
       }
     },
+    "Notify me about new website messages": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای پیام‌های تازهٔ سایت اعلان بده"
+          }
+        }
+      }
+    },
     "Notify me about store changes": {
       "localizations": {
         "fa-AF": {
@@ -6221,6 +6511,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "خوب"
+          }
+        }
+      }
+    },
+    "On this Mac again": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دوباره روی این مک"
           }
         }
       }
@@ -6286,6 +6586,16 @@
         }
       }
     },
+    "Open form entries in wp-admin": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن ورودی‌های فورم در wp-admin"
+          }
+        }
+      }
+    },
     "Open GitHub issues exist in %@, but their severity isn't known.": {
       "extractionState": "stale",
       "localizations": {
@@ -6317,6 +6627,16 @@
         }
       }
     },
+    "Open in wp-admin": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن در wp-admin"
+          }
+        }
+      }
+    },
     "Open pull requests": {
       "localizations": {
         "fa-AF": {
@@ -6333,6 +6653,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "PR های باز: %lld"
+          }
+        }
+      }
+    },
+    "Open Settings → Integrations": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن تنظیمات ← Integrations"
           }
         }
       }
@@ -6414,6 +6744,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "رمز کپی شد. کلیپ‌بورد پس از ۳۰ ثانیه پاک می‌شود."
+          }
+        }
+      }
+    },
+    "Password saved": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمز ذخیره است"
           }
         }
       }
@@ -7022,6 +7362,16 @@
         }
       }
     },
+    "Re: your message to Linumic": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاسخ: پیام شما به Linumic"
+          }
+        }
+      }
+    },
     "Read from public RDAP (rdap.org) every 12 hours. Hosts on web.app and cloudfunctions.net belong to Google and are not renewed by Linumic.": {
       "localizations": {
         "fa-AF": {
@@ -7102,6 +7452,26 @@
         }
       }
     },
+    "Read-only. Run these yourself in Terminal; the app runs nothing. openssl asks for the passphrase (Keychain item “Linumic license backup passphrase”, the private Notion page or the paper copy); it never goes on the command line.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط خواندنی. این فرمان‌ها را خودتان در Terminal اجرا کنید؛ برنامه چیزی اجرا نمی‌کند. openssl رمز را می‌پرسد (آیتم Keychain «Linumic license backup passphrase»، صفحهٔ خصوصی Notion یا نسخهٔ کاغذی)؛ رمز هرگز در خود فرمان نوشته نمی‌شود."
+          }
+        }
+      }
+    },
+    "Read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوانده شد."
+          }
+        }
+      }
+    },
     "Reading from RDAP…": {
       "localizations": {
         "fa-AF": {
@@ -7118,6 +7488,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "در حال خواندن فروشگاه‌ها و GitHub…"
+          }
+        }
+      }
+    },
+    "Reads contact-form entries through SureForms' read-only abilities. It never changes WordPress.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ورودی‌های فورم تماس را از راه قابلیت‌های فقط‌خواندنی SureForms می‌خواند. هیچ‌وقت WordPress را تغییر نمی‌دهد."
           }
         }
       }
@@ -7349,6 +7729,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "وضعیت فروشگاه‌ها را خودکار به‌روز کن"
+          }
+        }
+      }
+    },
+    "Refresh website messages": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازخوانی پیام‌های سایت"
           }
         }
       }
@@ -7660,6 +8050,16 @@
         }
       }
     },
+    "Remove": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حذف"
+          }
+        }
+      }
+    },
     "Remove Key": {
       "localizations": {
         "fa-AF": {
@@ -7716,6 +8116,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "از بررسی برداشته شد"
+          }
+        }
+      }
+    },
+    "Removed.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حذف شد."
           }
         }
       }
@@ -7786,6 +8196,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "جایگزین‌شده با"
+          }
+        }
+      }
+    },
+    "Reply by email": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاسخ با ایمیل"
           }
         }
       }
@@ -8099,12 +8519,32 @@
         }
       }
     },
+    "Saved and read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ذخیره و خوانده شد."
+          }
+        }
+      }
+    },
     "Saved only in this device's Keychain, never synced or uploaded. Showing, copying or filling a password asks for Touch ID or your device password.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "فقط در Keychain همین دستگاه ذخیره می‌شود، هرگز همگام یا آپلود نمی‌شود. نشان دادن، کپی یا پر کردن رمز، Touch ID یا رمز دستگاه را می‌خواهد."
+          }
+        }
+      }
+    },
+    "Saved to the Keychain.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در Keychain ذخیره شد."
           }
         }
       }
@@ -8317,6 +8757,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نشان دادن رمز %@"
+          }
+        }
+      }
+    },
+    "Shows the newest %lld of %lld entries. Older ones are in wp-admin.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه‌ترین %lld ورودی از %lld نشان داده می‌شود. قدیمی‌ترها در wp-admin هستند."
           }
         }
       }
@@ -8869,6 +9319,26 @@
         }
       }
     },
+    "SureForms abilities are off. In wp-admin open SureForms → Settings and turn on “Enable Abilities”.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قابلیت‌های SureForms خاموش است. در wp-admin بخش SureForms ← Settings را باز کنید و «Enable Abilities» را روشن کنید."
+          }
+        }
+      }
+    },
+    "SureForms settings (Enable Abilities)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تنظیمات SureForms (Enable Abilities)"
+          }
+        }
+      }
+    },
     "Survey": {
       "extractionState": "stale",
       "localizations": {
@@ -9102,6 +9572,16 @@
         }
       }
     },
+    "The brief is built on this device from what Monitor, Website messages, Releases, Licences, WorkTrack customers, Operations, Oversight and Keys & Backups last read. It makes no requests of its own. A source that was never read says so instead of showing zero.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گزارش روز روی همین دستگاه از آخرین خواندن پایش، پیام‌های سایت، انتشارها، لایسنس‌ها، مشتریان WorkTrack، عملیات، نظارت و کلیدها و پشتیبان‌ها ساخته می‌شود. خودش هیچ درخواستی نمی‌فرستد. منبعی که هرگز خوانده نشده، همین را می‌گوید، نه صفر."
+          }
+        }
+      }
+    },
     "The certificate of %@ ends in %lld days.": {
       "localizations": {
         "fa-AF": {
@@ -9128,6 +9608,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "کدی که مشتری از صفحهٔ لایسنس برنامه می‌خواند. خیاط‌یار: از دستگاه اصلی کارگاه. * یعنی هر دستگاه."
+          }
+        }
+      }
+    },
+    "The contact form's notification emails don't reach you, so the app reads the entries from WordPress. It needs an application password of an Administrator and SureForms' ⁨Enable Abilities⁩ setting.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ایمیل‌های اطلاع‌رسانی فورم تماس به شما نمی‌رسد، پس برنامه ورودی‌ها را از WordPress می‌خواند. برای این کار رمز برنامهٔ یک مدیر (Administrator) و روشن بودن ⁨Enable Abilities⁩ در SureForms لازم است."
           }
         }
       }
@@ -9229,6 +9719,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "کلید ثبت نشده است (issued.csv آن را ندارد). برای ضمیمه کردن، فایل .lnmlic همین لایسنس را از ~/.linumic/licenses وارد کنید."
+          }
+        }
+      }
+    },
+    "The last refresh failed: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین بازخوانی ناموفق بود: %@"
           }
         }
       }
@@ -9352,6 +9852,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "امضا نمی‌خواند. کلید تغییر کرده یا با کلید دیگری امضا شده است."
+          }
+        }
+      }
+    },
+    "The site address must use HTTPS.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشانی سایت باید HTTPS باشد."
           }
         }
       }
@@ -9587,6 +10097,26 @@
         }
       }
     },
+    "This WordPress has no Abilities API (it needs WordPress 6.9 or later).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این WordPress رابط Abilities ندارد (WordPress 6.9 یا تازه‌تر لازم است)."
+          }
+        }
+      }
+    },
+    "This WordPress user may not read form entries (403, %@). Use an Administrator's application password.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کاربر WordPress اجازهٔ خواندن ورودی‌های فورم را ندارد (403، %@). رمز برنامهٔ یک مدیر (Administrator) را بگذارید."
+          }
+        }
+      }
+    },
     "Title": {
       "localizations": {
         "fa-AF": {
@@ -9707,6 +10237,16 @@
         }
       }
     },
+    "Unknown sender": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فرستندهٔ نامعلوم"
+          }
+        }
+      }
+    },
     "Unknown state": {
       "localizations": {
         "fa-AF": {
@@ -9743,6 +10283,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "باز است · قفل می‌شود پس از %@"
+          }
+        }
+      }
+    },
+    "Unread in WordPress": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در WordPress خوانده نشده"
           }
         }
       }
@@ -10172,6 +10722,26 @@
         }
       }
     },
+    "Website message #%lld": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام سایت #%lld"
+          }
+        }
+      }
+    },
+    "Website messages": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام‌های سایت"
+          }
+        }
+      }
+    },
     "What changed this week?": {
       "extractionState": "stale",
       "localizations": {
@@ -10300,6 +10870,76 @@
         }
       }
     },
+    "WordPress answered with something that isn't a SureForms entry list.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاسخ WordPress فهرست ورودی‌های SureForms نبود."
+          }
+        }
+      }
+    },
+    "WordPress refused the application password (401, %@). Create a new one and save it again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WordPress رمز برنامه را نپذیرفت (401، %@). یک رمز تازه بسازید و دوباره ذخیره کنید."
+          }
+        }
+      }
+    },
+    "WordPress returned HTTP %d (%@).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WordPress پاسخ HTTP %d داد (%@)."
+          }
+        }
+      }
+    },
+    "WordPress returned HTTP %d.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WordPress پاسخ HTTP %d داد."
+          }
+        }
+      }
+    },
+    "WordPress saw no signed-in user (401). Check the username and application password; if they are right, the host may be dropping the Authorization header.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WordPress کاربر واردشده‌ای ندید (401). نام کاربری و رمز برنامه را بررسی کنید؛ اگر درست است، شاید میزبان سایت سرآیند Authorization را حذف می‌کند."
+          }
+        }
+      }
+    },
+    "WordPress user": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کاربر WordPress"
+          }
+        }
+      }
+    },
+    "WordPress username": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام کاربری WordPress"
+          }
+        }
+      }
+    },
     "Workflow: Idea → Draft → In Review → Approved → Scheduled → Published. Publishing is done by a person on the network, then recorded here with its link.": {
       "localizations": {
         "fa-AF": {
@@ -10338,6 +10978,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "پروژهٔ Xcode"
+          }
+        }
+      }
+    },
+    "xxxx xxxx xxxx xxxx xxxx xxxx": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "xxxx xxxx xxxx xxxx xxxx xxxx"
           }
         }
       }
@@ -10554,6 +11204,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "«%@» در کد دستگاه نمی‌آید"
+          }
+        }
+      }
+    },
+    "•••• •••• (stored in Keychain)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "•••• •••• (در Keychain ذخیره است)"
           }
         }
       }
@@ -16850,6 +17510,1466 @@
           "stringUnit": {
             "state": "translated",
             "value": "↑↓ انتخاب · ↩ باز کردن · esc بستن"
+          }
+        }
+      }
+    },
+    "%@ changed on %@, after the backup of %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ در %2$@ تغییر کرده، پس از پشتیبان %3$@"
+          }
+        }
+      }
+    },
+    "%@ is missing at %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ در %2$@ پیدا نشد"
+          }
+        }
+      }
+    },
+    "%@ is no longer on this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ دیگر روی این مک نیست"
+          }
+        }
+      }
+    },
+    "%@ is not in any backup": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ در هیچ پشتیبانی نیست"
+          }
+        }
+      }
+    },
+    "%@ is only removed from this list. The key file itself is not touched.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ فقط از این فهرست برداشته می‌شود. به خود فایل کلید دست زده نمی‌شود."
+          }
+        }
+      }
+    },
+    "%@ · modified %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · تغییر: %2$@"
+          }
+        }
+      }
+    },
+    "%@: last restore test was %d days ago (%@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: آخرین بازیابی آزمایشی %2$d روز پیش بود (%3$@)"
+          }
+        }
+      }
+    },
+    "%@: no restore test recorded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: هیچ بازیابی آزمایشی ثبت نشده است"
+          }
+        }
+      }
+    },
+    "%lld files found; the source lists %lld.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld فایل پیدا شد؛ منبع %2$lld فایل می‌گوید."
+          }
+        }
+      }
+    },
+    "Add key…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افزودن کلید…"
+          }
+        }
+      }
+    },
+    "Add to registry…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افزودن به فهرست…"
+          }
+        }
+      }
+    },
+    "After a new backup, set the day it was made so the staleness check compares against it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پس از ساختن پشتیبان تازه، روز ساختنش را بنویسید تا بررسی کهنگی با آن مقایسه کند."
+          }
+        }
+      }
+    },
+    "Android signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای اندروید"
+          }
+        }
+      }
+    },
+    "Android signing keys": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهای امضای اندروید"
+          }
+        }
+      }
+    },
+    "App Store Connect API key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید API برای App Store Connect"
+          }
+        }
+      }
+    },
+    "App Store Connect API keys": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهای API برای App Store Connect"
+          }
+        }
+      }
+    },
+    "App Store Connect keys and the notarytool profile are not backed up": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهای App Store Connect و پروفایل notarytool پشتیبان ندارند"
+          }
+        }
+      }
+    },
+    "Backed up": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبان دارد"
+          }
+        }
+      }
+    },
+    "Backup": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبان"
+          }
+        }
+      }
+    },
+    "Backup passphrase as a plain-text file": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمز پشتیبان به‌شکل فایل متنی ساده"
+          }
+        }
+      }
+    },
+    "By": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توسط"
+          }
+        }
+      }
+    },
+    "Changed after backup": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پس از پشتیبان تغییر کرده"
+          }
+        }
+      }
+    },
+    "Check each key file's existence, size and date now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بودن، اندازه و تاریخ هر فایل کلید را همین حالا بررسی کن"
+          }
+        }
+      }
+    },
+    "Check files": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی فایل‌ها"
+          }
+        }
+      }
+    },
+    "Check that the keys are there (names only), then mark the restore test done here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ببینید کلیدها آنجا هستند (فقط نام‌ها)، بعد اینجا بازیابی آزمایشی را ثبت کنید."
+          }
+        }
+      }
+    },
+    "Checked": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی شد"
+          }
+        }
+      }
+    },
+    "Checking key files…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال بررسی فایل‌های کلید…"
+          }
+        }
+      }
+    },
+    "Choose a folder that holds keys. Linumic OS reads only file names, sizes and dates in it, never the files.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشه‌ای را که کلیدها در آن است انتخاب کنید. Linumic OS فقط نام، اندازه و تاریخ فایل‌ها را می‌خواند، هرگز خود فایل‌ها را."
+          }
+        }
+      }
+    },
+    "Choose another folder…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتخاب پوشهٔ دیگر…"
+          }
+        }
+      }
+    },
+    "Choose folder…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتخاب پوشه…"
+          }
+        }
+      }
+    },
+    "Copy": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کپی"
+          }
+        }
+      }
+    },
+    "Copy the command": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کپی فرمان"
+          }
+        }
+      }
+    },
+    "Decrypt and unpack %@:": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن رمز و استخراج %@:"
+          }
+        }
+      }
+    },
+    "Delete the folder afterwards, so no plain copy of the keys stays on disk.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پس از کار پوشه را پاک کنید تا هیچ نسخهٔ بی‌رمز از کلیدها روی دیسک نماند."
+          }
+        }
+      }
+    },
+    "Do not delete": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاک نکنید"
+          }
+        }
+      }
+    },
+    "Done %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انجام شد %@"
+          }
+        }
+      }
+    },
+    "Done on": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ انجام"
+          }
+        }
+      }
+    },
+    "Download the backup file from Google Drive, folder Mohem.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل پشتیبان را از Google Drive، پوشهٔ Mohem دانلود کنید."
+          }
+        }
+      }
+    },
+    "Edit backup": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ویرایش پشتیبان"
+          }
+        }
+      }
+    },
+    "Edit backup…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ویرایش پشتیبان…"
+          }
+        }
+      }
+    },
+    "Encryption": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رمزگذاری"
+          }
+        }
+      }
+    },
+    "Entered in Linumic OS": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت‌شده در Linumic OS"
+          }
+        }
+      }
+    },
+    "File check on this Mac (date and size only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی فایل روی این مک (فقط تاریخ و اندازه)"
+          }
+        }
+      }
+    },
+    "File name": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام فایل"
+          }
+        }
+      }
+    },
+    "Files can only be checked on the Mac. The registry is shown here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل‌ها فقط روی مک بررسی می‌شوند. اینجا فقط فهرست نشان داده می‌شود."
+          }
+        }
+      }
+    },
+    "Files checked %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل‌ها بررسی شدند: %@"
+          }
+        }
+      }
+    },
+    "Files not checked yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل‌ها هنوز بررسی نشده‌اند."
+          }
+        }
+      }
+    },
+    "Files on this Mac have not been checked; only the registry facts are used.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل‌های این مک بررسی نشده‌اند؛ فقط واقعیت‌های فهرست به کار رفته‌اند."
+          }
+        }
+      }
+    },
+    "Forget the folders chosen here (the Oversight workspace stays)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشه‌هایی را که اینجا انتخاب شده فراموش کن (پوشهٔ کاری نظارت می‌ماند)"
+          }
+        }
+      }
+    },
+    "Found by file name only (*.jks, *.keystore, *-private.pem, AuthKey_*.p8). No backup is known for them.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط از روی نام فایل پیدا شدند (*.jks، *.keystore، *-private.pem، AuthKey_*.p8). هیچ پشتیبانی برایشان شناخته نیست."
+          }
+        }
+      }
+    },
+    "Google Drive file id": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شناسهٔ فایل در Google Drive"
+          }
+        }
+      }
+    },
+    "Grant read access": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازهٔ خواندن"
+          }
+        }
+      }
+    },
+    "Granted: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازه داده‌شده: %@"
+          }
+        }
+      }
+    },
+    "How it was verified": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چگونه تأیید شد"
+          }
+        }
+      }
+    },
+    "How was it done?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چگونه انجام شد؟"
+          }
+        }
+      }
+    },
+    "In backups": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در پشتیبان‌ها"
+          }
+        }
+      }
+    },
+    "In: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در: %@"
+          }
+        }
+      }
+    },
+    "Key file not covered by any backup: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل کلیدی که در هیچ پشتیبانی نیست: %@"
+          }
+        }
+      }
+    },
+    "Keychain item found": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آیتم Keychain پیدا شد"
+          }
+        }
+      }
+    },
+    "Keychain item not checked": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آیتم Keychain بررسی نشده"
+          }
+        }
+      }
+    },
+    "Keychain item “%@” not found": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آیتم Keychain «%@» پیدا نشد"
+          }
+        }
+      }
+    },
+    "Keychain item “%@” was not found": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آیتم Keychain «%@» پیدا نشد"
+          }
+        }
+      }
+    },
+    "Keychain lookup (attributes only, never the passphrase)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جستجو در Keychain (فقط مشخصات، هرگز خود رمز)"
+          }
+        }
+      }
+    },
+    "Keys & Backups": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدها و پشتیبان‌ها"
+          }
+        }
+      }
+    },
+    "Keys & Backups registry (keys-registry.json)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست کلیدها و پشتیبان‌ها (keys-registry.json)"
+          }
+        }
+      }
+    },
+    "Keys & Backups registry and local file checks": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست کلیدها و پشتیبان‌ها و بررسی فایل‌های همین مک"
+          }
+        }
+      }
+    },
+    "Keystore password file": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل رمز keystore"
+          }
+        }
+      }
+    },
+    "KhayatYar licence signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای لایسنس خیاط‌یار"
+          }
+        }
+      }
+    },
+    "Last restore test": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین بازیابی آزمایشی"
+          }
+        }
+      }
+    },
+    "Last restore test: %@, %@, by %@ (%lld days ago).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین بازیابی آزمایشی: %1$@، %2$@، توسط %3$@ (%4$lld روز پیش)."
+          }
+        }
+      }
+    },
+    "Licence signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای لایسنس"
+          }
+        }
+      }
+    },
+    "Licence signing keys": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهای امضای لایسنس"
+          }
+        }
+      }
+    },
+    "Linumic OS never opens, copies, hashes or uploads a key, keystore, .p8, .pem, password file or the backup passphrase. On this Mac it reads only whether each file exists, its size and its modification date, in folders you granted. For the passphrase it only asks the Keychain whether the item exists.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Linumic OS هیچ کلید، keystore، فایل .p8 و .pem، فایل رمز یا رمز پشتیبان را باز، کپی، hash یا آپلود نمی‌کند. روی این مک فقط بودن هر فایل، اندازه و تاریخ تغییرش را در پوشه‌هایی که اجازه داده‌اید می‌خواند. برای رمز پشتیبان فقط از Keychain می‌پرسد که آیتم هست یا نه."
+          }
+        }
+      }
+    },
+    "Made": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ساخته‌شده"
+          }
+        }
+      }
+    },
+    "Made on": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ ساخت"
+          }
+        }
+      }
+    },
+    "Make an empty private folder, move the downloaded file into it, and go there.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک پوشهٔ خالی و خصوصی بسازید، فایل دانلودشده را به آن ببرید و وارد آن شوید."
+          }
+        }
+      }
+    },
+    "Mark done…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت انجام…"
+          }
+        }
+      }
+    },
+    "Mark restore test done": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت بازیابی آزمایشی"
+          }
+        }
+      }
+    },
+    "Mark restore test done…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت بازیابی آزمایشی…"
+          }
+        }
+      }
+    },
+    "Mark second copy done": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت نسخهٔ دوم"
+          }
+        }
+      }
+    },
+    "Mark second copy done…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت نسخهٔ دوم…"
+          }
+        }
+      }
+    },
+    "MediFlow licence signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای لایسنس MediFlow"
+          }
+        }
+      }
+    },
+    "Modified %@, after the backup of %@. Make a new backup.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در %1$@ تغییر کرده، پس از پشتیبان %2$@. پشتیبان تازه بسازید."
+          }
+        }
+      }
+    },
+    "New keys must be added to the bundle": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهای تازه باید به بستهٔ پشتیبان اضافه شوند"
+          }
+        }
+      }
+    },
+    "No backup needed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبان لازم نیست"
+          }
+        }
+      }
+    },
+    "No restore test": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون بازیابی آزمایشی"
+          }
+        }
+      }
+    },
+    "No second copy of the backups off this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از پشتیبان‌ها نسخهٔ دومی بیرون از این مک نیست"
+          }
+        }
+      }
+    },
+    "No second copy off this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ دوم بیرون از این مک نیست"
+          }
+        }
+      }
+    },
+    "No such folder": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چنین پوشه‌ای نیست"
+          }
+        }
+      }
+    },
+    "Not backed up": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبان ندارد"
+          }
+        }
+      }
+    },
+    "Not granted": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازه داده نشده"
+          }
+        }
+      }
+    },
+    "Not granted — choose folder…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازه داده نشده — انتخاب پوشه…"
+          }
+        }
+      }
+    },
+    "Not granted, so not checked: %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازه داده نشده، پس بررسی نشد: %@."
+          }
+        }
+      }
+    },
+    "Not saved. The date can't be in the future.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ذخیره نشد. تاریخ نمی‌تواند در آینده باشد."
+          }
+        }
+      }
+    },
+    "Note": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یادداشت"
+          }
+        }
+      }
+    },
+    "Nothing needs you: every key is backed up, unchanged, and a restore was tested in the last 90 days.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کاری با شما نیست: همهٔ کلیدها پشتیبان دارند، تغییر نکرده‌اند و در ۹۰ روز گذشته بازیابی آزمایش شده است."
+          }
+        }
+      }
+    },
+    "On this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روی این مک"
+          }
+        }
+      }
+    },
+    "Only the path is stored. The app never opens the key file.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط مسیر ذخیره می‌شود. برنامه هرگز فایل کلید را باز نمی‌کند."
+          }
+        }
+      }
+    },
+    "Open in Drive": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن در Drive"
+          }
+        }
+      }
+    },
+    "Other key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید دیگر"
+          }
+        }
+      }
+    },
+    "Partly: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بخشی: %@"
+          }
+        }
+      }
+    },
+    "Passphrase copy": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ رمز پشتیبان"
+          }
+        }
+      }
+    },
+    "Passphrase in": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جای رمز"
+          }
+        }
+      }
+    },
+    "Path (starts with ~/; * allowed in the file name)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مسیر (با ~/ شروع شود؛ * در نام فایل مجاز است)"
+          }
+        }
+      }
+    },
+    "Record only a restore that was really done: the file was downloaded, decrypted and the keys were there.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط بازیابی‌ای را ثبت کنید که واقعاً انجام شده: فایل دانلود شد، رمزش باز شد و کلیدها در آن بودند."
+          }
+        }
+      }
+    },
+    "Recorded on": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ ثبت"
+          }
+        }
+      }
+    },
+    "Registry as seeded from ~/Keys/README.md (2026-10-09) and the session record. Edits are saved on this device (keys-registry.json).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست از ~/Keys/README.md (۲۰۲۶-۱۰-۰۹) و گزارش جلسه پر شده است. ویرایش‌ها روی همین دستگاه ذخیره می‌شوند (keys-registry.json)."
+          }
+        }
+      }
+    },
+    "Registry last changed %@ (keys-registry.json, this device).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین تغییر فهرست: %@ (keys-registry.json، همین دستگاه)."
+          }
+        }
+      }
+    },
+    "Reminders": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یادآوری‌ها"
+          }
+        }
+      }
+    },
+    "Remove access": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برداشتن اجازه"
+          }
+        }
+      }
+    },
+    "Remove from the registry": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برداشتن از فهرست"
+          }
+        }
+      }
+    },
+    "Remove from the registry…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برداشتن از فهرست…"
+          }
+        }
+      }
+    },
+    "Remove this key from the registry?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کلید از فهرست برداشته شود؟"
+          }
+        }
+      }
+    },
+    "Reopen": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن دوباره"
+          }
+        }
+      }
+    },
+    "Restore guide": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "راهنمای بازیابی"
+          }
+        }
+      }
+    },
+    "Restore tested %lld days ago": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازیابی %lld روز پیش آزمایش شد"
+          }
+        }
+      }
+    },
+    "Restored on": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ بازیابی"
+          }
+        }
+      }
+    },
+    "SODER-HAKEM signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای SODER-HAKEM"
+          }
+        }
+      }
+    },
+    "SafeBeauty signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای SafeBeauty"
+          }
+        }
+      }
+    },
+    "Scan of key folders on this Mac (file names only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جستجوی پوشه‌های کلید در این مک (فقط نام فایل‌ها)"
+          }
+        }
+      }
+    },
+    "Second VELRO key (from Downloads)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید دوم VELRO (از Downloads)"
+          }
+        }
+      }
+    },
+    "Size": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اندازه"
+          }
+        }
+      }
+    },
+    "Size in bytes": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اندازه به بایت"
+          }
+        }
+      }
+    },
+    "Source: %@, recorded %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع: %1$@، ثبت: %2$@"
+          }
+        }
+      }
+    },
+    "Test a restore at least every %d days.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دست‌کم هر %d روز یک بار بازیابی را آزمایش کنید."
+          }
+        }
+      }
+    },
+    "The Keys & Backups registry has not been loaded yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست کلیدها و پشتیبان‌ها هنوز بارگذاری نشده است."
+          }
+        }
+      }
+    },
+    "The app is sandboxed: it can only look in folders you choose. Choosing your home folder once covers every location below. Access is read-only and limited to names, sizes and dates.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برنامه در sandbox است: فقط در پوشه‌هایی که شما انتخاب کنید نگاه می‌کند. یک بار انتخاب پوشهٔ خانه همهٔ جاهای زیر را می‌پوشاند. دسترسی فقط خواندنی و محدود به نام، اندازه و تاریخ است."
+          }
+        }
+      }
+    },
+    "The backup %@ may be stale. Make a new one.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبان %@ شاید کهنه باشد. یکی تازه بسازید."
+          }
+        }
+      }
+    },
+    "The restore test was not saved. The date can't be in the future.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازیابی آزمایشی ذخیره نشد. تاریخ نمی‌تواند در آینده باشد."
+          }
+        }
+      }
+    },
+    "Tick a backup only if this key was really put into it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبانی را فقط وقتی علامت بزنید که این کلید واقعاً در آن گذاشته شده باشد."
+          }
+        }
+      }
+    },
+    "VELRO keystore password file": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل رمز keystore برای VELRO"
+          }
+        }
+      }
+    },
+    "VELRO signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای VELRO"
+          }
+        }
+      }
+    },
+    "Where": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کجا"
+          }
+        }
+      }
+    },
+    "Where is the second copy? (e.g. USB drive at home)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ دوم کجاست؟ (مثلاً فلش‌دیسک در خانه)"
+          }
+        }
+      }
+    },
+    "Without the passphrase the backups can't be opened. Check the Keychain and the private Notion page.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون رمز، پشتیبان‌ها باز نمی‌شوند. Keychain و صفحهٔ خصوصی Notion را بررسی کنید."
+          }
+        }
+      }
+    },
+    "WorkTrack upload key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید آپلود WorkTrack"
+          }
+        }
+      }
+    },
+    "WorkTrack upload key (backup copy)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید آپلود WorkTrack (نسخهٔ پشتیبان)"
+          }
+        }
+      }
+    },
+    "keys-registry.json could not be read. The seeded facts are shown and nothing is saved until the file is fixed or removed.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل keys-registry.json خوانده نشد. واقعیت‌های اولیه نشان داده می‌شوند و تا فایل درست یا پاک نشود چیزی ذخیره نمی‌شود."
+          }
+        }
+      }
+    },
+    "Both backups are only in Google Drive. Keep a second copy elsewhere, e.g. a USB drive at home.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر دو پشتیبان فقط در Google Drive هستند. یک نسخهٔ دوم جای دیگری نگه دارید، مثلاً فلش‌دیسکی در خانه."
+          }
+        }
+      }
+    },
+    "The 5 AuthKey .p8 files and the notarytool keychain profile are in no backup.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنج فایل AuthKey با پسوند .p8 و پروفایل notarytool در Keychain در هیچ پشتیبانی نیستند."
+          }
+        }
+      }
+    },
+    "Any new key (the Talar release key is not created yet) must go into the encrypted bundle.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر کلید تازه (کلید انتشار تالار هنوز ساخته نشده) باید به بستهٔ رمزگذاری‌شده اضافه شود."
+          }
+        }
+      }
+    },
+    "Backups off this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبان‌های بیرون از این مک"
+          }
+        }
+      }
+    },
+    "Folders the app may read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشه‌هایی که برنامه می‌تواند بخواند"
+          }
+        }
+      }
+    },
+    "Key files not in the registry": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل‌های کلیدی که در فهرست نیستند"
+          }
+        }
+      }
+    },
+    "Keys on this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهای روی این مک"
+          }
+        }
+      }
+    },
+    "Known gaps": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کمبودهای شناخته‌شده"
           }
         }
       }

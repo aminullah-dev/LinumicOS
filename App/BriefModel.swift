@@ -25,15 +25,19 @@ final class BriefModel {
     private let operations: OperationsModel
     private let releases: ReleaseCenterModel
     private let monitor: MonitorModel
+    private let keys: KeysModel
+    private let siteMessages: SiteMessagesModel
 
     init(inventory: InventoryModel, licences: LicenceModel, worktrack: WorkTrackModel, operations: OperationsModel,
-         releases: ReleaseCenterModel, monitor: MonitorModel) {
+         releases: ReleaseCenterModel, monitor: MonitorModel, keys: KeysModel, siteMessages: SiteMessagesModel) {
         self.inventory = inventory
         self.licences = licences
         self.worktrack = worktrack
         self.operations = operations
         self.releases = releases
         self.monitor = monitor
+        self.keys = keys
+        self.siteMessages = siteMessages
         store = (try? BriefSnapshotStore.defaultFileURL()).map(BriefSnapshotStore.init(fileURL:))
         history = store?.load() ?? BriefSnapshotHistory()
     }
@@ -63,7 +67,9 @@ final class BriefModel {
             worktrack: BriefWorkTrackInput(isSignedIn: worktrack.isSignedIn, environment: worktrack.environment?.rawValue,
                                            companies: worktrack.companies, lastRead: worktrack.lastRead, loadError: worktrack.loadError),
             operations: ops,
-            oversight: BriefOversightInput(repos: inventory.oversight, recentChanges: inventory.recentOversightChanges))
+            oversight: BriefOversightInput(repos: inventory.oversight, recentChanges: inventory.recentOversightChanges),
+            keys: keys.briefInput,
+            siteMessages: siteMessages.briefInput)
     }
 
     /// The brief for right now, with the changes since the last snapshot of an earlier day.

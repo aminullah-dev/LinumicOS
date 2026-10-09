@@ -3,7 +3,9 @@
 **Connected:** GitHub (read-only), the public App Store lookup (read-only, no credentials), and the WorkTrack vendor
 API (read, plus licence renewals confirmed per action; the owner signs in with his vendor account), and the Talar,
 SafeBeauty and VELRO admin overviews under Operations (read-only except Talar's audited hall approve/reject; the owner
-signs in to each), and the Release Center (stores, PRs and CI; one confirmed write: releasing an approved App Store version).
+signs in to each), the Release Center (stores, PRs and CI; one confirmed write: releasing an approved App Store version),
+and Website messages (linumic.com contact-form entries through SureForms' read-only abilities; needs the owner's
+WordPress application password).
 **Built, waiting for the owner's keys:** App Store Connect and Google Play Console (both read-only, both free).
 **Not connected:** social networks, AI providers. Each one is added
 only when explicit credentials and authorization are provided.
@@ -717,6 +719,107 @@ already hold in memory or in their local files.
 - **جستجو و فرمان‌ها:** ⌘K یا دکمهٔ ذره‌بین. نام صفحه، مشتری، شمارهٔ لایسنس، نام حساب گاوصندوق یا شمارهٔ PR را بنویسید؛
   با کلیدهای بالا و پایین انتخاب و با Return باز کنید. حروف عربی و فارسی (ي/ی، ك/ک) فرقی نمی‌کنند. فرمان‌هایی که چیزی
   را تغییر می‌دهند فقط صفحهٔ خود را باز می‌کنند؛ تأیید همان‌جاست.
+
+## Keys & Backups (local, no integration)
+
+No service and no credential: a registry on this device and, on the Mac, file attributes in folders the owner granted.
+
+- **Screen:** sidebar > Keys & Backups («کلیدها و پشتیبان‌ها»). Reminders first, then the backups (file, Drive link,
+  size, day made and verified, encryption, where the passphrase is kept, Keychain item found or not, last restore test
+  and its age), the keys (path, on this Mac / missing / not granted, size and modification date, backed up / changed
+  after backup / not backed up, "do not delete"), key files found that the registry doesn't know, the known gaps, the
+  granted folders, and a read-only restore guide.
+- **Seed (2026-10-09):** sources `~/Keys/README.md` (written 2026-10-09), `Linumic/licensing/MAP.md` and the session
+  records of 2026-10-08/09. Android keys: WorkTrack (repository + the identical copy in `~/Keys/worktrack`), VELRO
+  (`~/.velro-keys` + `.storepass`), the second VELRO key from Downloads (origin unknown, do not delete), SafeBeauty,
+  SODER-HAKEM. Licence keys: `~/.linumic/license-keys/{mediflow,khayatyar}-private.pem`. App Store Connect:
+  `~/.appstoreconnect/private_keys/AuthKey_*.p8` (5, no backup). Backups in Google Drive > Mohem:
+  `linumic-android-signing-keys.tgz.enc` (id 1mBSWqt_JwvEU7BMSFcJ-FJucPGJeuS4q, 22,336 bytes, made 2026-10-09,
+  compared byte-identical and test-decrypted; restored by the owner 2026-10-09) and `linumic-license-keys.tar.enc`
+  (id 13YZuIKfJrlgZFH98_DeqqBUb_ZXhrd5b, made 2026-10-08, verified 2026-10-08/09, test decryption 2026-10-08, no owner
+  restore recorded). AES-256-CBC, PBKDF2 600000 iterations. Open gaps: no second off-Mac copy; ASC keys and the
+  notarytool profile not backed up; new keys (Talar) must be added.
+- **Rules:** a key is "changed after backup" when its file's modification day is later than the day its newest backup
+  was made (facts are known to the day, so a change later on the backup's own day isn't flagged). A key file found by
+  name that no registry path or pattern covers is "not covered by any backup". Reminders: restore test older than 90
+  days (or none), second copy missing, key missing, key changed after backup, key in no backup, uncovered key file,
+  passphrase Keychain item missing. They appear on the screen and as the Daily Brief's Keys section. A key recorded as
+  deleted (`deletedOn`) is expected to be absent: `~/.linumic/license-backup-passphrase.txt` was deleted on purpose on
+  2026-10-09 after its hash matched the Keychain item "Linumic license backup passphrase"; it only produces a reminder
+  if it shows up again. The passphrase is kept in that Keychain item, the owner's private Notion page and on paper.
+- **Editing:** add/edit/remove registry keys (removing only edits the list), edit a backup's facts after making a new
+  bundle (day made, verified, size, Drive id), "Mark restore test done…" (backup, day, by whom, note; no future days),
+  "Mark second copy done…" (day and where). Every change is saved at once to `keys-registry.json`; a file that can't
+  be read is never overwritten. Command palette: "Mark restore test done…" opens that sheet.
+- **Checks run** at launch and every 30 minutes with the other refreshes, and with "Check files".
+
+### راهنمای امین‌الله: کلیدها و پشتیبان‌ها (دری)
+
+- **بار اول:** نوار کنار ← «کلیدها و پشتیبان‌ها» ← در بخش «پوشه‌هایی که برنامه می‌تواند بخواند» دکمهٔ «انتخاب پوشه…» را بزنید
+  و پوشهٔ خانه (`aminullahhashemi`) را انتخاب کنید. این یک بار همهٔ جاها را می‌پوشاند. برنامه فقط نام، اندازه و تاریخ فایل‌ها
+  را می‌بیند، نه خود کلیدها.
+- **وقتی بازیابی آزمایشی کردید:** «ثبت بازیابی آزمایشی…» (یا ⌘K و همین نام)، پشتیبان و روز را انتخاب کنید. هر ۹۰ روز یک بار
+  یادآوری می‌آید.
+- **وقتی نسخهٔ دوم (فلش‌دیسک) را ساختید:** در «کمبودهای شناخته‌شده» دکمهٔ «ثبت نسخهٔ دوم…» و بنویسید کجاست.
+- **وقتی کلید تازه ساختید (مثلاً تالار):** آن را به بستهٔ رمزگذاری‌شده اضافه کنید، فایل تازه را در Drive بگذارید، بعد در برنامه
+  «ویرایش پشتیبان…» و روز ساخت را عوض کنید و کلید را با «افزودن به فهرست…» اضافه کنید.
+- **بازیابی:** «راهنمای بازیابی» در پایین صفحه فرمان‌ها را دارد؛ رمز را openssl خودش می‌پرسد.
+
+## Website messages: linumic.com contact form (SureForms, read-only)
+
+Why: linumic.com's contact form (SureForms "Simple Contact Form", form id 1752: first name, last name, email, message)
+stores every entry in WordPress, but its notification email never reached the owner's Gmail (none of the 4 entries
+produced one, checked 2026-10-09). The app reads the entries itself.
+
+- **Route (from the plugin source, SureForms 2.12.8 from wordpress.org, read 2026-10-09):**
+  - Not used: SureForms' own admin routes `GET /wp-json/sureforms/v1/entries/list` and
+    `GET /wp-json/sureforms/v1/entry/{id}/details` (`inc/rest-api.php`, `get_endpoints()`; handlers
+    `get_entries_list()` and `get_entry_details()`). Each handler first checks `X-WP-Nonce` with
+    `wp_verify_nonce(..., 'wp_rest')` and answers 403 otherwise. A `wp_rest` nonce belongs to a browser login session, so
+    an application password can't pass it.
+  - Used: the WordPress Abilities that SureForms registers, run through WordPress core
+    `GET /wp-json/wp-abilities/v1/abilities/{name}/run?input[...]=...` (wordpress-develop 6.9,
+    `src/wp-includes/rest-api/endpoints/class-wp-rest-abilities-v1-run-controller.php`: read-only abilities must be
+    called with GET, input in the `input` query parameter, the response is the ability's output).
+    - `sureforms/list-entries` (`inc/abilities/entries/list-entries.php`): newest 20, `status=all` (excludes trash),
+      `orderby=created_at`, `order=DESC`; returns `entries[{id, form_id, form_title, status, created_at}]`, `total`, …
+    - `sureforms/bulk-get-entries` (`inc/abilities/entries/bulk-get-entries.php`, fields from `entry-parser.php`): up
+      to 50 ids; returns each entry's `form_data[{label, value, block_name}]` (IP masked by SureForms).
+    - Both are `readonly`, need `manage_options` (an Administrator) and `show_in_rest: true`
+      (`inc/abilities/abstract-ability.php`). They are registered only while SureForms → Settings → **Enable
+      Abilities** (`srfm_abilities_api`) is on (`inc/abilities/abilities-registrar.php`); Edit and Delete abilities have
+      their own switches and stay off. With it off WordPress answers 404 `rest_ability_not_found` and the app says so.
+  - linumic.com's public `/wp-json/` index (read without credentials, 2026-10-09) lists `wp-abilities/v1` (WordPress
+    6.9+), `sureforms/v1` and `application-passwords`; `timezone_string` is Asia/Kabul (entries' `created_at` is site
+    time, `current_time('mysql')`).
+- **Credential:** a WordPress application password (wp-admin → Users → Profile → Application Passwords) of an
+  Administrator, sent as HTTPS Basic auth. Stored in Settings → Integrations → Website messages, in the Keychain item
+  `wordpress.linumic.apppassword` (JSON username + password), like the GitHub token. Not in the Vault: the Vault asks
+  for Touch ID for every read, and this is read in the background every 30 minutes. The site runs the Two Factor
+  plugin; its 0.17.0 source lets application-password logins through (`app_password_did_authenticate`), the installed
+  version was not checked.
+- **What the app does:** two GETs at launch and every 30 minutes (`SiteMessagesClient`, ephemeral session, no
+  cookies, redirects refused, HTTPS only). Messages stay in memory. `site-messages.json` keeps only the ids the owner
+  marked seen or was notified about and the last read time. Nothing is written to WordPress; SureForms' own
+  read/unread is shown but not changed.
+- **Where it shows:** sidebar «پیام‌های سایت» (each message, Open in wp-admin = `admin.php?page=sureforms_entries#/entry/{id}`,
+  Reply by email = `mailto:` with a subject, only for a plain address, Mark seen); Daily Brief section "Website
+  messages" (new since seen: name, date, first 140 characters, the two links); Dashboard "Waiting for you" row;
+  Command palette (Refresh website messages, Open form entries in wp-admin, unseen senders by name). Optional local
+  notification for new messages (Settings, on by default; name and short excerpt, never the address).
+- **Not verified:** no call with credentials was made to linumic.com, so whether the host passes the Authorization
+  header, and whether "Enable Abilities" is on, are unknown until the owner saves the password and presses Read now.
+
+### راهنمای امین‌الله: پیام‌های سایت (دری)
+
+- **یک بار:** در wp-admin ← Users ← Profile ← Application Passwords یک نام بنویسید (Linumic OS) و Add را بزنید؛ رمز را
+  کپی کنید (فقط یک بار نشان داده می‌شود). بعد SureForms ← Settings ← «Enable Abilities» را روشن کنید (Edit و Delete
+  خاموش بمانند).
+- **در برنامه:** تنظیمات ← Integrations ← «پیام‌های سایت»: نام کاربری و رمز را بگذارید، «ذخیره در Keychain»، بعد «همین حالا
+  بخوان». اگر خطا داد، متن خطا می‌گوید چه کنید.
+- **هر روز:** پیام‌های تازه در «گزارش روز»، در داشبورد («منتظر شما») و در صفحهٔ «پیام‌های سایت» می‌آیند. «باز کردن در
+  wp-admin» یا «پاسخ با ایمیل» را بزنید و بعد «دیده شد». این علامت فقط روی همین دستگاه است.
+- **باطل کردن:** همان صفحهٔ Application Passwords در WordPress ← Revoke؛ و در برنامه «حذف».
 
 ## Social media (Phase 5)
 
