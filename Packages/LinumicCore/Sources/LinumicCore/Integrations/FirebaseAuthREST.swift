@@ -1,7 +1,8 @@
 import Foundation
 
 // Firebase Authentication over plain REST (no Firebase SDK): email/password sign-in through the Identity
-// Toolkit and ID-token refresh through the Secure Token service. Used for the WorkTrack vendor console.
+// Toolkit and ID-token refresh through the Secure Token service. Used for the WorkTrack vendor console and the
+// Talar and SafeBeauty admin sign-ins.
 // The password is sent once, to Google, and never kept. Only the refresh token is stored (Keychain).
 
 /// Where the two Firebase Auth REST services live, and the project's public Web API key.
@@ -58,7 +59,7 @@ public enum FirebaseAuthError: Error, LocalizedError, Equatable {
         case .tooManyAttempts: L("Too many sign-in attempts. Firebase has blocked this account for a while; try again later or reset the password.")
         case .invalidEmail: L("That isn't a valid email address.")
         case .missingPassword: L("Enter the password.")
-        case .sessionExpired: L("The WorkTrack session has ended (the password was changed, the account was disabled, or the session expired). Sign in again.")
+        case .sessionExpired: L("The session has ended (the password was changed, the account was disabled, or the session expired). Sign in again.")
         case .apiKeyRejected(let code): LF("Firebase refused the app's Web API key (%@).", code)
         case .server(let status, let code): LF("Firebase Auth returned HTTP %1$ld (%2$@).", status, code)
         }
@@ -141,5 +142,64 @@ public struct FirebaseAuthREST: Sendable {
         return FirebaseTokens(idToken: r.id_token, refreshToken: r.refresh_token,
                               expiresAt: now().addingTimeInterval(TimeInterval(r.expires_in ?? "3600") ?? 3600),
                               userID: r.user_id, email: nil)
+    }
+}
+
+/// One signed-in Firebase account: the ID token in memory, renewed from the refresh token, one renewal at a time.
+/// The password is never held here. Callers keep the refresh token (Keychain) and read `currentRefreshToken`
+/// after requests, since Firebase may hand back a new one.
+public actor FirebaseSession {
+    private let auth: FirebaseAuthREST
+    private let now: @Sendable () -> Date
+    private var tokens: FirebaseTokens?
+    private var refreshToken: String?
+    private var inFlight: Task<FirebaseTokens, Error>?
+
+    public init(auth: FirebaseAuthREST, now: @escaping @Sendable () -> Date = { .now }) {
+        self.auth = auth
+        self.now = now
+    }
+
+    public func signIn(email: String, password: String) async throws -> FirebaseTokens {
+        let t = try await auth.signIn(email: email, password: password)
+        tokens = t
+        refreshToken = t.refreshToken
+        return t
+    }
+
+    public func restore(refreshToken: String) {
+        self.refreshToken = refreshToken
+        tokens = nil
+    }
+
+    public func signOut() {
+        inFlight?.cancel()
+        inFlight = nil
+        tokens = nil
+        refreshToken = nil
+    }
+
+    public var currentRefreshToken: String? { refreshToken }
+    public var isSignedIn: Bool { refreshToken != nil }
+
+    /// A valid ID token (more than five minutes left), refreshing when needed. Concurrent callers share one refresh.
+    /// Throws `FirebaseAuthError.sessionExpired` (and forgets the session) when Firebase refuses the refresh token,
+    /// or `nil`-session as `.sessionExpired` when there is nothing to refresh.
+    public func idToken(forceRefresh: Bool = false) async throws -> String {
+        if !forceRefresh, let t = tokens, t.expiresAt.timeIntervalSince(now()) > 300 { return t.idToken }
+        if let inFlight { return try await inFlight.value.idToken }
+        guard let refreshToken else { throw FirebaseAuthError.sessionExpired }
+        let task = Task { [auth] in try await auth.refresh(refreshToken) }
+        inFlight = task
+        defer { inFlight = nil }
+        do {
+            let t = try await task.value
+            tokens = t
+            self.refreshToken = t.refreshToken
+            return t.idToken
+        } catch let e as FirebaseAuthError {
+            if e == .sessionExpired { tokens = nil; self.refreshToken = nil }
+            throw e
+        }
     }
 }

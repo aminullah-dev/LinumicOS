@@ -1,0 +1,53 @@
+[
+{
+  "document": {
+    "name": "projects/demo-safebeauty/databases/(default)/documents/users/emu-kyc-1",
+    "fields": {
+      "createdAt": {
+        "integerValue": "1788931877282"
+      },
+      "role": {
+        "stringValue": "CUSTOMER"
+      },
+      "kycStatus": {
+        "stringValue": "PENDING"
+      },
+      "name": {
+        "stringValue": "مریم آزمایشی"
+      },
+      "status": {
+        "stringValue": "APPROVED"
+      }
+    },
+    "createTime": "2026-10-09T05:31:17.284297Z",
+    "updateTime": "2026-10-09T05:31:17.675484Z"
+  },
+  "readTime": "2026-10-09T05:34:02.775925Z"
+},
+{
+  "document": {
+    "name": "projects/demo-safebeauty/databases/(default)/documents/users/emu-kyc-2",
+    "fields": {
+      "createdAt": {
+        "integerValue": "1788931877297"
+      },
+      "role": {
+        "stringValue": "PROVIDER"
+      },
+      "kycStatus": {
+        "stringValue": "PENDING"
+      },
+      "name": {
+        "stringValue": "Salon Owner KYC (emulator)"
+      },
+      "status": {
+        "stringValue": "PENDING"
+      }
+    },
+    "createTime": "2026-10-09T05:31:17.298954Z",
+    "updateTime": "2026-10-09T05:31:17.684036Z"
+  },
+  "readTime": "2026-10-09T05:34:02.775925Z",
+  "done": true
+}
+]

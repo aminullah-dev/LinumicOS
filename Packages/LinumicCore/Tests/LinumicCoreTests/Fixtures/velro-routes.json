@@ -1,0 +1,47 @@
+{
+ "success": true,
+ "data": [
+  {
+   "id": "01a11f28-372b-75f6-876a-b2a87341110b",
+   "code": "T-GRB-SHA-CHK-GRB-SHA-001-S1",
+   "route_type": "INTERCITY",
+   "origin_station_name": "ایستگاه بازار شیخ‌علی",
+   "destination_name": "چاریکار",
+   "distance_m": 45000,
+   "duration_minutes": 75,
+   "status": "ACTIVE",
+   "fare_minor": 50000,
+   "fare_currency": "AFN"
+  },
+  {
+   "id": "01a11f28-372a-7616-8d2c-b0ab6a1d3d61",
+   "code": "T-GRB-SHA-CHK-GRB-SHA-002-S1",
+   "route_type": "INTERCITY",
+   "origin_station_name": "ایستگاه ترکمن",
+   "destination_name": "چاریکار",
+   "distance_m": 45000,
+   "duration_minutes": 75,
+   "status": "ACTIVE",
+   "fare_minor": 50000,
+   "fare_currency": "AFN"
+  },
+  {
+   "id": "01a11f28-3732-775f-bc30-5f7bc20f85f2",
+   "code": "T-GRB-SHA-GRB-SHW-GRB-SHA-001-S1",
+   "route_type": "DISTRICT_TO_DISTRICT",
+   "origin_station_name": "ایستگاه بازار شیخ‌علی",
+   "destination_name": "شینواری",
+   "distance_m": 25000,
+   "duration_minutes": 45,
+   "status": "ACTIVE",
+   "fare_minor": 20000,
+   "fare_currency": "AFN"
+  }
+ ],
+ "message": null,
+ "meta": {
+  "total": 78,
+  "limit": 200,
+  "offset": 0
+ }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "projects/demo-safebeauty/databases/(default)/documents/platform_config/general",
+  "fields": {
+    "maxDiscountFraction": {
+      "doubleValue": 0.5
+    },
+    "commissionPercent": {
+      "integerValue": "12"
+    }
+  },
+  "createTime": "2026-10-09T05:31:17.357221Z",
+  "updateTime": "2026-10-09T05:31:17.357221Z"
+}
