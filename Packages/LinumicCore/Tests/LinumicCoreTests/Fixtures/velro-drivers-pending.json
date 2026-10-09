@@ -1,0 +1,39 @@
+{
+ "success": true,
+ "data": [
+  {
+   "id": "01a11f28-e382-7fc1-9b3b-5be25e265d01",
+   "user_id": "01a11f28-e37e-70f3-a188-cfba97be5896",
+   "full_name": "راننده آزمایشی",
+   "phone": "+93700000032",
+   "approval_status": "PENDING",
+   "availability": "OFFLINE",
+   "rating_average": null,
+   "rating_count": 0,
+   "completed_trips": 0,
+   "plate_number": null,
+   "vehicle_status": null,
+   "location_age_seconds": null
+  },
+  {
+   "id": "01a11f28-e376-7a68-b973-a7a166c24cb6",
+   "user_id": "01a11f28-e368-77d9-a5d7-0ddf73e69be6",
+   "full_name": "Emulator Driver One",
+   "phone": "+93700000031",
+   "approval_status": "PENDING",
+   "availability": "OFFLINE",
+   "rating_average": null,
+   "rating_count": 0,
+   "completed_trips": 0,
+   "plate_number": null,
+   "vehicle_status": null,
+   "location_age_seconds": null
+  }
+ ],
+ "message": null,
+ "meta": {
+  "total": 2,
+  "limit": 200,
+  "offset": 0
+ }
+}

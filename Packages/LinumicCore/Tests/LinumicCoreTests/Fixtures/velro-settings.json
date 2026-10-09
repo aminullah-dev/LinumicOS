@@ -1,0 +1,172 @@
+{
+ "success": true,
+ "data": [
+  {
+   "key": "auth.default_country_code",
+   "value": "93",
+   "value_type": "str",
+   "description_key": "setting.auth_default_country_code"
+  },
+  {
+   "key": "booking.cancellation_window_minutes",
+   "value": 15,
+   "value_type": "int",
+   "description_key": "setting.booking_cancellation_window_minutes"
+  },
+  {
+   "key": "booking.cutoff_minutes",
+   "value": 0,
+   "value_type": "int",
+   "description_key": "setting.booking_cutoff_minutes"
+  },
+  {
+   "key": "booking.max_active_per_passenger",
+   "value": 5,
+   "value_type": "int",
+   "description_key": "setting.booking_max_active_per_passenger"
+  },
+  {
+   "key": "booking.max_seats_per_booking",
+   "value": 4,
+   "value_type": "int",
+   "description_key": "setting.booking_max_seats_per_booking"
+  },
+  {
+   "key": "booking.verification_code_length",
+   "value": 4,
+   "value_type": "int",
+   "description_key": "setting.booking_verification_code_length"
+  },
+  {
+   "key": "commission.rate_basis_points",
+   "value": 1000,
+   "value_type": "int",
+   "description_key": "setting.commission_rate_basis_points"
+  },
+  {
+   "key": "dispatch.at_risk_minutes",
+   "value": 60,
+   "value_type": "int",
+   "description_key": "setting.dispatch_at_risk_minutes"
+  },
+  {
+   "key": "dispatch.max_offers_per_trip",
+   "value": 10,
+   "value_type": "int",
+   "description_key": "setting.dispatch_max_offers_per_trip"
+  },
+  {
+   "key": "dispatch.offer_ttl_seconds",
+   "value": 180,
+   "value_type": "int",
+   "description_key": "setting.dispatch_offer_ttl_seconds"
+  },
+  {
+   "key": "dispatch.stale_gps_seconds",
+   "value": 300,
+   "value_type": "int",
+   "description_key": "setting.dispatch_stale_gps_seconds"
+  },
+  {
+   "key": "dispatch.unanswered_after_minutes",
+   "value": 10,
+   "value_type": "int",
+   "description_key": "setting.dispatch_unanswered_after_minutes"
+  },
+  {
+   "key": "driver.location_ping_seconds",
+   "value": 20,
+   "value_type": "int",
+   "description_key": "setting.driver_location_ping_seconds"
+  },
+  {
+   "key": "driver.required_documents",
+   "value": [
+    "LICENSE",
+    "NATIONAL_ID",
+    "SELFIE"
+   ],
+   "value_type": "list",
+   "description_key": "setting.driver_required_documents"
+  },
+  {
+   "key": "geofence.radius_m",
+   "value": 20000,
+   "value_type": "int",
+   "description_key": "setting.geofence_radius_m"
+  },
+  {
+   "key": "otp.length",
+   "value": 5,
+   "value_type": "int",
+   "description_key": "setting.otp_length"
+  },
+  {
+   "key": "otp.max_attempts",
+   "value": 5,
+   "value_type": "int",
+   "description_key": "setting.otp_max_attempts"
+  },
+  {
+   "key": "otp.max_per_window",
+   "value": 3,
+   "value_type": "int",
+   "description_key": "setting.otp_max_per_window"
+  },
+  {
+   "key": "otp.resend_window_seconds",
+   "value": 60,
+   "value_type": "int",
+   "description_key": "setting.otp_resend_window_seconds"
+  },
+  {
+   "key": "otp.ttl_seconds",
+   "value": 300,
+   "value_type": "int",
+   "description_key": "setting.otp_ttl_seconds"
+  },
+  {
+   "key": "settlement.minimum_minor",
+   "value": 50000,
+   "value_type": "int",
+   "description_key": "setting.settlement_minimum_minor"
+  },
+  {
+   "key": "support.contact_phone",
+   "value": "+93700000000",
+   "value_type": "str",
+   "description_key": "setting.support_contact_phone"
+  },
+  {
+   "key": "support.emergency_numbers",
+   "value": [
+    "119",
+    "100"
+   ],
+   "value_type": "list",
+   "description_key": "setting.support_emergency_numbers"
+  },
+  {
+   "key": "trip.search_window_hours",
+   "value": 12,
+   "value_type": "int",
+   "description_key": "setting.trip_search_window_hours"
+  },
+  {
+   "key": "vehicle.optional_documents",
+   "value": [],
+   "value_type": "list",
+   "description_key": "setting.vehicle_optional_documents"
+  },
+  {
+   "key": "vehicle.required_documents",
+   "value": [
+    "VEHICLE_REGISTRATION"
+   ],
+   "value_type": "list",
+   "description_key": "setting.vehicle_required_documents"
+  }
+ ],
+ "message": null,
+ "meta": {}
+}

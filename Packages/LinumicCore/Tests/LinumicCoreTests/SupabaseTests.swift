@@ -166,4 +166,69 @@ struct HybridInventoryStoreTests {
         #expect(try await hybrid.load() == sample("CACHE"))
         if case .offline = await hybrid.status {} else { Issue.record("expected offline") }
     }
+
+    // MARK: Oversight register (regression: a cloud load used to replace it with an empty list)
+
+    private func withOversight(_ name: String, _ repos: [OversightRepo]) -> Inventory {
+        var inventory = sample(name)
+        inventory.oversight = repos
+        return inventory
+    }
+
+    @Test func cloudWithoutOversightNeverWipesTheLocalRegister() async throws {
+        let repo = OversightRepo(slug: "SAMPLE/one", observedAt: Date(timeIntervalSince1970: 100))
+        let local = InMemoryInventoryStore(withOversight("OLD", [repo]))
+        let remote = FlakyRemote()
+        try await remote.save(sample("NEW"))   // a server that predates the oversight section
+        let hybrid = HybridInventoryStore(local: local, remote: remote, pendingFlag: FileManager.default.temporaryDirectory.appending(path: "lcc-\(UUID())/pending"))
+        let loaded = try #require(try await hybrid.load())
+        #expect(loaded.products.map(\.id) == ["NEW"], "products still come from the server")
+        #expect(loaded.oversight.map(\.slug) == ["SAMPLE/one"], "the register survives the cloud load")
+        #expect(try await local.load()?.oversight.map(\.slug) == ["SAMPLE/one"], "and the local cache keeps it")
+        #expect(await remote.stored?.oversight.map(\.slug) == ["SAMPLE/one"], "the cloud is brought up to date")
+    }
+
+    @Test func cloudRegisterIsMergedNotReplaced() async throws {
+        let mine = OversightRepo(slug: "SAMPLE/mine", observedAt: Date(timeIntervalSince1970: 100))
+        let theirs = OversightRepo(slug: "SAMPLE/theirs", observedAt: Date(timeIntervalSince1970: 100))
+        let local = InMemoryInventoryStore(withOversight("A", [mine]))
+        let remote = FlakyRemote()
+        try await remote.save(withOversight("A", [theirs]))
+        let hybrid = HybridInventoryStore(local: local, remote: remote, pendingFlag: FileManager.default.temporaryDirectory.appending(path: "lcc-\(UUID())/pending"))
+        #expect(Set(try #require(try await hybrid.load()).oversight.map(\.slug)) == ["SAMPLE/mine", "SAMPLE/theirs"])
+    }
 }
+
+@Suite("Oversight merge")
+struct OversightMergeTests {
+    private func repo(_ slug: String, at t: TimeInterval, error: String? = nil, local: LocalGitStatus? = nil) -> OversightRepo {
+        OversightRepo(slug: slug, scanError: error, local: local, observedAt: Date(timeIntervalSince1970: t))
+    }
+
+    @Test func emptyCloudKeepsTheDeviceCopy() {
+        let device = [repo("SAMPLE/a", at: 1), repo("SAMPLE/b", at: 1)]
+        #expect(OversightMerge.merge(device: device, cloud: []).map(\.slug).sorted() == ["SAMPLE/a", "SAMPLE/b"])
+    }
+
+    @Test func emptyDeviceTakesTheCloudCopy() {
+        #expect(OversightMerge.merge(device: [], cloud: [repo("SAMPLE/a", at: 1)]).map(\.slug) == ["SAMPLE/a"])
+    }
+
+    @Test func laterObservationWins() {
+        let older = repo("SAMPLE/a", at: 1, error: "old")
+        let newer = repo("SAMPLE/a", at: 2, error: "new")
+        #expect(OversightMerge.merge(device: [older], cloud: [newer]).first?.scanError == "new")
+        #expect(OversightMerge.merge(device: [newer], cloud: [older]).first?.scanError == "new")
+    }
+
+    @Test func thisDevicesWorkingCopyStatusIsKept() {
+        let status = LocalGitStatus(path: "/SAMPLE/a", scannedAt: Date(timeIntervalSince1970: 1))
+        let device = repo("SAMPLE/a", at: 1, local: status)
+        let cloud = repo("SAMPLE/a", at: 5)
+        let merged = OversightMerge.merge(device: [device], cloud: [cloud])
+        #expect(merged.count == 1)
+        #expect(merged.first?.observedAt == Date(timeIntervalSince1970: 5), "the newer GitHub observation wins")
+        #expect(merged.first?.local == status, "but the local scan from this device is not dropped")
+    }
+}
+

@@ -1,0 +1,19 @@
+[
+{
+  "found": {
+    "name": "projects/demo-safebeauty/databases/(default)/documents/users/emu-provider-1",
+    "fields": {
+      "name": {
+        "stringValue": "Herat Beauty (emulator)"
+      }
+    },
+    "createTime": "2026-10-09T05:31:17.312720Z",
+    "updateTime": "2026-10-09T05:31:17.692464Z"
+  },
+  "readTime": "2026-10-09T05:33:52.778633Z"
+},
+{
+  "missing": "projects/demo-safebeauty/databases/(default)/documents/users/nope",
+  "readTime": "2026-10-09T05:33:52.778633Z"
+}
+]

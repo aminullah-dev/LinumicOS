@@ -5,6 +5,66 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Operations, Talar, SafeBeauty and VELRO overview (platform control, phase 4)
+- A new **Operations** screen (عملیات) with a tab per product, read-only, every value with its environment and read time.
+  - **Talar** (Firebase email/password, the `role: "admin"` claim checked): dashboard numbers, halls awaiting approval
+    with their details, reviews awaiting moderation, and settlements per organisation (pending count and net). The one
+    write: approve or reject a hall, because Talar audits it (`hall.review_approve|reject`); confirmation with the hall
+    name typed in production, sent once, re-read, logged in `operations-actions.json`. Settlement run and mark-paid
+    stay in the web panel (not idempotent in Talar).
+  - **SafeBeauty** (the admin console's own sign-in: `authenticateWithPassword`, PBKDF2 "AUTH:" derivation ported from
+    SafeBeautyCore with its test vectors, Firebase, `syncUidMap`): KYC queue and salon-owner approvals by name, role and
+    status only (a Firestore field mask means identity documents are never downloaded), bookings today and this week
+    (Kabul, week from Saturday), salons, payouts owed, pending refunds, and the commission as the server applies it.
+  - **VELRO** (staff phone OTP; the rotating refresh token is written to the Keychain before it is used, one refresh at
+    a time, and a refresh whose answer was lost drops the session instead of replaying the old token): drivers awaiting
+    approval with their document statuses, trips under way and departing in 24 hours, stations, routes, and
+    `commission.rate_basis_points` read only. A minimal port, not a dependency on VelroCore (see docs/integrations.md).
+- Dashboard card **Waiting for you**: Talar halls, SafeBeauty KYC and salon approvals, VELRO drivers.
+- A notification when a production queue goes from 0 to more than 0 (Settings → Integrations → Operations, on by
+  default). Only the counts are kept, for that comparison.
+- Tested only locally: Talar and SafeBeauty Firebase emulators and a VELRO backend on 127.0.0.1, with test admin
+  accounts created there (`tools/talar`, `tools/safebeauty`, `tools/velro`; opt-in `liveTalar`, `liveSafeBeauty`,
+  `liveVelro`). 32 new tests (29 unit, 3 opt-in), 252 in total. English and Dari strings.
+
+### Added: WorkTrack customers and renewals (platform control, phase 3)
+- A new **WorkTrack customers** screen (مشتریان WorkTrack). The owner signs in with his WorkTrack vendor account
+  (Firebase email and password over REST; Production, Demo, and Local emulator in debug builds). The password is
+  never stored; only the refresh token is kept in the Keychain, after `GET /vendor/me` confirms the vendor claim.
+- Every customer company with plan, licence standing, last day and days left, device seats, employees, last activity
+  and TEST / DUPLICATE marks; filters for expiring in 30 days, expired, trial and needs attention. Company detail with
+  every licence field, orders, history and CRM contacts; revenue summary; WorkTrack's vendor audit trail.
+- **Renew** sheet: plan, seats, status and a new last day (+1 month, +1 year, a custom day, or a separately confirmed
+  "no end date"), a before/after table of every licence field, the company name typed for production, a check that
+  the licence hasn't changed since the sheet opened, one `PUT /vendor/companies/:id/license`, then a re-read and a
+  field-by-field comparison. `expiresAt` is always sent (WorkTrack treats an omitted one as perpetual) and every
+  other field is re-sent from the fetched licence. Each write is recorded in `worktrack-actions.json` on this device.
+- Dashboard card for customers expiring within 30 days and reminders 30/14/7/1 days ahead for production customers.
+- No deletion, purge, marks, prices or CRM writes in this phase.
+- Tested end to end against WorkTrack's Firebase emulator (`tools/worktrack/emulator-setup.js`, opt-in
+  `liveEmulator` test), never against production. 29 tests (28 unit, one opt-in), 220 in total. English and Dari strings.
+
+### Added: platforms hub (platform control, phase 2)
+- A new **Platforms** screen (پلتفرم‌ها) with one card per product: WorkTrack, SafeBeauty, Talar, VELRO, MediFlow,
+  Tailor ERP / KhayatYar, NerkhTimes, Afghan Prayer Times (Namazia) and DukanPro. Each shows the version on `main`,
+  the latest GitHub release with its download count, live store versions, CI on main and open pull requests, plus
+  drift chips and a business-model badge (self-serve sign-up, licence, consumer app).
+- The detail view lists the drift flags with both compared values and their sources, the version per file
+  (`repo path:line @ main`, read date), store versions with their evidence, GitHub releases with asset download
+  counts, the latest run of every workflow on main, repositories, licence counts (opens Licences) and the admin and
+  public links, each with its source and check date.
+- Drift is computed, never guessed: *main is ahead of the latest release*, *store version older than main*, *CI
+  failing on main*. Only real version numbers are compared.
+- Reads are GET only and conditional (ETags), on launch and every 30 minutes with a token, or with ⌘R. The data is a
+  per-device cache (`platform-hub.json`).
+- A **Platforms** card on the dashboard counts platforms with CI failing, release drift and store drift.
+- 24 tests (191 in total, one of them the opt-in live sweep). English and Dari strings.
+
+### Fixed: a cloud load could wipe the oversight register
+- `export_inventory()` didn't include the oversight register, so loading from the cloud while signed in replaced
+  the local register with an empty list. The server now stores it (`oversight_repos`, merged by slug, never deleted)
+  and the client merges instead of replacing, keeping this device's local scan. 6 tests.
+
 ### Added: licence centre for MediFlow and KhayatYar (platform control, phase 1)
 - A new **Licences** screen issues and renews offline LNM1 licences from inside the app, replacing the terminal
   tool (`licensing/linumic_license.py`) for daily use. Issue sheet with live machine-code validation, perpetual or

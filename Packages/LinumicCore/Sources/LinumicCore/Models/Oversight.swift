@@ -172,3 +172,30 @@ public struct OversightSummary: Sendable, Equatable {
         healthScore = repos.isEmpty ? nil : Int((Double(healthy) / Double(repos.count) * 100).rounded())
     }
 }
+
+/// Merges two copies of the oversight register (this device's and the cloud's) so neither can wipe
+/// the other. The register only grows: every slug from either side is kept. When both sides know a
+/// repository, the copy observed later wins, except that this device's own working-copy status
+/// (`local`, from a folder scan on this Mac) is kept when it has one, since the cloud can only hold
+/// another device's scan.
+public enum OversightMerge {
+    public static func merge(device: [OversightRepo], cloud: [OversightRepo]) -> [OversightRepo] {
+        var bySlug: [String: OversightRepo] = [:]
+        for repo in cloud { bySlug[repo.slug] = newer(bySlug[repo.slug], repo) }
+        for repo in device {
+            guard let other = bySlug[repo.slug] else { bySlug[repo.slug] = repo; continue }
+            var winner = repo.observedAt >= other.observedAt ? repo : other
+            winner.local = repo.local ?? other.local
+            bySlug[repo.slug] = winner
+        }
+        return bySlug.values.sorted {
+            let l = $0.pushedAt ?? .distantPast, r = $1.pushedAt ?? .distantPast
+            return l == r ? $0.slug < $1.slug : l > r
+        }
+    }
+
+    private static func newer(_ a: OversightRepo?, _ b: OversightRepo) -> OversightRepo {
+        guard let a else { return b }
+        return a.observedAt >= b.observedAt ? a : b
+    }
+}

@@ -1,0 +1,10 @@
+{"data":{"company":{"companyId":"emu_herat","name":"شرکت آزمایشی هرات","status":"ACTIVE","license":{"plan":"SILVER","deviceLimit":30,"status":"ACTIVE","expiresAt":"2026-10-19","enforceDevices":true,"enforcePlan":true,"employeeLimit":60,"extraFeatures":["projects"],"source":"SELF_SERVE"},"devicesInUse":0,"employeeCount":0,"employeesCounted":0,"employeeCap":60,"daysUntilExpiry":10,"createdAt":"2026-08-30T05:00:50.682Z","lastActivityAt":null,"deletion":null,"flags":null,"duplicates":[],"attention":[{"code":"LICENCE_EXPIRING","severity":"medium"}]},
+"crmAccounts":[{"id":"acc_1","name":"Herat sample account","stage":"CUSTOMER"}],
+"contacts":[{"id":"con_1","accountId":"acc_1","name":"Sample Contact","role":"Owner","phone":null,"email":"contact@example.test","primary":true}],
+"timeline":[
+ {"kind":"LICENCE","at":"2026-10-09T06:00:00.000Z","by":"vendor@linumic.test","before":{"plan":"SILVER","deviceLimit":30,"status":"ACTIVE","expiresAt":"2026-10-19","enforceDevices":true,"enforcePlan":true,"employeeLimit":60,"extraFeatures":["projects"],"source":"SELF_SERVE"},"after":{"plan":"SILVER","deviceLimit":30,"status":"ACTIVE","expiresAt":"2026-11-19","enforceDevices":true,"enforcePlan":true,"employeeLimit":60,"extraFeatures":["projects"],"source":"VENDOR"}},
+ {"kind":"FLAGS","at":"2026-10-01T06:00:00.000Z","by":"vendor@linumic.test","after":null},
+ {"kind":"TICKET","at":"2026-09-25","ticketId":"t_1","subject":"Kiosk QR","status":"RESOLVED","priority":"NORMAL","resolvedAt":"2026-09-26"},
+ {"kind":"ORDER","at":"2026-09-19T05:00:50.756Z","orderId":"emu_order_1","status":"PAID","plan":"SILVER","term":"MONTHLY","months":1,"amountAfn":3500,"transactionId":"emu-tx-1"},
+ {"kind":"SOMETHING_NEW","at":"2026-09-01T00:00:00.000Z"},
+ {"kind":"SIGNUP","at":"2026-08-30T05:00:50.682Z"}]}}

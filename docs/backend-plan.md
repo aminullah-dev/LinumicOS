@@ -23,6 +23,8 @@ import/export are in place and tested. The app doesn't use it yet: the next step
 - **Append-only `audit_events`**, written by trigger: who, what, when, before and after.
 - `export_inventory()` / `import_inventory(doc)` RPCs in the app's exact JSON shape. Import only touches rows
   that changed. Tested: two identical imports leave the audit log unchanged.
+- 2026-10-09: the oversight register is stored in `oversight_repos` and merged by slug on import (never deleted);
+  `export_inventory()` includes it. See docs/integrations.md, "Oversight register in the cloud".
 - Supabase security advisor: **0 findings**.
 
 ### App connection (implemented 2026-09-23)
