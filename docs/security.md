@@ -14,6 +14,7 @@ post as Linumic, so it is treated as a production system.
 | Talar, SafeBeauty, VELRO admin sessions (Operations) | Leaked session, accidental production write, identity documents on disk, VELRO refresh-token replay signing the owner out everywhere | Refresh token only (Keychain), read-only clients with no write calls except Talar's audited hall decision, SafeBeauty field masks that never request identity fields, VELRO rotation persisted before use and never replayed, counts the only cached data |
 | Vault (the owner's own sign-ins) | Someone at the unlocked Mac reading passwords, clipboard history keeping them, a copy leaving the device | Keychain only (device-only, not synchronizable), Touch ID or device password before any password is shown, copied or filled, 2-minute unlock, concealed clipboard cleared after 30 s |
 | Monitor (public health checks) | A check leaking a session or cookie, a check that changes something, a lookalike host trusted | Ephemeral URLSession with no cookies, credential storage or cache; other auth challenges refused; GET only to the cited public URLs; default TLS trust evaluation (the certificate date is only read); only states and latencies stored, on this device |
+| Release Center (store and repository state) | An accidental App Store release, a Play edit committed by mistake, a credential copied into a cache | One write only (`appStoreVersionReleaseRequests`), offered only for PENDING_DEVELOPER_RELEASE, behind a confirmation naming app, version and build, state re-checked first, sent once, read back and logged; Play edits are opened to read tracks and deleted, never committed (no commit call exists); GitHub GET only; credentials read from the existing Keychain items when needed, never copied; the cache holds observations only |
 | Assistant | Invented status, prompt injection from ingested content | Grounded answers with verified/derived/unknown labels. Ingested text is treated as data, and actions are only proposals. |
 
 ## MVP (local app)
@@ -29,6 +30,17 @@ post as Linumic, so it is treated as a production system.
   token (`github.token`), the App Store Connect API key (`appstoreconnect.key`, Developer role) and the
   Google Play service account (`googleplay.serviceaccount`, "View app information"), plus the Supabase
   session. The console clients only read: GET requests, and Play's release list needs no edit.
+- **Release Center (since 2026-10-09):** uses those same three Keychain items; it has no credential of its own and
+  writes none. Reads: App Store Connect GETs, GitHub GETs, and Google Play tracks through an edit that is opened
+  (`POST .../edits`), read (`GET .../edits/{id}/tracks`) and deleted (`DELETE .../edits/{id}`); an uncommitted edit
+  changes nothing and the client has no commit call. If Play refuses the edit (a read-only account), it falls back to
+  releases.list. The single write is `POST /v1/appStoreVersionReleaseRequests` for a version in
+  PENDING_DEVELOPER_RELEASE: confirmation dialog naming app, version and build; the state is read again right before
+  and nothing is sent if it moved; sent once, never retried; read back; recorded in the append-only
+  `release-actions.json`. Apple allows it only to Admin and App Manager keys: with the Developer key described above,
+  Apple answers 403 and the app says so (nothing changes). Upgrading means creating a new App Manager key (Apple can't
+  raise an existing key's role) and replacing it in Settings; the reads keep working with either. The last reading is
+  cached in `release-center.json` (versions, builds, tracks, PR titles and CI states; no tokens, no keys).
 - **WorkTrack vendor session:** the owner types his vendor email and password in the sign-in sheet; the password is
   sent once, in the body of Firebase's `signInWithPassword` request, and is never stored or logged; the sheet clears
   the field after each attempt. Only the Firebase refresh token is kept, in the Keychain as `worktrack.vendor.session` (JSON with the

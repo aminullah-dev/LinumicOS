@@ -3,7 +3,7 @@
 **Connected:** GitHub (read-only), the public App Store lookup (read-only, no credentials), and the WorkTrack vendor
 API (read, plus licence renewals confirmed per action; the owner signs in with his vendor account), and the Talar,
 SafeBeauty and VELRO admin overviews under Operations (read-only except Talar's audited hall approve/reject; the owner
-signs in to each).
+signs in to each), and the Release Center (stores, PRs and CI; one confirmed write: releasing an approved App Store version).
 **Built, waiting for the owner's keys:** App Store Connect and Google Play Console (both read-only, both free).
 **Not connected:** social networks, AI providers. Each one is added
 only when explicit credentials and authorization are provided.
@@ -571,6 +571,108 @@ resolves as a Linumic host).
 - **کش سایت:** صفحهٔ اصلی linumic.com تا ۳۱ روز در کش CDN گودادی می‌ماند و پلن تنظیمی برایش ندارد. پس از ویرایش
   مهم، کش را از داشبورد گودادی پاک کنید.
 - **امنیت:** هیچ رمز، کوکی یا توکنی فرستاده نمی‌شود و چیزی در سرورها تغییر نمی‌کند.
+
+## Releases: stores, PRs and CI in one place (Release Center)
+
+Sidebar > Releases («انتشارها»), plus a "Releases: waiting on you" card on the Dashboard. One screen that answers
+where every app is in every store, what waits on the owner, and whether every repository is green. Logic and
+parsing are in `LinumicCore/Releases` (tested against real read-only responses captured on 2026-10-09, fixtures
+`release-*.json`); the App layer (`App/ReleaseCenterModel.swift`) reads the credentials and runs the requests.
+
+**Credentials:** the three that Settings > Integrations already keeps in the Keychain (`appstoreconnect.key`,
+`googleplay.serviceaccount`, `github.token`). The Release Center keeps no copy and adds no new credential. A source
+without its credential keeps its last reading and says why.
+
+**Which apps** (`ReleaseCatalog.apps`): every App Store and Google Play listing in the inventory that has a bundle id
+or package name; each card cites the listing's own source. On 2026-10-09 the seed holds 7 App Store apps and 6 Google
+Play apps, and `GET /v1/apps` on App Store Connect returned exactly the same 7 bundle ids:
+
+| Product | App Store bundle id | Google Play package | Repository evidence |
+|---|---|---|---|
+| SafeBeauty | `com.safebeauty.app` | `com.security.stealthapp` | Safe beauty/ios/project.yml:72, app/build.gradle.kts:62 |
+| WorkTrack | `app.worktrack` | `app.worktrack` | WorkTrack/ios/project.yml:117, app/build.gradle.kts:62 |
+| VELRO Ride | `af.velro.passenger` | `af.velro.passenger` | Velro/ios/project.yml:79, mobile/app-passenger/build.gradle.kts:17 |
+| VELRO Driver | `af.velro.driver` | `af.velro.driver` | Velro/ios/project.yml:159, mobile/app-driver/build.gradle.kts:17 |
+| VELRO Ops | `af.velro.ops` (iOS and macOS versions) | – | Velro/ios/project.yml:243 |
+| NerkhTimes | `af.market.nerkhtimes` | `af.market.nerkhtimes` | inventory listings; GitHub contents API (PlatformCatalog) |
+| Afghan Prayer Times | `af.namazia.app` | `af.namazia.app` | inventory listings (main holds only README.md) |
+
+Not listed because they are not on a store: Talar (`af.talar`, sideloaded) and DukanPro (`com.dukanpro.dukanpro`).
+KhayatYar is registered in Play Console (PRIORITIES.md) but has no store listing in the inventory, so it is not read;
+add the listing to have it appear.
+
+**Which repositories** (`ReleaseCatalog.repos`): the inventory's code repositories (monorepo, application, backend)
+under `aminullah-dev`, plus `aminullah-dev/LinumicOS` (the `origin` of this folder). Websites, research, marketing and
+release-only repositories are left out.
+
+**App Store Connect** (GET, the existing ES256 key):
+- `GET /v1/apps?filter[bundleId]=…`, then `GET /v1/apps/{id}/appStoreVersions?include=build` (versionString,
+  platform, appVersionState or appStoreState, releaseType, earliestReleaseDate, createdDate, and the attached build's
+  number, upload date and processing state), and `GET /v1/builds?filter[app]=…&include=preReleaseVersion` (newest 8).
+- Per platform: the live version (READY_FOR_DISTRIBUTION / READY_FOR_SALE) and the version in progress (newest that is
+  neither live nor replaced), with its state as a phase: preparing, waiting for review, in review, approved and waiting
+  for you (PENDING_DEVELOPER_RELEASE), approved and released by Apple, processing, rejected (REJECTED,
+  METADATA_REJECTED, INVALID_BINARY), removed from review. An unknown state is shown raw, never guessed.
+- Verified on 2026-10-09 through the API: SafeBeauty iOS 1.0.2, build 9 (uploaded 2026-10-09 16:36 UTC), state
+  WAITING_FOR_REVIEW, releaseType MANUAL; live 1.0.1 (build 8).
+- **The one write:** "Release this version…" appears only for a version in PENDING_DEVELOPER_RELEASE. The confirmation
+  names the app, platform, version and build. Then: `GET /v1/appStoreVersions/{id}` (if the state moved, nothing is
+  sent), `POST /v1/appStoreVersionReleaseRequests` once (never retried), `GET` again (processing for distribution or
+  live = verified), and the result goes to `release-actions.json` (append-only) and the app is read again.
+- **Key role:** reads work with the Developer key described above. Apple allows release requests only to Admin and App
+  Manager keys, so with a Developer key Apple answers 403 and the app shows "can read but not release … nothing was
+  changed". To release from Linumic OS, create a new team key with the App Manager role (an existing key's role can't
+  be raised) and replace it in Settings > Integrations. Admin is only needed for signing and uploading builds, which
+  this app doesn't do. Not verified at runtime: which role the key stored in this Mac's Keychain has.
+
+**Google Play** (the existing service account):
+- Per package: `POST .../applications/{pkg}/edits` (opens an edit), `GET .../edits/{id}/tracks`, `DELETE
+  .../edits/{id}`. An edit changes nothing until it is committed (Safe beauty/DEPLOY.md, "An edit changes nothing until
+  committed, so opening one and deleting it is a safe way to read state"); the client has no commit call. This gives
+  every track's releases with name, version codes, status (completed, inProgress, halted, draft), `userFraction` and
+  release-note languages.
+- If Play refuses to open the edit (for example a "View app information" only account), it falls back to
+  `tracks/{track}/releases` (no edit), which gives version codes and published/draft only; rollout share and notes then
+  show as unknown and the card says why. Checked on 2026-10-09 with SafeBeauty's release service account: the edit read
+  worked (production 2.1.5 (22) completed with en-US, fa-AF and ps-AF notes; beta an empty draft; alpha 14 (1.9);
+  internal 3 (1.0)) and the edit was deleted. Not verified: whether the account stored in Linumic OS may open edits.
+- Gotcha: a draft with no version codes is Play's empty placeholder and is not reported.
+
+**GitHub** (GET only, the existing token):
+- `GET /repos/{r}` (default branch), `/pulls?state=open`, `/pulls/{n}` per PR (`mergeable`, `mergeable_state`; GitHub
+  computes these lazily, so PRs still "unknown" are read once more after 1.5 s), `/actions/runs?head_sha={sha}` per PR
+  (CI rollup), `/actions/runs?branch={default}` (CI on the default branch), `/releases/latest` (404 → `/tags?per_page=1`;
+  none is a fact).
+- CI rollup: the newest run of each workflow; any failure → failing, any still running → running, otherwise passing;
+  GitHub's Dependabot/Pages runs (event `dynamic`) and pull-request runs on the default branch are ignored.
+- **Stacks:** a PR whose base is another open PR's head branch. Shown bottom first (merge order) with the hint "Merge
+  from the top of the stack down, using Merge commit, not squash." (how the owner merges, e.g. PR #6 then #7 here).
+  A tree (two PRs on one PR) is shown depth-first and flagged.
+
+**Waiting on you** (`WaitingOnYou.items`, one place for the rules), each with its source endpoint and read time:
+- App Store: a version approved and waiting for a manual release (with the Release button); a rejected version; the
+  newest build failing processing.
+- Google Play: a halted release; a draft with version codes waiting for "Start rollout"; a staged rollout below 100%
+  (for information).
+- GitHub: failing CI on the default branch; a PR ready to merge (not a draft, GitHub says clean, CI passing, or no CI at
+  all in a repository without workflows); for a stack only the bottom PR; bot dependency updates grouped per
+  repository. A source that failed to read produces no items.
+
+**Schedule and storage:** read on launch and every 30 minutes (Settings > Integrations > Releases), and with Refresh
+(⌘R). The last reading is kept in `release-center.json` next to `inventory.json` (a per-device cache, no credentials).
+
+### راهنمای امین‌الله: انتشارها (دری)
+
+- **کجاست:** نوار کنار ← «انتشارها». در داشبورد هم کارت «انتشارها: منتظر شما» تعداد کارهای منتظر را نشان می‌دهد.
+- **چه می‌بیند:** بالای صفحه «منتظر شما» است (نسخهٔ تأییدشده که منتظر انتشار است، رد شدن، PR آمادهٔ ادغام با CI سبز، CI ناکام
+  روی main). بعد برای هر اپ App Store: نسخهٔ زنده، نسخهٔ در جریان و وضعیتش، شمارهٔ بیلد و تاریخ بارگذاری، نوع انتشار. برای هر
+  اپ Google Play: هر track با versionCode، وضعیت، درصد پخش و زبان‌های یادداشت انتشار. برای هر مخزن: CI روی main، آخرین انتشار
+  یا تگ، و PR های باز. PR های زنجیره‌ای به ترتیب ادغام نشان داده می‌شوند: از بالا به پایین ادغام کنید، با Merge commit، نه squash.
+- **انتشار نسخه:** وقتی اپل نسخه‌ای با انتشار دستی را تأیید کرد، دکمهٔ «انتشار این نسخه…» می‌آید. برنامه نام اپ، نسخه و بیلد را
+  می‌پرسد و بعد از تأیید شما فقط یک بار درخواست می‌فرستد و نتیجه را در دفتر همین دستگاه ثبت می‌کند. این کار کلید App Store
+  Connect با نقش App Manager یا Admin می‌خواهد؛ با کلید Developer اپل رد می‌کند و چیزی تغییر نمی‌کند.
+- **Google Play:** فقط خواندن. برنامه یک edit باز می‌کند، trackها را می‌خواند و همان لحظه پاکش می‌کند؛ هرگز commit نمی‌شود.
+- **کلیدها:** همان کلیدهای تنظیمات ← Integrations. چیز تازه‌ای ذخیره نمی‌شود.
 
 ## Social media (Phase 5)
 

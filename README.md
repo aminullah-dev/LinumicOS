@@ -15,7 +15,9 @@ ledger. WorkTrack customers: the vendor API, read plus licence renewals confirme
 SafeBeauty and VELRO admin overviews, read-only except Talar's audited hall approve/reject. Vault: the owner's own
 sign-ins in this device's Keychain, with Touch ID, copy buttons and "Fill from Vault" in the sign-in sheets. Monitor:
 live health of every public Linumic endpoint (plain GETs, no credentials) with TLS certificate and linumic.com domain
-expiry, 24-hour uptime and down/expiry notifications. See
+expiry, 24-hour uptime and down/expiry notifications. Releases: every app in App Store Connect and Google Play, open
+PRs (stacks in merge order) and CI of every product repository, and a "Waiting on you" list, read-only except
+releasing an approved App Store version after a confirmation. See
 [docs/integrations.md](docs/integrations.md) and [docs/security.md](docs/security.md).
 
 ## Layout
