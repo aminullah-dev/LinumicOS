@@ -271,3 +271,39 @@ struct InventoryBackupTests {
         #expect(throws: InventoryBackup.BackupError.noInventory) { try backup.run(now: t0) }
     }
 }
+
+@Suite("Automation in the Daily Brief")
+struct AutomationBriefTests {
+    private func input(_ ledger: AutomationLedger?) -> BriefInput {
+        BriefInput(now: t0.addingTimeInterval(3600), monitor: MonitorSnapshot(), releases: ReleaseCenterSnapshot(),
+                   licences: BriefLicenceInput(isLoaded: false, records: [], lastSyncedAt: nil),
+                   worktrack: BriefWorkTrackInput(isSignedIn: false, environment: nil, companies: [], lastRead: nil),
+                   operations: [], oversight: BriefOversightInput(repos: [], recentChanges: []), automation: ledger)
+    }
+
+    @Test func neverRunUntilTheEngineRecordsSomething() {
+        for ledger in [nil, AutomationLedger()] {
+            guard case .neverRead = DailyBriefBuilder.automation(input(ledger)).state else {
+                Issue.record("\(String(describing: ledger)) should be never read")
+                continue
+            }
+        }
+    }
+
+    @Test func failingJobsBecomeLinesAndTheRestNotes() {
+        var ledger = AutomationLedger()
+        ledger.record(run(.stores, .succeeded(nil), at: t0))
+        #expect(DailyBriefBuilder.automation(input(ledger)).state == .allClear)
+        for i in 0..<3 { ledger.record(run(.oversight, .failed("HTTP 401"), at: t0.addingTimeInterval(Double(i) * 300))) }
+        ledger.record(run(.worktrack, .skipped(.notConnected), at: t0))
+        ledger.disabled = [.siteMessages]
+        ledger.pausedUntil = t0.addingTimeInterval(7200)
+        let section = DailyBriefBuilder.automation(input(ledger))
+        #expect(section.state == .items)
+        #expect(section.lines.count == 1)
+        #expect(section.lines[0].severity == .high)
+        #expect(section.lines[0].destination == .automation)
+        #expect(section.lines[0].detail == "HTTP 401")
+        #expect(section.notes.count == 3)
+    }
+}
