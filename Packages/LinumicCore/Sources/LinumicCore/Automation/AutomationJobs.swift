@@ -70,9 +70,11 @@ public enum AutomationCatalog {
         AutomationJobSpec(id: .licences, title: "Licence sync",
                           detail: "The licence ledger with the cloud, and expiry reminders.",
                           cadence: 30 * 60),
+        // The full company list costs WorkTrack several reads per company, so it is not polled often.
         AutomationJobSpec(id: .worktrack, title: "WorkTrack customers",
                           detail: "Companies, plans and renewals from the WorkTrack vendor API.",
                           cadence: 6 * 60 * 60, retryAfter: 10 * 60),
+        // Never faster: VELRO's dashboard runs many COUNT queries and SafeBeauty's counts are billed per query.
         AutomationJobSpec(id: .operations, title: "Operations",
                           detail: "Talar, SafeBeauty and VELRO queues and counts.",
                           cadence: 30 * 60),
@@ -128,7 +130,7 @@ public enum AutomationSkipReason: String, Codable, Sendable, Hashable {
 }
 
 public enum AutomationOutcome: Codable, Sendable, Hashable {
-    /// Done. The note says what was read ("12 repositories"), in English, for the app to localize.
+    /// Done. The note says what was read ("12 repositories read"), already localized by the app.
     case succeeded(String?)
     /// Done, but part of it failed (some repositories or one of several sources).
     case partial(String)

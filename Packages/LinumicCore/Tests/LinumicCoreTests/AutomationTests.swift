@@ -259,6 +259,15 @@ struct InventoryBackupTests {
         #expect(backup.existing().map(\.lastPathComponent) == ["inventory-2026-10-22.json", "inventory-2026-10-21.json", "inventory-2026-10-20.json"])
     }
 
+    @Test func namesAreGregorianWhateverTheMacCalendar() {
+        // Found on the owner's Mac: Calendar.current is Persian there, which named the first copy inventory-1405-07-26.
+        #expect(InventoryBackup.gregorian.identifier == .gregorian)
+        var persian = Calendar(identifier: .persian)
+        persian.timeZone = TimeZone(identifier: "UTC")!
+        #expect(InventoryBackup.fileName(for: t0, calendar: persian).hasPrefix("inventory-1405-"))
+        #expect(InventoryBackup.fileName(for: t0).hasPrefix("inventory-2026-10-"))
+    }
+
     @Test func refusesACorruptCopy() throws {
         let (backup, dir) = try setUp()
         defer { try? FileManager.default.removeItem(at: dir) }

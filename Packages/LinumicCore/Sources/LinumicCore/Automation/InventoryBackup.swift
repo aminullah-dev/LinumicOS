@@ -44,7 +44,14 @@ public struct InventoryBackup: Sendable {
         return InventoryBackup(source: source, folder: source.deletingLastPathComponent().appending(path: "Backups", directoryHint: .isDirectory))
     }
 
-    public static func fileName(for date: Date, calendar: Calendar = .current) -> String {
+    /// Gregorian dates in the local time zone, whatever calendar the Mac uses, so the names sort by date.
+    public static var gregorian: Calendar {
+        var c = Calendar(identifier: .gregorian)
+        c.timeZone = .current
+        return c
+    }
+
+    public static func fileName(for date: Date, calendar: Calendar = InventoryBackup.gregorian) -> String {
         let c = calendar.dateComponents([.year, .month, .day], from: date)
         func pad(_ n: Int?, _ width: Int) -> String {
             let digits = String(n ?? 0)
@@ -60,7 +67,7 @@ public struct InventoryBackup: Sendable {
             .sorted { $0.lastPathComponent > $1.lastPathComponent }
     }
 
-    public func run(now: Date = .now, calendar: Calendar = .current) throws -> Result {
+    public func run(now: Date = .now, calendar: Calendar = InventoryBackup.gregorian) throws -> Result {
         guard let data = try? Data(contentsOf: source) else { throw BackupError.noInventory }
         let fm = FileManager.default
         try fm.createDirectory(at: folder, withIntermediateDirectories: true)
