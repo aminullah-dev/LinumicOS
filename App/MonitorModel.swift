@@ -35,21 +35,13 @@ final class MonitorModel {
     func latencies(for target: MonitorTarget) -> [Int?] { snapshot.history.latencies(target.id, now: now) }
     func samples(for target: MonitorTarget) -> Int { snapshot.history.recent(target.id, now: now).count }
 
-    /// Runs while the app is open: a round at once, then every 5 minutes (longer after rounds where nothing
-    /// answered, and twice as long in Low Power Mode). Domain registrations are re-read every 12 hours.
-    func run() async {
+    /// Ticks every minute while a window shows the Monitor, so "checked 3 min ago" and the day counts stay true.
+    /// The rounds themselves are run by `AutomationEngine`: every 5 minutes, longer after rounds where nothing
+    /// answered and in Low Power Mode. Domain registrations are re-read every 12 hours.
+    func keepTime() async {
         while !Task.isCancelled {
-            await checkNow()
-            let interval = MonitorSchedule.interval(failedRounds: snapshot.failedRounds,
-                                                    lowPower: ProcessInfo.processInfo.isLowPowerModeEnabled)
-            // Tick every minute so "checked 3 min ago" and the day counts stay true while waiting.
-            var waited: TimeInterval = 0
-            while waited < interval, !Task.isCancelled {
-                let step = min(60, interval - waited)
-                try? await Task.sleep(for: .seconds(step))
-                waited += step
-                now = .now
-            }
+            try? await Task.sleep(for: .seconds(60))
+            now = .now
         }
     }
 

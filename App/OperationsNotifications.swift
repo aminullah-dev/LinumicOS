@@ -16,6 +16,7 @@ enum OperationsNotifier {
             content.body = change.queue.sentence(change.count)
             content.sound = .default
             let id = "operations-\(change.queue.rawValue)-\(Int(change.readAt.timeIntervalSince1970))"
+            NotificationGate.apply(content)
             try? await center.add(UNNotificationRequest(identifier: id, content: content, trigger: nil))
         }
     }

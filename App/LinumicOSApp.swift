@@ -10,12 +10,17 @@ struct LinumicOSApp: App {
     @State private var worktrack: WorkTrackModel
     @State private var operations: OperationsModel
     @State private var releases: ReleaseCenterModel
-    @State private var vault = VaultModel()
+    @State private var vault: VaultModel
     @State private var monitor: MonitorModel
     @State private var brief: BriefModel
     @State private var keys: KeysModel
     @State private var siteMessages: SiteMessagesModel
+    @State private var automation: AutomationEngine
     @Environment(\.scenePhase) private var scenePhase
+    #if os(macOS)
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    @AppStorage(MacPresence.menuBarKey) private var showMenuBar = true
+    #endif
 
     init() {
         // macOS has no Persian system localization, so AppKit (window controls, split views, sheets,
@@ -34,7 +39,8 @@ struct LinumicOSApp: App {
         _model = State(initialValue: inventory)
         let licences = LicenceModel(inventory: inventory)
         _licences = State(initialValue: licences)
-        _platforms = State(initialValue: PlatformHubModel(inventory: inventory))
+        let platforms = PlatformHubModel(inventory: inventory)
+        _platforms = State(initialValue: platforms)
         let worktrack = WorkTrackModel(inventory: inventory)
         _worktrack = State(initialValue: worktrack)
         let operations = OperationsModel(inventory: inventory)
@@ -47,61 +53,50 @@ struct LinumicOSApp: App {
         _keys = State(initialValue: keys)
         let siteMessages = SiteMessagesModel()
         _siteMessages = State(initialValue: siteMessages)
-        _brief = State(initialValue: BriefModel(inventory: inventory, licences: licences, worktrack: worktrack,
-                                                operations: operations, releases: releases, monitor: monitor, keys: keys,
-                                                siteMessages: siteMessages))
+        let brief = BriefModel(inventory: inventory, licences: licences, worktrack: worktrack, operations: operations,
+                               releases: releases, monitor: monitor, keys: keys, siteMessages: siteMessages)
+        _brief = State(initialValue: brief)
+        // Started here, not from a window, so it runs whether or not a window is open (menu bar, login item).
+        let automation = AutomationEngine(inventory: inventory, licences: licences, platforms: platforms, worktrack: worktrack,
+                                          operations: operations, releases: releases, monitor: monitor, brief: brief,
+                                          keys: keys, siteMessages: siteMessages)
+        _automation = State(initialValue: automation)
+        let vault = VaultModel()
+        vault.load()
+        _vault = State(initialValue: vault)
+        automation.start()
     }
 
     var body: some Scene {
-        WindowGroup("Linumic OS") {
-            ContentView()
-                .environment(\.layoutDirection, Self.layoutDirection)
-                .environment(model)
-                .environment(licences)
-                .environment(platforms)
-                .environment(worktrack)
-                .environment(operations)
-                .environment(releases)
-                .environment(vault)
-                .environment(monitor)
-                .environment(brief)
-                .environment(keys)
-                .environment(siteMessages)
-                .environment(router)
+        WindowGroup("Linumic OS", id: "main") {
+            environment(ContentView())
                 #if os(macOS)
                 .frame(minWidth: 960, minHeight: 600)
                 #endif
                 // The Vault locks whenever the app leaves the foreground.
-                .onChange(of: scenePhase) { _, phase in if phase == .background { vault.appMovedToBackground() } }
-                // Monitor: public health checks on open, then every 5 minutes, alongside the slower refresh loop below.
-                .task { await monitor.run() }
-                .task {
-                    vault.load()
-                    await model.load()
-                    await licences.load()
-                    await platforms.load()
-                    await worktrack.load()
-                    await operations.load()
-                    await releases.load()
-                    // Store status on launch, then every 30 minutes while the app is open.
-                    while !Task.isCancelled {
-                        await model.autoRefreshStoresIfDue()
-                        await model.autoRefreshOversightIfDue()
-                        await platforms.autoRefreshIfDue()
-                        await licences.sync()
-                        await worktrack.autoRefreshIfDue()
-                        await operations.autoRefreshIfDue()
-                        await releases.autoRefreshIfDue()
-                        // Keys & Backups: file dates and sizes in the granted folders only (Mac), no network.
-                        await keys.check()
-                        // Website messages: two GETs to linumic.com with the stored application password, if any.
-                        await siteMessages.refresh()
-                        // Today's snapshot for "what changed since yesterday", and the morning notification.
-                        await brief.record()
-                        try? await Task.sleep(for: .seconds(InventoryModel.autoRefreshInterval))
+                .onChange(of: scenePhase) { _, phase in
+                    switch phase {
+                    case .background:
+                        vault.appMovedToBackground()
+                        #if os(iOS)
+                        automation.scheduleBackgroundRefresh()
+                        #endif
+                    case .active:
+                        // Back in front: run whatever fell due while the app was suspended.
+                        automation.nudge(.wake)
+                    default: break
                     }
                 }
+                // Keeps the Monitor's relative times current; the checks themselves run in `AutomationEngine`.
+                .task { await monitor.keepTime() }
         }
+        #if os(macOS)
+        .defaultLaunchBehavior(MacPresence.startsHidden && showMenuBar ? .suppressed : .automatic)
+        #else
+        .backgroundTask(.appRefresh(AutomationEngine.backgroundTaskID)) {
+            await automation.backgroundRefresh()
+        }
+        #endif
         .commands {
             CommandGroup(replacing: .newItem) {
                 Button("New Product…") { router.isNewProductPresented = true }
@@ -120,6 +115,33 @@ struct LinumicOSApp: App {
                 }
             }
         }
+        #if os(macOS)
+        MenuBarExtra(isInserted: $showMenuBar) {
+            environment(MenuBarPanel())
+        } label: {
+            environment(MenuBarLabel())
+        }
+        .menuBarExtraStyle(.window)
+        #endif
+    }
+
+    /// Every model, for the main window and the menu bar panel alike.
+    private func environment<V: View>(_ view: V) -> some View {
+        view
+            .environment(\.layoutDirection, Self.layoutDirection)
+            .environment(model)
+            .environment(licences)
+            .environment(platforms)
+            .environment(worktrack)
+            .environment(operations)
+            .environment(releases)
+            .environment(vault)
+            .environment(monitor)
+            .environment(brief)
+            .environment(keys)
+            .environment(siteMessages)
+            .environment(automation)
+            .environment(router)
     }
 
     /// macOS has no Persian system localization, so AppKit doesn't mirror a Dari app by

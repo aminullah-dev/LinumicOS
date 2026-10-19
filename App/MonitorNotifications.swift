@@ -39,6 +39,7 @@ enum MonitorNotifier {
                 id = "monitor-domain-\(name)-\(level.rawValue)"
             }
             content.sound = .default
+            NotificationGate.apply(content)
             try? await center.add(UNNotificationRequest(identifier: "\(id)-\(Int(now.timeIntervalSince1970))", content: content, trigger: nil))
         }
     }

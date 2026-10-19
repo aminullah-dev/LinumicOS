@@ -29,6 +29,7 @@ enum OversightNotifier {
             content.title = String(localized: "Project oversight")
             content.body = change.message
             if change.isImportant { content.sound = .default }
+            NotificationGate.apply(content)
             try? await center.add(UNNotificationRequest(identifier: change.id.uuidString, content: content, trigger: nil))
         }
     }

@@ -15,6 +15,8 @@ final class BriefModel {
     private static let notificationID = "daily-brief"
 
     private(set) var history: BriefSnapshotHistory
+    /// The automation run log, kept current by `AutomationEngine` after every run.
+    var automation: AutomationLedger?
     /// When the morning notification is next due, as scheduled (nil when off or not allowed).
     private(set) var nextNotification: Date?
 
@@ -69,7 +71,8 @@ final class BriefModel {
             operations: ops,
             oversight: BriefOversightInput(repos: inventory.oversight, recentChanges: inventory.recentOversightChanges),
             keys: keys.briefInput,
-            siteMessages: siteMessages.briefInput)
+            siteMessages: siteMessages.briefInput,
+            automation: automation)
     }
 
     /// The brief for right now, with the changes since the last snapshot of an earlier day.

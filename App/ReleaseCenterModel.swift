@@ -17,7 +17,6 @@ final class ReleaseCenterModel {
     var errorMessage: String?
 
     static let autoRefreshKey = "LCCAutoRefreshReleases"
-    private static let lastAutoRefreshKey = "LCCLastReleasesAutoRefresh"
 
     private let inventory: InventoryModel
     private let store: ReleaseCenterStore?
@@ -131,17 +130,6 @@ final class ReleaseCenterModel {
             return all
         }
         return .data(results.sorted { $0.repo.slug.lowercased() < $1.repo.slug.lowercased() }, now)
-    }
-
-    /// Launch, then every 30 minutes with the other refreshes, when at least one source has credentials.
-    func autoRefreshIfDue() async {
-        let defaults = UserDefaults.standard
-        guard defaults.object(forKey: Self.autoRefreshKey) as? Bool ?? true, inventory.isLoaded,
-              hasAppStoreKey || hasPlayKey || inventory.hasGitHubToken else { return }
-        let last = defaults.object(forKey: Self.lastAutoRefreshKey) as? Date ?? .distantPast
-        guard Date.now.timeIntervalSince(last) >= InventoryModel.autoRefreshInterval - 60 else { return }
-        defaults.set(Date.now, forKey: Self.lastAutoRefreshKey)
-        await refresh()
     }
 
     // MARK: The one write
