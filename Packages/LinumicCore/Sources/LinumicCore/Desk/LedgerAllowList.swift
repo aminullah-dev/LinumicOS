@@ -76,11 +76,14 @@ public struct LedgerFileInfo: Hashable, Sendable {
     public var isRegularFile: Bool
     public var isSymbolicLink: Bool
     public var size: Int64
+    /// How many names the file has; more than one is a hard link.
+    public var links: Int
 
-    public init(isRegularFile: Bool, isSymbolicLink: Bool = false, size: Int64) {
+    public init(isRegularFile: Bool, isSymbolicLink: Bool = false, size: Int64, links: Int = 1) {
         self.isRegularFile = isRegularFile
         self.isSymbolicLink = isSymbolicLink
         self.size = size
+        self.links = links
     }
 }
 
@@ -102,6 +105,8 @@ public enum LedgerReadError: LocalizedError, Equatable {
     case tooLarge(Int64)
     case notUTF8
     case outsideGrant
+    /// The file has more than one name (a hard link): its real place can't be told from its name, so it is not read.
+    case hardLink
     case system(String)
 
     public var errorDescription: String? {
@@ -111,6 +116,7 @@ public enum LedgerReadError: LocalizedError, Equatable {
         case .tooLarge(let max): LF("Larger than %d KB, so not read.", Int(max / 1000))
         case .notUTF8: L("It is not UTF-8 text, so it was not read.")
         case .outsideGrant: L("Its real location is outside the granted folder, so it was not read.")
+        case .hardLink: L("It is a hard link (the file has more than one name), so it was not read.")
         case .system(let message): message
         }
     }
@@ -130,7 +136,8 @@ public struct LocalLedgerFileSystem: LedgerFileSystem {
             throw LedgerReadError.system(Self.message(code))
         }
         let type = st.st_mode & S_IFMT
-        return LedgerFileInfo(isRegularFile: type == S_IFREG, isSymbolicLink: type == S_IFLNK, size: Int64(st.st_size))
+        return LedgerFileInfo(isRegularFile: type == S_IFREG, isSymbolicLink: type == S_IFLNK, size: Int64(st.st_size),
+                              links: Int(st.st_nlink))
     }
 
     public func readText(atPath path: String, maxBytes: Int64, roots: [String]) throws -> String {
@@ -143,6 +150,9 @@ public struct LocalLedgerFileSystem: LedgerFileSystem {
         var st = stat()
         guard fstat(fd, &st) == 0 else { throw LedgerReadError.system(Self.message(errno)) }
         guard st.st_mode & S_IFMT == S_IFREG else { throw LedgerReadError.notRegularFile }
+        // F_GETPATH gives the name the file was opened by, so a hard link at an allowed name would pass the check below
+        // while the file lives elsewhere. Ledgers are never hard-linked.
+        guard st.st_nlink <= 1 else { throw LedgerReadError.hardLink }
         guard Int64(st.st_size) <= maxBytes else { throw LedgerReadError.tooLarge(maxBytes) }
         // Where the open file really is: a folder on the way may be a link that leads out of the grant.
         var buffer = [CChar](repeating: 0, count: Int(MAXPATHLEN))
@@ -233,8 +243,9 @@ public struct LedgerReading: Hashable, Sendable {
 }
 
 public enum LedgerReader {
-    /// A PRIORITIES.md is a few kilobytes; anything far larger is not a ledger.
-    public static let maxBytes: Int64 = 1_000_000
+    /// A PRIORITIES.md is a few kilobytes (the largest real one was 46 KB on 2026-10-19); anything far larger is not a
+    /// ledger, and parsing a runaway file would hold up the Desk.
+    public static let maxBytes: Int64 = 256_000
 
     /// Reads every allow-listed ledger under `home`. `granted` are the absolute folders the owner granted; a file in no
     /// granted folder is "not granted" and is not touched.
@@ -276,6 +287,7 @@ public enum LedgerReader {
             guard let info = try fs.info(atPath: path) else { return .failed(.notFound) }
             if info.isSymbolicLink { throw LedgerReadError.symbolicLink }
             guard info.isRegularFile else { throw LedgerReadError.notRegularFile }
+            guard info.links <= 1 else { throw LedgerReadError.hardLink }
             guard info.size <= maxBytes else { throw LedgerReadError.tooLarge(maxBytes) }
             return .text(try fs.readText(atPath: path, maxBytes: maxBytes, roots: access.roots))
         } catch {

@@ -210,12 +210,9 @@ public enum DeskBuilder {
                     items.append(DeskItem(origin: origin, subjectKey: line.id, kindKey: "fact", kind: .fact,
                                           domain: domain(line.kind, product: line.product), severity: line.severity,
                                           title: line.text, detail: line.detail, subject: line.product ?? line.kind.title,
-                                          ownerAction: line.severity <= .normal,
+                                          due: line.due, ownerAction: line.severity <= .normal,
                                           evidence: DeskEvidence(source: line.source, readAt: line.readAt, cadence: cadence),
-                                          // The fact is the line's subject and how urgent it is, not its wording: a
-                                          // countdown ("in 12 days") changes daily, an escalation to high does count.
-                                          factHash: DeskHash.of(line.id, "\(line.severity.rawValue)"),
-                                          destination: .screen(line.destination)))
+                                          factHash: factHash(line), destination: .screen(line.destination)))
                 }
                 // "All clear" is only about what was read: a part that was not read is an item, never a zero.
                 for gap in section.gaps {
@@ -232,6 +229,17 @@ public enum DeskBuilder {
             }
         }
         return items
+    }
+
+    /// The fact is the line's subject and how urgent it is, not its wording: a countdown ("in 12 days") changes daily,
+    /// an escalation to high does count. A count line adds its power-of-two bucket and a dated line its day, so a mark
+    /// on "3 waiting" does not hide "30 waiting", and a new due day is a new fact. A line without either keeps the hash
+    /// it always had, so marks made before stay valid.
+    static func factHash(_ line: BriefLine) -> String {
+        var parts = [line.id, "\(line.severity.rawValue)"]
+        if let key = line.factKey { parts.append(key) }
+        if let due = line.due { parts.append(due.description) }
+        return parts.count == 2 ? DeskHash.of(parts[0], parts[1]) : DeskHash.of(parts)
     }
 
     static func domain(_ kind: BriefSourceKind, product: String?) -> DeskDomain {
@@ -364,11 +372,17 @@ public enum DeskBuilder {
                                         detail: L("Ask an agent to review it against the live state before trusting its items."),
                                         readAt: readAt, line: line, fact: day.description, destination: .file(path: path, line: line)))
             }
+        } else if let line = ledger.reviewLine {
+            // There is a review line, but no Gregorian day in it (a Solar Hijri date is not converted by guess).
+            items.append(sourceItem(source, path: path, kindKey: "review-unknown", severity: .info, owner: false,
+                                    title: LF("The «آخرین بازبینی» date of %@ could not be read", path),
+                                    detail: L("Only a Gregorian YYYY-MM-DD date is read; any other date is not guessed. When it was last reviewed is unknown."),
+                                    readAt: readAt, line: line, destination: .file(path: path, line: line)))
         } else {
             items.append(sourceItem(source, path: path, kindKey: "review-unknown", severity: .info, owner: false,
                                     title: LF("%@ has no «آخرین بازبینی» date", path),
-                                    detail: L("When it was last reviewed is unknown."), readAt: readAt, line: ledger.reviewLine,
-                                    destination: .file(path: path, line: ledger.reviewLine)))
+                                    detail: L("When it was last reviewed is unknown."), readAt: readAt, line: nil,
+                                    destination: .file(path: path, line: nil)))
         }
         if !ledger.skippedLines.isEmpty {
             items.append(skippedItem(source, path: path, lines: ledger.skippedLines, readAt: readAt))
@@ -510,9 +524,17 @@ public enum DeskAgentBrief {
             lines.append("کار: \(item.title)")
             if let detail = item.detail, !detail.isEmpty { lines.append("جزئیات: \(detail)") }
         }
-        if !item.notes.isEmpty {
-            lines.append("سطرهای زیر همین مورد در دفتر، به همان ترتیب (اصلاح‌های تاریخ‌دار دفتر این‌جاست):")
-            lines += item.notes.map { "  \($0)" }
+        // Corrections (dated, or saying «اصلاح» / «درست نیست») are named as such only when there are some; the other
+        // lines under the item follow under a neutral heading.
+        let corrections = item.corrections
+        if !corrections.isEmpty {
+            lines.append("اصلاح‌های تاریخ‌دار زیر همین مورد در دفتر (سطر بالا ممکن است دیگر درست نباشد):")
+            lines += corrections.map { "  \($0)" }
+        }
+        let others = item.notes.filter { !LedgerText.isCorrection($0) }
+        if !others.isEmpty {
+            lines.append(corrections.isEmpty ? "سطرهای زیر همین مورد در دفتر، به همان ترتیب:" : "سطرهای دیگر زیر همین مورد در دفتر، به همان ترتیب:")
+            lines += others.map { "  \($0)" }
         }
         if item.evidence.file != nil {
             lines.append("منبع: \(item.evidence.location)")
@@ -521,7 +543,8 @@ public enum DeskAgentBrief {
         }
         if item.origin == .nextActions { lines.append("موضوع: \(item.subject)") }
         if let reference = item.reference { lines.append("منبع در گزارش: \(reference)") }
-        lines.append("زمان خواندن: " + (item.evidence.readAt.map { iso.string(from: $0) } ?? "نامعلوم"))
+        // A source that says it was not read was only checked at that time, not read.
+        lines.append((item.wasRead ? "زمان خواندن: " : "زمان بررسی (خوانده نشد): ") + (item.evidence.readAt.map { iso.string(from: $0) } ?? "نامعلوم"))
         lines.append("قاعده: چیزی را که ثابت نشده «انجام شد» ننویس. وقتی تمام شد، همان سطر را در دفتر با تاریخ و مدرک تیک بزن.")
         return lines.joined(separator: "\n")
     }

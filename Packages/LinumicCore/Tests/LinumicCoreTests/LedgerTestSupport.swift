@@ -29,12 +29,14 @@ struct FakeLedgerFS: LedgerFileSystem {
     var links: Set<String> = []
     var sizes: [String: Int64] = [:]
     var denied: Set<String> = []
+    /// Files with more than one name (hard links), by path.
+    var linkCounts: [String: Int] = [:]
 
     func info(atPath path: String) throws -> LedgerFileInfo? {
         if denied.contains(path) { throw LedgerReadError.system("Operation not permitted") }
         if links.contains(path) { return LedgerFileInfo(isRegularFile: false, isSymbolicLink: true, size: 10) }
         guard let t = files[path] else { return nil }
-        return LedgerFileInfo(isRegularFile: true, size: sizes[path] ?? Int64(t.utf8.count))
+        return LedgerFileInfo(isRegularFile: true, size: sizes[path] ?? Int64(t.utf8.count), links: linkCounts[path] ?? 1)
     }
 
     func readText(atPath path: String, maxBytes: Int64, roots: [String]) throws -> String {

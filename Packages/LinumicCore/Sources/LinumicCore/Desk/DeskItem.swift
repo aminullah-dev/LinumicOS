@@ -23,6 +23,11 @@ public struct DeskDomain: Hashable, Codable, Sendable, Identifiable {
         self.name = name
     }
 
+    // The key is the identity: two spellings of one unknown product ("Signing Keys", "Signing-Keys") are the same
+    // domain, so the Desk makes one group of them (keeping the first name seen) and never two rows with one id.
+    public static func == (a: DeskDomain, b: DeskDomain) -> Bool { a.key == b.key }
+    public func hash(into hasher: inout Hasher) { hasher.combine(key) }
+
     public static let worktrack = DeskDomain("worktrack", "WorkTrack")
     public static let safeBeauty = DeskDomain("safebeauty", "SafeBeauty")
     public static let talar = DeskDomain("talar", "Talar")
@@ -57,6 +62,9 @@ public struct DeskDomain: Hashable, Codable, Sendable, Identifiable {
         map["website"] = .website
         map["afghanjama"] = .khayatYar
         map["afghanprayertimes"] = .namazia
+        // Repository slugs that don't carry the product's name (the Release Center names lines by repository).
+        map["stealthservicevault"] = .safeBeauty
+        map["talarreleases"] = .talar
         return map
     }()
 

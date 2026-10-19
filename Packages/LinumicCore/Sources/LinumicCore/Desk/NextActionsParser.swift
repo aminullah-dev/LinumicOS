@@ -3,10 +3,12 @@ import Foundation
 // MARK: - Ledgers (دفترها): NEXT-ACTIONS-<day>.md
 //
 // The daily "next actions" report in ~/Projects/Multiplatform. Only the owner's own sections are read: "(TODAY)" and
-// "(THIS WEEK)". An item is a line "1) …" at the start of the line, and it must carry a «منبع: <Product> / <slug>»
-// line; an item without one is set aside by line number, not guessed. So is any other numbered or bulleted line at the
-// start of a line in those sections, and a «منبع» line that belongs to no item. Claude's own sections, "SAFE TO
-// IGNORE" and "CONTRADICTIONS" are not tasks for the owner and are not read.
+// "(THIS WEEK)", in any letter case. An item is a line "1) …" at the start of the line, and it must carry a
+// «منبع: <Product> / <slug>» line; an item without one is set aside by line number, not guessed. So is any other
+// numbered or bulleted line at the start of a line in those sections, and a «منبع» line that belongs to no item. A
+// Markdown sub-heading inside an owner section ("### جزئیات") is set aside and the section goes on; a heading at the
+// section's own level without a known tag ends it, and the items after it are set aside, never dropped. Claude's own
+// sections, "SAFE TO IGNORE" and "CONTRADICTIONS" are not tasks for the owner and are not read.
 
 public enum NextActionsSection: String, Sendable, Hashable {
     case today, thisWeek
@@ -100,6 +102,11 @@ public enum NextActionsParser {
         result.day = fileName.flatMap(day(fromFileName:)) ?? lines.first.flatMap { LedgerText.firstDay(in: $0) }
 
         var section: NextActionsSection?
+        /// The heading level of the owner section: its "#"s, or 2 for a numbered heading ("۱. امروز … (TODAY)").
+        var sectionLevel = 0
+        /// An owner section was ended by a heading with no known tag: what follows may still be the owner's, so its
+        /// items and «منبع» lines are set aside until the next known heading.
+        var orphaned = false
         var current: (line: Int, number: Int, title: String, body: [String], source: (line: Int, text: String)?)?
         var currentSection: NextActionsSection?
 
@@ -119,14 +126,35 @@ public enum NextActionsParser {
                                                sourceText: src.text, otherProducts: others))
         }
 
-        for (index, line) in lines.enumerated() {
+        for (index, raw) in lines.enumerated() {
             let number = index + 1
+            let line = String(LedgerText.withoutLeadingBidiMarks(Substring(raw)))
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             let ascii = LedgerText.asciiDigits(line)
-            if let opened = heading(ascii) {
-                flush()
-                section = opened
-                if let section { result.sections.insert(section) }
+            if let h = heading(ascii) {
+                if h.known {
+                    flush()
+                    section = h.section
+                    sectionLevel = h.level
+                    orphaned = false
+                    if let section { result.sections.insert(section) }
+                    continue
+                }
+                // A heading with no known tag: below the owner section's level it is a sub-heading of it (set aside,
+                // the section goes on); at its level or above it ends the section.
+                if section != nil {
+                    if h.level > sectionLevel {
+                        result.skippedLines.append(number)
+                    } else {
+                        flush()
+                        section = nil
+                        orphaned = true
+                    }
+                }
+                continue
+            }
+            if orphaned {
+                if ascii.wholeMatch(of: #/\s*\d+\)\s+\S.*/#) != nil || sourceText(trimmed) != nil { result.skippedLines.append(number) }
                 continue
             }
             guard section != nil else { continue }
@@ -160,17 +188,29 @@ public enum NextActionsParser {
         return result
     }
 
-    /// A section heading, and the owner's section it opens (nil for any other section); nil overall when the line is
-    /// no heading. A Markdown heading ("## …") always is one. A numbered line ending in a tag ("۱. امروز، … (TODAY)")
-    /// is one only when the tag is known, so a line such as "2. merge the branch (PR)" does not end the section.
-    static func heading(_ ascii: String) -> NextActionsSection?? {
-        let tag = ascii.firstMatch(of: #/\(([A-Z][A-Z ]*[A-Z])\)\s*$/#).map { NextActionsSection.normalized(String($0.1)) }
-        if ascii.prefixMatch(of: #/#+\s/#) != nil {
-            return .some(tag.flatMap(NextActionsSection.from(tag:)))
+    /// A heading line.
+    struct Heading: Equatable {
+        /// "#"s of a Markdown heading; 2 for a numbered heading ("۱. امروز، … (TODAY)"), which the report uses where a
+        /// Markdown file would use "##".
+        var level: Int
+        /// The tag is one the report uses: the owner's (TODAY, THIS WEEK) or another known section.
+        var known: Bool
+        /// The owner's section it opens; nil for any other.
+        var section: NextActionsSection?
+    }
+
+    /// A section heading, nil when the line is none. A Markdown heading ("## …") always is one, known only with a
+    /// known tag. A numbered line ending in a tag ("۱. امروز، … (TODAY)") is one only when the tag is known, so a line
+    /// such as "2. merge the branch (PR)" is not a heading. Tags are compared without regard to letter case.
+    static func heading(_ ascii: String) -> Heading? {
+        let tag = ascii.firstMatch(of: #/\(([A-Za-z][A-Za-z ]*[A-Za-z])\)\s*$/#).map { NextActionsSection.normalized(String($0.1)) }
+        let owner = tag.flatMap(NextActionsSection.from(tag:))
+        let known = owner != nil || tag.map(NextActionsSection.otherTags.contains) == true
+        if let m = ascii.prefixMatch(of: #/\s*(#+)\s/#) {
+            return Heading(level: m.1.count, known: known, section: owner)
         }
-        guard let tag, ascii.prefixMatch(of: #/\d+\.\s/#) != nil else { return nil }
-        if let owner = NextActionsSection.from(tag: tag) { return .some(owner) }
-        return NextActionsSection.otherTags.contains(tag) ? .some(nil) : nil
+        guard known, ascii.prefixMatch(of: #/\d+\.\s/#) != nil else { return nil }
+        return Heading(level: 2, known: true, section: owner)
     }
 
     /// The text after «منبع:», also when written "- منبع:", "**منبع:**" or "منبع :"; nil for any other line.

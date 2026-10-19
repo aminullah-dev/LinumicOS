@@ -201,8 +201,10 @@ struct NextActionsParserTests {
         try #require(report.items.count == 5)
         #expect(report.items.map(\.section) == [.today, .today, .today, .today, .thisWeek])
         #expect(report.items[2].sourceText == "Talar / three (یادداشت)")
-        // "2. merge…", "1. …", "**5)** …", the «منبع» with no item, and the second «منبع» of one item.
-        #expect(report.skippedLines == [5, 12, 13, 14, 21])
+        // "2. merge…", "1. …", "**5)** …", the «منبع» with no item, the item and «منبع» after a heading that ended the
+        // owner's section without a known tag (set aside since the 2026-10-19 review, no longer dropped), and the
+        // second «منبع» of one item.
+        #expect(report.skippedLines == [5, 12, 13, 14, 16, 17, 21])
         #expect(report.sections == [.today, .thisWeek])
     }
 
