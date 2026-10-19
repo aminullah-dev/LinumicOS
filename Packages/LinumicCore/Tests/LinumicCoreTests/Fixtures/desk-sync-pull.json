@@ -1,0 +1,280 @@
+{
+    "ledger": {
+        "items": [
+            {
+                "id": "ledger.worktrack|1a2b3c4d5e6f7081|checkbox",
+                "file": "~/Projects/Multiplatform/WorkTrack/PRIORITIES.md",
+                "kind": "task",
+                "line": 12,
+                "title": "Sign the sample contract",
+                "domain": "worktrack",
+                "kindKey": "checkbox",
+                "subject": "P0",
+                "factHash": "1a2b3c4d5e6f7081",
+                "severity": "high",
+                "domainName": "WorkTrack",
+                "ownerAction": false,
+                "titleWithheld": false
+            },
+            {
+                "id": "next-actions|worktrack/sample-task|owner",
+                "due": "2026-10-19",
+                "file": "~/Projects/Multiplatform/NEXT-ACTIONS-2026-10-19.md",
+                "kind": "task",
+                "line": 40,
+                "title": "(withheld)",
+                "domain": "worktrack",
+                "horizon": "today",
+                "kindKey": "owner",
+                "subject": "WorkTrack / sample-task",
+                "factHash": "8899aabbccddeeff",
+                "severity": "normal",
+                "domainName": "WorkTrack",
+                "ownerAction": true,
+                "titleWithheld": true
+            },
+            {
+                "id": "ledger.talar|source|not-found",
+                "file": "~/Projects/Multiplatform/Talar/PRIORITIES.md",
+                "kind": "source",
+                "title": "Ledger not found: ~/Projects/Multiplatform/Talar/PRIORITIES.md",
+                "domain": "talar",
+                "kindKey": "not-found",
+                "subject": "~/Projects/Multiplatform/Talar/PRIORITIES.md",
+                "factHash": "fedcba9876543210",
+                "severity": "normal",
+                "domainName": "Talar",
+                "ownerAction": false,
+                "titleWithheld": false
+            }
+        ],
+        "digest": "6a3b1f4e0c9d2a7b5e8f1c3d4a6b9e0f2c5d7a8b1e4f6a9c0d3b5e7f9a1c2d4e",
+        "readAt": "2026-10-19T08:00:00Z",
+        "sources": [
+            {
+                "id": "worktrack",
+                "day": "2026-10-18",
+                "open": 1,
+                "path": "~/Projects/Multiplatform/WorkTrack/PRIORITIES.md",
+                "state": "read",
+                "ticked": 2,
+                "skipped": [
+                ]
+            },
+            {
+                "id": "next-actions",
+                "day": "2026-10-19",
+                "path": "~/Projects/Multiplatform/NEXT-ACTIONS-2026-10-19.md",
+                "state": "report",
+                "today": 1,
+                "skipped": [
+                ],
+                "thisWeek": 0
+            },
+            {
+                "id": "talar",
+                "path": "~/Projects/Multiplatform/Talar/PRIORITIES.md",
+                "state": "notFound"
+            }
+        ],
+        "version": 1,
+        "itemCount": 3,
+        "updatedAt": "2026-10-19T18:43:56Z",
+        "writtenOn": "macOS"
+    },
+    "vendors": [
+        {
+            "id": "account:owner.00000000000000a2",
+            "key": "owner.00000000000000a2",
+            "data": {
+                "id": "owner.00000000000000a2",
+                "name": "Sample Store",
+                "holder": "company",
+                "origin": "owner",
+                "source": "sample invoice 3",
+                "purpose": "A made-up store.",
+                "recordedOn": "2026-10-19",
+                "holderSource": "sample certificate"
+            },
+            "entry": "account",
+            "deleted": false,
+            "version": 1,
+            "updatedAt": "2026-10-19T18:43:56Z",
+            "writtenOn": "macOS"
+        },
+        {
+            "id": "facts:test-host",
+            "key": "test-host",
+            "data": {
+                "edits": [
+                    {
+                        "renewal": "2026-12-01",
+                        "accountID": "test-host",
+                        "enteredAt": "2026-10-19T08:30:00Z",
+                        "renewalSource": "sample invoice 4"
+                    },
+                    {
+                        "cost": {
+                            "cycle": "yearly",
+                            "amount": 12.5,
+                            "source": "sample invoice 4",
+                            "currency": "USD"
+                        },
+                        "accountID": "test-host",
+                        "enteredAt": "2026-10-19T08:31:00Z"
+                    }
+                ]
+            },
+            "entry": "facts",
+            "deleted": false,
+            "version": 1,
+            "updatedAt": "2026-10-19T18:43:56Z",
+            "writtenOn": "macOS"
+        },
+        {
+            "id": "seed:test-host",
+            "key": "test-host",
+            "data": {
+                "id": "test-host",
+                "name": "Sample Host",
+                "origin": "seed",
+                "source": "test fixture",
+                "purpose": "A made-up host.",
+                "recordedOn": "2026-10-01"
+            },
+            "entry": "seed",
+            "deleted": false,
+            "version": 1,
+            "updatedAt": "2026-10-19T18:43:56Z",
+            "writtenOn": "macOS",
+            "seedRevision": 3
+        }
+    ],
+    "deskState": [
+        {
+            "id": "brief.monitor|monitor.down.sample.api|fact",
+            "entry": "mark",
+            "deleted": true,
+            "version": 2,
+            "updatedAt": "2026-10-19T18:43:56Z",
+            "writtenOn": "iOS"
+        },
+        {
+            "id": "brief.worktrack|h-0f1e2d3c4b5a6978|fact",
+            "data": {
+                "at": "2026-10-19T08:05:00Z",
+                "kind": "snoozed",
+                "until": "2026-10-22T00:00:00Z",
+                "factHash": "0011223344556677"
+            },
+            "entry": "mark",
+            "deleted": false,
+            "version": 1,
+            "updatedAt": "2026-10-19T18:43:56Z",
+            "writtenOn": "macOS"
+        },
+        {
+            "id": "ledger.worktrack|1a2b3c4d5e6f7081|checkbox",
+            "data": {
+                "at": "2026-10-19T08:00:00Z",
+                "kind": "done",
+                "factHash": "1a2b3c4d5e6f7081"
+            },
+            "entry": "mark",
+            "deleted": false,
+            "version": 1,
+            "updatedAt": "2026-10-19T18:43:56Z",
+            "writtenOn": "macOS"
+        },
+        {
+            "id": "next-actions|worktrack/sample-task|owner",
+            "data": {
+                "at": "2026-10-19T08:10:00Z",
+                "kind": "dismissed",
+                "reason": "Handled on the phone",
+                "factHash": "8899aabbccddeeff"
+            },
+            "entry": "mark",
+            "deleted": false,
+            "version": 1,
+            "updatedAt": "2026-10-19T18:43:56Z",
+            "writtenOn": "macOS"
+        }
+    ],
+    "serverTime": "2026-10-19T18:43:56Z",
+    "obligations": [
+        {
+            "id": "date:test.seed-x",
+            "key": "test.seed-x",
+            "data": {
+                "due": "2026-11-20",
+                "source": "sample letter",
+                "enteredAt": "2026-10-19T08:20:00Z",
+                "obligationID": "test.seed-x"
+            },
+            "entry": "date",
+            "deleted": false,
+            "version": 1,
+            "updatedAt": "2026-10-19T18:43:56Z",
+            "writtenOn": "iOS"
+        },
+        {
+            "id": "done:owner.00000000000000f1|2026-11-01",
+            "key": "owner.00000000000000f1",
+            "entry": "done",
+            "deleted": true,
+            "version": 2,
+            "updatedAt": "2026-10-19T18:43:56Z",
+            "writtenOn": "macOS"
+        },
+        {
+            "id": "row:owner.00000000000000f1",
+            "key": "owner.00000000000000f1",
+            "data": {
+                "id": "owner.00000000000000f1",
+                "due": "2026-11-01",
+                "area": "accounts",
+                "title": "Pay the sample host",
+                "origin": "owner",
+                "source": "sample bill 7",
+                "leadDays": [
+                    30,
+                    14,
+                    7,
+                    1
+                ],
+                "recordedOn": "2026-10-19"
+            },
+            "entry": "row",
+            "deleted": false,
+            "version": 1,
+            "updatedAt": "2026-10-19T18:43:56Z",
+            "writtenOn": "iOS"
+        },
+        {
+            "id": "seed:test.seed-x",
+            "key": "test.seed-x",
+            "data": {
+                "id": "test.seed-x",
+                "due": "2026-11-30",
+                "area": "other",
+                "title": "Sample seed row",
+                "origin": "seed",
+                "source": "test fixture",
+                "leadDays": [
+                    30,
+                    14,
+                    7,
+                    1
+                ],
+                "recordedOn": "2026-10-01"
+            },
+            "entry": "seed",
+            "deleted": false,
+            "version": 1,
+            "updatedAt": "2026-10-19T18:43:56Z",
+            "writtenOn": "iOS",
+            "seedRevision": 3
+        }
+    ]
+}

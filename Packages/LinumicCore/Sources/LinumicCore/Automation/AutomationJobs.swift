@@ -17,6 +17,9 @@ public enum AutomationJobID: String, Codable, CaseIterable, Sendable, Identifiab
     case siteMessages
     case keys
     case backup
+    /// The Desk's marks, the obligations and accounts with the cloud, and the Mac's ledger reading for iPhone and iPad
+    /// (docs/desk-sync.md). A new ledger reading is also sent as soon as it is read.
+    case deskSync
     /// The owner's ledgers for the Desk; before the Brief, so the Desk and the Brief see the same round.
     case ledgers
     case brief
@@ -98,6 +101,11 @@ public enum AutomationCatalog {
         AutomationJobSpec(id: .backup, title: "Local inventory backup",
                           detail: "A daily copy of the inventory on this device, read back to prove it restores.",
                           cadence: 24 * 60 * 60, retryAfter: 30 * 60, needsNetwork: false),
+        // A pull and at most a few small writes; light enough for iOS background refresh. Two minutes at most, so a
+        // server that never answers can't hold up the ledgers and the Brief behind it.
+        AutomationJobSpec(id: .deskSync, title: "Desk sync",
+                          detail: "Your Desk marks, obligations and accounts with the cloud, and the Mac's ledger reading for iPhone and iPad. Conflicts are shown on the Desk, never overwritten.",
+                          cadence: 30 * 60, retryAfter: 5 * 60, runsInBackground: true, timeLimit: 2 * 60),
         // Local files only (the PRIORITIES.md files and the newest NEXT-ACTIONS), read-only, inside the folders the
         // owner granted; Mac only, like Keys & Backups.
         AutomationJobSpec(id: .ledgers, title: "Ledgers",

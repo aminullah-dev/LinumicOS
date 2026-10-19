@@ -40,6 +40,19 @@ public struct VendorAccountEdit: Codable, Hashable, Sendable {
     }
 }
 
+/// A Done the owner took back ("Reopen"), kept until the next sync sends it to the cloud as a deletion. Nothing else
+/// removes an entry from the cloud: an entry missing from this file is never read as deleted.
+public struct ObligationReopen: Codable, Hashable, Sendable {
+    public var obligationID: String
+    /// The due day of the Done that was taken back; nil for an undated row.
+    public var due: KeyDay?
+
+    public init(obligationID: String, due: KeyDay?) {
+        self.obligationID = obligationID
+        self.due = due
+    }
+}
+
 /// Everything the owner entered: obligations and accounts he added, dates he set, Done with evidence, account facts.
 /// The seed and the live rows are never stored here; they are built fresh from their sources.
 public struct ObligationsFile: Codable, Hashable, Sendable {
@@ -51,15 +64,43 @@ public struct ObligationsFile: Codable, Hashable, Sendable {
     public var completions: [ObligationCompletion]
     public var accounts: [VendorAccount]
     public var accountEdits: [VendorAccountEdit]
+    /// Done marks taken back and not yet sent to the cloud (see `ObligationReopen`).
+    public var reopened: [ObligationReopen]
 
     public init(added: [Obligation] = [], dates: [ObligationDateEntry] = [], completions: [ObligationCompletion] = [],
-                accounts: [VendorAccount] = [], accountEdits: [VendorAccountEdit] = []) {
+                accounts: [VendorAccount] = [], accountEdits: [VendorAccountEdit] = [], reopened: [ObligationReopen] = []) {
         version = Self.currentVersion
         self.added = added
         self.dates = dates
         self.completions = completions
         self.accounts = accounts
         self.accountEdits = accountEdits
+        self.reopened = reopened
+    }
+
+    private enum CodingKeys: String, CodingKey { case version, added, dates, completions, accounts, accountEdits, reopened }
+
+    // A file written before the cloud sync has no "reopened".
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        version = try c.decode(Int.self, forKey: .version)
+        added = try c.decode([Obligation].self, forKey: .added)
+        dates = try c.decode([ObligationDateEntry].self, forKey: .dates)
+        completions = try c.decode([ObligationCompletion].self, forKey: .completions)
+        accounts = try c.decode([VendorAccount].self, forKey: .accounts)
+        accountEdits = try c.decode([VendorAccountEdit].self, forKey: .accountEdits)
+        reopened = try c.decodeIfPresent([ObligationReopen].self, forKey: .reopened) ?? []
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(version, forKey: .version)
+        try c.encode(added, forKey: .added)
+        try c.encode(dates, forKey: .dates)
+        try c.encode(completions, forKey: .completions)
+        try c.encode(accounts, forKey: .accounts)
+        try c.encode(accountEdits, forKey: .accountEdits)
+        if !reopened.isEmpty { try c.encode(reopened, forKey: .reopened) }
     }
 
     static func clean(_ s: String?) -> String? {
@@ -100,11 +141,15 @@ public struct ObligationsFile: Codable, Hashable, Sendable {
         guard day <= KeyDay(now, calendar: calendar) else { throw ObligationError.futureDay }
         completions.removeAll { $0.obligationID == obligationID && $0.due == due }
         completions.append(ObligationCompletion(obligationID: obligationID, due: due, on: day, evidence: evidence, enteredAt: now))
+        reopened.removeAll { $0.obligationID == obligationID && $0.due == due }
     }
 
-    /// Takes a Done back (it was pressed by mistake).
+    /// Takes a Done back (it was pressed by mistake), here and (at the next sync) in the cloud.
     public mutating func reopen(_ obligationID: String, due: KeyDay?) {
+        let before = completions.count
         completions.removeAll { $0.obligationID == obligationID && $0.due == due }
+        let intent = ObligationReopen(obligationID: obligationID, due: due)
+        if completions.count < before, !reopened.contains(intent) { reopened.append(intent) }
     }
 
     @discardableResult

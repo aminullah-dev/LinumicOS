@@ -134,6 +134,9 @@ public struct SentinelOverview: Codable, Sendable, Equatable {
 
 public enum SentinelEventKind: String, Codable, Sendable, CaseIterable {
     case targetDown, targetRecovered, licenceExpiring, licenceExpired
+    /// An obligation synced from the devices entered a lead window (30, 14, 7, 1 days) or reached its day
+    /// (supabase/migrations/20261019090100_obligation_sweep.sql).
+    case obligationDue
 }
 
 public enum SentinelSeverity: String, Codable, Sendable, Comparable, CaseIterable {
@@ -167,6 +170,18 @@ public struct SentinelEventDetail: Codable, Sendable, Equatable {
     /// 30, 7, 1 or 0 (expired).
     public let threshold: Int?
     public let edition: String?
+    // obligationDue
+    public let obligationID: String?
+    /// The obligation's own title (English for the seed, the owner's words for his rows), or the account's name when
+    /// `renewal` is true.
+    public let title: String?
+    public let renewal: Bool?
+    /// The due day, "YYYY-MM-DD".
+    public let due: String?
+    /// The window it entered: 30, 14, 7, 1, or 0 on the day and after it.
+    public let lead: Int?
+    /// "obligation:<id>:<due>:<lead>", the key of the app's own notification for the same window.
+    public let key: String?
 }
 
 /// A change the server noticed (`sentinel_events`). Written once per change; acknowledging only marks it seen.

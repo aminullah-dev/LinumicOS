@@ -230,6 +230,8 @@ public struct DeskItem: Identifiable, Hashable, Sendable {
     /// A live obligation: its Done goes to the screen of its source (Continuity, Keys & Backups, the licence, the
     /// Monitor), where what closes it is recorded.
     public var closesAtSource: Bool
+    /// Read on another device and taken from the cloud (the Mac's ledger reading on an iPhone); nil: read here.
+    public var readOn: CloudDevice?
 
     public var id: String { "\(origin.key)|\(subjectKey)|\(kindKey)" }
 
@@ -246,7 +248,7 @@ public struct DeskItem: Identifiable, Hashable, Sendable {
                 severity: BriefSeverity, title: String, detail: String? = nil, subject: String, due: KeyDay? = nil,
                 horizon: DeskHorizon? = nil, ownerAction: Bool, evidence: DeskEvidence, factHash: String,
                 destination: DeskDestination, notes: [String] = [], related: [DeskDomain] = [], reference: String? = nil,
-                obligationID: String? = nil, closesAtSource: Bool = false) {
+                obligationID: String? = nil, closesAtSource: Bool = false, readOn: CloudDevice? = nil) {
         self.origin = origin
         self.subjectKey = subjectKey
         self.kindKey = kindKey
@@ -267,6 +269,7 @@ public struct DeskItem: Identifiable, Hashable, Sendable {
         self.reference = reference
         self.obligationID = obligationID
         self.closesAtSource = closesAtSource
+        self.readOn = readOn
     }
 
     /// The origin part of an item id ("ledger.worktrack|…" → "ledger.worktrack").
