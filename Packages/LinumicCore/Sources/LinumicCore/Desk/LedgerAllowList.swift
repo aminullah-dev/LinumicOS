@@ -35,7 +35,8 @@ public struct LedgerSource: Hashable, Sendable, Identifiable {
 
 public enum LedgerAllowList {
     /// The folders the owner grants (home-relative). Every allowed file is inside one of them.
-    public static let folders = ["Projects/Multiplatform", "Games/BE-PAYA"]
+    /// BE-PAYA (the game) was left out on the owner's word, 2026-10-19.
+    public static let folders = ["Projects/Multiplatform"]
 
     public static let priorities: [LedgerSource] = [
         LedgerSource("shared", "Projects/Multiplatform/PRIORITIES.md", .shared),
@@ -45,7 +46,6 @@ public enum LedgerAllowList {
         LedgerSource("velro", "Projects/Multiplatform/Velro/PRIORITIES.md", .velro),
         LedgerSource("dukanpro", "Projects/Multiplatform/DukanPro/PRIORITIES.md", .dukanPro),
         LedgerSource("linumicos", "Projects/Multiplatform/Linumic/LinumicCommandCenter/PRIORITIES.md", .linumicOS),
-        LedgerSource("bepaya", "Games/BE-PAYA/PRIORITIES.md", .bePaya),
     ]
 
     public static let nextActions = LedgerSource("next-actions", "Projects/Multiplatform", .shared, kind: .nextActions)

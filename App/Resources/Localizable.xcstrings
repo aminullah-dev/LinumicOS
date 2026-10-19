@@ -21124,16 +21124,6 @@
         }
       }
     },
-    "Grant ~/Projects/Multiplatform and ~/Games/BE-PAYA once. The grant is a read-only bookmark (LCCLedgerBookmarks), separate from Keys & Backups. Files outside the allow-list are never opened, even inside a granted folder. Ledgers are read when the app opens and every 30 minutes.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "به ~/Projects/Multiplatform و ~/Games/BE-PAYA یک بار اجازه دهید. این اجازه یک bookmark فقط‌خواندنی است (LCCLedgerBookmarks)، جدا از «کلیدها و پشتیبان‌ها». فایل‌های بیرون از فهرست مجاز هرگز باز نمی‌شوند، حتی در پوشهٔ اجازه‌داده‌شده. دفترها هنگام باز شدن برنامه و هر ۳۰ دقیقه خوانده می‌شوند."
-          }
-        }
-      }
-    },
     "Granted": {
       "localizations": {
         "fa-AF": {
@@ -21680,6 +21670,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "این‌ها را در میز کار انجام‌شده زدید. سطر PRIORITIES.md تا وقتی در دفتر تیک نخورد یا عوض نشود این‌جا می‌ماند، تا دفتر سند اصلی بماند. مورد NEXT-ACTIONS چک‌باکس ندارد: تا وقتی عنوانش عوض نشده و در تازه‌ترین گزارش هست، این‌جا می‌ماند."
+          }
+        }
+      }
+    },
+    "~/Projects/Multiplatform is readable through the app's read-only sandbox exception (granted by the owner on 2026-10-19), so no grant is needed. A bookmark grant here still works if that exception is removed. Files outside the allow-list are never opened. Ledgers are read when the app opens and every 30 minutes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~/Projects/Multiplatform از راه استثنای فقط‌خواندنی sandbox برنامه خوانده می‌شود (اجازهٔ صاحب پروژه، ۲۰۲۶-۱۰-۱۹)، پس اجازهٔ جدا لازم نیست. اگر آن استثنا برداشته شود، اجازه دادن از همین‌جا هنوز کار می‌کند. فایل‌های بیرون از فهرست مجاز هرگز باز نمی‌شوند. دفترها هنگام باز شدن برنامه و هر ۳۰ دقیقه خوانده می‌شوند."
           }
         }
       }

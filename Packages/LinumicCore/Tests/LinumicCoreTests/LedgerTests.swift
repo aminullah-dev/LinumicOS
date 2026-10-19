@@ -256,7 +256,8 @@ struct LedgerReaderTests {
         #expect(!LedgerAllowList.allows("Projects/Multiplatform/Velro/NEXT-ACTIONS-2026-10-19.md"))
         #expect(!LedgerAllowList.allows("Projects/Multiplatform/NEXT-ACTIONS-latest.md"))
         #expect(!LedgerAllowList.allows("Projects/Multiplatform/AfghanJama/PRIORITIES.md"))
-        #expect(LedgerAllowList.priorities.count == 8)
+        #expect(LedgerAllowList.priorities.count == 7)
+        #expect(!LedgerAllowList.allows("Games/BE-PAYA/PRIORITIES.md"))
     }
 
     @Test func notGrantedNotFoundLinksAndReadFiles() throws {
@@ -268,11 +269,10 @@ struct LedgerReaderTests {
         fs.sizes["\(home)/Projects/Multiplatform/DukanPro/PRIORITIES.md"] = 5_000_000
         fs.files["\(home)/Projects/Multiplatform/NEXT-ACTIONS-2026-10-09.md"] = "old"
         fs.files["\(home)/Projects/Multiplatform/NEXT-ACTIONS-2026-10-12.md"] = try text("next-actions-sample")
-        fs.files["\(home)/Games/BE-PAYA/PRIORITIES.md"] = "## اولویت‌های بعدی\n1. یک"
         // Only ~/Projects/Multiplatform is granted.
         let reading = LedgerReader.read(home: home, granted: ["\(home)/Projects/Multiplatform/"], fs: fs, now: now)
-        #expect(reading.files.count == 9)
-        #expect(reading.file("bepaya")?.status == .notGranted)
+        #expect(reading.files.count == 8)
+        #expect(reading.file("bepaya") == nil)   // the game is not a ledger (owner, 2026-10-19)
         #expect(reading.file("talar")?.status == .notFound)
         #expect(reading.file("safebeauty")?.status == .notFound)
         guard case .unreadable = reading.file("velro")?.status else { Issue.record("a link is not followed"); return }

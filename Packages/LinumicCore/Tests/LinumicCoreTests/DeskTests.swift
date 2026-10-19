@@ -157,7 +157,7 @@ struct DeskBuilderTests {
         fs.files["\(home)/Projects/Multiplatform/Talar/PRIORITIES.md"] = "آخرین بازبینی: ۲۰۲۶-۱۰-۱۰\n## P1\n- [ ] تالار"
         fs.files["\(home)/Projects/Multiplatform/WorkTrack/PRIORITIES.md"] = "آخرین بازبینی: ۲۰۲۶-۱۰-۱۰\n## P1\n- [ ] ورک‌ترک"
         fs.files["\(home)/Projects/Multiplatform/NEXT-ACTIONS-2026-10-12.md"] = try text("next-actions-sample")
-        let reading = LedgerReader.read(home: home, granted: ["\(home)/Projects/Multiplatform", "\(home)/Games/BE-PAYA"], fs: fs, now: now)
+        let reading = LedgerReader.read(home: home, granted: ["\(home)/Projects/Multiplatform"], fs: fs, now: now)
         let desk = DeskBuilder.build(brief: nil, ledgers: .read(reading), state: DeskState(), now: now, calendar: utc)
         let talar = try #require(desk.open.first { $0.item.title == "تالار" })
         #expect(talar.item.evidence.location == "~/Projects/Multiplatform/Talar/PRIORITIES.md:3")
@@ -180,8 +180,12 @@ struct DeskBuilderTests {
         let desk = DeskBuilder.build(brief: nil, ledgers: .read(reading), state: DeskState(), now: now, calendar: utc)
         let notFound = desk.open.filter { $0.item.kindKey == "not-found" }
         #expect(notFound.count == 8)   // seven PRIORITIES.md in the folder and the NEXT-ACTIONS report
-        let notGranted = desk.open.filter { $0.item.kindKey == "not-granted" }
-        #expect(notGranted.map(\.item.id) == ["ledger.bepaya|source|not-granted"])
+        #expect(desk.open.filter { $0.item.kindKey == "not-granted" }.isEmpty)
+        // Without the grant every ledger says so, and the item opens Ledger access.
+        let ungranted = DeskBuilder.build(brief: nil, ledgers: .read(LedgerReader.read(home: home, granted: [], fs: FakeFS(), now: now)),
+                                          state: DeskState(), now: now, calendar: utc)
+        let notGranted = ungranted.open.filter { $0.item.kindKey == "not-granted" }
+        #expect(notGranted.count == 8)
         #expect(notGranted.first?.bucket == .today)
         #expect(notGranted.first?.item.destination == .ledgerAccess)
         #expect(desk.sources.first { $0.id == "talar" }?.state == .notFound)
@@ -192,7 +196,7 @@ struct DeskBuilderTests {
     @Test func unreadAndUnsupportedLedgers() {
         let notRead = DeskBuilder.build(brief: nil, ledgers: .notRead, state: DeskState(), now: now, calendar: utc)
         let kinds = notRead.open.map(\.item.kindKey)
-        #expect(kinds.count == 9 && Set(kinds) == ["not-read"])
+        #expect(kinds.count == 8 && Set(kinds) == ["not-read"])
         let iPhone = DeskBuilder.build(brief: nil, ledgers: .unsupported, state: DeskState(), now: now, calendar: utc)
         #expect(iPhone.open.isEmpty)
         let states = iPhone.sources.map(\.state)

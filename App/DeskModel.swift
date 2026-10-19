@@ -70,11 +70,13 @@ final class DeskModel {
         defer { isReading = false }
         let home = home
         let urls = LedgerAccessStore.resolveAll(home: home)
-        grantedFolders = urls.map { KeyPaths.abbreviate($0.path, home: home) }
+        let entitled = LedgerAccessStore.entitledFolders(home: home)
+        grantedFolders = Array(Set(urls.map(\.path) + entitled)).sorted().map { KeyPaths.abbreviate($0, home: home) }
         reading = await Task.detached(priority: .utility) { () -> LedgerReading in
             let started = urls.filter { $0.startAccessingSecurityScopedResource() }
             defer { started.forEach { $0.stopAccessingSecurityScopedResource() } }
-            return LedgerReader.read(home: home, granted: started.map(\.path), fs: LocalLedgerFileSystem(), now: .now)
+            let roots = Array(Set(started.map(\.path) + entitled)).sorted()
+            return LedgerReader.read(home: home, granted: roots, fs: LocalLedgerFileSystem(), now: .now)
         }.value
         #endif
         pruneObsoleteMarks()
@@ -149,7 +151,8 @@ final class DeskModel {
         let urls = LedgerAccessStore.resolveAll(home: home)
         let started = urls.filter { $0.startAccessingSecurityScopedResource() }
         defer { started.forEach { $0.stopAccessingSecurityScopedResource() } }
-        guard started.contains(where: { KeyPaths.isInside(absolute, root: $0.path) }) else {
+        let roots = started.map(\.path) + LedgerAccessStore.entitledFolders(home: home)
+        guard roots.contains(where: { KeyPaths.isInside(absolute, root: $0) }) else {
             errorMessage = String(localized: "The folder of \(path) is not granted. Grant it in Settings → Integrations → Ledger access.")
             return
         }
@@ -212,9 +215,15 @@ enum LedgerAccessStore {
         allowedFolders(home: home).contains(URL(fileURLWithPath: path).standardizedFileURL.path)
     }
 
-    /// Paths of the stored grants that are ledger folders (for display before they are resolved).
+    /// Ledger folders the app can read through its read-only sandbox exception (project.yml,
+    /// `temporary-exception.files.home-relative-path.read-only`), so no bookmark is needed for them.
+    static func entitledFolders(home: String) -> [String] {
+        allowedFolders(home: home).filter { FileManager.default.isReadableFile(atPath: $0) }.sorted()
+    }
+
+    /// Paths of the ledger folders that can be read: stored grants and the entitled folders (for display and the job).
     static func grantedPaths(home: String = KeysModel.realHome()) -> [String] {
-        bookmarks.keys.filter { isAllowed($0, home: home) }.sorted()
+        Array(Set(bookmarks.keys.filter { isAllowed($0, home: home) }).union(entitledFolders(home: home))).sorted()
     }
 
     static func removeAll() {

@@ -132,15 +132,19 @@ post as Linumic, so it is treated as a production system.
   - **Restore guide:** shown, never run. `openssl enc -d … | tar -x(z)` prompts for the passphrase; the guide restores
     into an empty `0700` folder and deletes it after.
   - On iPhone and iPad the checks don't exist; the registry is shown with its facts only.
-- **Desk and Ledgers (since 2026-10-19):** the owner grants `~/Projects/Multiplatform` and `~/Games/BE-PAYA` once in
-  Settings → Integrations → Ledger access (an open panel; read-only bookmarks in UserDefaults `LCCLedgerBookmarks`).
+- **Desk and Ledgers (since 2026-10-19):** `~/Projects/Multiplatform` is readable through a read-only sandbox exception
+  (`com.apple.security.temporary-exception.files.home-relative-path.read-only`, project.yml), which the owner granted on
+  2026-10-19 so no folder picker is needed. It is read-only and covers that one folder; the Mac App Store would not accept
+  it, which does not apply to this privately signed app. A grant in Settings → Integrations → Ledger access (an open
+  panel; read-only bookmarks in UserDefaults `LCCLedgerBookmarks`) still works if the exception is removed. BE-PAYA (the
+  game) is not a ledger, on the owner's word (2026-10-19).
   This is a separate grant on purpose: the Keys & Backups grant promises that no file is ever opened, and the Desk
-  must open its ledgers. Inside the granted folders the app opens only the paths in `LedgerAllowList` (the eight
+  must open its ledgers. Inside the granted folders the app opens only the paths in `LedgerAllowList` (the seven
   PRIORITIES.md files, and the newest `NEXT-ACTIONS-YYYY-MM-DD.md` found by listing ~/Projects/Multiplatform), reads
   them as UTF-8 text and parses them in memory. A file that is itself a symbolic link is refused (`O_NOFOLLOW`); a
   folder on the way may be a link, but the open file's real path must still be inside the granted folder, or it is
-  refused; files over 1 MB are refused, and at most 1 MB is read. Only `~/Projects/Multiplatform` and `~/Games/BE-PAYA`
-  themselves can be granted; choosing any other folder (the home folder, `~/Projects`) is refused before a bookmark is
+  refused; files over 1 MB are refused, and at most 1 MB is read. Only `~/Projects/Multiplatform` itself can be
+  granted; choosing any other folder (the home folder, `~/Projects`) is refused before a bookmark is
   made, and a stored grant of another folder is dropped. It never writes to them ("Open" hands an allow-listed file to
   its default app, and nothing else). Links written in a ledger line are clickable only when they are http or https,
   so a `file://` or custom-scheme link can't open a local file or app. The Desk's own file `desk-state.json` holds

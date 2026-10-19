@@ -58,6 +58,10 @@ targets:
         # read-write: saving .lnmlic and CSV files where the owner chooses (NSSavePanel).
         com.apple.security.files.user-selected.read-write: true
         com.apple.security.files.bookmarks.app-scope: true
+        # Read-only access to the owner's ledgers (the PRIORITIES.md files and NEXT-ACTIONS reports) without a folder
+        # picker, granted by the owner on 2026-10-19. A sandbox exception: fine for this privately signed app, not for the
+        # Mac App Store. The app still opens only the files on LedgerAllowList inside it.
+        com.apple.security.temporary-exception.files.home-relative-path.read-only: [/Projects/Multiplatform/]
         com.apple.developer.applesignin: [Default]
     settings:
       base:

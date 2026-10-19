@@ -18,11 +18,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Done on a Brief line lasts until the next reading ("still open according to …" if it is still there); Done on a
   ledger line waits under "You marked it, the ledger isn't ticked yet" until the line changes; Waiting on others and
   Dismiss hide until the fact changes. Kept in `desk-state.json` on this device, so they survive a relaunch.
-- Read-only access to `~/Projects/Multiplatform` and `~/Games/BE-PAYA` through a bookmark of its own
-  (`LCCLedgerBookmarks`, Settings → Integrations → Ledger access); only the allow-listed files are opened.
+- Read-only access to `~/Projects/Multiplatform` through a read-only sandbox exception the owner granted on 2026-10-19
+  (no folder picker needed), or a bookmark of its own (`LCCLedgerBookmarks`, Settings → Integrations → Ledger access);
+  only the allow-listed files are opened. BE-PAYA (the game) is not a ledger, on the owner's word.
 - Automation job **Ledgers** every 30 minutes, no network, before the Daily Brief (Mac only). Command Palette: "Read
   ledgers now", "Ledger access…" and every open Desk item. ⌘1 opens the Desk; AI Assistant left the Go menu.
-- No network host, Supabase table or entitlement added. 32 new tests (459 run, 1 opt-in live check that reads the
+- No network host or Supabase table added; one read-only entitlement (above). 32 new tests (459 run, 1 opt-in live check that reads the
   real ledgers: 49 open checkboxes, 5 BE-PAYA items, 5 TODAY + 7 THIS WEEK items on 2026-10-19). Dari for 90 strings.
 
 ### Fixed: Desk and Ledgers, review of PR #21 (2026-10-19)

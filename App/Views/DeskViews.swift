@@ -563,7 +563,7 @@ struct LedgerAccessSettingsSection: View {
         } header: {
             Text("Ledger access")
         } footer: {
-            Text("Grant ~/Projects/Multiplatform and ~/Games/BE-PAYA once. The grant is a read-only bookmark (LCCLedgerBookmarks), separate from Keys & Backups. Files outside the allow-list are never opened, even inside a granted folder. Ledgers are read when the app opens and every 30 minutes.")
+            Text("~/Projects/Multiplatform is readable through the app's read-only sandbox exception (granted by the owner on 2026-10-19), so no grant is needed. A bookmark grant here still works if that exception is removed. Files outside the allow-list are never opened. Ledgers are read when the app opens and every 30 minutes.")
         }
     }
 
