@@ -67,7 +67,7 @@ struct LinumicOSApp: App {
         _brief = State(initialValue: brief)
         let desk = DeskModel(brief: brief)
         _desk = State(initialValue: desk)
-        let sentinel = SentinelModel(inventory: inventory)
+        let sentinel = SentinelModel(inventory: inventory, obligations: obligations)
         _sentinel = State(initialValue: sentinel)
         let deskSync = DeskSyncModel(inventory: inventory, desk: desk, obligations: obligations)
         _deskSync = State(initialValue: deskSync)

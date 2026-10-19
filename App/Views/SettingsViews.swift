@@ -600,14 +600,23 @@ private struct CloudAccountSection: View {
             Text("\(state.unreadableRows) synced rows were written by a newer version of the app; this one leaves them alone.")
                 .font(.caption).foregroundStyle(.secondary)
         }
+        if let skew = state.clockSkew {
+            let by = Duration.seconds(abs(skew)).formatted(.units(allowed: [.days, .hours, .minutes], width: .abbreviated))
+            Label {
+                Text(skew > 0 ? String(localized: "This device's clock is \(by) ahead of the server's. The times of your marks and the order of an account's facts come from each device's clock: set the date and time automatically.")
+                              : String(localized: "This device's clock is \(by) behind the server's. The times of your marks and the order of an account's facts come from each device's clock: set the date and time automatically."))
+            } icon: {
+                Image(systemName: "clock.badge.exclamationmark").foregroundStyle(.orange)
+            }
+            .font(.caption)
+        }
         #if os(macOS)
         Toggle(isOn: $sendsLedgers) {
             Text("Send the ledgers' lines for iPhone and iPad")
             Text("Each PRIORITIES.md and NEXT-ACTIONS line as the Desk shows it (title, product, file:line, severity), never the lines under it. A line that holds an email address, a phone number or a key is sent without its text. Turned off, the copy in the cloud is emptied.")
         }
         .onChange(of: sendsLedgers) { _, on in
-            DeskSyncModel.setSendsLedgers(on)
-            deskSync.syncSoon()
+            deskSync.setSendsLedgers(on)
         }
         #endif
     }
@@ -618,7 +627,7 @@ private struct CloudAccountSection: View {
         if let error = deskSync.lastError { return String(localized: "Failed: \(error)") }
         guard let at = deskSync.state.lastSyncedAt else { return String(localized: "Not synced yet") }
         let conflicts = deskSync.state.conflictCount
-        let when = at.formatted(date: .omitted, time: .shortened)
+        let when = at.formatted(date: .abbreviated, time: .shortened)
         return conflicts == 0 ? String(localized: "Synced \(when)") : String(localized: "Synced \(when); \(conflicts) to choose on the Desk")
     }
 

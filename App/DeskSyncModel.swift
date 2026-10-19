@@ -28,6 +28,10 @@ final class DeskSyncModel {
     private var again = false
     private var running: Task<Outcome, Never>?
     private var soon: Task<Void, Never>?
+    /// Marks dropped here while a sync ran: applied again on top of the state the sync leaves.
+    private var pendingDrops: Set<String> = []
+    /// Conflict choices made while a sync ran: made once it ends (the buttons are disabled meanwhile).
+    private var pendingResolutions: [(Conflict, Bool)] = []
     private let store: DeskSyncStore?
     private let inventory: InventoryModel
     private let desk: DeskModel
@@ -58,6 +62,19 @@ final class DeskSyncModel {
         if on { UserDefaults.standard.removeObject(forKey: ledgerOffAtKey) } else { UserDefaults.standard.set(Date.now, forKey: ledgerOffAtKey) }
     }
 
+    /// Mac: turns ledger lines on or off. Off sends an empty reading marked as turned off; on reads the ledgers now and
+    /// sends that reading, whatever was sent before, so iPhone and iPad don't keep saying they are off.
+    func setSendsLedgers(_ on: Bool) {
+        Self.setSendsLedgers(on)
+        if on {
+            state.ledgerSentAt = nil
+            save()
+            Task { await desk.refreshLedgers() }   // its new reading starts a sync
+        } else {
+            syncSoon()
+        }
+    }
+
     enum Outcome {
         case synced(DeskCloudReport)
         case notConnected
@@ -78,6 +95,10 @@ final class DeskSyncModel {
         running = task
         let outcome = await task.value
         running = nil
+        // Choices the owner made while it ran, on the state it left.
+        let choices = pendingResolutions
+        pendingResolutions = []
+        for (conflict, keep) in choices { resolve(conflict, keepThisDevice: keep) }
         return outcome
     }
 
@@ -87,7 +108,10 @@ final class DeskSyncModel {
         // desk-state.json that can't be read is never written, so nothing is taken in until it is fixed.
         if let error = desk.loadError { return .failed(error) }
         isSyncing = true
-        defer { isSyncing = false }
+        defer {
+            isSyncing = false
+            pendingDrops = []
+        }
         var outcome = Outcome.synced(DeskCloudReport())
         repeat {
             again = false
@@ -102,6 +126,11 @@ final class DeskSyncModel {
                 desk.takeFromCloud(applied.desk)
                 if let f = applied.obligations { obligations.takeFromCloud(f) }
                 state = applied.state
+                // Marks dropped here while it ran stay dropped (the state the sync started from did not have them so).
+                if !pendingDrops.isEmpty {
+                    state.dropped(pendingDrops)
+                    pendingDrops = []
+                }
                 save()
                 lastReport = result.report
                 lastError = nil
@@ -146,6 +175,7 @@ final class DeskSyncModel {
     /// Marks this device dropped as no longer applying here: they stay in the cloud for the devices where they apply.
     func dropped(_ ids: Set<String>) {
         guard loadError == nil else { return }
+        if isSyncing { pendingDrops.formUnion(ids) }
         let before = state
         state.dropped(ids)
         if state != before { save() }
@@ -169,6 +199,8 @@ final class DeskSyncModel {
         var theirs: String
         var theirsOn: CloudDevice?
         var theirsAt: Date?
+        /// The server's version the owner saw: a choice is made only while the other side is still that version.
+        var theirsVersion: Int64
         var foundAt: Date
 
         var id: String { "\(table)|\(rowID)" }
@@ -185,27 +217,41 @@ final class DeskSyncModel {
             out.append(Conflict(table: .marks, rowID: c.id,
                                 title: item?.title ?? String(localized: "A Desk item that this device does not show"),
                                 mine: Self.describe(c.local, of: item), theirs: Self.describe(c.remote.value, of: item),
-                                theirsOn: c.remote.writtenOn, theirsAt: c.remote.updatedAt, foundAt: c.foundAt))
+                                theirsOn: c.remote.writtenOn, theirsAt: c.remote.updatedAt, theirsVersion: c.remote.version,
+                                foundAt: c.foundAt))
         }
         for c in state.obligations.conflicts.values {
             let key = c.remote.key ?? c.id
             let title = register.obligation(key)?.displayTitle ?? key
             out.append(Conflict(table: .obligations, rowID: c.id, title: title, mine: Self.describe(c.local, entry: c.remote.entry),
                                 theirs: Self.describe(c.remote.value, entry: c.remote.entry), theirsOn: c.remote.writtenOn,
-                                theirsAt: c.remote.updatedAt, foundAt: c.foundAt))
+                                theirsAt: c.remote.updatedAt, theirsVersion: c.remote.version, foundAt: c.foundAt))
         }
         for c in state.vendors.conflicts.values {
             let key = c.remote.key ?? c.id
             let title = register.accounts.first { $0.id == key }?.name ?? key
             out.append(Conflict(table: .vendors, rowID: c.id, title: title, mine: Self.describe(c.local), theirs: Self.describe(c.remote.value),
-                                theirsOn: c.remote.writtenOn, theirsAt: c.remote.updatedAt, foundAt: c.foundAt))
+                                theirsOn: c.remote.writtenOn, theirsAt: c.remote.updatedAt, theirsVersion: c.remote.version,
+                                foundAt: c.foundAt))
         }
         return out.sorted { ($0.foundAt, $0.id) < ($1.foundAt, $1.id) }
     }
 
-    /// Keeps one side. This device's is sent over the other's at the next sync; the other's is taken in here now.
+    /// Keeps one side. This device's is sent over the other's at the next sync; the other's is taken in here now. Made
+    /// while a sync runs, it waits for the sync to end (which would otherwise write the conflict back); and it is made
+    /// only while the other side is still the version the owner saw, else the Desk shows the newer one to choose from.
     func resolve(_ conflict: Conflict, keepThisDevice: Bool) {
         guard loadError == nil else { return }
+        if running != nil {
+            pendingResolutions.append((conflict, keepThisDevice))
+            return
+        }
+        let current: Int64? = switch conflict.table {
+        case .marks: state.marks.conflicts[conflict.rowID]?.remote.version
+        case .obligations: state.obligations.conflicts[conflict.rowID]?.remote.version
+        case .vendors: state.vendors.conflicts[conflict.rowID]?.remote.version
+        }
+        guard current == conflict.theirsVersion else { return }
         switch conflict.table {
         case .marks:
             if case .some(let theirs) = DeskCloudSync.resolve(&state.marks, id: conflict.rowID, keepThisDevice: keepThisDevice) {

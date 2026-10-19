@@ -22,11 +22,14 @@ final class SentinelModel {
     private(set) var isRequestingRound = false
 
     private let inventory: InventoryModel
+    /// The register an obligation event is read against before it is notified (`ObligationEvents`).
+    private let obligations: ObligationsModel
     /// Event ids already notified on this device; nil until the first read, which only records (no flood of old events).
     private var seen: Set<Int>?
 
-    init(inventory: InventoryModel) {
+    init(inventory: InventoryModel, obligations: ObligationsModel) {
         self.inventory = inventory
+        self.obligations = obligations
         if let ids = UserDefaults.standard.array(forKey: Self.seenKey) as? [Int] { seen = Set(ids) }
     }
 
@@ -55,6 +58,15 @@ final class SentinelModel {
             loadError = nil
             isDeployed = true
             await notifyNew(events)
+            if await acknowledgeAnswered(events, client: client) {
+                // Read again, so the list and the count no longer hold what was just acknowledged.
+                async let o2 = client.overview(hours: 24)
+                async let e2 = client.events(limit: 50, includeAcknowledged: true)
+                if let (overview, events) = try? await (o2, e2) {
+                    self.overview = overview
+                    self.events = events
+                }
+            }
             return .read
         } catch SupabaseError.server(let status, _) where status == 404 {
             isDeployed = false
@@ -103,12 +115,18 @@ final class SentinelModel {
         // Only ids the server still returns can come back, so that is all that needs keeping.
         UserDefaults.standard.set(Array(ids).sorted(), forKey: Self.seenKey)
         guard let previous else { return }   // first read: record only, no flood of old events
-        // An obligation's window this device already alerted about (its own key, obligation:<id>:<due>:<lead>) is not
-        // alerted again; one it did not is, and is recorded so the device's own alert does not repeat it.
-        // Obligation alerts follow their own switch on the Obligations screen, as the device's own alerts do.
+        // An obligation event was written by the sweep from what was synced then: it is read against this device's
+        // register first, and notified only while the obligation is open here and still due on the event's day (not
+        // after a Done synced from the other device, not for a day it no longer has). A window this device already
+        // alerted about (its own key, obligation:<id>:<due>:<lead>) is not alerted again; one it did not is, and is
+        // recorded so the device's own alert does not repeat it. Obligation alerts follow their own switch on the
+        // Obligations screen, as the device's own alerts do.
+        let register = obligations.register()
         let fresh = events.filter { e in
-            !previous.contains(e.id) && !e.isAcknowledged
-                && !(e.kind == .obligationDue && (e.detail?.key.map(ObligationsModel.wasAlerted) == true || !ObligationsModel.isNotifyOn))
+            guard !previous.contains(e.id), !e.isAcknowledged else { return false }
+            guard e.kind == .obligationDue else { return true }
+            return ObligationsModel.isNotifyOn && ObligationEvents.standing(e, in: register) == .applies
+                && e.detail?.key.map(ObligationsModel.wasAlerted) != true
         }
         ObligationsModel.recordAlerted(events.compactMap { e in
             !previous.contains(e.id) && e.kind == .obligationDue ? e.detail?.key : nil
@@ -126,6 +144,19 @@ final class SentinelModel {
         }
     }
 
+    /// Obligation events whose obligation is Done here for the event's day: the reminder is answered, so it is
+    /// acknowledged on the server (it would otherwise stay in "Not acknowledged" and in the count on every device).
+    /// One re-dated or unknown here is left for the owner: the other device may know better. True when any was.
+    private func acknowledgeAnswered(_ events: [SentinelEvent], client: SentinelClient) async -> Bool {
+        let register = obligations.register()
+        let answered = events.filter { $0.kind == .obligationDue && !$0.isAcknowledged && ObligationEvents.standing($0, in: register) == .closed }
+        var any = false
+        for event in answered {
+            if (try? await client.acknowledge(eventID: event.id)) != nil { any = true }
+        }
+        return any
+    }
+
     /// The event in the app's language, built from its kind and facts (the server's English title is a fallback).
     static func line(for event: SentinelEvent) -> String {
         let name = MonitorCatalog.targets.first { $0.id == event.subject }.map { "\($0.product.title) \(L($0.name))" } ?? event.subject
@@ -140,23 +171,8 @@ final class SentinelModel {
         case .licenceExpired:
             return String(localized: "Licence for \(event.detail?.customer ?? event.subject) has expired")
         case .obligationDue:
-            return obligationLine(event)
+            // Counted from the event's day to today, not from the days left when the sweep wrote it.
+            return ObligationEvents.line(event, today: KeyDay(.now))
         }
-    }
-
-    /// "<title> (in 7 days)", worded as the app words its own obligation alerts: the owner's title as written, the seed's
-    /// in the app's language, an account's renewal as "<name>: renewal".
-    static func obligationLine(_ event: SentinelEvent) -> String {
-        let id = event.detail?.obligationID ?? event.subject
-        let raw = event.detail?.title ?? event.subject
-        let name: String = if event.detail?.renewal == true {
-            String(localized: "\(raw): renewal")
-        } else {
-            id.hasPrefix("owner.") ? raw : L(raw)
-        }
-        guard let days = event.detail?.daysLeft else { return name }
-        if days < 0 { return LF("%1$@ (overdue by %2$d days)", name, -days) }
-        if days == 0 { return LF("%@ (due today)", name) }
-        return LF("%1$@ (in %2$d days)", name, days)
     }
 }

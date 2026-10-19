@@ -142,19 +142,28 @@ struct DeskView: View {
                 }
             }
             .font(.caption).foregroundStyle(.secondary)
+        } else if sync.state.cloudLedgerUnreadable {
+            Text("The Mac's last ledger reading could not be read by this version of the app. Update the app on this device to see its lines.")
+                .font(.caption).foregroundStyle(.orange)
         } else if let snapshot = sync.cloudLedger {
-            // The Mac's reading, from the cloud: always with its date, and said plainly when it is old.
+            // The Mac's reading, from the cloud: always with its date, and said plainly when it is old (or dated ahead of
+            // this device's clock, when how old it is can't be known).
             let read = desk.sources.filter(\.isRead)
+            let age = now.timeIntervalSince(snapshot.readAt)
             VStack(alignment: .leading, spacing: 2) {
-                if snapshot.sources.isEmpty {
+                if snapshot.linesOff {
                     Text("The Mac does not send its ledger lines (turned off in its Settings), so they are not shown here.")
                 } else {
                     Label {
-                        Text("Ledgers: the Mac's reading of \(snapshot.readAt.formatted(date: .abbreviated, time: .shortened)), \(read.count) of \(desk.sources.count) read.")
+                        if snapshot.sourcesUnreadable {
+                            Text("Ledgers: the Mac's reading of \(snapshot.readAt.formatted(date: .abbreviated, time: .shortened)); which ledgers it read could not be read by this version of the app.")
+                        } else {
+                            Text("Ledgers: the Mac's reading of \(snapshot.readAt.formatted(date: .abbreviated, time: .shortened)), \(read.count) of \(desk.sources.count) read.")
+                        }
                     } icon: {
                         Image(systemName: "laptopcomputer").accessibilityHidden(true)
                     }
-                    if now.timeIntervalSince(snapshot.readAt) > 2 * AutomationCatalog.spec(.ledgers).cadence {
+                    if age > 2 * AutomationCatalog.spec(.ledgers).cadence || age < -DeskEvidence.clockTolerance {
                         Text("The Mac has not sent a newer reading since then (it reads every 30 minutes while it runs). What the ledgers say now may differ.")
                             .foregroundStyle(.orange)
                     }
@@ -528,14 +537,18 @@ struct DeskSyncStatusLine: View {
         if !sync.isDeployed { return String(localized: "Cloud sync: the server side is not deployed yet (docs/desk-sync.md).") }
         if let error = sync.lastError { return String(localized: "Cloud sync failed: \(error)") }
         guard let at = sync.state.lastSyncedAt else { return String(localized: "Cloud sync: not synced yet.") }
-        let refused = sync.state.refusedCount
+        // Only what this device knows: when it last finished a round with the cloud, and what waits here. It can't know
+        // what the other device holds now, so it never says they match.
         let when = at.formatted(date: .abbreviated, time: .shortened)
-        return refused == 0 ? String(localized: "Cloud sync: in step with your other devices, \(when).")
-                            : String(localized: "Cloud sync: \(when); \(refused) not accepted by the server (Settings → Account).")
+        let conflicts = sync.state.conflictCount
+        let refused = sync.state.refusedCount
+        if conflicts > 0 { return String(localized: "Cloud sync: \(when); \(conflicts) to choose on the Desk") }
+        if refused > 0 { return String(localized: "Cloud sync: \(when); \(refused) not accepted by the server (Settings → Account).") }
+        return String(localized: "Cloud sync: last synced with the cloud \(when).")
     }
 
     private var color: Color {
-        sync.loadError != nil || sync.lastError != nil || sync.state.refusedCount > 0 ? .orange : .secondary
+        sync.loadError != nil || sync.lastError != nil || sync.state.refusedCount > 0 || sync.state.conflictCount > 0 ? .orange : .secondary
     }
 }
 
@@ -566,6 +579,8 @@ struct DeskSyncConflictsCard: View {
                             Button("Keep the other's") { sync.resolve(conflict, keepThisDevice: false) }
                         }
                         .controlSize(.small)
+                        // A choice made while a sync runs would be written over by it; it waits until the sync ends.
+                        .disabled(sync.isSyncing)
                     }
                     .accessibilityElement(children: .contain)
                     if conflict.id != conflicts.last?.id { Divider() }

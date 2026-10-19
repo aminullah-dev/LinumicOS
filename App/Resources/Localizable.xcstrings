@@ -2650,12 +2650,22 @@
         }
       }
     },
-    "Cloud sync: in step with your other devices, %@.": {
+    "Cloud sync: %@; %lld to choose on the Desk": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "همگام‌سازی با ابر: با دستگاه‌های دیگر شما یکسان است، %@."
+            "value": "همگام‌سازی با ابر: %1$@؛ %2$lld مورد برای انتخاب در «میز کار»"
+          }
+        }
+      }
+    },
+    "Cloud sync: last synced with the cloud %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین همگام‌سازی با ابر: %@."
           }
         }
       }
@@ -3436,6 +3446,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "دفترها: خواندن مک در %1$@، %2$lld از %3$lld خوانده شد."
+          }
+        }
+      }
+    },
+    "Ledgers: the Mac's reading of %@; which ledgers it read could not be read by this version of the app.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفترها: خواندن مک در %@؛ این نسخهٔ برنامه نتوانست بخواند که مک کدام دفترها را خوانده است."
           }
         }
       }
@@ -4650,6 +4670,16 @@
         }
       }
     },
+    "The Mac's last ledger reading could not be read by this version of the app. Update the app on this device to see its lines.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این نسخهٔ برنامه آخرین خواندن دفترها در مک را نتوانست بخواند. برای دیدن سطرها، برنامه را در این دستگاه به‌روز کنید."
+          }
+        }
+      }
+    },
     "The Mac's reading": {
       "localizations": {
         "fa-AF": {
@@ -4700,12 +4730,42 @@
         }
       }
     },
+    "The server answered %@, which this version of the app does not know.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرور «%@» پاسخ داد که این نسخهٔ برنامه آن را نمی‌شناسد."
+          }
+        }
+      }
+    },
     "The stored grant could not be resolved at the last read. It is kept and tried again at the next read; grant the folder again if this stays.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "اجازهٔ ذخیره‌شده در خواندن گذشته باز نشد. نگه داشته می‌شود و در خواندن بعدی دوباره امتحان می‌شود؛ اگر همین‌طور ماند، دوباره به پوشه اجازه بدهید."
+          }
+        }
+      }
+    },
+    "This device's clock is %@ ahead of the server's. The times of your marks and the order of an account's facts come from each device's clock: set the date and time automatically.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ساعت این دستگاه %@ از ساعت سرور جلوتر است. زمان علامت‌های شما و ترتیب واقعیت‌های یک حساب از ساعت هر دستگاه گرفته می‌شود: تاریخ و ساعت را روی تنظیم خودکار بگذارید."
+          }
+        }
+      }
+    },
+    "This device's clock is %@ behind the server's. The times of your marks and the order of an account's facts come from each device's clock: set the date and time automatically.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ساعت این دستگاه %@ از ساعت سرور عقب‌تر است. زمان علامت‌های شما و ترتیب واقعیت‌های یک حساب از ساعت هر دستگاه گرفته می‌شود: تاریخ و ساعت را روی تنظیم خودکار بگذارید."
           }
         }
       }
