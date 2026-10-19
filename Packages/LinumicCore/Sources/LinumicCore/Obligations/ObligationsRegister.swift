@@ -451,6 +451,14 @@ public enum ObligationsBuilder {
         return ObligationsRegister(obligations: rows, accounts: accounts, issues: unique(issues), builtAt: now, unread: unread)
     }
 
+    /// The id prefixes of the rows read from a live source (`derived`): domains, certificates, licences, restore tests
+    /// and the second copy, the continuity export. A seed row with such an id (domain.linumic.com) is a placeholder
+    /// until its source is read: it is never alerted, never sent for the server's sweep, and the sweep skips one an
+    /// app sent anyway (private.is_live_obligation_id, 20261019090100_obligation_sweep.sql).
+    public static let liveIDPrefixes = ["domain.", "tls.", "licence.", "keys.", "continuity."]
+
+    public static func isLiveID(_ id: String) -> Bool { liveIDPrefixes.contains { id.hasPrefix($0) } }
+
     /// What the app's own forms write into obligations.json: the owner's origin and an "owner." id. Anything else there
     /// (a hand edit, a copy of a seed or live row) is not taken in.
     static func isOwners(id: String, origin: ObligationOrigin) -> Bool {
@@ -666,10 +674,11 @@ public struct ObligationAlert: Hashable, Sendable {
 
 public enum ObligationAlerts {
     /// The alerts to post now that are not in `sent`. Live rows have their own notifications (Monitor, Licences) and
-    /// are left out; so are closed rows and rows with no date.
+    /// are left out, and so is a seed row standing in for one until its source is read (its date is the one recorded
+    /// in the docs, not the live one); so are closed rows and rows with no date. The server's sweep names the same.
     public static func due(_ register: ObligationsRegister, today: KeyDay, sent: Set<String>) -> [ObligationAlert] {
         register.obligations.compactMap { o in
-            guard !o.origin.isLive, o.completion == nil, let due = o.due else { return nil }
+            guard !o.origin.isLive, !ObligationsBuilder.isLiveID(o.id), o.completion == nil, let due = o.due else { return nil }
             let lead: Int
             switch ObligationRules.timing(o, today: today) {
             case .overdue: lead = 0

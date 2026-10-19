@@ -52,13 +52,25 @@ private actor FakeDeskCloud: DeskCloudRemote {
     var vendors: [String: CloudRow<VendorCloudPayload>] = [:]
     var ledger: CloudLedgerSnapshot?
     var refuse: Set<String> = []
+    /// Rows a later app rewrote in a shape this version can't read: the client's lenient decoding leaves them out of
+    /// the pull (by id) and answers a write to them as stale with no row.
+    var unreadable: Set<String> = []
+    var serverTime: Date?
+    var epoch: String?
     private(set) var written: [String] = []
+    /// Every id a push named, written or not.
+    private(set) var asked: [String] = []
     private(set) var ledgerCalls = 0
 
     func pull() async throws -> DeskCloudPull {
-        DeskCloudPull(serverTime: t0, marks: marks.values.sorted { $0.id < $1.id },
-                      obligations: obligations.values.sorted { $0.id < $1.id }, vendors: vendors.values.sorted { $0.id < $1.id },
-                      ledger: ledger)
+        func readable<P>(_ rows: [String: CloudRow<P>]) -> [CloudRow<P>] {
+            rows.values.filter { !unreadable.contains($0.id) }.sorted { $0.id < $1.id }
+        }
+        return DeskCloudPull(serverTime: serverTime, epoch: epoch, marks: readable(marks), obligations: readable(obligations),
+                             vendors: readable(vendors), ledger: ledger,
+                             unreadableMarks: unreadable.intersection(marks.keys),
+                             unreadableObligations: unreadable.intersection(obligations.keys),
+                             unreadableVendors: unreadable.intersection(vendors.keys))
     }
 
     func pushMarks(_ changes: [CloudChange<DeskMark>], device: CloudDevice) async throws -> [CloudPushResult<DeskMark>] {
@@ -95,11 +107,20 @@ private actor FakeDeskCloud: DeskCloudRemote {
     }
 
     func setRefused(_ ids: Set<String>) { refuse = ids }
+    func setUnreadable(_ ids: Set<String>) { unreadable = ids }
+    func setClock(_ time: Date?) { serverTime = time }
+    func setEpoch(_ e: String?) { epoch = e }
+    func setLedger(_ l: CloudLedgerSnapshot?) { ledger = l }
+    func put(_ row: CloudRow<ObligationCloudPayload>) { obligations[row.id] = row }
 
     private func write<P: CloudPayload>(_ changes: [CloudChange<P>], into rows: inout [String: CloudRow<P>], device: CloudDevice)
     -> [CloudPushResult<P>] {
         changes.map { c in
+            asked.append(c.id)
             if refuse.contains(c.id) { return CloudPushResult(id: c.id, status: .invalid, row: nil, message: "refused by the test server") }
+            if unreadable.contains(c.id), let cur = rows[c.id], cur.version != c.expectedVersion {
+                return CloudPushResult(id: c.id, status: .stale, row: nil, message: nil)
+            }
             guard let cur = rows[c.id] else {
                 if c.expectedVersion != 0 { return CloudPushResult(id: c.id, status: .stale, row: nil, message: nil) }
                 guard c.value != nil else { return CloudPushResult(id: c.id, status: .applied, row: nil, message: nil) }
@@ -713,7 +734,8 @@ struct DeskSyncClientTests {
         #expect(facts.edits.count == 2 && facts.edits.last?.cost?.amount == Decimal(string: "12.5"))
 
         let ledger = try #require(pull.ledger)
-        #expect(ledger.version == 1 && ledger.items.count == 3 && ledger.sources.count == 3)
+        #expect(ledger.version == 1 && ledger.items.count == 3 && ledger.sources.count == 3 && !ledger.linesOff && !ledger.sourcesUnreadable)
+        #expect(pull.epoch == "5f0c2a8e-3d1b-4c7e-9a64-2b8e1f0d7c35" && !pull.ledgerUnreadable)
         #expect(ledger.readAt == ISO8601DateFormatter().date(from: "2026-10-19T08:00:00Z"))
         let items = DeskCloudLedger.items(ledger)
         #expect(items.count == 3)
@@ -775,9 +797,39 @@ struct DeskSyncClientTests {
     }
 
     @Test func aRowOfAKindThisVersionCantReadIsLeftAlone() throws {
-        let json = #"{"deskState":[],"vendors":[],"obligations":[{"id":"later:x","entry":"later","key":"x","version":1,"deleted":false,"data":{"a":1}},{"id":"date:x","entry":"date","key":"x","version":1,"deleted":false,"data":{"obligationID":"x","due":"2026-11-01","source":"s","enteredAt":"2026-10-19T08:00:00Z"}}],"ledger":null}"#
+        let json = #"{"deskState":[],"vendors":[],"obligations":[{"id":"later:x","entry":"later","key":"x","version":1,"deleted":false,"data":{"a":1}},7,{"id":"date:x","entry":"date","key":"x","version":1,"deleted":false,"data":{"obligationID":"x","due":"2026-11-01","source":"s","enteredAt":"2026-10-19T08:00:00Z"}}],"ledger":null}"#
         let pull = try InventoryCoding.decoder().decode(DeskCloudPull.self, from: Data(json.utf8))
-        #expect(pull.unreadable == 1 && pull.obligations.map(\.id) == ["date:x"] && pull.ledger == nil)
+        #expect(pull.unreadable == 2 && pull.obligations.map(\.id) == ["date:x"] && pull.ledger == nil && !pull.ledgerUnreadable)
+        #expect(pull.unreadableObligations == ["later:x"], "the ids it could read are kept, so exactly those rows are left alone")
+    }
+
+    /// The case a Mac and an iPhone on different builds meet: a row this device synced before comes back in a shape it
+    /// can't read (a later app added an area). The sync must not fail, and must not send its copy over that row.
+    @Test func aSyncedRowALaterAppRewroteNeitherFailsTheSyncNorIsSentOver() async throws {
+        let later = #"{"id":"row:owner.1","entry":"row","key":"owner.1","version":2,"deleted":false,"data":{"id":"owner.1","title":"Pay the sample host","area":"legal","due":"2026-11-01","source":"sample bill","recordedOn":"2026-10-19","leadDays":[30,14,7,1],"origin":"owner"},"writtenOn":"macOS","updatedAt":"2026-10-19T09:00:00Z"}"#
+        let pullJSON = #"{"serverTime":"2026-10-19T08:00:00Z","epoch":"e1","deskState":[],"obligations":["# + later + #"],"vendors":[],"ledger":null}"#
+        let answer = "[{\"id\":\"row:owner.1\",\"status\":\"stale\",\"row\":\(later)},{\"id\":\"x\",\"status\":\"later-answer\",\"row\":null}]"
+        let t = Recorder { r in r.url?.lastPathComponent == "desk_sync_pull" ? (200, Data(pullJSON.utf8)) : (200, Data(answer.utf8)) }
+        let client = SupabaseDeskCloud(config: config, transport: t, token: { "admin-jwt" })
+        let answers = try await client.pushObligations([CloudChange(id: "row:owner.1", entry: "row", key: "owner.1", expectedVersion: 0, value: nil)],
+                                                       device: .macOS)
+        #expect(answers.map(\.status) == [.stale, .invalid] && answers[0].row == nil, "read leniently, one answer at a time")
+        #expect(answers[1].message?.contains("later-answer") == true)
+
+        let mine = Obligation(id: "owner.1", title: "Pay the sample host", area: .accounts, due: KeyDay("2026-11-01"), source: "sample bill",
+                              recordedOn: KeyDay("2026-10-19"), origin: .owner)
+        for file in [ObligationsFile(added: [mine]), ObligationsFile()] {
+            var state = DeskSyncState()
+            state.serverEpoch = "e1"
+            state.obligations.base["row:owner.1"] = CloudRow(id: "row:owner.1", entry: "row", key: "owner.1", version: 1, value: .row(mine))
+            let before = t.requests.count
+            let result = try await DeskCloudSync.sync(local: DeskCloudLocal(desk: DeskState(), obligations: file), state: state,
+                                                      remote: client, now: t0, seed: [], seedAccounts: [], seedRevision: 1)
+            #expect(result.report.unreadable == 1 && result.state.unreadableRows == 1)
+            #expect(!t.requests.dropFirst(before).contains { $0.url?.lastPathComponent == "push_obligations" },
+                    "unchanged here or gone here, nothing is sent over a row this version can't read")
+            #expect(result.state.obligations.base["row:owner.1"]?.version == 1 && result.obligations.isEmpty, "its base is kept, nothing taken in")
+        }
     }
 
     @Test func notAnAdminIsReportedAsSuch() async throws {
@@ -795,34 +847,74 @@ private struct SweepFixture: Decodable {
     var seedRevision: Int
     var seed: [Obligation]
     var seedAccounts: [VendorAccount]
+    /// The Monitor's RDAP reading of the fixture's domain, which replaces its seed row on the devices.
+    var monitorDomains: [String: DomainReading]
     var file: ObligationsFile
     var expectedKeys: [String]
     var nextDay: KeyDay
     var expectedNextDayKeys: [String]
+
+    var monitor: MonitorSnapshot {
+        var m = MonitorSnapshot()
+        m.domains = monitorDomains
+        m.lastDomainFetchAt = monitorDomains.values.map(\.fetchedAt).max()
+        return m
+    }
 }
+
+private let repositoryRoot = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+    .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
 
 @Suite("Desk sync: the server's sweep")
 struct DeskSyncSweepTests {
     /// supabase/tests/desk-sync/behaviour.sql runs the server's sweep on the same fixture and expects the same keys.
     @Test func theAppAndTheServerNameTheSameAlerts() throws {
         let f = try InventoryCoding.decoder().decode(SweepFixture.self, from: fixture("desk-sync-sweep"))
-        func keys(on day: KeyDay, sent: Set<String>) -> [String] {
+        func keys(on day: KeyDay, sent: Set<String>, monitorRead: Bool = true) -> [String] {
             let now = day.start(calendar: utc).addingTimeInterval(12 * 3600)
-            let register = ObligationsBuilder.build(file: f.file, live: ObligationLiveInput(), now: now, calendar: utc, seed: f.seed,
+            let live = monitorRead ? ObligationLiveInput(monitor: f.monitor) : ObligationLiveInput()
+            let register = ObligationsBuilder.build(file: f.file, live: live, now: now, calendar: utc, seed: f.seed,
                                                     seedAccounts: f.seedAccounts)
             return ObligationAlerts.due(register, today: day, sent: sent).map(\.key).sorted()
         }
         #expect(keys(on: f.today, sent: []) == f.expectedKeys)
         #expect(keys(on: f.nextDay, sent: Set(f.expectedKeys)) == f.expectedNextDayKeys)
+        // Before the Monitor has read the domain the seed's row stands in for it, and is still never alerted on.
+        #expect(keys(on: f.today, sent: [], monitorRead: false) == f.expectedKeys)
         // The rows the sweep reads are the rows the sync sends.
         let rows = DeskCloudMapping.localObligations(f.file)
         #expect(rows.keys.contains("date:test.seed-e") && rows.keys.contains("done:test.seed-d|2026-10-10"))
         #expect(DeskCloudMapping.localVendors(f.file).keys.sorted() == ["account:owner.00000000000000a1", "facts:test-host"])
+        let sentSeed = DeskCloudMapping.seedChanges(remote: [], seed: f.seed, revision: f.seedRevision).map(\.id)
+        #expect(sentSeed.count == f.seed.count - 1 && !sentSeed.contains("seed:domain.example.com"),
+                "the seed row a live reading replaces is never sent for the sweep")
+        #expect(!rows.keys.contains { $0.hasPrefix("date:account.") }, "nor is a date on an account's renewal row")
+    }
+
+    @Test func aSeedRowALiveReadingReplacesIsTakenBackFromTheServer() throws {
+        let f = try InventoryCoding.decoder().decode(SweepFixture.self, from: fixture("desk-sync-sweep"))
+        let domain = try #require(f.seed.first { $0.id == "domain.example.com" })
+        let sentBefore = CloudRow<ObligationCloudPayload>(id: "seed:domain.example.com", entry: "seed", key: domain.id, version: 1,
+                                                          value: .seed(DeskCloudMapping.seedRow(domain, revision: 3)), seedRevision: 3)
+        let change = try #require(DeskCloudMapping.seedChanges(remote: [sentBefore], seed: f.seed, revision: 4)
+            .first { $0.id == sentBefore.id })
+        #expect(change.value == nil && change.expectedVersion == 1 && change.seedRevision == 4, "a tombstone, at the new revision")
+    }
+
+    @Test func theLivePrefixesMatchTheMigration() throws {
+        let sql = try String(contentsOf: repositoryRoot.appending(path: "supabase/migrations/20261019090100_obligation_sweep.sql"), encoding: .utf8)
+        let pattern = try #require(sql.range(of: "select id ~ '^(").map { sql[$0.upperBound...] }?.prefix { $0 != ")" })
+        #expect(Set(pattern.split(separator: "|").map { "\($0)." }) == Set(ObligationsBuilder.liveIDPrefixes))
+        for id in ["domain.linumic.com", "tls.api.example.com", "licence.L-1", "keys.restore.x", "keys.second-copy", "continuity.export"] {
+            #expect(ObligationsBuilder.isLiveID(id))
+        }
+        for id in ["owner.0001", "account.test-host.renewal", "signing.developer-id-certificate", "marketing.worktrack-queue-end"] {
+            #expect(!ObligationsBuilder.isLiveID(id))
+        }
     }
 
     @Test func eventKindsMatchTheMigration() throws {
-        let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-            .deletingLastPathComponent().deletingLastPathComponent()
+        let root = repositoryRoot
         let sql = try String(contentsOf: root.appending(path: "supabase/migrations/20261019090100_obligation_sweep.sql"), encoding: .utf8)
         let check = try #require(sql.range(of: "check (kind in (").map { sql[$0.upperBound...] }?.prefix { $0 != ")" })
         let kinds = check.split(separator: ",").map { $0.trimmingCharacters(in: CharacterSet(charactersIn: " '\n")) }
@@ -851,5 +943,231 @@ struct DeskSyncJobTests {
         let ids = AutomationCatalog.jobs.map(\.id)
         #expect(ids.firstIndex(of: .deskSync)! < ids.firstIndex(of: .ledgers)!, "the ledgers still run just before the Brief")
         #expect(ids.firstIndex(of: .deskSync)! > ids.firstIndex(of: .licences)!)
+    }
+}
+
+// MARK: - Second review: rows a later app wrote, a server made anew, clocks, the seed, the server's reminders
+
+@Suite("Desk sync: two devices on different builds, and a server made anew")
+struct DeskSyncLaterVersionTests {
+    @Test func aRowALaterAppRewroteIsLeftAloneUntilThisAppCanReadIt() async throws {
+        let server = FakeDeskCloud()
+        var mac = Device(.macOS)
+        var phone = Device(.iOS)
+        let o = try mac.file.add(title: "Pay the sample host", product: nil, area: .accounts, due: KeyDay("2026-11-01"),
+                                 consequence: nil, source: "sample bill 7", now: t0, calendar: utc)
+        let item = ledgerItem()
+        mac.desk.markDone(item, now: t0)
+        try await mac.sync(server, at: at(1))
+        try await phone.sync(server, at: at(2))
+        #expect(phone.file.added.map(\.id) == [o.id] && phone.desk.marks[item.id]?.kind == .done)
+
+        // A later app on another device rewrote both rows in a shape this version can't read.
+        let rowID = "row:\(o.id)"
+        await server.setUnreadable([rowID, item.id])
+        let asked = await server.asked.count
+        let report = try await mac.sync(server, at: at(3))
+        #expect(report.unreadable == 2 && report.conflicts == 0 && report.refused == 0)
+        // Here: the file lost the row, and the owner restored the mark. Neither reaches the server, nothing fails.
+        phone.file.added = []
+        phone.desk.restore(item.id)
+        try await phone.sync(server, at: at(4))
+        #expect(await server.asked.dropFirst(asked).allSatisfy { $0 != rowID && $0 != item.id }, "nothing is sent over those rows")
+        #expect(mac.state.obligations.base[rowID]?.version == 1 && phone.state.marks.base[item.id]?.version == 1, "their bases are kept")
+        #expect(phone.file.added.isEmpty && phone.desk.restored == [item.id], "and nothing about them is decided here yet")
+
+        // Once this app reads them again (updated), they sync as before: the file that lost the row gets it back.
+        await server.setUnreadable([])
+        try await phone.sync(server, at: at(5))
+        #expect(phone.file.added.map(\.id) == [o.id])
+        #expect(await server.marks[item.id]?.isDeleted == true, "the restore made meanwhile is sent now")
+    }
+
+    @Test func aServerMadeAnewIsMergedFromNothingNeverReadByOldVersions() async throws {
+        let server = FakeDeskCloud()
+        await server.setEpoch("first")
+        let item = ledgerItem()
+        var mac = Device(.macOS)
+        var phone = Device(.iOS)
+        mac.desk.markDone(item, now: t0)
+        try await mac.sync(server, at: at(1))
+        try await phone.sync(server, at: at(2))
+        #expect(phone.state.marks.base[item.id]?.version == 1)
+
+        // Rolled back and applied again: empty tables, versions from 1 again.
+        await server.wipe()
+        await server.setEpoch("second")
+        mac.desk.markWaiting(item, now: at(3))
+        let macReport = try await mac.sync(server, at: at(4))
+        let newVersion = await server.marks[item.id]?.version
+        #expect(macReport.serverWasReset && newVersion == 1)
+        // The iPhone's base is "version 1, Done"; the new version 1 is "Waiting". Read by the old version it would look
+        // unchanged, and the iPhone's next change would go over it without a conflict.
+        let phoneReport = try await phone.sync(server, at: at(5))
+        #expect(phoneReport.serverWasReset)
+        #expect(phone.state.marks.conflicts[item.id]?.remote.value?.kind == .waiting, "both shown: nothing written over")
+        #expect(phone.desk.marks[item.id]?.kind == .done && phone.state.serverEpoch == "second")
+    }
+
+    @Test func aClockFarFromTheServersIsReported() async throws {
+        let server = FakeDeskCloud()
+        await server.setClock(t0)
+        var phone = Device(.iOS)
+        try await phone.sync(server, at: t0.addingTimeInterval(60))
+        #expect(phone.state.clockSkew == nil, "a minute is nothing")
+        try await phone.sync(server, at: t0.addingTimeInterval(2 * 3600))
+        #expect(phone.state.clockSkew == TimeInterval(2 * 3600), "two hours ahead of the server")
+        try await phone.sync(server, at: t0.addingTimeInterval(-600))
+        #expect(phone.state.clockSkew == TimeInterval(-600))
+    }
+
+    @Test func aDateOnAnAccountsRenewalRowIsNeverSyncedSoTheAccountCardRemovesItForGood() async throws {
+        let server = FakeDeskCloud()
+        var mac = Device(.macOS)
+        mac.file.dates = [ObligationDateEntry(obligationID: "account.test-host.renewal", due: KeyDay("2026-12-01")!, source: "an old note",
+                                              enteredAt: t0)]
+        try await mac.sync(server, at: at(1))
+        #expect(await server.obligations.isEmpty)
+        // One some other writer put on the server is left alone, never taken in.
+        await server.put(CloudRow(id: "date:account.test-host.renewal", entry: "date", key: "account.test-host.renewal", version: 1,
+                                  value: .date(ObligationDateEntry(obligationID: "account.test-host.renewal", due: KeyDay("2026-12-01")!,
+                                                                   source: "an old note", enteredAt: t0))))
+        try mac.file.editAccount("test-host", renewal: KeyDay("2026-12-03"), renewalSource: "sample invoice 3", holder: nil, holderSource: nil,
+                                 now: at(2))
+        #expect(mac.file.dates.isEmpty)
+        try await mac.sync(server, at: at(3))
+        try await mac.sync(server, at: at(4))
+        #expect(mac.file.dates.isEmpty, "the date the account card superseded does not come back")
+        let register = ObligationsBuilder.build(file: mac.file, live: ObligationLiveInput(), now: at(4), calendar: utc, seed: [],
+                                                seedAccounts: [VendorAccount(id: "test-host", name: "Sample Host", purpose: "", source: "fixture",
+                                                                             recordedOn: KeyDay("2026-10-01"), origin: .seed)])
+        #expect(!register.issues.contains(.dateNotApplied("account.test-host.renewal")), "so no notice about it that can't be cleared")
+    }
+
+    @Test func aSeedRowAnotherDeviceSentFirstIsNotReportedAsRefused() async throws {
+        let server = FakeDeskCloud()
+        let seed = [Obligation(id: "test.seed-a", title: "Sample seed row", area: .other, due: KeyDay("2026-11-01"), source: "fixture:1",
+                               recordedOn: KeyDay("2026-10-01"), origin: .seed)]
+        var mac = Device(.macOS)
+        try await mac.sync(server, at: at(1), seed: seed, revision: 4)
+        var phone = Device(.iOS)
+        // The answer it got when both sent the row at the same moment (before the server answered "stale" for that).
+        phone.state.seedRefused["seed:test.seed-a"] = "duplicate key value violates unique constraint \"obligations_pkey\""
+        try await phone.sync(server, at: at(2), seed: seed, revision: 4)
+        #expect(phone.state.seedRefused.isEmpty && phone.state.refusedCount == 0)
+    }
+}
+
+@Suite("Desk sync: the Mac's reading says what it is")
+struct DeskSyncLedgerFlagTests {
+    @Test func linesTurnedOffAreSaidSoNeverGuessed() async throws {
+        let server = FakeDeskCloud()
+        var mac = Device(.macOS)
+        try await mac.sync(server, at: at(1), ledger: DeskCloudLedger.empty(at: at(1)))
+        let off = try #require(await server.ledger)
+        #expect(off.linesOff == false, "the test server keeps only what the client sends")
+        #expect(DeskCloudLedger.empty(at: at(1)).linesOff && mac.state.cloudLedger?.linesOff == true)
+
+        let json = #"{"version":3,"readAt":"2026-10-19T08:00:00Z","digest":null,"linesOff":true,"sources":[],"items":[]}"#
+        let snapshot = try InventoryCoding.decoder().decode(CloudLedgerSnapshot.self, from: Data(json.utf8))
+        #expect(snapshot.linesOff && !snapshot.sourcesUnreadable)
+        let unreadable = #"{"version":3,"readAt":"2026-10-19T08:00:00Z","sources":{"later":true},"items":[{"id":"x"},{"id":"ledger.talar|a|checkbox","title":"t","titleWithheld":false,"domain":"talar","domainName":"Talar","severity":"high","kind":"task","kindKey":"checkbox","subject":"P0","ownerAction":false,"factHash":"0123456789abcdef"}]}"#
+        let partly = try InventoryCoding.decoder().decode(CloudLedgerSnapshot.self, from: Data(unreadable.utf8))
+        #expect(!partly.linesOff && partly.sourcesUnreadable && partly.items.count == 1 && partly.unreadableItems == 1,
+                "sources it can't read are said to be unreadable, not «turned off»")
+        let roundTrip = try InventoryCoding.decoder().decode(CloudLedgerSnapshot.self, from: InventoryCoding.encoder().encode(partly))
+        #expect(roundTrip == partly, "and desk-sync.json keeps saying so")
+
+        let pull = try InventoryCoding.decoder().decode(DeskCloudPull.self, from: Data(#"{"deskState":[],"obligations":[],"vendors":[],"ledger":{"version":"later"}}"#.utf8))
+        #expect(pull.ledger == nil && pull.ledgerUnreadable, "a reading it can't read at all is said so, not «once the Mac has synced»")
+    }
+
+    @Test func aReadingDatedAheadOfThisDeviceIsOld() {
+        let ahead = DeskEvidence(source: "x", readAt: t0.addingTimeInterval(3600), cadence: 1800)
+        #expect(ahead.isStale(now: t0), "an hour ahead: how old it is can't be known")
+        #expect(!DeskEvidence(source: "x", readAt: t0.addingTimeInterval(60), cadence: 1800).isStale(now: t0), "a minute is a clock's drift")
+    }
+}
+
+@Suite("Desk sync: the seed sent for the sweep")
+struct DeskSyncSeedTests {
+    /// What the app sends of `ObligationSeed`, per revision (DeskCloudMapping.seedRow and seedAccount). A seed row
+    /// corrected, added or dropped, or a change to what is sent of it, changes this: bump `ObligationSeed.revision` (the
+    /// server's sweep keeps the rows of the newest revision a device sent, so without a bump it keeps the old ones) and
+    /// pin the new value here.
+    static let pinned: [Int: String] = [4: "c66e3823d972884d152f9ecdb7886270e94c4924f66ea0d68d2c118a21970e24"]
+
+    @Test func whatIsSentOfTheSeedIsPinnedToItsRevision() {
+        let revision = ObligationSeed.revision
+        var data = Data()
+        for c in DeskCloudMapping.seedChanges(remote: [], seed: ObligationSeed.obligations, revision: revision) {
+            data += Data("\(c.id)|\(c.seedRevision ?? 0)|".utf8) + (c.value?.fingerprint ?? Data()) + Data("\n".utf8)
+        }
+        for c in DeskCloudMapping.seedAccountChanges(remote: [], accounts: ObligationSeed.accounts, revision: revision) {
+            data += Data("\(c.id)|\(c.seedRevision ?? 0)|".utf8) + (c.value?.fingerprint ?? Data()) + Data("\n".utf8)
+        }
+        let print = DeskSyncHash.sha256Hex(data)
+        #expect(Self.pinned[revision] == print,
+                "ObligationSeed changed without a new revision, or the revision is not pinned: bump it and pin \(print)")
+        #expect(!DeskCloudMapping.seedChanges(remote: [], seed: ObligationSeed.obligations, revision: revision)
+            .contains { ObligationsBuilder.isLiveID($0.key ?? "") }, "domain.linumic.com is not sent")
+    }
+}
+
+@Suite("Desk sync: the server's reminders on this device")
+struct DeskSyncReminderTests {
+    private func event(_ id: String, due: String, daysLeft: Int, lead: Int, title: String = "Pay the sample host") throws -> SentinelEvent {
+        let json = #"{"id":41,"occurredAt":"2026-10-19T06:16:00Z","kind":"obligationDue","severity":"warning","subject":"\#(id)","product":"Linumic","title":"x","detail":{"obligationID":"\#(id)","title":"\#(title)","renewal":false,"due":"\#(due)","daysLeft":\#(daysLeft),"lead":\#(lead),"key":"obligation:\#(id):\#(due):\#(lead)"}}"#
+        return try InventoryCoding.decoder().decode(SentinelEvent.self, from: Data(json.utf8))
+    }
+
+    private func register(_ file: ObligationsFile, at now: Date) -> ObligationsRegister {
+        ObligationsBuilder.build(file: file, live: ObligationLiveInput(), now: now, calendar: utc, seed: [], seedAccounts: [])
+    }
+
+    @Test func aReminderThatArrivesAfterADoneSyncedFromTheMacIsNotPosted() async throws {
+        let server = FakeDeskCloud()
+        var mac = Device(.macOS)
+        var phone = Device(.iOS)
+        let o = try mac.file.add(title: "Pay the sample host", product: nil, area: .accounts, due: KeyDay("2026-10-26"),
+                                 consequence: nil, source: "sample bill 7", now: t0, calendar: utc)
+        try await mac.sync(server, at: at(1))
+        try await phone.sync(server, at: at(2))
+        // The sweep wrote the 7-day reminder at 06:16 UTC.
+        let e = try event(o.id, due: "2026-10-26", daysLeft: 7, lead: 7)
+        #expect(ObligationEvents.standing(e, in: register(phone.file, at: at(3))) == .applies)
+        // The owner marks it Done on the Mac before the iPhone reads Server watch; Desk sync carries it over.
+        try mac.file.complete(o.id, due: o.due, on: KeyDay(at(4), calendar: utc), evidence: "sample receipt 12", now: at(4), calendar: utc)
+        try await mac.sync(server, at: at(5))
+        try await phone.sync(server, at: at(6))
+        #expect(ObligationEvents.standing(e, in: register(phone.file, at: at(7))) == .closed, "not posted, and acknowledged")
+    }
+
+    @Test func aReminderReadDaysLateCountsFromTodayNotFromWhenItWasWritten() throws {
+        let e = try event("owner.0000000000000001", due: "2026-10-26", daysLeft: 7, lead: 7)
+        #expect(ObligationEvents.line(e, today: KeyDay("2026-10-19")!) == "Pay the sample host (in 7 days)")
+        #expect(ObligationEvents.line(e, today: KeyDay("2026-10-22")!) == "Pay the sample host (in 4 days)", "read three days late")
+        #expect(ObligationEvents.line(e, today: KeyDay("2026-10-26")!) == "Pay the sample host (due today)")
+        #expect(ObligationEvents.line(e, today: KeyDay("2026-10-28")!) == "Pay the sample host (overdue by 2 days)")
+    }
+
+    @Test func aReminderForADayTheRowNoLongerHasOrForARowNotHereIsNotPosted() throws {
+        var file = ObligationsFile()
+        let o = try file.add(title: "Pay the sample host", product: nil, area: .accounts, due: KeyDay("2026-10-26"), consequence: nil,
+                             source: "sample bill 7", now: t0, calendar: utc)
+        let e = try event(o.id, due: "2026-10-26", daysLeft: 7, lead: 7)
+        try file.setDate(o.id, due: KeyDay("2026-11-30")!, source: "sample letter", now: at(1))
+        #expect(ObligationEvents.standing(e, in: register(file, at: at(2))) == .moved(KeyDay("2026-11-30")))
+        #expect(ObligationEvents.standing(try event("owner.gone", due: "2026-10-26", daysLeft: 7, lead: 7), in: register(file, at: at(2)))
+                == .unknown)
+    }
+
+    @Test func theOverviewCountsObligationEventsApart() throws {
+        let old = #"{"generatedAt":"2026-10-19T08:00:00Z","windowHours":24,"targets":[],"unacknowledged":3,"snapshotCount":0}"#
+        let new = #"{"generatedAt":"2026-10-19T08:00:00Z","windowHours":24,"targets":[],"unacknowledged":1,"unacknowledgedObligations":2,"snapshotCount":0}"#
+        let before = try InventoryCoding.decoder().decode(SentinelOverview.self, from: Data(old.utf8))
+        let after = try InventoryCoding.decoder().decode(SentinelOverview.self, from: Data(new.utf8))
+        #expect(before.unacknowledgedObligations == nil && SentinelSummary.make(before, now: t0).unacknowledged == 3)
+        #expect(SentinelSummary.make(after, now: t0).unacknowledged == 3, "this app counts both; the app of 2026-10-18 sees 1")
     }
 }

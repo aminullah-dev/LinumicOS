@@ -19,6 +19,13 @@ public struct DeskSyncState: Codable, Hashable, Sendable {
     public var seedRefused: [String: String]
     /// Rows this version of the app could not read at the last sync (written by a later version).
     public var unreadableRows: Int
+    /// The server holds a ledger reading this version can't read (a later app on the Mac wrote it).
+    public var cloudLedgerUnreadable: Bool
+    /// The set of tables the bases above belong to (`DeskCloudPull.epoch`).
+    public var serverEpoch: String?
+    /// How far this device's clock was from the server's at the last sync (this device minus the server), when it was
+    /// more than `DeskCloudSync.clockTolerance`: account facts and the time of each mark are this device's own clock.
+    public var clockSkew: TimeInterval?
     public var lastSyncedAt: Date?
 
     public init() {
@@ -28,10 +35,12 @@ public struct DeskSyncState: Codable, Hashable, Sendable {
         vendors = CloudTableState()
         seedRefused = [:]
         unreadableRows = 0
+        cloudLedgerUnreadable = false
     }
 
     private enum CodingKeys: String, CodingKey {
-        case version, marks, obligations, vendors, ledgerSentAt, ledgerRefused, cloudLedger, seedRefused, unreadableRows, lastSyncedAt
+        case version, marks, obligations, vendors, ledgerSentAt, ledgerRefused, cloudLedger, seedRefused, unreadableRows,
+             cloudLedgerUnreadable, serverEpoch, clockSkew, lastSyncedAt
     }
 
     public init(from decoder: Decoder) throws {
@@ -45,7 +54,23 @@ public struct DeskSyncState: Codable, Hashable, Sendable {
         cloudLedger = try? c.decodeIfPresent(CloudLedgerSnapshot.self, forKey: .cloudLedger)
         seedRefused = try c.decodeIfPresent([String: String].self, forKey: .seedRefused) ?? [:]
         unreadableRows = try c.decodeIfPresent(Int.self, forKey: .unreadableRows) ?? 0
+        cloudLedgerUnreadable = try c.decodeIfPresent(Bool.self, forKey: .cloudLedgerUnreadable) ?? false
+        serverEpoch = try c.decodeIfPresent(String.self, forKey: .serverEpoch)
+        clockSkew = try c.decodeIfPresent(TimeInterval.self, forKey: .clockSkew)
         lastSyncedAt = try c.decodeIfPresent(Date.self, forKey: .lastSyncedAt)
+    }
+
+    /// The server's tables were made anew (rolled back and applied again): its versions start at 1 again, so the
+    /// versions remembered here mean nothing there. Everything agreed with the old tables is forgotten; the next merge
+    /// starts from nothing (a row on both sides that differs is a conflict, never an overwrite), and the Mac sends its
+    /// ledger reading again.
+    mutating func forgetServer() {
+        marks = CloudTableState()
+        obligations = CloudTableState()
+        vendors = CloudTableState()
+        seedRefused = [:]
+        ledgerSentAt = nil
+        ledgerRefused = nil
     }
 
     public var conflictCount: Int { marks.conflicts.count + obligations.conflicts.count + vendors.conflicts.count }
@@ -116,6 +141,8 @@ public struct DeskCloudReport: Hashable, Sendable {
     public var refused = 0
     /// Rows a later version of the app wrote, which this one leaves alone.
     public var unreadable = 0
+    /// The server's tables were made anew since the last sync; what was agreed with the old ones was forgotten.
+    public var serverWasReset = false
     /// What became of the ledger reading this Mac sent, if it sent one.
     public var ledger: CloudLedgerPushResult.Status?
 
@@ -187,6 +214,8 @@ public struct DeskCloudSyncResult: Sendable {
 public enum DeskCloudSync {
     /// At most this many rows per push call (the server's limit).
     static let batch = 500
+    /// A clock further than this from the server's is reported (Settings → Account).
+    public static let clockTolerance: TimeInterval = 5 * 60
 
     /// Pulls every row, merges each with this device's (`DeskCloudMerge`), sends what changed here with the version it
     /// is based on, and the Mac's ledger reading when it is newer than the last one sent. Conflicts are kept, never
@@ -198,14 +227,27 @@ public enum DeskCloudSync {
         let pull = try await remote.pull()
         var st = state
         var report = DeskCloudReport()
+        if let epoch = pull.epoch {
+            if let known = st.serverEpoch, known != epoch {
+                st.forgetServer()
+                report.serverWasReset = true
+            }
+            st.serverEpoch = epoch
+        }
         report.unreadable = pull.unreadable
         st.unreadableRows = pull.unreadable
+        if let server = pull.serverTime {
+            let skew = now.timeIntervalSince(server)
+            st.clockSkew = abs(skew) > clockTolerance ? skew : nil
+        }
 
         // Marks.
         let markLocal = DeskCloudMapping.localMarks(local.desk)
         let markBase = st.marks.base
-        let m = try await round(&st.marks, local: markLocal, remote: pull.marks, entryKey: { _ in ("mark", nil) }, merge: nil,
-                                extra: [], now: now) { try await remote.pushMarks($0, device: device) }
+        let m = try await round(&st.marks, local: markLocal, remote: pull.marks, leaveAlone: pull.unreadableMarks.contains,
+                                entryKey: { _ in ("mark", nil) }, merge: nil, extra: [], now: now) {
+            try await remote.pushMarks($0, device: device)
+        }
 
         // Obligations and accounts (not when obligations.json could not be read: nothing of it is known here). The seed is
         // sent too, for the server's sweep, and never taken back in.
@@ -218,23 +260,33 @@ public enum DeskCloudSync {
         if let file = local.obligations {
             obligationLocal = DeskCloudMapping.localObligations(file)
             vendorLocal = DeskCloudMapping.localVendors(file)
-            let seedRows = DeskCloudMapping.seedChanges(remote: pull.obligations, seed: seed, revision: seedRevision)
+            let seedRows = DeskCloudMapping.seedChanges(remote: pull.obligations, seed: seed, revision: seedRevision,
+                                                        unreadable: pull.unreadableObligations)
             o = try await round(&st.obligations, local: obligationLocal, remote: pull.obligations.filter { $0.entry != "seed" },
+                                leaveAlone: { pull.unreadableObligations.contains($0) || DeskCloudMapping.isAccountRenewalDate($0) },
                                 entryKey: { DeskCloudMapping.obligationEntryKey($0).map { ($0.entry, $0.key) } }, merge: nil, extra: seedRows, now: now) {
                 try await remote.pushObligations($0, device: device)
             }
-            let seedAccountRows = DeskCloudMapping.seedAccountChanges(remote: pull.vendors, accounts: seedAccounts, revision: seedRevision)
+            let seedAccountRows = DeskCloudMapping.seedAccountChanges(remote: pull.vendors, accounts: seedAccounts, revision: seedRevision,
+                                                                      unreadable: pull.unreadableVendors)
             v = try await round(&st.vendors, local: vendorLocal, remote: pull.vendors.filter { $0.entry != "seed" },
+                                leaveAlone: pull.unreadableVendors.contains,
                                 entryKey: { DeskCloudMapping.vendorEntryKey($0).map { ($0.entry, $0.key) } }, merge: DeskCloudMerge.mergeVendor, extra: seedAccountRows,
                                 now: now) {
                 try await remote.pushVendors($0, device: device)
             }
             for (id, why) in o.extraRefused.merging(v.extraRefused, uniquingKeysWith: { a, _ in a }) { st.seedRefused[id] = why }
             for id in o.extraApplied.union(v.extraApplied) { st.seedRefused[id] = nil }
+            // A seed row the server already holds at this revision or a newer one needs nothing more from this device,
+            // whatever this device was answered before (another device may have sent it first, at the same moment).
+            let settledSeed = pull.obligations.filter { $0.entry == "seed" && ($0.seedRevision ?? 0) >= seedRevision }.map(\.id)
+                + pull.vendors.filter { $0.entry == "seed" && ($0.seedRevision ?? 0) >= seedRevision }.map(\.id)
+            for id in settledSeed { st.seedRefused[id] = nil }
         }
 
         // The Mac's ledger reading, when it is newer than the one last sent.
         st.cloudLedger = pull.ledger
+        st.cloudLedgerUnreadable = pull.ledgerUnreadable
         if let upload = local.ledger, upload.readAt > (st.ledgerSentAt ?? .distantPast) {
             let r = try await remote.replaceLedger(expectedVersion: pull.ledger?.version ?? 0, reading: upload)
             report.ledger = r.status
@@ -242,9 +294,12 @@ public enum DeskCloudSync {
             case .applied, .unchanged:
                 st.ledgerSentAt = upload.readAt
                 st.ledgerRefused = nil
-                st.cloudLedger = CloudLedgerSnapshot(version: r.version ?? 0, readAt: upload.readAt, digest: upload.digest,
-                                                     writtenOn: .macOS, updatedAt: now, sources: upload.sources, items: upload.items)
+                st.cloudLedger = CloudLedgerSnapshot(version: r.version ?? 0, readAt: r.readAt ?? upload.readAt, digest: upload.digest,
+                                                     linesOff: upload.linesOff, writtenOn: .macOS, updatedAt: now,
+                                                     sources: upload.sources, items: upload.items)
+                st.cloudLedgerUnreadable = false
             case .older:
+                // From a server before 2026-10-20's change (it no longer answers this): it holds a newer reading.
                 st.ledgerSentAt = upload.readAt
             case .stale:
                 break   // the server moved on since the pull; sent again at the next sync
@@ -306,7 +361,11 @@ public enum DeskCloudSync {
         var extraRefused: [String: String] = [:]
     }
 
+    /// `leaveAlone`: rows this sync must not touch at all: rows the server holds that this version can't read (a later
+    /// app wrote them; their absence from `remote` means nothing), and kinds this version never syncs. Their base, if
+    /// any, is kept; nothing is sent, taken in or reported for them.
     static func round<P: CloudPayload>(_ table: inout CloudTableState<P>, local: [String: CloudLocal<P>], remote: [CloudRow<P>],
+                                       leaveAlone: (String) -> Bool = { _ in false },
                                        entryKey: (String) -> (entry: String, key: String?)?,
                                        merge: ((P?, P, P) -> P?)?, extra: [CloudChange<P>], now: Date,
                                        push: ([CloudChange<P>]) async throws -> [CloudPushResult<P>]) async throws -> RoundOutput<P> {
@@ -314,7 +373,7 @@ public enum DeskCloudSync {
         let remoteByID = Dictionary(remote.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
         var sends: [CloudChange<P>] = []
         var sent: [String: CloudLocal<P>] = [:]
-        for id in Set(table.base.keys).union(local.keys).union(remoteByID.keys).sorted() {
+        for id in Set(table.base.keys).union(local.keys).union(remoteByID.keys).sorted() where !leaveAlone(id) {
             let here = local[id] ?? .absent
             let step = DeskCloudMerge.step(base: table.base[id], local: here, remote: remoteByID[id], dropped: table.dropped[id], merge: merge)
             switch step {

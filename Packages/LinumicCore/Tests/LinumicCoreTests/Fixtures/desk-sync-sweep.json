@@ -1,5 +1,5 @@
 {
-  "_comment": "TEST FIXTURE: made-up obligations and accounts, never real data. The same rows go through the app's register (ObligationAlerts, DeskSyncSweepParityTests) and the server's sweep (supabase/tests/desk-sync/behaviour.sql), which must name the same alerts.",
+  "_comment": "TEST FIXTURE: made-up obligations, accounts and domain, never real data. The same rows go through the app's register (ObligationAlerts, DeskSyncSweepParityTests) and the server's sweep (supabase/tests/desk-sync/behaviour.sql), which must name the same alerts.",
   "today": "2026-10-19",
   "seedRevision": 3,
   "seed": [
@@ -9,8 +9,13 @@
     {"id": "test.seed-d", "title": "Sample seed row overdue and done", "area": "company", "due": "2026-10-10", "source": "test fixture:4", "recordedOn": "2026-10-01", "leadDays": [30, 14, 7, 1], "origin": "seed"},
     {"id": "test.seed-e", "title": "Sample seed row moved by the owner", "product": "WorkTrack", "area": "marketing", "due": "2026-11-01", "source": "test fixture:5", "recordedOn": "2026-10-01", "leadDays": [30, 14, 7, 1], "origin": "seed"},
     {"id": "test.seed-f", "title": "Sample seed row due today", "product": "SafeBeauty", "area": "marketing", "due": "2026-10-19", "source": "test fixture:6", "recordedOn": "2026-10-01", "leadDays": [30, 14, 7, 1], "origin": "seed"},
-    {"id": "test.seed-g", "title": "Sample seed row with no lead days", "area": "other", "due": "2026-11-15", "source": "test fixture:7", "recordedOn": "2026-10-01", "leadDays": [], "origin": "seed"}
+    {"id": "test.seed-g", "title": "Sample seed row with no lead days", "area": "other", "due": "2026-11-15", "source": "test fixture:7", "recordedOn": "2026-10-01", "leadDays": [], "origin": "seed"},
+    {"id": "domain.example.com", "title": "example.com registration ends", "product": "example.com", "area": "domains", "due": "2026-10-26", "source": "test fixture:8 (a date recorded before the domain was renewed)", "recordedOn": "2026-10-01", "leadDays": [30, 14, 7, 1], "origin": "seed", "subject": "example.com"}
   ],
+  "_monitorComment": "The Monitor's RDAP reading of the same domain, renewed: on the devices it replaces the seed row, so neither the app nor the server alerts on the seed's date.",
+  "monitorDomains": {
+    "example.com": {"name": "example.com", "expiresAt": "2027-10-26T00:00:00Z", "sourceURL": "https://rdap.example.test/domain/example.com", "fetchedAt": "2026-10-18T06:00:00Z"}
+  },
   "seedAccounts": [
     {"id": "test-host", "name": "Sample Host", "purpose": "A made-up host.", "source": "test fixture:20", "recordedOn": "2026-10-01", "origin": "seed"},
     {"id": "test-mail", "name": "Sample Mail", "purpose": "A made-up mailbox.", "source": "test fixture:21", "recordedOn": "2026-10-01", "origin": "seed"}

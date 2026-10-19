@@ -295,27 +295,70 @@ public struct CloudPushResult<P: CloudPayload>: Decodable, Sendable {
 
     public var id: String
     public var status: Status
+    /// Nil also when the server's row is one this version can't read (a later app wrote it).
     public var row: CloudRow<P>?
     public var message: String?
+
+    public init(id: String, status: Status, row: CloudRow<P>?, message: String?) {
+        self.id = id
+        self.status = status
+        self.row = row
+        self.message = message
+    }
+
+    private enum CodingKeys: String, CodingKey { case id, status, row, message }
+
+    /// Read leniently, one answer at a time: a row this version can't read (a later app wrote it) is answered as
+    /// "stale" with no row, and an answer it does not know as "invalid", so one such row never fails the whole call.
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        message = try? c.decodeIfPresent(String.self, forKey: .message)
+        let raw = (try? c.decodeIfPresent(String.self, forKey: .status)) ?? nil
+        guard let known = raw.flatMap(Status.init(rawValue:)) else {
+            status = .invalid
+            row = nil
+            message = message ?? LF("The server answered %@, which this version of the app does not know.", raw ?? "nothing")
+            return
+        }
+        status = known
+        if c.contains(.row), (try? c.decodeNil(forKey: .row)) == false {
+            row = try? c.decode(CloudRow<P>.self, forKey: .row)
+            if row == nil, status == .applied { status = .stale }
+        } else {
+            row = nil
+        }
+    }
 }
 
-/// Decodes every element it can and counts the others (a row of a kind a later app writes), so one row this version
-/// can't read never hides the rest.
+/// Any JSON value, read and thrown away (so a list can step over an element it can't read).
+struct SkipValue: Decodable {
+    init(from decoder: Decoder) throws {}
+}
+
+/// Decodes every element it can and counts the others (a row of a kind, or with a value, a later app writes), so one
+/// row this version can't read never hides the rest. The ids of the rows it could not read are kept, so the sync
+/// leaves exactly those rows alone (never sends them, never reads their absence as anything).
 struct LossyRows<P: CloudPayload>: Decodable, Sendable {
     var rows: [CloudRow<P>] = []
     var skipped = 0
+    var skippedIDs: Set<String> = []
 
-    private struct Skip: Decodable {}
+    private struct Header: Decodable { var id: String }
 
     init(from decoder: Decoder) throws {
         var c = try decoder.unkeyedContainer()
         while !c.isAtEnd {
             if let row = try? c.decode(CloudRow<P>.self) {
                 rows.append(row)
-            } else {
-                _ = try? c.decode(Skip.self)
-                skipped += 1
+                continue
             }
+            if let header = try? c.decode(Header.self) {
+                skippedIDs.insert(header.id)
+            } else {
+                _ = try c.decode(SkipValue.self)
+            }
+            skipped += 1
         }
     }
 }
@@ -403,13 +446,16 @@ public struct CloudLedgerUpload: Codable, Hashable, Sendable {
     public var readAt: Date
     /// SHA-256 (hex) of the items as encoded, so an unchanged reading only moves the time on the server.
     public var digest: String
+    /// The owner turned ledger lines off on the Mac: the reading is empty on purpose (said so on iPhone and iPad).
+    public var linesOff: Bool
     public var sources: [CloudLedgerSource]
     public var items: [CloudLedgerItem]
 
-    public init(readAt: Date, sources: [CloudLedgerSource], items: [CloudLedgerItem]) {
+    public init(readAt: Date, sources: [CloudLedgerSource], items: [CloudLedgerItem], linesOff: Bool = false) {
         self.readAt = readAt
         self.sources = sources
         self.items = items
+        self.linesOff = linesOff
         digest = Self.digest(items)
     }
 
@@ -425,42 +471,67 @@ public struct CloudLedgerSnapshot: Codable, Hashable, Sendable {
     /// When the Mac read the files.
     public var readAt: Date
     public var digest: String?
+    /// The owner turned ledger lines off on the Mac (an explicit flag, never guessed from an empty reading).
+    public var linesOff: Bool
+    /// Which ledgers the Mac read could not be read by this version of the app (a later app wrote them).
+    public var sourcesUnreadable: Bool
+    /// Lines of this reading this version could not read, left out.
+    public var unreadableItems: Int
     public var writtenOn: CloudDevice?
     /// When it reached the server.
     public var updatedAt: Date?
     public var sources: [CloudLedgerSource]
     public var items: [CloudLedgerItem]
 
-    public init(version: Int64, readAt: Date, digest: String? = nil, writtenOn: CloudDevice? = .macOS, updatedAt: Date? = nil,
-                sources: [CloudLedgerSource], items: [CloudLedgerItem]) {
+    public init(version: Int64, readAt: Date, digest: String? = nil, linesOff: Bool = false, writtenOn: CloudDevice? = .macOS,
+                updatedAt: Date? = nil, sources: [CloudLedgerSource], items: [CloudLedgerItem]) {
         self.version = version
         self.readAt = readAt
         self.digest = digest
+        self.linesOff = linesOff
+        sourcesUnreadable = false
+        unreadableItems = 0
         self.writtenOn = writtenOn
         self.updatedAt = updatedAt
         self.sources = sources
         self.items = items
     }
 
-    private enum CodingKeys: String, CodingKey { case version, readAt, digest, writtenOn, updatedAt, sources, items }
+    private enum CodingKeys: String, CodingKey {
+        case version, readAt, digest, linesOff, sourcesUnreadable, unreadableItems, writtenOn, updatedAt, sources, items
+    }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         version = try c.decode(Int64.self, forKey: .version)
         readAt = try c.decode(Date.self, forKey: .readAt)
         digest = try c.decodeIfPresent(String.self, forKey: .digest)
+        linesOff = (try? c.decodeIfPresent(Bool.self, forKey: .linesOff)) ?? false
         writtenOn = (try? c.decodeIfPresent(CloudDevice.self, forKey: .writtenOn)) ?? nil
         updatedAt = try c.decodeIfPresent(Date.self, forKey: .updatedAt)
-        sources = (try? c.decode([CloudLedgerSource].self, forKey: .sources)) ?? []
-        // A line this version can't read is left out, never the whole reading.
+        // What can't be read is said, never shown as "no ledgers" or "turned off".
+        if let s = try? c.decode([CloudLedgerSource].self, forKey: .sources) {
+            sources = s
+            sourcesUnreadable = (try? c.decodeIfPresent(Bool.self, forKey: .sourcesUnreadable)) ?? false
+        } else {
+            sources = []
+            sourcesUnreadable = true
+        }
+        // A line this version can't read is left out (and counted), never the whole reading.
         var items: [CloudLedgerItem] = []
+        var unreadable = (try? c.decodeIfPresent(Int.self, forKey: .unreadableItems)) ?? 0
         if var list = try? c.nestedUnkeyedContainer(forKey: .items) {
-            struct Skip: Decodable {}
             while !list.isAtEnd {
-                if let item = try? list.decode(CloudLedgerItem.self) { items.append(item) } else { _ = try? list.decode(Skip.self) }
+                if let item = try? list.decode(CloudLedgerItem.self) {
+                    items.append(item)
+                } else {
+                    _ = try list.decode(SkipValue.self)
+                    unreadable += 1
+                }
             }
         }
         self.items = items
+        unreadableItems = unreadable
     }
 }
 
@@ -487,28 +558,45 @@ public struct CloudLedgerPushResult: Decodable, Sendable, Equatable {
 /// Everything `desk_sync_pull()` answers.
 public struct DeskCloudPull: Decodable, Sendable {
     public var serverTime: Date?
+    /// Names this set of tables: it changes when they are made anew (a rollback, then the migration again), and a
+    /// device then forgets the versions it knew.
+    public var epoch: String?
     public var marks: [CloudRow<DeskMark>]
     public var obligations: [CloudRow<ObligationCloudPayload>]
     public var vendors: [CloudRow<VendorCloudPayload>]
     public var ledger: CloudLedgerSnapshot?
-    /// Rows this version of the app could not read (a kind a later version writes). They are left alone.
+    /// The server holds a ledger reading this version can't read at all.
+    public var ledgerUnreadable: Bool
+    /// Rows this version of the app could not read (a kind or a value a later version writes). They are left alone.
     public var unreadable: Int
+    /// Their ids, per table, so the sync leaves exactly those rows alone.
+    public var unreadableMarks: Set<String>
+    public var unreadableObligations: Set<String>
+    public var unreadableVendors: Set<String>
 
-    public init(serverTime: Date? = nil, marks: [CloudRow<DeskMark>] = [], obligations: [CloudRow<ObligationCloudPayload>] = [],
-                vendors: [CloudRow<VendorCloudPayload>] = [], ledger: CloudLedgerSnapshot? = nil, unreadable: Int = 0) {
+    public init(serverTime: Date? = nil, epoch: String? = nil, marks: [CloudRow<DeskMark>] = [],
+                obligations: [CloudRow<ObligationCloudPayload>] = [], vendors: [CloudRow<VendorCloudPayload>] = [],
+                ledger: CloudLedgerSnapshot? = nil, ledgerUnreadable: Bool = false, unreadableMarks: Set<String> = [],
+                unreadableObligations: Set<String> = [], unreadableVendors: Set<String> = []) {
         self.serverTime = serverTime
+        self.epoch = epoch
         self.marks = marks
         self.obligations = obligations
         self.vendors = vendors
         self.ledger = ledger
-        self.unreadable = unreadable
+        self.ledgerUnreadable = ledgerUnreadable
+        self.unreadableMarks = unreadableMarks
+        self.unreadableObligations = unreadableObligations
+        self.unreadableVendors = unreadableVendors
+        unreadable = unreadableMarks.count + unreadableObligations.count + unreadableVendors.count
     }
 
-    private enum CodingKeys: String, CodingKey { case serverTime, deskState, obligations, vendors, ledger }
+    private enum CodingKeys: String, CodingKey { case serverTime, epoch, deskState, obligations, vendors, ledger }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         serverTime = try c.decodeIfPresent(Date.self, forKey: .serverTime)
+        epoch = try? c.decodeIfPresent(String.self, forKey: .epoch)
         let m = try c.decodeIfPresent(LossyRows<DeskMark>.self, forKey: .deskState)
         let o = try c.decodeIfPresent(LossyRows<ObligationCloudPayload>.self, forKey: .obligations)
         let v = try c.decodeIfPresent(LossyRows<VendorCloudPayload>.self, forKey: .vendors)
@@ -516,7 +604,16 @@ public struct DeskCloudPull: Decodable, Sendable {
         obligations = o?.rows ?? []
         vendors = v?.rows ?? []
         unreadable = (m?.skipped ?? 0) + (o?.skipped ?? 0) + (v?.skipped ?? 0)
-        ledger = (try? c.decodeIfPresent(CloudLedgerSnapshot.self, forKey: .ledger)) ?? nil
+        unreadableMarks = m?.skippedIDs ?? []
+        unreadableObligations = o?.skippedIDs ?? []
+        unreadableVendors = v?.skippedIDs ?? []
+        if c.contains(.ledger), (try? c.decodeNil(forKey: .ledger)) == false {
+            ledger = try? c.decode(CloudLedgerSnapshot.self, forKey: .ledger)
+            ledgerUnreadable = ledger == nil
+        } else {
+            ledger = nil
+            ledgerUnreadable = false
+        }
     }
 }
 

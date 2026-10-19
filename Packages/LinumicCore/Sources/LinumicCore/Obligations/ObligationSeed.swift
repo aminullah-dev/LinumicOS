@@ -9,8 +9,11 @@ import Foundation
 // overwrites what the owner entered.
 
 public enum ObligationSeed {
-    /// Bumped whenever a row is added or corrected (recorded in exports).
-    public static let revision = 3
+    /// Bumped whenever a row is added or corrected, or what Desk sync sends of the seed changes (recorded in exports;
+    /// the server's sweep keeps the rows of the newest revision a device sent). A test pins what is sent to this
+    /// number (DeskSyncSeedTests), so a changed row without a new revision fails. 4: the seed's linumic.com row is no
+    /// longer sent (the Monitor's reading replaces it), and the one revision 3 sent becomes a tombstone.
+    public static let revision = 4
 
     static let multiplatform = "~/Projects/Multiplatform"
     static let nextActions = "~/Projects/Multiplatform/NEXT-ACTIONS-2026-10-19.md"

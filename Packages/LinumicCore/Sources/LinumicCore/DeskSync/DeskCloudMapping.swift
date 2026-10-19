@@ -28,6 +28,14 @@ public enum DeskCloudMapping {
         return key.isEmpty ? nil : (String(id[..<colon]), key)
     }
 
+    /// A date entry for an account's renewal row ("date:account.<id>.renewal"). Never synced: an account's renewal day
+    /// is set on its card (the facts), and `editAccount` removes such a date here, which the sync would otherwise read
+    /// as a file that lost a row and take back in.
+    static func isAccountRenewalDate(_ id: String) -> Bool {
+        guard let (entry, key) = obligationEntryKey(id) else { return false }
+        return entry == "date" && VendorAccount.isRenewalObligationID(key)
+    }
+
     // MARK: This device's rows
 
     /// The owner's marks by cloud key. Two marks for one item (one under its id, one under its cloud key) give the newer.
@@ -55,7 +63,8 @@ public enum DeskCloudMapping {
             let id = obligationRowID("row", o.id)
             if out[id] == nil { out[id] = .value(.row(o)) }
         }
-        for d in file.dates.sorted(by: { $0.enteredAt < $1.enteredAt }) where ObligationsFile.clean(d.source) != nil && validKey(d.obligationID) {
+        for d in file.dates.sorted(by: { $0.enteredAt < $1.enteredAt })
+        where ObligationsFile.clean(d.source) != nil && validKey(d.obligationID) && !VendorAccount.isRenewalObligationID(d.obligationID) {
             out[obligationRowID("date", d.obligationID)] = .value(.date(d))
         }
         for r in file.reopened where validKey(r.obligationID) {
@@ -181,15 +190,18 @@ public enum DeskCloudMapping {
     static func seedSource(_ revision: Int) -> String { "Linumic OS ObligationSeed, revision \(revision) (sources in the app)" }
 
     /// The seed rows to send: missing on the server, or written there by an app with an older seed. Rows an older seed
-    /// had and this one does not are made tombstones. A newer app's rows are left alone.
-    static func seedChanges(remote: [CloudRow<ObligationCloudPayload>], seed: [Obligation], revision: Int)
-    -> [CloudChange<ObligationCloudPayload>] {
+    /// had and this one does not are made tombstones, and so is a seed row a live reading replaces on the devices
+    /// (domain.linumic.com: the Monitor's RDAP date, never the seed's, is the one that counts, and a Done typed for it is
+    /// not applied), which is never sent. A newer app's rows, and rows this version can't read, are left alone.
+    static func seedChanges(remote: [CloudRow<ObligationCloudPayload>], seed: [Obligation], revision: Int,
+                            unreadable: Set<String> = []) -> [CloudChange<ObligationCloudPayload>] {
         let byID = Dictionary(remote.filter { $0.entry == "seed" }.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
         var out: [CloudChange<ObligationCloudPayload>] = []
         var mine = Set<String>()
-        for o in seed where validKey(o.id) {
+        for o in seed where validKey(o.id) && !ObligationsBuilder.isLiveID(o.id) {
             let id = obligationRowID("seed", o.id)
             mine.insert(id)
+            guard !unreadable.contains(id) else { continue }
             let row = byID[id]
             // Written by an app with this seed or a newer one: left as it is (two builds never take turns over a row).
             if let row, (row.seedRevision ?? 0) >= revision { continue }
@@ -202,14 +214,15 @@ public enum DeskCloudMapping {
         return out.sorted { $0.id < $1.id }
     }
 
-    static func seedAccountChanges(remote: [CloudRow<VendorCloudPayload>], accounts: [VendorAccount], revision: Int)
-    -> [CloudChange<VendorCloudPayload>] {
+    static func seedAccountChanges(remote: [CloudRow<VendorCloudPayload>], accounts: [VendorAccount], revision: Int,
+                                   unreadable: Set<String> = []) -> [CloudChange<VendorCloudPayload>] {
         let byID = Dictionary(remote.filter { $0.entry == "seed" }.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
         var out: [CloudChange<VendorCloudPayload>] = []
         var mine = Set<String>()
         for a in accounts where validKey(a.id) {
             let id = vendorRowID("seed", a.id)
             mine.insert(id)
+            guard !unreadable.contains(id) else { continue }
             let row = byID[id]
             if let row, (row.seedRevision ?? 0) >= revision { continue }
             out.append(CloudChange(id: id, entry: "seed", key: a.id, expectedVersion: row?.version ?? 0,
@@ -239,7 +252,7 @@ public enum DeskCloudLedger {
 
     /// The reading sent when the owner turned ledger lines off on the Mac: none, so the cloud copy is emptied.
     public static func empty(at: Date) -> CloudLedgerUpload {
-        CloudLedgerUpload(readAt: DeskState.stamp(at), sources: [], items: [])
+        CloudLedgerUpload(readAt: DeskState.stamp(at), sources: [], items: [], linesOff: true)
     }
 
     static func item(_ i: DeskItem) -> CloudLedgerItem {

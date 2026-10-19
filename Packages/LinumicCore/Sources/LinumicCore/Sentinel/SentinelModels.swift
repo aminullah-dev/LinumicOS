@@ -116,17 +116,23 @@ public struct SentinelOverview: Codable, Sendable, Equatable {
     public let windowHours: Int
     public let lastRound: SentinelRound?
     public let targets: [SentinelStatus]
+    /// Events not acknowledged. Since the obligation sweep (20261019090100), obligation events are not in it: they are
+    /// counted in `unacknowledgedObligations`, so an app that can't list them never shows a count it can't clear.
     public let unacknowledged: Int
+    /// Obligation events not acknowledged; nil from a server without the obligation sweep.
+    public let unacknowledgedObligations: Int?
     public let snapshotCount: Int
     public let lastSnapshot: SentinelSnapshotInfo?
 
     public init(generatedAt: Date, windowHours: Int = 24, lastRound: SentinelRound? = nil, targets: [SentinelStatus] = [],
-                unacknowledged: Int = 0, snapshotCount: Int = 0, lastSnapshot: SentinelSnapshotInfo? = nil) {
+                unacknowledged: Int = 0, unacknowledgedObligations: Int? = nil, snapshotCount: Int = 0,
+                lastSnapshot: SentinelSnapshotInfo? = nil) {
         self.generatedAt = generatedAt
         self.windowHours = windowHours
         self.lastRound = lastRound
         self.targets = targets
         self.unacknowledged = unacknowledged
+        self.unacknowledgedObligations = unacknowledgedObligations
         self.snapshotCount = snapshotCount
         self.lastSnapshot = lastSnapshot
     }

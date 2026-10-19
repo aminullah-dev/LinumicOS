@@ -180,10 +180,16 @@ public struct DeskEvidence: Hashable, Sendable {
         return line.map { "\(file):\($0)" } ?? file
     }
 
+    /// Older than two cadences, or dated ahead of this device's clock by more than a few minutes (read on a device
+    /// whose clock runs ahead): either way how old it is can't be trusted, so it is said to be old.
     public func isStale(now: Date) -> Bool {
         guard let readAt, let cadence else { return false }
-        return now.timeIntervalSince(readAt) > 2 * cadence
+        let age = now.timeIntervalSince(readAt)
+        return age > 2 * cadence || age < -Self.clockTolerance
     }
+
+    /// How far ahead of this device's clock a reading may be dated before its age can't be trusted.
+    public static let clockTolerance: TimeInterval = 5 * 60
 }
 
 /// What the row's Open button does.
