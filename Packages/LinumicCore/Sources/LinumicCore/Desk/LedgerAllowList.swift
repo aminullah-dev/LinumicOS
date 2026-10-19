@@ -85,30 +85,100 @@ public struct LedgerFileInfo: Hashable, Sendable {
 }
 
 public protocol LedgerFileSystem: Sendable {
-    /// What is at `path` without following a link, or nil when nothing is there.
-    func info(atPath path: String) -> LedgerFileInfo?
-    func readText(atPath path: String) throws -> String
-    /// File names in a directory, or nil when it can't be listed.
-    func names(inDirectory path: String) -> [String]?
+    /// What is at `path` without following a link; nil when nothing is there. Throws when it can't be checked (no
+    /// permission), which is not the same as "not there".
+    func info(atPath path: String) throws -> LedgerFileInfo?
+    /// The UTF-8 text of one regular file of at most `maxBytes`, never through a link at its last part, and only when
+    /// the file actually opened lies inside one of `roots` (folders on the way may be links; where they lead is checked).
+    func readText(atPath path: String, maxBytes: Int64, roots: [String]) throws -> String
+    /// File names in a directory; nil when the directory is not there. Throws when it can't be listed.
+    func names(inDirectory path: String) throws -> [String]?
 }
 
-/// FileManager: `attributesOfItem` (which does not follow links), `contentsOfDirectory`, and reading one UTF-8 file.
+/// Why a ledger file was not read, in words for the owner.
+public enum LedgerReadError: LocalizedError, Equatable {
+    case symbolicLink
+    case notRegularFile
+    case tooLarge(Int64)
+    case notUTF8
+    case outsideGrant
+    case system(String)
+
+    public var errorDescription: String? {
+        switch self {
+        case .symbolicLink: L("It is a symbolic link; only regular files are read.")
+        case .notRegularFile: L("It is not a regular file.")
+        case .tooLarge(let max): LF("Larger than %d KB, so not read.", Int(max / 1000))
+        case .notUTF8: L("It is not UTF-8 text, so it was not read.")
+        case .outsideGrant: L("Its real location is outside the granted folder, so it was not read.")
+        case .system(let message): message
+        }
+    }
+}
+
+/// The real file system, with POSIX calls so that what is checked is what is read: `lstat` (no link followed),
+/// `open` with `O_NOFOLLOW`, `fstat` on the open file (type and size), at most `maxBytes` read, and `F_GETPATH` on
+/// the open file to check where it really is.
 public struct LocalLedgerFileSystem: LedgerFileSystem {
     public init() {}
 
-    public func info(atPath path: String) -> LedgerFileInfo? {
-        guard let attrs = try? FileManager.default.attributesOfItem(atPath: path) else { return nil }
-        let type = attrs[.type] as? FileAttributeType
-        return LedgerFileInfo(isRegularFile: type == .typeRegular, isSymbolicLink: type == .typeSymbolicLink,
-                              size: (attrs[.size] as? NSNumber)?.int64Value ?? 0)
+    public func info(atPath path: String) throws -> LedgerFileInfo? {
+        var st = stat()
+        guard lstat(path, &st) == 0 else {
+            let code = errno
+            if code == ENOENT || code == ENOTDIR { return nil }
+            throw LedgerReadError.system(Self.message(code))
+        }
+        let type = st.st_mode & S_IFMT
+        return LedgerFileInfo(isRegularFile: type == S_IFREG, isSymbolicLink: type == S_IFLNK, size: Int64(st.st_size))
     }
 
-    public func readText(atPath path: String) throws -> String {
-        try String(contentsOf: URL(fileURLWithPath: path), encoding: .utf8)
+    public func readText(atPath path: String, maxBytes: Int64, roots: [String]) throws -> String {
+        let fd = open(path, O_RDONLY | O_NOFOLLOW | O_CLOEXEC | O_NONBLOCK)
+        guard fd >= 0 else {
+            let code = errno
+            throw code == ELOOP ? LedgerReadError.symbolicLink : LedgerReadError.system(Self.message(code))
+        }
+        defer { close(fd) }
+        var st = stat()
+        guard fstat(fd, &st) == 0 else { throw LedgerReadError.system(Self.message(errno)) }
+        guard st.st_mode & S_IFMT == S_IFREG else { throw LedgerReadError.notRegularFile }
+        guard Int64(st.st_size) <= maxBytes else { throw LedgerReadError.tooLarge(maxBytes) }
+        // Where the open file really is: a folder on the way may be a link that leads out of the grant.
+        var buffer = [CChar](repeating: 0, count: Int(MAXPATHLEN))
+        guard fcntl(fd, F_GETPATH, &buffer) == 0 else { throw LedgerReadError.system(Self.message(errno)) }
+        let real = String(decoding: buffer.prefix { $0 != 0 }.map { UInt8(bitPattern: $0) }, as: UTF8.self)
+        let realRoots = roots.map { root in realpath(root, nil).map { p in defer { free(p) }; return String(cString: p) } ?? root }
+        guard realRoots.contains(where: { KeyPaths.isInside(real, root: $0) }) else { throw LedgerReadError.outsideGrant }
+        // Read at most maxBytes + 1, so a file that grew after fstat is refused rather than read in full.
+        var data = Data()
+        var chunk = [UInt8](repeating: 0, count: 64 * 1024)
+        while Int64(data.count) <= maxBytes {
+            let n = read(fd, &chunk, chunk.count)
+            if n < 0 {
+                if errno == EINTR { continue }
+                throw LedgerReadError.system(Self.message(errno))
+            }
+            if n == 0 { break }
+            data.append(contentsOf: chunk[0..<n])
+        }
+        guard Int64(data.count) <= maxBytes else { throw LedgerReadError.tooLarge(maxBytes) }
+        guard let text = String(data: data, encoding: .utf8) else { throw LedgerReadError.notUTF8 }
+        return text
     }
 
-    public func names(inDirectory path: String) -> [String]? {
-        try? FileManager.default.contentsOfDirectory(atPath: path)
+    public func names(inDirectory path: String) throws -> [String]? {
+        do {
+            return try FileManager.default.contentsOfDirectory(atPath: path)
+        } catch let error as CocoaError where error.code == .fileReadNoSuchFile || error.code == .fileNoSuchFile {
+            return nil
+        } catch {
+            throw LedgerReadError.system(error.localizedDescription)
+        }
+    }
+
+    static func message(_ code: Int32) -> String {
+        String(cString: strerror(code))
     }
 }
 
@@ -182,7 +252,13 @@ public enum LedgerReader {
         let source = LedgerAllowList.nextActions
         let folder = absolute(source.path, home: home)
         guard access.isGranted(folder) else { return LedgerFileReading(source: source, path: source.path, status: .notGranted) }
-        guard let names = fs.names(inDirectory: folder), let newest = NextActionsParser.newest(names) else {
+        let names: [String]?
+        do {
+            names = try fs.names(inDirectory: folder)
+        } catch {
+            return LedgerFileReading(source: source, path: source.path, status: .unreadable(error.localizedDescription))
+        }
+        guard let names, let newest = NextActionsParser.newest(names) else {
             return LedgerFileReading(source: source, path: source.path, status: .notFound)
         }
         let path = "\(source.path)/\(newest)"
@@ -195,12 +271,13 @@ public enum LedgerReader {
         guard LedgerAllowList.allows(relativePath) else { return .failed(.unreadable(L("Not on the ledger allow-list, so not read."))) }
         let path = absolute(relativePath, home: home)
         guard access.isGranted(path) else { return .failed(.notGranted) }
-        guard let info = fs.info(atPath: path) else { return .failed(.notFound) }
-        if info.isSymbolicLink { return .failed(.unreadable(L("It is a symbolic link; only regular files are read."))) }
-        guard info.isRegularFile else { return .failed(.unreadable(L("It is not a regular file."))) }
-        guard info.size <= maxBytes else { return .failed(.unreadable(LF("Larger than %d KB, so not read.", Int(maxBytes / 1000)))) }
         do {
-            return .text(try fs.readText(atPath: path))
+            // Only "nothing there" is "not found"; a denied check is "could not be read".
+            guard let info = try fs.info(atPath: path) else { return .failed(.notFound) }
+            if info.isSymbolicLink { throw LedgerReadError.symbolicLink }
+            guard info.isRegularFile else { throw LedgerReadError.notRegularFile }
+            guard info.size <= maxBytes else { throw LedgerReadError.tooLarge(maxBytes) }
+            return .text(try fs.readText(atPath: path, maxBytes: maxBytes, roots: access.roots))
         } catch {
             return .failed(.unreadable(error.localizedDescription))
         }

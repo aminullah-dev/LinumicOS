@@ -136,6 +136,8 @@ struct DailyBriefTests {
         #expect(section.lines[1].text.contains("11 days"))
         #expect(section.lines[1].destination == .licence("MF-2026-0001"))
         #expect(section.lines[2].severity == .info)
+        // Its read time is the ledger's, not the day the licence was created (that is in the text).
+        #expect(section.lines[2].readAt == now)
 
         let empty = DailyBriefBuilder.licences(emptyInput { $0.licences = BriefLicenceInput(isLoaded: true, records: [], lastSyncedAt: nil) })
         #expect(empty.state == .allClear)

@@ -14,23 +14,24 @@ public struct DeskMark: Codable, Hashable, Sendable {
     }
 
     public var kind: Kind
+    /// When it was marked, in whole seconds (see `DeskState.stamp`).
     public var at: Date
     /// The item's fact hash when it was marked.
     public var factHash: String
     /// Snoozed until.
     public var until: Date?
-    /// Why it was dismissed (required for a dismissal).
+    /// Why it was dismissed (required for a dismissal), as the owner typed it.
     public var reason: String?
-    /// The item's title when it was marked, so a hidden item stays readable.
-    public var title: String
 
-    public init(kind: Kind, at: Date, factHash: String, until: Date? = nil, reason: String? = nil, title: String) {
+    // No title: a Brief line's title can name a customer or carry an email address, and nothing reads it back. A
+    // file written before this had "title"; decoding ignores it.
+
+    public init(kind: Kind, at: Date, factHash: String, until: Date? = nil, reason: String? = nil) {
         self.kind = kind
         self.at = at
         self.factHash = factHash
         self.until = until
         self.reason = reason
-        self.title = title
     }
 }
 
@@ -68,16 +69,23 @@ public struct DeskState: Codable, Hashable, Sendable {
 
     // MARK: Marking
 
+    /// A mark's time, rounded up to the next whole second. `desk-state.json` keeps whole seconds, so a mark read back
+    /// after a relaunch is the same mark, and a reading made in the same second just before the mark still counts as
+    /// earlier than it.
+    public static func stamp(_ date: Date) -> Date {
+        Date(timeIntervalSinceReferenceDate: date.timeIntervalSinceReferenceDate.rounded(.up))
+    }
+
     public mutating func markDone(_ item: DeskItem, now: Date) {
-        marks[item.id] = DeskMark(kind: .done, at: now, factHash: item.factHash, title: item.title)
+        marks[item.id] = DeskMark(kind: .done, at: Self.stamp(now), factHash: item.factHash)
     }
 
     public mutating func snooze(_ item: DeskItem, until: Date, now: Date) {
-        marks[item.id] = DeskMark(kind: .snoozed, at: now, factHash: item.factHash, until: until, title: item.title)
+        marks[item.id] = DeskMark(kind: .snoozed, at: Self.stamp(now), factHash: item.factHash, until: Self.stamp(until))
     }
 
     public mutating func markWaiting(_ item: DeskItem, now: Date) {
-        marks[item.id] = DeskMark(kind: .waiting, at: now, factHash: item.factHash, title: item.title)
+        marks[item.id] = DeskMark(kind: .waiting, at: Self.stamp(now), factHash: item.factHash)
     }
 
     /// Dismisses with a reason; an empty reason is refused (returns false).
@@ -85,7 +93,7 @@ public struct DeskState: Codable, Hashable, Sendable {
     public mutating func dismiss(_ item: DeskItem, reason: String, now: Date) -> Bool {
         let r = reason.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !r.isEmpty else { return false }
-        marks[item.id] = DeskMark(kind: .dismissed, at: now, factHash: item.factHash, reason: r, title: item.title)
+        marks[item.id] = DeskMark(kind: .dismissed, at: Self.stamp(now), factHash: item.factHash, reason: r)
         return true
     }
 
@@ -125,7 +133,8 @@ public struct DeskState: Codable, Hashable, Sendable {
     }
 }
 
-/// `desk-state.json` next to the inventory. Only the owner's marks: ids, kinds, times, hashes, titles and reasons.
+/// `desk-state.json` next to the inventory. Only the owner's marks: item ids, kinds, times, fact hashes and dismiss
+/// reasons. No titles or details, so nothing a source said about a customer is written to disk.
 public struct DeskStateStore: Sendable {
     public let fileURL: URL
 

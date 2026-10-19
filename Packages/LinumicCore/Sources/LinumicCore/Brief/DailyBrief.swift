@@ -116,6 +116,23 @@ public struct BriefLine: Identifiable, Hashable, Sendable {
     }
 }
 
+/// A part of a section's source that was not read this time: a product not signed in, a store without a key, endpoints
+/// not checked yet. The section can still be "all clear" for what was read; for this part nothing is known.
+public struct BriefGap: Hashable, Sendable {
+    /// Stable within its section ("safeBeauty", "appStore", "unchecked"), so a mark on it follows it between readings.
+    public var key: String
+    /// The sentence, as shown among the section's notes.
+    public var text: String
+    /// The product the part belongs to, as its source names it, when it is one.
+    public var product: String?
+
+    public init(key: String, text: String, product: String? = nil) {
+        self.key = key
+        self.text = text
+        self.product = product
+    }
+}
+
 public struct BriefSection: Identifiable, Hashable, Sendable {
     public enum State: Hashable, Sendable {
         /// Never read on this device (not signed in, no key, not checked yet). The reason is shown as is.
@@ -135,18 +152,23 @@ public struct BriefSection: Identifiable, Hashable, Sendable {
     public var readAt: Date?
     /// Where the section reads from, e.g. "monitor.json (this device)".
     public var source: String
-    /// Partial gaps worth saying: one of three products not signed in, one store without a key.
+    /// What is worth saying beside the lines: the gaps' sentences first, then information ("3 earlier messages seen").
     public var notes: [String]
+    /// Parts of the source that were not read this time (also among `notes`). Lines of those parts may be missing.
+    public var gaps: [BriefGap]
 
     public var id: String { kind.rawValue }
 
-    public init(kind: BriefSourceKind, state: State, lines: [BriefLine] = [], readAt: Date?, source: String, notes: [String] = []) {
+    /// `notes` are information only; the gaps' sentences are put before them.
+    public init(kind: BriefSourceKind, state: State, lines: [BriefLine] = [], readAt: Date?, source: String, notes: [String] = [],
+                gaps: [BriefGap] = []) {
         self.kind = kind
         self.state = state
         self.lines = lines
         self.readAt = readAt
         self.source = source
-        self.notes = notes
+        self.notes = gaps.map(\.text) + notes
+        self.gaps = gaps
     }
 
     /// Lines that need the owner (high or normal).
@@ -324,9 +346,9 @@ public enum DailyBriefBuilder {
         return DailyBrief(sections: sections, generatedAt: input.now)
     }
 
-    static func finish(_ kind: BriefSourceKind, lines: [BriefLine], readAt: Date?, source: String, notes: [String] = []) -> BriefSection {
+    static func finish(_ kind: BriefSourceKind, lines: [BriefLine], readAt: Date?, source: String, gaps: [BriefGap] = []) -> BriefSection {
         let sorted = lines.sorted { ($0.severity, $0.text) < ($1.severity, $1.text) }
-        return BriefSection(kind: kind, state: sorted.isEmpty ? .allClear : .items, lines: sorted, readAt: readAt, source: source, notes: notes)
+        return BriefSection(kind: kind, state: sorted.isEmpty ? .allClear : .items, lines: sorted, readAt: readAt, source: source, gaps: gaps)
     }
 
     // MARK: Automation
@@ -347,17 +369,17 @@ public enum DailyBriefBuilder {
                              source: source, readAt: ledger.states[f.job]?.lastRun?.finishedAt, destination: .automation,
                              product: "Linumic OS")
         }
-        var notes: [String] = []
+        var gaps: [BriefGap] = []
         if !health.notConnected.isEmpty {
-            notes.append(LF("Not connected on this device: %@.", health.notConnected.map { L(AutomationCatalog.spec($0).title) }.joined(separator: ", ")))
+            gaps.append(BriefGap(key: "notConnected", text: LF("Not connected on this device: %@.", health.notConnected.map { L(AutomationCatalog.spec($0).title) }.joined(separator: ", "))))
         }
         if ledger.disabled.count > 0 {
-            notes.append(LF("Turned off: %@.", AutomationCatalog.jobs.filter { ledger.disabled.contains($0.id) }.map { L($0.title) }.joined(separator: ", ")))
+            gaps.append(BriefGap(key: "turnedOff", text: LF("Turned off: %@.", AutomationCatalog.jobs.filter { ledger.disabled.contains($0.id) }.map { L($0.title) }.joined(separator: ", "))))
         }
         if ledger.pausedUntil.map({ $0 > now }) == true {
-            notes.append(LF("Paused until %@.", ledger.pausedUntil!.formatted(date: .omitted, time: .shortened)))
+            gaps.append(BriefGap(key: "paused", text: LF("Paused until %@.", ledger.pausedUntil!.formatted(date: .omitted, time: .shortened))))
         }
-        return finish(.automation, lines: lines, readAt: last, source: source, notes: notes)
+        return finish(.automation, lines: lines, readAt: last, source: source, gaps: gaps)
     }
 
     // MARK: Monitor
@@ -418,8 +440,8 @@ public enum DailyBriefBuilder {
                                    product: input.monitorTargets.first { $0.host == name }?.product.title))
         }
         let unchecked = input.monitorTargets.count { s.latest[$0.id] == nil }
-        let notes = unchecked > 0 ? [LF("%d of %d endpoints have not been checked yet.", unchecked, input.monitorTargets.count)] : []
-        return finish(.monitor, lines: lines, readAt: lastRound, source: source, notes: notes)
+        let gaps = unchecked > 0 ? [BriefGap(key: "unchecked", text: LF("%d of %d endpoints have not been checked yet.", unchecked, input.monitorTargets.count))] : []
+        return finish(.monitor, lines: lines, readAt: lastRound, source: source, gaps: gaps)
     }
 
     // MARK: Website messages
@@ -446,13 +468,13 @@ public enum DailyBriefBuilder {
                              source: LF("%@, entry %d", source, msg.id), readAt: reading.readAt,
                              destination: .siteMessages, links: links, product: MonitorProduct.website.title)
         }
+        let gaps = m.loadError.map { [BriefGap(key: "refresh", text: LF("The last refresh failed: %@", $0), product: MonitorProduct.website.title)] } ?? []
         var notes: [String] = []
-        if let error = m.loadError { notes.append(LF("The last refresh failed: %@", error)) }
         let seen = reading.messages.count - new.count
         if seen > 0 { notes.append(LF("%d earlier messages already marked seen.", seen)) }
         // Keep newest first rather than sorting by text.
         return BriefSection(kind: .siteMessages, state: lines.isEmpty ? .allClear : .items, lines: lines,
-                            readAt: reading.readAt, source: source, notes: notes)
+                            readAt: reading.readAt, source: source, notes: notes, gaps: gaps)
     }
 
     // MARK: Release Center
@@ -471,11 +493,11 @@ public enum DailyBriefBuilder {
                       text: "\(item.subject): \(item.title)", detail: item.detail, source: item.source,
                       readAt: item.observedAt, destination: .releaseCenter, product: item.subject)
         }
-        var notes: [String] = []
-        if s.appStoreReadAt == nil { notes.append(s.appStoreNote ?? L("App Store Connect not read yet.")) }
-        if s.playReadAt == nil { notes.append(s.playNote ?? L("Google Play not read yet.")) }
-        if s.gitHubReadAt == nil { notes.append(s.gitHubNote ?? L("GitHub not read yet.")) }
-        return finish(.releases, lines: lines, readAt: newest, source: source, notes: notes)
+        var gaps: [BriefGap] = []
+        if s.appStoreReadAt == nil { gaps.append(BriefGap(key: "appStore", text: s.appStoreNote ?? L("App Store Connect not read yet."))) }
+        if s.playReadAt == nil { gaps.append(BriefGap(key: "play", text: s.playNote ?? L("Google Play not read yet."))) }
+        if s.gitHubReadAt == nil { gaps.append(BriefGap(key: "gitHub", text: s.gitHubNote ?? L("GitHub not read yet."))) }
+        return finish(.releases, lines: lines, readAt: newest, source: source, gaps: gaps)
     }
 
     static func severity(_ s: WaitingItem.Severity) -> BriefSeverity {
@@ -511,12 +533,13 @@ public enum DailyBriefBuilder {
             if r.status == .active, now.timeIntervalSince(r.createdAt) < Double(recentDays) * day, r.createdAt <= now {
                 lines.append(BriefLine(id: "licence.issued.\(r.licenceID)", kind: .licences, severity: .info,
                                        text: LF("%@ licence %@ issued to %@ on %@", r.product.displayName, r.licenceID, r.customer, r.issued),
-                                       detail: r.createdBy, source: source, readAt: r.createdAt, destination: .licence(r.licenceID),
+                                       // The read time is the ledger's, not the licence's creation (that is in the text).
+                                       detail: r.createdBy, source: source, readAt: l.lastSyncedAt, destination: .licence(r.licenceID),
                                        product: r.product.displayName))
             }
         }
-        let notes = l.records.isEmpty ? [L("The ledger is empty on this device.")] : []
-        return finish(.licences, lines: lines, readAt: l.lastSyncedAt, source: source, notes: notes)
+        let gaps = l.records.isEmpty ? [BriefGap(key: "empty", text: L("The ledger is empty on this device."))] : []
+        return finish(.licences, lines: lines, readAt: l.lastSyncedAt, source: source, gaps: gaps)
     }
 
     // MARK: WorkTrack
@@ -552,8 +575,9 @@ public enum DailyBriefBuilder {
                                    source: source, readAt: readAt, destination: .worktrackCompany(c.companyId),
                                    product: MonitorProduct.workTrack.title))
         }
-        let notes = env == "production" ? [] : [LF("Read from the %@ environment, not production.", env)]
-        return finish(.worktrack, lines: lines, readAt: readAt, source: source, notes: notes)
+        let gaps = env == "production" ? [] : [BriefGap(key: "production", text: LF("Read from the %@ environment, not production.", env),
+                                                         product: MonitorProduct.workTrack.title)]
+        return finish(.worktrack, lines: lines, readAt: readAt, source: source, gaps: gaps)
     }
 
     // MARK: Operations
@@ -566,19 +590,21 @@ public enum DailyBriefBuilder {
                                 readAt: nil, source: source)
         }
         var lines: [BriefLine] = []
-        var notes: [String] = []
+        var gaps: [BriefGap] = []
         var newest: Date?
         for p in input.operations {
+            // The key is the product's raw value, so the Desk knows which queues were not read.
+            func gap(_ text: String) { gaps.append(BriefGap(key: p.product.rawValue, text: text, product: p.product.title)) }
             guard p.isSignedIn else {
-                notes.append(LF("%@: not signed in, queues unknown.", p.product.title))
+                gap(LF("%@: not signed in, queues unknown.", p.product.title))
                 continue
             }
             if let error = p.loadError, p.counts.isEmpty {
-                notes.append(LF("%@: could not be read (%@).", p.product.title, error))
+                gap(LF("%@: could not be read (%@).", p.product.title, error))
                 continue
             }
             if p.counts.isEmpty {
-                notes.append(LF("%@: queues not read yet.", p.product.title))
+                gap(LF("%@: queues not read yet.", p.product.title))
                 continue
             }
             for c in p.counts {
@@ -590,7 +616,7 @@ public enum DailyBriefBuilder {
                                        readAt: c.readAt, destination: .operations(p.product), product: p.product.title))
             }
         }
-        return finish(.operations, lines: lines, readAt: newest, source: source, notes: notes)
+        return finish(.operations, lines: lines, readAt: newest, source: source, gaps: gaps)
     }
 
     // MARK: Oversight
@@ -640,14 +666,14 @@ public enum DailyBriefBuilder {
                       readAt: r.readAt, destination: .keys,
                       product: r.keyID.flatMap { id in k.check.registry.keys.first { $0.id == id }?.product })
         }
-        var notes: [String] = []
+        var gaps: [BriefGap] = []
         if k.check.checkedAt == nil {
-            notes.append(L("Files on this Mac have not been checked; only the registry facts are used."))
+            gaps.append(BriefGap(key: "files", text: L("Files on this Mac have not been checked; only the registry facts are used.")))
         }
         if !k.notGranted.isEmpty {
-            notes.append(LF("Not granted, so not checked: %@.", k.notGranted.joined(separator: ", ")))
+            gaps.append(BriefGap(key: "notGranted", text: LF("Not granted, so not checked: %@.", k.notGranted.joined(separator: ", "))))
         }
-        return finish(.keys, lines: lines, readAt: k.check.checkedAt, source: source, notes: notes)
+        return finish(.keys, lines: lines, readAt: k.check.checkedAt, source: source, gaps: gaps)
     }
 
     // MARK: Changes

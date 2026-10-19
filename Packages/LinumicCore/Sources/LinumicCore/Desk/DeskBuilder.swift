@@ -42,8 +42,11 @@ public struct DeskSourceStatus: Identifiable, Hashable, Sendable {
         case notGranted
         case notFound
         case unreadable(String)
-        /// Read: open items, ticked checkboxes, lines set aside, and the review day when there is one.
+        /// A PRIORITIES.md, read: open items, ticked checkboxes, lines set aside, and the review day when there is one.
         case read(open: Int, ticked: Int, skipped: [Int], reviewedOn: KeyDay?)
+        /// The NEXT-ACTIONS report, read: the owner's TODAY and THIS WEEK items, lines set aside, and the report's day.
+        /// It has no checkboxes, so nothing is "ticked" in it.
+        case report(today: Int, thisWeek: Int, skipped: [Int], day: KeyDay?)
     }
 
     public var source: LedgerSource
@@ -52,6 +55,14 @@ public struct DeskSourceStatus: Identifiable, Hashable, Sendable {
     public var readAt: Date?
 
     public var id: String { source.id }
+
+    /// Read this time (a PRIORITIES.md or the report).
+    public var isRead: Bool {
+        switch state {
+        case .read, .report: true
+        case .unsupported, .notRead, .notGranted, .notFound, .unreadable: false
+        }
+    }
 }
 
 public struct Desk: Hashable, Sendable {
@@ -122,9 +133,11 @@ public enum DeskBuilder {
         }
         // A mark whose item is gone from a source that was read this time no longer applies.
         let present = Set(items.map(\.id))
-        let readOrigins = readOriginKeys(brief: brief, ledgers: ledgers)
-        for id in state.marks.keys where !present.contains(id) && readOrigins.contains(DeskItem.originKey(ofID: id)) {
-            obsolete.insert(id)
+        let readLedgers = readLedgerOrigins(ledgers)
+        for (id, mark) in state.marks where !present.contains(id) {
+            if readLedgers.contains(DeskItem.originKey(ofID: id)) || briefLineIsGone(id, mark: mark, brief: brief) {
+                obsolete.insert(id)
+            }
         }
         return Desk(generatedAt: now,
                     today: sorted(lists[.today] ?? []), thisWeek: sorted(lists[.thisWeek] ?? []), later: sorted(lists[.later] ?? []),
@@ -168,8 +181,9 @@ public enum DeskBuilder {
 
     // MARK: From the Daily Brief
 
-    /// Every line of the Brief (except "What changed since yesterday", which repeats the others), and every section
-    /// that was not read as an item of its own.
+    /// Every line of the Brief (except "What changed since yesterday", which repeats the others), every section that
+    /// was not read, and every part of a section that was not read (a product not signed in, a store without a key)
+    /// as an item of its own.
     static func briefItems(_ brief: DailyBrief) -> [DeskItem] {
         var items: [DeskItem] = []
         for section in brief.sections where section.kind != .changes {
@@ -177,8 +191,9 @@ public enum DeskBuilder {
             let cadence = cadence(section.kind)
             switch section.state {
             case .neverRead(let why):
+                let domain = domain(section.kind, product: nil)
                 items.append(DeskItem(origin: origin, subjectKey: "section", kindKey: "not-read", kind: .source,
-                                      domain: domain(section.kind, product: nil), severity: .info,
+                                      domain: domain, severity: domain.isFocus ? .normal : .info,
                                       title: LF("%@: not read yet", section.kind.title), detail: why, subject: section.kind.title,
                                       ownerAction: false, evidence: DeskEvidence(source: section.source, readAt: nil, cadence: cadence),
                                       factHash: DeskHash.of(section.kind.rawValue, "not-read"),
@@ -201,6 +216,18 @@ public enum DeskBuilder {
                                           // countdown ("in 12 days") changes daily, an escalation to high does count.
                                           factHash: DeskHash.of(line.id, "\(line.severity.rawValue)"),
                                           destination: .screen(line.destination)))
+                }
+                // "All clear" is only about what was read: a part that was not read is an item, never a zero.
+                for gap in section.gaps {
+                    let domain = domain(section.kind, product: gap.product)
+                    items.append(DeskItem(origin: origin, subjectKey: "part.\(gap.key)", kindKey: "not-read", kind: .source,
+                                          domain: domain, severity: domain.isFocus ? .normal : .info,
+                                          title: LF("%@: %@", section.kind.title, gap.text),
+                                          detail: L("This part was not read, so it is unknown here, not zero."),
+                                          subject: section.kind.title, ownerAction: false,
+                                          evidence: DeskEvidence(source: section.source, readAt: section.readAt, cadence: cadence),
+                                          factHash: DeskHash.of(section.kind.rawValue, gap.key, gap.text),
+                                          destination: .screen(destination(section.kind))))
                 }
             }
         }
@@ -320,12 +347,14 @@ public enum DeskBuilder {
             let hash = DeskHash.of(entry.text)
             seen[hash, default: 0] += 1
             let key = seen[hash]! > 1 ? "\(hash)#\(seen[hash]!)" : hash
+            // The fact is the line and the lines under it: a correction added under a line brings it back.
+            let fact = entry.notes.isEmpty ? hash : DeskHash.of([entry.text] + entry.notes)
             items.append(DeskItem(origin: origin(source), subjectKey: key, kindKey: entry.kind.rawValue, kind: .task,
                                   domain: source.domain, severity: entry.priority.severity, title: entry.title,
                                   detail: entry.detail, subject: entry.section ?? source.domain.displayTitle,
                                   ownerAction: false,
                                   evidence: DeskEvidence(source: path, file: path, line: entry.line, readAt: readAt, cadence: ledgerCadence),
-                                  factHash: hash, destination: .file(path: path, line: entry.line)))
+                                  factHash: fact, destination: .file(path: path, line: entry.line), notes: entry.notes))
         }
         if let line = ledger.reviewLine, let day = ledger.reviewedOn {
             let age = day.days(until: today)
@@ -354,14 +383,18 @@ public enum DeskBuilder {
             let base = "\(DeskDomain.normalized(entry.product))/\(entry.slug.lowercased())"
             seen[base, default: 0] += 1
             let key = seen[base]! > 1 ? "\(base)#\(seen[base]!)" : base
+            let domain = DeskDomain.named(entry.product)
+            var related: [DeskDomain] = []
+            for other in entry.otherProducts.map(DeskDomain.named) where other != domain && !related.contains(other) { related.append(other) }
             items.append(DeskItem(origin: .nextActions, subjectKey: key, kindKey: "owner", kind: .task,
-                                  domain: .named(entry.product), severity: .normal, title: entry.title,
+                                  domain: domain, severity: .normal, title: entry.title,
                                   detail: entry.body.isEmpty ? nil : entry.body.joined(separator: "\n"),
                                   subject: "\(entry.product) / \(entry.slug)",
                                   due: entry.section == .today ? report.day : nil,
                                   horizon: entry.section == .today ? .today : .thisWeek, ownerAction: true,
                                   evidence: DeskEvidence(source: path, file: path, line: entry.line, readAt: readAt, cadence: ledgerCadence),
-                                  factHash: DeskHash.of(entry.title), destination: .file(path: path, line: entry.line)))
+                                  factHash: DeskHash.of(entry.title), destination: .file(path: path, line: entry.line),
+                                  related: related, reference: entry.sourceText))
         }
         if let day = report.day {
             let age = day.days(until: today)
@@ -372,21 +405,23 @@ public enum DeskBuilder {
                                         fact: day.description, destination: .file(path: path, line: 1)))
             }
         }
+        // Owner tasks that could not be read are not "none": this week, not Later.
         if report.sections.isEmpty {
-            items.append(sourceItem(source, path: path, kindKey: "no-sections", severity: .info, owner: false,
+            items.append(sourceItem(source, path: path, kindKey: "no-sections", severity: .normal, owner: false,
                                     title: LF("%@ has no (TODAY) or (THIS WEEK) section", path),
                                     detail: L("No owner tasks could be read from it, which is not the same as none."),
                                     readAt: readAt, destination: .file(path: path, line: 1)))
         }
         if !report.skippedLines.isEmpty {
-            items.append(skippedItem(source, path: path, lines: report.skippedLines, readAt: readAt))
+            items.append(skippedItem(source, path: path, lines: report.skippedLines, readAt: readAt, severity: .normal))
         }
         return items
     }
 
-    static func skippedItem(_ source: LedgerSource, path: String, lines: [Int], readAt: Date) -> DeskItem {
+    static func skippedItem(_ source: LedgerSource, path: String, lines: [Int], readAt: Date,
+                            severity: BriefSeverity = .info) -> DeskItem {
         let list = lines.map(String.init).joined(separator: ", ")
-        return sourceItem(source, path: path, kindKey: "skipped", severity: .info, owner: false,
+        return sourceItem(source, path: path, kindKey: "skipped", severity: severity, owner: false,
                           title: LF("%d lines of %@ could not be understood", lines.count, path),
                           detail: LF("Set aside, not guessed: lines %@.", list), readAt: readAt, line: lines.first,
                           fact: list, destination: .file(path: path, line: lines.first))
@@ -407,26 +442,43 @@ public enum DeskBuilder {
                 case .notFound: .notFound
                 case .unreadable(let why): .unreadable(why)
                 case .read(.priorities(let p)): .read(open: p.items.count, ticked: p.ticked, skipped: p.skippedLines, reviewedOn: p.reviewedOn)
-                case .read(.nextActions(let n)): .read(open: n.items.count, ticked: 0, skipped: n.skippedLines, reviewedOn: n.day)
+                case .read(.nextActions(let n)):
+                    .report(today: n.items.count { $0.section == .today }, thisWeek: n.items.count { $0.section == .thisWeek },
+                            skipped: n.skippedLines, day: n.day)
                 }
                 return DeskSourceStatus(source: file.source, displayPath: file.displayPath, state: state, readAt: reading.readAt)
             }
         }
     }
 
-    /// Origins whose source was read this time, so a mark on an item that is gone from them can be dropped.
-    static func readOriginKeys(brief: DailyBrief?, ledgers: DeskLedgerInput) -> Set<String> {
-        var keys: Set<String> = []
-        for section in brief?.sections ?? [] {
-            switch section.state {
-            case .allClear, .items: keys.insert(DeskOrigin.brief(section.kind).key)
-            case .neverRead, .unavailable: break
-            }
+    /// Ledgers that were read this time, so a mark on a line that is gone from them can be dropped.
+    static func readLedgerOrigins(_ ledgers: DeskLedgerInput) -> Set<String> {
+        guard case .read(let reading) = ledgers else { return [] }
+        return Set(reading.files.filter(\.isRead).map { origin($0.source).key })
+    }
+
+    /// Whether a Brief mark's item is known to be gone, so the mark can be dropped. Only when its section was read
+    /// (not "never read", not "could not be read") and:
+    /// - for the section's own item or a part's item ("not read"): the section or part is now read;
+    /// - for a line: the section was read after the mark was made, and the line's part of it was read too. For
+    ///   Operations that is the line's product (a product not signed in or not read keeps its marks); for the other
+    ///   sections, every part. An offline launch or an expired sign-in therefore never deletes a mark.
+    static func briefLineIsGone(_ id: String, mark: DeskMark, brief: DailyBrief?) -> Bool {
+        let parts = id.split(separator: "|", maxSplits: 2, omittingEmptySubsequences: false)
+        guard parts.count == 3, parts[0].hasPrefix("brief."),
+              let section = brief?.sections.first(where: { DeskOrigin.brief($0.kind).key == parts[0] }) else { return false }
+        switch section.state {
+        case .allClear, .items: break
+        case .neverRead, .unavailable: return false
         }
-        if case .read(let reading) = ledgers {
-            for file in reading.files where file.isRead { keys.insert(origin(file.source).key) }
+        let subject = String(parts[1])
+        if subject == "section" || subject.hasPrefix("part.") { return true }
+        guard let readAt = section.readAt, readAt > mark.at else { return false }
+        if section.kind == .operations, subject.hasPrefix("ops."),
+           let queue = OperationsQueue(rawValue: String(subject.dropFirst(4))) {
+            return !section.gaps.contains { $0.key == queue.product.rawValue }
         }
-        return keys
+        return section.gaps.isEmpty
     }
 }
 
@@ -434,6 +486,12 @@ public enum DeskBuilder {
 
 /// The text the owner pastes to an agent: always Dari, with file:line and "read PRIORITIES.md first".
 public enum DeskAgentBrief {
+    /// Brief sections whose lines name customers (a website message's sender and text, a WorkTrack company, a licence
+    /// holder), with their Dari names. Their brief carries the Brief entry id instead of the title, and no detail.
+    static let customerSections: [BriefSourceKind: String] = [
+        .siteMessages: "پیام‌های وب‌سایت", .worktrack: "مشتریان WorkTrack", .licences: "لایسنس‌ها",
+    ]
+
     public static func text(for item: DeskItem, now: Date) -> String {
         let ledger: String = {
             if case .ledger(let id) = item.origin, let s = LedgerAllowList.priorities.first(where: { $0.id == id }) { return s.displayPath }
@@ -443,15 +501,26 @@ public enum DeskAgentBrief {
         var lines: [String] = []
         lines.append("کار از «میز کار» Linumic OS (\(iso.string(from: now)))")
         lines.append("اول PRIORITIES.md را بخوان: \(ledger)")
-        lines.append("محصول: \(item.domain.name)")
-        lines.append("کار: \(item.title)")
-        if let detail = item.detail, !detail.isEmpty { lines.append("جزئیات: \(detail)") }
+        lines.append("محصول: \(item.domain == .shared ? "همهٔ محصولات" : item.domain.name)")
+        if !item.related.isEmpty { lines.append("محصولات دیگر در منبع: " + item.related.map(\.name).joined(separator: "، ")) }
+        if case .brief(let kind) = item.origin, item.kind == .fact, let section = customerSections[kind] {
+            // No customer's name, address or message leaves the app through the clipboard.
+            lines.append("کار: یک مورد «\(section)» در گزارش روز Linumic OS (شناسه: \(item.subjectKey)). نام و متن مشتری عمداً این‌جا نیامده؛ در خود برنامه ببین.")
+        } else {
+            lines.append("کار: \(item.title)")
+            if let detail = item.detail, !detail.isEmpty { lines.append("جزئیات: \(detail)") }
+        }
+        if !item.notes.isEmpty {
+            lines.append("سطرهای زیر همین مورد در دفتر، به همان ترتیب (اصلاح‌های تاریخ‌دار دفتر این‌جاست):")
+            lines += item.notes.map { "  \($0)" }
+        }
         if item.evidence.file != nil {
             lines.append("منبع: \(item.evidence.location)")
         } else {
             lines.append("منبع: \(item.evidence.source)")
         }
         if item.origin == .nextActions { lines.append("موضوع: \(item.subject)") }
+        if let reference = item.reference { lines.append("منبع در گزارش: \(reference)") }
         lines.append("زمان خواندن: " + (item.evidence.readAt.map { iso.string(from: $0) } ?? "نامعلوم"))
         lines.append("قاعده: چیزی را که ثابت نشده «انجام شد» ننویس. وقتی تمام شد، همان سطر را در دفتر با تاریخ و مدرک تیک بزن.")
         return lines.joined(separator: "\n")

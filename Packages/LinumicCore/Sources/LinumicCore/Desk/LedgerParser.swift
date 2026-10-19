@@ -4,8 +4,9 @@ import Foundation
 //
 // The owner's PRIORITIES.md files are Markdown written by people and agents. The parser reads only what it can be sure
 // of: open checkboxes (`- [ ] …`) at any indentation, the numbered list under a heading that says «اولویت», the
-// section each sits in (P0, P1, …) and the «آخرین بازبینی» date. A line that looks like an item but can't be
-// understood is set aside by line number, never guessed.
+// section each sits in (P0, P1, …), the lines indented under each item (where the ledger keeps its own dated
+// corrections) and the «آخرین بازبینی» date. A line that looks like an item but can't be understood is set aside by
+// line number, never guessed.
 
 enum LedgerText {
     /// Persian (۰–۹) and Arabic-Indic (٠–٩) digits as ASCII, so "۲۰۲۶-۱۰-۱۹" reads as a date.
@@ -48,6 +49,20 @@ enum LedgerText {
         return KeyDay("\(m.1)-\(m.2)-\(m.3)")
     }
 
+    /// The lines of a text, split at any line break. "\r\n" is a single Character in Swift, so splitting at "\n" alone
+    /// would leave a file with Windows line endings as one long line.
+    static func lines(_ text: String) -> [Substring] {
+        text.split(omittingEmptySubsequences: false, whereSeparator: \.isNewline)
+    }
+
+    /// Whether a note under an item corrects or dates it: it starts with a day ("۲۰۲۶-۱۰-۱۹: …", after a list marker
+    /// or bold), or says «اصلاح» or «درست نیست».
+    public static func isCorrection(_ note: String) -> Bool {
+        let s = asciiDigits(note).drop { " -*+_>(".contains($0) }
+        if s.prefixMatch(of: #/\d{4}-\d{2}-\d{2}/#) != nil { return true }
+        return contains(note, "اصلاح") || contains(note, "درست نیست")
+    }
+
     /// Indentation width (a tab counts as four spaces).
     static func indent(_ line: Substring) -> Int {
         var n = 0
@@ -74,7 +89,8 @@ enum LedgerText {
 public enum LedgerPriority: String, Sendable, Hashable {
     case p0, p1, other
 
-    /// P0 is high, P1 normal, everything else for information (roadmap §4).
+    /// P0 is high, P1 normal, everything else for information (roadmap §4). A section the ledger itself puts first
+    /// («… (اول این‌ها)», the shared ledger) counts as P1.
     public var severity: BriefSeverity {
         switch self {
         case .p0: .high
@@ -105,9 +121,12 @@ public struct LedgerItem: Hashable, Sendable {
     public var section: String?
     /// Leading spaces (a nested sub-item has more).
     public var indent: Int
+    /// The lines indented under the item that are not items themselves, trimmed, in file order. The ledger keeps its
+    /// own dated corrections here («۲۰۲۶-۱۰-۱۹: این جمله درست نیست …»), so they travel with the item.
+    public var notes: [String]
 
     public init(kind: Kind, line: Int, text: String, title: String, detail: String?, priority: LedgerPriority,
-                section: String?, indent: Int) {
+                section: String?, indent: Int, notes: [String] = []) {
         self.kind = kind
         self.line = line
         self.text = text
@@ -116,6 +135,7 @@ public struct LedgerItem: Hashable, Sendable {
         self.priority = priority
         self.section = section
         self.indent = indent
+        self.notes = notes
     }
 }
 
@@ -149,10 +169,11 @@ public enum LedgerParser {
         var result = ParsedLedger()
         var headings: [(level: Int, text: String)] = []
         var inFence = false
-        let lines = text.split(separator: "\n", omittingEmptySubsequences: false)
-        for (index, rawLine) in lines.enumerated() {
+        // The items (and ticked or set-aside lines, with no index) whose indented lines are still being collected,
+        // innermost last. A line belongs to the innermost one indented less than it.
+        var open: [(item: Int?, indent: Int)] = []
+        for (index, raw) in LedgerText.lines(text).enumerated() {
             let number = index + 1
-            let raw = rawLine.hasSuffix("\r") ? rawLine.dropLast() : rawLine
             let trimmed = raw.trimmingCharacters(in: .whitespaces)
             if trimmed.hasPrefix("```") || trimmed.hasPrefix("~~~") {
                 inFence.toggle()
@@ -162,8 +183,13 @@ public enum LedgerParser {
             if let h = heading(trimmed) {
                 while let last = headings.last, last.level >= h.level { headings.removeLast() }
                 headings.append(h)
+                open.removeAll()
                 continue
             }
+            // A blank line does not end an item: a list item may go on after one.
+            if trimmed.isEmpty { continue }
+            let indent = LedgerText.indent(raw)
+            while let last = open.last, last.indent >= indent { open.removeLast() }
             // «آخرین بازبینی: ۲۰۲۶-۱۰-۱۹ (…)»: the first such line, the first day after its colon.
             if result.reviewLine == nil, let rest = LedgerText.suffix(after: reviewMarker, in: trimmed) {
                 let after = rest.drop { $0 == " " || $0 == "*" }
@@ -179,27 +205,37 @@ public enum LedgerParser {
                 let (title, detail) = LedgerText.titleAndDetail(body)
                 result.items.append(LedgerItem(kind: .checkbox, line: number, text: body, title: title, detail: detail,
                                                priority: priority, section: section, indent: indent))
+                open.append((result.items.count - 1, indent))
                 continue
             case .ticked:
                 result.ticked += 1
+                open.append((nil, indent))   // its own lines are not notes of the item above
                 continue
             case .broken:
                 result.skippedLines.append(number)
+                open.append((nil, indent))
                 continue
             case .none:
                 break
             }
-            guard let section, LedgerText.contains(section, prioritiesMarker) else { continue }
-            switch numbered(raw) {
-            case .open(let body, let indent):
-                let (title, detail) = LedgerText.titleAndDetail(body)
-                result.items.append(LedgerItem(kind: .numbered, line: number, text: body, title: title, detail: detail,
-                                               priority: priority, section: section, indent: indent))
-            case .broken:
-                result.skippedLines.append(number)
-            case .ticked, .none:
-                break
+            if let section, LedgerText.contains(section, prioritiesMarker) {
+                switch numbered(raw) {
+                case .open(let body, let indent):
+                    let (title, detail) = LedgerText.titleAndDetail(body)
+                    result.items.append(LedgerItem(kind: .numbered, line: number, text: body, title: title, detail: detail,
+                                                   priority: priority, section: section, indent: indent))
+                    open.append((result.items.count - 1, indent))
+                    continue
+                case .broken:
+                    result.skippedLines.append(number)
+                    open.append((nil, indent))
+                    continue
+                case .ticked, .none:
+                    break
+                }
             }
+            // Indented under an item: one of its notes.
+            if let owner = open.last, let i = owner.item { result.items[i].notes.append(trimmed) }
         }
         return result
     }
@@ -218,16 +254,22 @@ public enum LedgerParser {
         return (m.1.count, String(m.2))
     }
 
-    /// The innermost heading that names a priority (P0, P1, …) decides; P2 and anything else is "other".
+    /// The words of a heading the ledger itself puts first: «مشترک در همهٔ محصولات (اول این‌ها)».
+    public static let firstMarker = "اول این\u{200C}ها"
+
+    /// The innermost heading that names a priority (P0, P1, …) decides; P2 and anything else is "other". A heading
+    /// that says «اول این‌ها» ("these first") without a P marker counts as P1.
     static func priority(_ headings: [(level: Int, text: String)]) -> LedgerPriority {
         for h in headings.reversed() {
             let text = LedgerText.asciiDigits(h.text).trimmingCharacters(in: .whitespaces)
-            guard let m = text.prefixMatch(of: #/[Pp](\d)\b/#) else { continue }
-            switch m.1 {
-            case "0": return .p0
-            case "1": return .p1
-            default: return .other
+            if let m = text.prefixMatch(of: #/[Pp](\d)\b/#) {
+                switch m.1 {
+                case "0": return .p0
+                case "1": return .p1
+                default: return .other
+                }
             }
+            if LedgerText.contains(h.text, firstMarker) || LedgerText.contains(h.text, "اول این ها") { return .p1 }
         }
         return .other
     }
@@ -241,6 +283,12 @@ public enum LedgerParser {
         // Looks like a checkbox ("- []", "-[ ]", "- [ ]" alone, "- [-] …", "- [ ]text") but is none of the above.
         // A link ("- [PR](…)") is not a checkbox.
         if line.prefixMatch(of: #/\s*[-*+]\s*\[.?\](?!\()/#) != nil { return .broken }
+        // A checkbox in a quote ("> - [ ] …"), after a number ("1. [ ] …") or in a table ("| - [ ] … |") is not read
+        // as an item either, but it is set aside rather than lost.
+        let ascii = LedgerText.asciiDigits(line)
+        if ascii.prefixMatch(of: #/\s*(?:>\s*)+(?:[-*+]\s*)?\[[ xX]?\](?!\()/#) != nil { return .broken }
+        if ascii.prefixMatch(of: #/\s*\d+[.)]\s*\[[ xX]?\](?!\()/#) != nil { return .broken }
+        if ascii.prefixMatch(of: #/\s*\|.*\[[ xX]\](?!\()/#) != nil { return .broken }
         return nil
     }
 

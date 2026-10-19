@@ -206,16 +206,32 @@ public struct DeskItem: Identifiable, Hashable, Sendable {
     /// The source says the owner has to act (a Brief "needs you" line, a NEXT-ACTIONS owner task, a missing grant).
     public var ownerAction: Bool
     public var evidence: DeskEvidence
-    /// Changes when the fact itself changes (the ledger line's text, a Brief line's subject and severity).
+    /// Changes when the fact itself changes (the ledger line's text and the lines under it, a Brief line's subject and
+    /// severity).
     public var factHash: String
     public var destination: DeskDestination
+    /// The lines the ledger keeps indented under the item, as written (its own dated corrections among them).
+    public var notes: [String]
+    /// Other products the source names for the same item (a NEXT-ACTIONS «منبع» line with several products).
+    public var related: [DeskDomain]
+    /// The source's own reference line, as written (the NEXT-ACTIONS «منبع: …» text).
+    public var reference: String?
 
     public var id: String { "\(origin.key)|\(subjectKey)|\(kindKey)" }
+
+    /// The kinds of source item that say a source was not read: their time is when it was tried, not a reading.
+    public static let notReadKinds: Set<String> = ["not-read", "not-granted", "not-found", "unreadable", "unavailable"]
+
+    /// False for a source item that says its source was not read, so its time reads "checked", not "read".
+    public var wasRead: Bool { !(kind == .source && Self.notReadKinds.contains(kindKey)) }
+
+    /// The notes that correct or date the item: they start with a day, or say «اصلاح» or «درست نیست».
+    public var corrections: [String] { notes.filter(LedgerText.isCorrection) }
 
     public init(origin: DeskOrigin, subjectKey: String, kindKey: String, kind: DeskItemKind, domain: DeskDomain,
                 severity: BriefSeverity, title: String, detail: String? = nil, subject: String, due: KeyDay? = nil,
                 horizon: DeskHorizon? = nil, ownerAction: Bool, evidence: DeskEvidence, factHash: String,
-                destination: DeskDestination) {
+                destination: DeskDestination, notes: [String] = [], related: [DeskDomain] = [], reference: String? = nil) {
         self.origin = origin
         self.subjectKey = subjectKey
         self.kindKey = kindKey
@@ -231,6 +247,9 @@ public struct DeskItem: Identifiable, Hashable, Sendable {
         self.evidence = evidence
         self.factHash = factHash
         self.destination = destination
+        self.notes = notes
+        self.related = related
+        self.reference = reference
     }
 
     /// The origin part of an item id ("ledger.worktrack|…" → "ledger.worktrack").
@@ -242,7 +261,9 @@ public struct DeskItem: Identifiable, Hashable, Sendable {
 /// A short, stable hash for item ids and fact hashes: the first 8 bytes of SHA-256, in hex. Unlike `Hasher`, it is the
 /// same in every launch, so marks saved today still match tomorrow.
 public enum DeskHash {
-    public static func of(_ parts: String...) -> String {
+    public static func of(_ parts: String...) -> String { of(parts) }
+
+    public static func of(_ parts: [String]) -> String {
         let digest = SHA256.hash(data: Data(parts.joined(separator: "\u{1F}").utf8))
         return digest.prefix(8).map { String(format: "%02x", $0) }.joined()
     }

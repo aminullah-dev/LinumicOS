@@ -11,6 +11,13 @@ private var utc: Calendar { LedgerFixtures.utc }
 private func text(_ name: String) throws -> String { try LedgerFixtures.text(name) }
 private typealias FakeFS = FakeLedgerFS
 
+/// The same text with Windows line endings: a CRLF copy of an LF fixture, made here so it can't be normalised away.
+private func crlf(_ lf: String) -> String {
+    let t = lf.replacingOccurrences(of: "\n", with: "\r\n")
+    precondition(t.utf8.contains(13) && !lf.utf8.contains(13))
+    return t
+}
+
 // MARK: - PRIORITIES.md
 
 @Suite("Ledgers: PRIORITIES.md")
@@ -55,6 +62,80 @@ struct LedgerParserTests {
         #expect(ledger.items[1].detail == nil)
     }
 
+    @Test func windowsLineEndingsGiveTheSameItemsAndLines() throws {
+        let lf = try text("ledger-priorities-sample")
+        let a = LedgerParser.parse(lf), b = LedgerParser.parse(crlf(lf))
+        #expect(b.items.map(\.line) == a.items.map(\.line))
+        #expect(b.items.map(\.text) == a.items.map(\.text))
+        #expect(b.items.map(\.notes) == a.items.map(\.notes))
+        #expect(b.ticked == 2 && b.skippedLines == a.skippedLines && b.reviewLine == 5 && b.reviewedOn == a.reviewedOn)
+        #expect(b == a)
+        // A lone carriage return (old Mac) is a line break too.
+        #expect(LedgerParser.parse("## P0\r- [ ] یک\r- [ ] دو").items.map(\.line) == [2, 3])
+    }
+
+    @Test func theLinesUnderAnItemTravelWithIt() throws {
+        let ledger = LedgerParser.parse("""
+        آخرین بازبینی: ۲۰۲۶-۱۰-۱۹
+        ## P0 — فوری
+        - [ ] **انتشار اندروید.** نسخهٔ release هیچ‌وقت ساخته نشده.
+          - ۲۰۲۶-۱۰-۱۹: این جمله درست نیست. APK امضاشده عمومی است.
+          - keystore ساخته شود.
+            - ۲۰۲۶-۱۰-۱۹: کلید از قبل هست؛ کلید تازه آپدیت را ناممکن می‌کند.
+
+          - بعد از یک سطر خالی هنوز زیر همین مورد.
+        - [ ] **کمبودهای شناخته‌شده:**
+          - حذف نرم ندارد.
+          - [x] شناسهٔ درخواست — انجام‌شده.
+            - مدرک: زیر بند تیک‌خورده، نه زیر بند بالا.
+          - ثبت تاریخچه خطا را نادیده می‌گیرد.
+          - [ ] زیربند باز
+            - یادداشت زیربند
+        متن بی‌تورفتگی، زیر هیچ موردی نیست.
+        - [ ] بی‌یادداشت
+        """)
+        #expect(ledger.items.map(\.line) == [3, 9, 14, 17])
+        try #require(ledger.items.count == 4)
+        #expect(ledger.items[0].notes == ["- ۲۰۲۶-۱۰-۱۹: این جمله درست نیست. APK امضاشده عمومی است.", "- keystore ساخته شود.",
+                                          "- ۲۰۲۶-۱۰-۱۹: کلید از قبل هست؛ کلید تازه آپدیت را ناممکن می‌کند.",
+                                          "- بعد از یک سطر خالی هنوز زیر همین مورد."])
+        #expect(ledger.items[1].notes == ["- حذف نرم ندارد.", "- ثبت تاریخچه خطا را نادیده می‌گیرد."])
+        #expect(ledger.items[2].notes == ["- یادداشت زیربند"])
+        #expect(ledger.items[3].notes.isEmpty)
+        #expect(ledger.items[0].notes.filter(LedgerText.isCorrection).count == 2)
+        #expect(LedgerText.isCorrection("**۲۰۲۶-۱۰-۱۹:** چیزی"))
+        #expect(LedgerText.isCorrection("- این بند اصلاح شد"))
+        #expect(!LedgerText.isCorrection("- آماده‌شده (۲۰۲۶-۱۰-۰۷): سیم‌کشی"))
+    }
+
+    @Test func checkboxesInQuotesListsAndTablesAreSetAsideNotLost() {
+        let ledger = LedgerParser.parse("""
+        ## P1
+        > - [ ] در نقل‌قول
+        1. [ ] شماره‌دار با چک‌باکس
+        | - [ ] در جدول | x |
+        > [x] تیک در نقل‌قول
+        - [ ] درست
+        > متن نقل‌قول بی‌چک‌باکس
+        | ستون | [PR](https://example.com) |
+        """)
+        #expect(ledger.items.map(\.line) == [6])
+        #expect(ledger.skippedLines == [2, 3, 4, 5])
+    }
+
+    @Test func aSectionTheLedgerPutsFirstCountsAsP1() {
+        let ledger = LedgerParser.parse("""
+        # اولویت‌ها
+        ## مشترک در همهٔ محصولات (اول این‌ها)
+        - [ ] مشترک
+        ## P0 — قبل از هر فروش
+        - [ ] فوری
+        ## یادداشت‌ها
+        - [ ] دیگر
+        """)
+        #expect(ledger.items.map(\.priority) == [.p1, .p0, .other])
+    }
+
     @Test func aFileWithoutAReviewLineSaysSo() {
         let ledger = LedgerParser.parse("# اولویت‌ها\n\n## وضعیت (۲۰۲۶-۱۰-۱۲)\n- [ ] کار")
         #expect(ledger.reviewLine == nil && ledger.reviewedOn == nil)
@@ -76,6 +157,65 @@ struct NextActionsParserTests {
         #expect(report.items[1].title == "SafeBeauty: کار امروز دوم با شمارهٔ فارسی")
         #expect(report.items[0].body == ["چه کنید:", "- گام نمونه (TEST)."])
         #expect(report.sections == [.today, .thisWeek])
+    }
+
+    @Test func windowsLineEndingsGiveTheSameReport() throws {
+        let lf = try text("next-actions-sample")
+        let a = NextActionsParser.parse(lf, fileName: "NEXT-ACTIONS-2026-10-12.md")
+        let b = NextActionsParser.parse(crlf(lf), fileName: "NEXT-ACTIONS-2026-10-12.md")
+        #expect(b.items.map(\.line) == [6, 11, 19, 21])
+        #expect(b.items.map(\.sourceLine) == a.items.map(\.sourceLine))
+        #expect(b.items.map(\.body) == a.items.map(\.body))
+        #expect(b == a)
+        #expect(NextActionsParser.parse(crlf(lf)).day == KeyDay("2026-10-12"))
+    }
+
+    @Test func aChangedFormatIsSetAsideNeverDroppedSilently() throws {
+        let report = NextActionsParser.parse("""
+        گزارش ۲۰۲۶-۱۰-۱۲
+        ۱. امروز (TODAY)
+        1) WorkTrack: اول
+           منبع: WorkTrack / one
+        2. merge the branch (PR)
+        2) SafeBeauty: دوم، بعد از سطری که شبیه سرفصل است
+           - منبع: SafeBeauty / two
+        3) Talar: سوم
+        **منبع:** Talar / three (یادداشت)
+        4) VELRO: چهارم
+           منبع : VELRO / four
+        1. سبک دیگر شماره‌گذاری
+        **5)** سبک پررنگ
+        منبع: Keys / orphan
+        ## THIS WEEK بدون پرانتز
+        1) در بخش ناشناخته، خوانده نمی‌شود
+           منبع: X / y
+        ۲. این هفته (THIS WEEK)
+        1) DukanPro: این هفته
+           منبع: DukanPro / week
+           منبع: DukanPro / second-source
+        ۳. کارهای Claude (CLAUDE CAN DO NOW)
+        1) Linumic OS: کار Claude
+           منبع: Linumic OS / claude
+        """)
+        #expect(report.items.map(\.slug) == ["one", "two", "three", "four", "week"])
+        try #require(report.items.count == 5)
+        #expect(report.items.map(\.section) == [.today, .today, .today, .today, .thisWeek])
+        #expect(report.items[2].sourceText == "Talar / three (یادداشت)")
+        // "2. merge…", "1. …", "**5)** …", the «منبع» with no item, and the second «منبع» of one item.
+        #expect(report.skippedLines == [5, 12, 13, 14, 21])
+        #expect(report.sections == [.today, .thisWeek])
+    }
+
+    @Test func everyProductTheSourceLineNames() throws {
+        let report = NextActionsParser.parse(try text("next-actions-sample"), fileName: "NEXT-ACTIONS-2026-10-12.md")
+        try #require(report.items.count == 4)
+        #expect(report.items[2].product == "Keys" && report.items[2].otherProducts == ["Talar"])
+        #expect(report.items[0].otherProducts.isEmpty)
+        let pairs = NextActionsParser.sourcePairs("Keys / khayatyar-signing-key و second-offline-copy؛ Talar / create-release-key (اصلاح‌شده)؛ NerkhTimes / nt-find-upload-key")
+        #expect(pairs.map(\.product) == ["Keys", "Talar", "NerkhTimes"])
+        // File paths in parentheses are not products.
+        let paths = NextActionsParser.sourcePairs("Keys / github-recovery-and-vault (~/Keys/README.md:33؛ LinumicCommandCenter/PRIORITIES.md:45-47)")
+        #expect(paths.map(\.product) == ["Keys"])
     }
 
     @Test func anItemWithoutASourceLineIsSetAside() throws {
@@ -152,6 +292,17 @@ struct LedgerReaderTests {
         #expect(reading.file("next-actions")?.displayPath == "~/Projects/Multiplatform/NEXT-ACTIONS-*.md")
     }
 
+    @Test func aDeniedCheckIsUnreadableNotMissing() {
+        var fs = FakeFS()
+        fs.denied.insert("\(home)/Projects/Multiplatform/Talar/PRIORITIES.md")
+        fs.denied.insert("\(home)/Projects/Multiplatform")
+        let reading = LedgerReader.read(home: home, granted: ["\(home)/Projects/Multiplatform"], fs: fs, now: now)
+        guard case .unreadable(let why) = reading.file("talar")?.status else { Issue.record("a denied check is not 'not found'"); return }
+        #expect(why == "Operation not permitted")
+        guard case .unreadable = reading.file("next-actions")?.status else { Issue.record("a denied listing is not 'not found'"); return }
+        #expect(reading.file("velro")?.status == .notFound)
+    }
+
     @Test func nothingGrantedMeansEveryLedgerIsNotGranted() {
         let reading = LedgerReader.read(home: home, granted: [], fs: FakeFS(), now: now)
         let statuses = reading.files.map(\.status)
@@ -178,5 +329,67 @@ struct DeskDomainTests {
     @Test func focusProductsComeFirstAndAllProductsLast() {
         let sorted = [DeskDomain.shared, .velro, .safeBeauty, .named("GitHub"), .worktrack, .bePaya].sorted(by: DeskDomain.order)
         #expect(sorted.map(\.key) == ["worktrack", "safebeauty", "bepaya", "other:github", "velro", "shared"])
+    }
+}
+
+// MARK: - The real file system (a temporary folder)
+
+@Suite("Ledgers: reading files on disk")
+struct LocalLedgerFileSystemTests {
+    private func folder() throws -> URL {
+        let url = FileManager.default.temporaryDirectory.appending(path: "ledger-fs-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        return url
+    }
+
+    @Test func readsARegularFileInsideTheGrant() throws {
+        let root = try folder()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let file = root.appending(path: "PRIORITIES.md")
+        try Data("- [ ] یک\r\n".utf8).write(to: file)
+        let fs = LocalLedgerFileSystem()
+        #expect(try fs.info(atPath: file.path)?.isRegularFile == true)
+        #expect(try fs.info(atPath: root.appending(path: "missing.md").path) == nil)
+        #expect(try fs.readText(atPath: file.path, maxBytes: 1_000, roots: [root.path]) == "- [ ] یک\r\n")
+        #expect(throws: LedgerReadError.tooLarge(4)) { try fs.readText(atPath: file.path, maxBytes: 4, roots: [root.path]) }
+        try Data([0xFF, 0xFE, 0x00]).write(to: file)
+        #expect(throws: LedgerReadError.notUTF8) { try fs.readText(atPath: file.path, maxBytes: 1_000, roots: [root.path]) }
+    }
+
+    @Test func aLinkAsTheFileIsRefused() throws {
+        let root = try folder()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let target = root.appending(path: "elsewhere.md")
+        try Data("secret".utf8).write(to: target)
+        let link = root.appending(path: "PRIORITIES.md")
+        try FileManager.default.createSymbolicLink(at: link, withDestinationURL: target)
+        let fs = LocalLedgerFileSystem()
+        #expect(try fs.info(atPath: link.path)?.isSymbolicLink == true)
+        #expect(throws: LedgerReadError.symbolicLink) { try fs.readText(atPath: link.path, maxBytes: 1_000, roots: [root.path]) }
+    }
+
+    @Test func aFolderOnTheWayThatLeadsOutOfTheGrantIsRefused() throws {
+        // A home with ~/Projects/Multiplatform granted, where Velro is a link to ~/Keys (outside the grant), and Talar
+        // a link to a folder inside it.
+        let home = try folder()
+        defer { try? FileManager.default.removeItem(at: home) }
+        let granted = home.appending(path: "Projects/Multiplatform")
+        let outside = home.appending(path: "Keys")
+        let inside = granted.appending(path: "TalarReal")
+        for dir in [granted, outside, inside] { try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true) }
+        try Data("آخرین بازبینی: 2026-10-19\n- [ ] outside".utf8).write(to: outside.appending(path: "PRIORITIES.md"))
+        try Data("آخرین بازبینی: 2026-10-19\n- [ ] inside".utf8).write(to: inside.appending(path: "PRIORITIES.md"))
+        try FileManager.default.createSymbolicLink(at: granted.appending(path: "Velro"), withDestinationURL: outside)
+        try FileManager.default.createSymbolicLink(at: granted.appending(path: "Talar"), withDestinationURL: inside)
+        let fs = LocalLedgerFileSystem()
+        let velro = granted.appending(path: "Velro/PRIORITIES.md").path
+        #expect(throws: LedgerReadError.outsideGrant) { try fs.readText(atPath: velro, maxBytes: 1_000, roots: [granted.path]) }
+
+        let reading = LedgerReader.read(home: home.path, granted: [granted.path], fs: fs, now: now)
+        guard case .unreadable(let why) = reading.file("velro")?.status else { Issue.record("a folder link out of the grant is refused"); return }
+        #expect(why == LedgerReadError.outsideGrant.errorDescription)
+        guard case .read(.priorities(let talar)) = reading.file("talar")?.status else { Issue.record("a link inside the grant is read"); return }
+        #expect(talar.items.map(\.text) == ["inside"])
+        #expect(reading.file("worktrack")?.status == .notFound)
     }
 }
