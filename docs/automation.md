@@ -17,6 +17,7 @@ credentials already in this device's Keychain.
 | Job | Every | Needs | Notes |
 |---|---|---|---|
 | Monitor | 5 min (longer after silent rounds) | network | public GETs only |
+| Server watch | 10 min | cloud sign-in, Sentinel deployed | reads the Sentinel RPCs; notifies new server events; "not deployed" until then |
 | Store listings | 30 min | network | console reads only with saved keys; switch in Settings → Integrations |
 | Oversight sweep | 30 min | GitHub token | plus local working copies when a folder is granted |
 | Platforms | 30 min | GitHub token | |
@@ -28,8 +29,6 @@ credentials already in this device's Keychain.
 | Keys & Backups | 1 h | a granted folder (Mac only) | attributes only, never contents |
 | Local inventory backup | 24 h | nothing | see below |
 | Daily Brief | 30 min | nothing | runs last: summarises what the others read |
-
-The Server watch job (Sentinel results) is added with the Sentinel pull request.
 
 ## Scheduling (`AutomationScheduler`, pure and tested)
 
@@ -78,7 +77,8 @@ covers the local file only; the cloud copy is the Sentinel's weekly `inventory_s
 
 `BGAppRefreshTask` `com.linumic.commandcenter.refresh` (Info.plist `BGTaskSchedulerPermittedIdentifiers`, background
 mode `fetch`). iOS decides when, or whether, it runs; the app asks for one about every 30 minutes when it goes to the
-background. Only light jobs run there (Monitor, Daily Brief, and Server watch once the Sentinel is merged).
+background. Only light jobs run there: Monitor, Server watch and the Daily Brief. Server watch is what brings an
+outage the server saw while the Mac was off to the iPhone as a notification, without a push service.
 
 ## For the owner (دری)
 

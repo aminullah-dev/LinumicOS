@@ -1,0 +1,34 @@
+
+[
+    {
+        "id": 2,
+        "kind": "licenceExpiring",
+        "title": "Licence MF-TEST-1 (Sample Clinic) expires in 5 days",
+        "detail": {
+            "edition": "standard",
+            "expires": "2026-10-23",
+            "customer": "Sample Clinic",
+            "daysLeft": 5,
+            "threshold": 7
+        },
+        "product": "mediflow",
+        "subject": "MF-TEST-1",
+        "severity": "warning",
+        "occurredAt": "2026-10-18T23:52:15Z"
+    },
+    {
+        "id": 1,
+        "kind": "targetDown",
+        "title": "website.home is down",
+        "detail": {
+            "reason": "transport",
+            "failure": "TimeoutError: Signal timed out.",
+            "failedRounds": 2
+        },
+        "product": "website",
+        "subject": "website.home",
+        "severity": "critical",
+        "occurredAt": "2026-10-18T23:32:15Z",
+        "acknowledgedAt": "2026-10-18T23:52:15Z"
+    }
+]

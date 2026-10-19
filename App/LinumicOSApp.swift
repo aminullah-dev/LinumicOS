@@ -15,6 +15,7 @@ struct LinumicOSApp: App {
     @State private var brief: BriefModel
     @State private var keys: KeysModel
     @State private var siteMessages: SiteMessagesModel
+    @State private var sentinel: SentinelModel
     @State private var automation: AutomationEngine
     @Environment(\.scenePhase) private var scenePhase
     #if os(macOS)
@@ -56,10 +57,12 @@ struct LinumicOSApp: App {
         let brief = BriefModel(inventory: inventory, licences: licences, worktrack: worktrack, operations: operations,
                                releases: releases, monitor: monitor, keys: keys, siteMessages: siteMessages)
         _brief = State(initialValue: brief)
+        let sentinel = SentinelModel(inventory: inventory)
+        _sentinel = State(initialValue: sentinel)
         // Started here, not from a window, so it runs whether or not a window is open (menu bar, login item).
         let automation = AutomationEngine(inventory: inventory, licences: licences, platforms: platforms, worktrack: worktrack,
                                           operations: operations, releases: releases, monitor: monitor, brief: brief,
-                                          keys: keys, siteMessages: siteMessages)
+                                          keys: keys, siteMessages: siteMessages, sentinel: sentinel)
         _automation = State(initialValue: automation)
         let vault = VaultModel()
         vault.load()
@@ -141,6 +144,7 @@ struct LinumicOSApp: App {
             .environment(keys)
             .environment(siteMessages)
             .environment(automation)
+            .environment(sentinel)
             .environment(router)
     }
 

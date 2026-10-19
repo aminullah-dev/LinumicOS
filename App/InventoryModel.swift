@@ -126,6 +126,12 @@ final class InventoryModel {
         return SupabaseLicenceRemote(config: config, token: { try await sessionManager.accessToken() })
     }
 
+    /// The Sentinel's results on Supabase (admin-only RPCs), when signed in.
+    func sentinelClient() -> SentinelClient? {
+        guard let sessionManager, cloudUser != nil, let config = Self.supabaseConfig else { return nil }
+        return SentinelClient(config: config, token: { try await sessionManager.accessToken() })
+    }
+
     func signOut() async {
         await sessionManager?.signOut()
         cloudUser = nil

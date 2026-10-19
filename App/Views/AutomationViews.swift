@@ -58,6 +58,7 @@ extension AutomationSkipReason {
         case .notReady: String(localized: "Not ready")
         case .alreadyRunning: String(localized: "Already running")
         case .unchanged: String(localized: "Unchanged")
+        case .notDeployed: String(localized: "Not deployed")
         }
     }
 
@@ -69,6 +70,7 @@ extension AutomationSkipReason {
         case .notReady: String(localized: "The data it works on hadn't loaded yet.")
         case .alreadyRunning: String(localized: "The same refresh was already running from its screen.")
         case .unchanged: String(localized: "Nothing changed since the last run.")
+        case .notDeployed: String(localized: "Its server side isn't deployed yet (docs/sentinel.md).")
         }
     }
 }
@@ -107,6 +109,7 @@ struct AutomationView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     AutomationStatusCard(now: context.date)
+                    SentinelCard(now: context.date)
                     jobs(now: context.date)
                     AutomationPreferencesCard()
                     history(now: context.date)
@@ -679,3 +682,100 @@ struct MenuBarPanel: View {
     }
 }
 #endif
+
+// MARK: - Server watch (Sentinel)
+
+struct SentinelCard: View {
+    @Environment(SentinelModel.self) private var sentinel
+    @Environment(AutomationEngine.self) private var engine
+    let now: Date
+    @State private var roundMessage: String?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline) {
+                Label("Server watch", systemImage: "server.rack").font(.headline)
+                Spacer()
+                if sentinel.isConnected, sentinel.isDeployed {
+                    Button {
+                        Task {
+                            let accepted = await sentinel.requestRound()
+                            roundMessage = accepted ? nil : String(localized: "A round was asked for less than 2 minutes ago.")
+                        }
+                    } label: {
+                        if sentinel.isRequestingRound { ProgressView().controlSize(.small) } else { Text("Ask for a round now") }
+                    }
+                    .controlSize(.small)
+                    .disabled(sentinel.isRequestingRound)
+                }
+            }
+            content
+            if let roundMessage { Text(verbatim: roundMessage).font(.caption).foregroundStyle(.secondary) }
+            Text("Checks run on Supabase every 10 minutes, so an outage or an expiring licence is caught even while this Mac is off. The app reads the results; on iPhone, background refresh reads them too.")
+                .font(.caption).foregroundStyle(.secondary)
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 16))
+    }
+
+    @ViewBuilder private var content: some View {
+        if !sentinel.isConnected {
+            Text("Sign in to the cloud (Settings → Account) to read the server's checks.").foregroundStyle(.secondary)
+        } else if !sentinel.isDeployed {
+            Text("Not deployed yet. The migrations and the sentinel function are ready in the repository; the deploy steps are in docs/sentinel.md.")
+                .foregroundStyle(.secondary)
+        } else if let summary = sentinel.summary {
+            FitRow(spacing: 8) {
+                switch summary.health {
+                case .notRunning: StatusBadge(text: String(localized: "No round yet"), color: .orange)
+                case .stale: StatusBadge(text: String(localized: "Schedule stopped?"), color: .red)
+                case .down(let n): StatusBadge(text: String(localized: "\(n) down"), color: .red)
+                case .slow(let n): StatusBadge(text: String(localized: "\(n) slow"), color: .yellow)
+                case .allUp: StatusBadge(text: String(localized: "All up"), color: .green)
+                }
+                if let at = summary.lastRoundAt {
+                    Text("Last server round \(relativeText(at))").font(.callout).foregroundStyle(.secondary)
+                }
+                if let snap = summary.lastSnapshotAt {
+                    Text("Cloud backup \(snap.formatted(date: .abbreviated, time: .omitted))")
+                        .font(.callout).foregroundStyle(summary.snapshotOverdue ? .orange : .secondary)
+                }
+            }
+            ForEach(summary.down) { status in
+                Text(verbatim: "\(title(of: status.targetID)): \(status.lastFailure ?? "")")
+                    .font(.callout).foregroundStyle(.red).lineLimit(2)
+            }
+            let open = sentinel.unacknowledged
+            if !open.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Not acknowledged").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+                    ForEach(open.prefix(8)) { event in
+                        HStack(alignment: .firstTextBaseline, spacing: 8) {
+                            Circle().fill(event.severity == .critical ? Color.red : event.severity == .warning ? .orange : .secondary)
+                                .frame(width: 7, height: 7)
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(verbatim: SentinelModel.line(for: event)).font(.callout)
+                                Text(event.occurredAt.formatted(date: .abbreviated, time: .shortened)).font(.caption2).foregroundStyle(.tertiary)
+                            }
+                            Spacer(minLength: 6)
+                            Button("Seen") { Task { await sentinel.acknowledge(event) } }.controlSize(.small)
+                        }
+                    }
+                }
+            }
+        } else if let error = sentinel.loadError {
+            Text(verbatim: error).foregroundStyle(.red)
+        } else {
+            Text("Not read yet.").foregroundStyle(.secondary)
+        }
+    }
+
+    private func title(of targetID: String) -> String {
+        MonitorCatalog.targets.first { $0.id == targetID }.map { "\($0.product.title) \(L($0.name))" } ?? targetID
+    }
+
+    private func relativeText(_ date: Date) -> String {
+        abs(date.timeIntervalSince(now)) < 45 ? String(localized: "now") : date.formatted(.relative(presentation: .named, unitsStyle: .abbreviated))
+    }
+}

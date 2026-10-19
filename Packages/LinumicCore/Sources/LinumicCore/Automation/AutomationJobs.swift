@@ -6,6 +6,7 @@ import Foundation
 /// did. Listed in run order: the Brief goes last because it summarises what the others just read.
 public enum AutomationJobID: String, Codable, CaseIterable, Sendable, Identifiable, Hashable {
     case monitor
+    case sentinel
     case stores
     case oversight
     case platforms
@@ -55,6 +56,10 @@ public enum AutomationCatalog {
         AutomationJobSpec(id: .monitor, title: "Monitor",
                           detail: "Public health, TLS and domain checks of every platform.",
                           cadence: 5 * 60, retryAfter: 5 * 60, runsInBackground: true),
+        // The server's own checks (docs/sentinel.md): they keep running when this device is off or asleep.
+        AutomationJobSpec(id: .sentinel, title: "Server watch",
+                          detail: "What the Sentinel on Supabase saw while this device was away: outages, recoveries, expiring licences.",
+                          cadence: 10 * 60, retryAfter: 5 * 60, runsInBackground: true),
         AutomationJobSpec(id: .stores, title: "Store listings",
                           detail: "Public App Store data, then App Store Connect and Google Play when their keys are saved.",
                           cadence: 30 * 60, settingsKey: "LCCAutoRefreshStores"),
@@ -127,6 +132,8 @@ public enum AutomationSkipReason: String, Codable, Sendable, Hashable {
     case alreadyRunning
     /// Nothing to do (for example, the backup is identical to the last one).
     case unchanged
+    /// The server side it reads isn't deployed yet.
+    case notDeployed
 }
 
 public enum AutomationOutcome: Codable, Sendable, Hashable {

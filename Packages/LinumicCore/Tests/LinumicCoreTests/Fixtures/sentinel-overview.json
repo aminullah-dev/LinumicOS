@@ -1,0 +1,51 @@
+{
+    "targets": [
+        {
+            "since": "2026-10-18T23:12:15Z",
+            "state": "up",
+            "product": "velro",
+            "samples": 4,
+            "targetID": "velro.api.live",
+            "available": 4,
+            "avgLatencyMS": 985,
+            "lastCheckedAt": "2026-10-18T23:42:15Z",
+            "lastLatencyMS": 180,
+            "lastCheckState": "up",
+            "consecutiveFailures": 0
+        },
+        {
+            "since": "2026-10-18T23:32:15Z",
+            "state": "down",
+            "product": "website",
+            "samples": 4,
+            "targetID": "website.home",
+            "available": 1,
+            "lastFailure": "TimeoutError: Signal timed out.",
+            "avgLatencyMS": 640,
+            "lastCheckedAt": "2026-10-18T23:42:15Z",
+            "lastFailureAt": "2026-10-18T23:42:15Z",
+            "lastCheckState": "down",
+            "consecutiveFailures": 3
+        }
+    ],
+    "lastRound": {
+        "id": 4,
+        "source": "cron",
+        "upCount": 1,
+        "downCount": 1,
+        "startedAt": "2026-10-18T23:42:15Z",
+        "finishedAt": "2026-10-18T23:42:19Z",
+        "targetCount": 2,
+        "degradedCount": 0
+    },
+    "generatedAt": "2026-10-18T23:52:15Z",
+    "windowHours": 24,
+    "lastSnapshot": {
+        "id": 1,
+        "bytes": 516,
+        "createdAt": "2026-10-18T23:52:15Z",
+        "schemaVersion": 2
+    },
+    "snapshotCount": 1,
+    "unacknowledged": 2
+}
