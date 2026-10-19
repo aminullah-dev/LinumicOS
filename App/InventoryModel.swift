@@ -438,9 +438,14 @@ final class InventoryModel {
         return candidate
     }
 
+    /// The inventory as it is now (what is saved, and what the continuity export carries).
+    var current: Inventory {
+        Inventory(seedRevision: seedRevision, products: products, unresolved: unresolved, market: market, content: content, oversight: oversight)
+    }
+
     /// Saves are chained so they reach the store in the same order as the mutations.
     private func persist() {
-        let snapshot = Inventory(seedRevision: seedRevision, products: products, unresolved: unresolved, market: market, content: content, oversight: oversight)
+        let snapshot = current
         let previous = saveTask
         saveTask = Task { [store, hybrid] in
             await previous?.value

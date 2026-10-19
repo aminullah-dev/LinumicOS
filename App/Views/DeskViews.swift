@@ -116,6 +116,7 @@ struct DeskView: View {
                 }
             }
             ledgerLine(desk)
+            DeskBackupCard()
         }
     }
 
@@ -220,6 +221,7 @@ struct DeskView: View {
 
 struct DeskRowView: View {
     @Environment(DeskModel.self) private var model
+    @Environment(Router.self) private var router
     let row: DeskRow
     let highlighted: Bool
     let open: () -> Void
@@ -365,10 +367,20 @@ struct DeskRowView: View {
             .disabled(!canOpen)
             switch row.resolution {
             case .open, .reopened:
-                Button { model.markDone(item) } label: { Label("Done", systemImage: "checkmark").labelStyle(.titleAndIcon) }
+                if case .screen(.obligation(let id)) = item.destination {
+                    // An obligation is done only with what proves it: the Obligations screen asks for it.
+                    Button { router.go(.obligations, request: .completeObligation(id)) } label: {
+                        Label("Done…", systemImage: "checkmark").labelStyle(.titleAndIcon)
+                    }
                     .buttonStyle(.borderless)
-                    .help(doneHelp)
+                    .help("Record it done with what proves it (a receipt, a page, a screenshot's name)")
                     .minTapTarget()
+                } else {
+                    Button { model.markDone(item) } label: { Label("Done", systemImage: "checkmark").labelStyle(.titleAndIcon) }
+                        .buttonStyle(.borderless)
+                        .help(doneHelp)
+                        .minTapTarget()
+                }
                 Menu {
                     Menu("Snooze") {
                         Button("Until tomorrow") { model.snooze(item, days: 1) }
@@ -443,6 +455,72 @@ struct DeskRowView: View {
             try? await Task.sleep(for: .seconds(2))
             withAnimation { copied = false }
         }
+    }
+}
+
+// MARK: - Daily backup, as Backups/ holds it
+
+/// The daily backup as the folder holds it now: the newest file, its day, whether it was read back and decoded, and
+/// whether it is the inventory as it is now. Never the run log's word alone.
+struct DeskBackupCard: View {
+    @Environment(AutomationEngine.self) private var engine
+    @Environment(Router.self) private var router
+
+    var body: some View {
+        let status = engine.backupFolder
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
+            Image(systemName: symbol(status)).foregroundStyle(color(status))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(headline(status)).font(.callout.weight(.medium)).fixedSize(horizontal: false, vertical: true)
+                if let detail = detail(status) {
+                    Text(verbatim: detail).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            Spacer(minLength: 8)
+            Button("Automation…") { router.go(.automation) }
+                .buttonStyle(.borderless).font(.caption)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(.background.secondary, in: Capsule())
+        .accessibilityElement(children: .combine)
+    }
+
+    private func symbol(_ s: BackupFolderStatus?) -> String {
+        guard let s else { return "questionmark.circle" }
+        if s.listError != nil || s.isEmpty { return "externaldrive.badge.xmark" }
+        return s.restores ? "externaldrive.badge.checkmark" : "externaldrive.badge.exclamationmark"
+    }
+
+    private func color(_ s: BackupFolderStatus?) -> Color {
+        guard let s else { return .gray }
+        if s.listError != nil || s.isEmpty || !s.restores { return .red }
+        return .green
+    }
+
+    private func headline(_ s: BackupFolderStatus?) -> String {
+        guard let s else { return String(localized: "Daily backup: Backups/ not checked yet") }
+        if let error = s.listError { return String(localized: "Daily backup: Backups/ could not be read (\(error))") }
+        guard let newest = s.newest else { return String(localized: "Daily backup: Backups/ is empty") }
+        let day = newest.day.map { $0.start().formatted(date: .abbreviated, time: .omitted) } ?? newest.name
+        switch s.newestCheck {
+        case .restores(let products)?:
+            return String(localized: "Daily backup: \(day), read back (\(products) products)")
+        case .fails?, nil:
+            return String(localized: "Daily backup: \(day) does not restore")
+        }
+    }
+
+    private func detail(_ s: BackupFolderStatus?) -> String? {
+        guard let s, s.listError == nil else { return nil }
+        guard let newest = s.newest else {
+            return String(localized: "The run log alone never counts as a backup. The backup job writes a copy and reads it back.")
+        }
+        var parts = [String(localized: "\(newest.name), \(s.files) in the folder, checked \(s.checkedAt.formatted(date: .omitted, time: .shortened))")]
+        if case .fails(let why)? = s.newestCheck { parts.append(why) }
+        if s.matchesInventory == false { parts.append(String(localized: "The inventory has changed since; the next run copies it.")) }
+        return parts.joined(separator: " · ")
     }
 }
 

@@ -4,6 +4,7 @@ import Observation
 
 enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case desk
+    case obligations
     case dashboard
     case brief
     case monitor
@@ -17,6 +18,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case siteMessages
     case vault
     case keys
+    case continuity
     case allProducts, verification, releases, roadmap, issues
     case repositories, builds, deployments
     case appStore, googlePlay
@@ -29,6 +31,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .desk: L("Desk")
+        case .obligations: L("Obligations & accounts")
         case .dashboard: L("Dashboard")
         case .brief: L("Brief")
         case .monitor: L("Monitor")
@@ -42,6 +45,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .siteMessages: L("Website messages")
         case .vault: L("Vault")
         case .keys: L("Keys & Backups")
+        case .continuity: L("Continuity")
         case .allProducts: L("All Products")
         case .verification: L("Verification")
         case .releases: L("Release records")
@@ -65,6 +69,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     var symbol: String {
         switch self {
         case .desk: "checklist"
+        case .obligations: "calendar.badge.exclamationmark"
         case .dashboard: "square.grid.2x2"
         case .brief: "sun.horizon"
         case .monitor: "waveform.path.ecg"
@@ -78,6 +83,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .siteMessages: "envelope"
         case .vault: "lock.rectangle.stack"
         case .keys: "externaldrive.badge.checkmark"
+        case .continuity: "lock.doc"
         case .allProducts: "shippingbox"
         case .verification: "checkmark.seal"
         case .releases: "tag"
@@ -105,7 +111,7 @@ struct SidebarSection: Identifiable {
     var id: String { title ?? "root" }
 
     static let all: [SidebarSection] = [
-        SidebarSection(title: nil, items: [.desk, .dashboard, .brief, .monitor, .automation, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys]),
+        SidebarSection(title: nil, items: [.desk, .obligations, .dashboard, .brief, .monitor, .automation, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys, .continuity]),
         SidebarSection(title: "Products", items: [.allProducts, .verification, .releases, .roadmap, .issues]),
         SidebarSection(title: "Development", items: [.repositories, .builds, .deployments]),
         SidebarSection(title: "Stores", items: [.appStore, .googlePlay]),
@@ -127,6 +133,10 @@ enum RouterRequest: Equatable {
     case markRestoreTest
     /// Shows one Desk item (scrolled to and highlighted).
     case deskItem(String)
+    /// Shows one obligation (scrolled to and highlighted).
+    case obligation(String)
+    /// Opens "Done with evidence" for one obligation (the sheet saves, nothing else).
+    case completeObligation(String)
 }
 
 /// Navigation state shared by the sidebar, the menu commands, the Command Palette and the Daily Brief.
@@ -186,6 +196,9 @@ final class Router {
         case .keys: go(.keys)
         case .siteMessages: go(.siteMessages)
         case .automation: go(.automation)
+        case .obligations: go(.obligations)
+        case .obligation(let id): go(.obligations, request: .obligation(id))
+        case .continuity: go(.continuity)
         }
     }
 

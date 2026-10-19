@@ -27,6 +27,7 @@ struct CommandPaletteView: View {
     @Environment(InventoryModel.self) private var model
     @Environment(Router.self) private var router
     @Environment(LicenceModel.self) private var licences
+    @Environment(ObligationsModel.self) private var obligations
     @Environment(WorkTrackModel.self) private var worktrack
     @Environment(ReleaseCenterModel.self) private var releases
     @Environment(VaultModel.self) private var vault
@@ -260,6 +261,10 @@ struct CommandPaletteView: View {
         add(PaletteCandidate(id: "action.keys.restoretest", title: String(localized: "Mark restore test done…"), subtitle: SidebarItem.keys.title,
                              keywords: ["keys", "backup", "restore", "test", "keystore"], group: .action, symbol: "checkmark.circle"),
             .go(.keys, .markRestoreTest))
+        add(PaletteCandidate(id: "action.continuity.export", title: String(localized: "Encrypted export off this Mac…"),
+                             subtitle: SidebarItem.continuity.title,
+                             keywords: ["continuity", "export", "backup", "encrypted", "age", "usb", "drive"], group: .action,
+                             symbol: "lock.doc"), .go(.continuity, nil))
         add(PaletteCandidate(id: "action.product.new", title: String(localized: "New Product…"), keywords: ["product", "add"],
                              group: .action, symbol: "plus.square"), .newProduct)
         // "Open <console URL>": the sign-in addresses kept in the Vault (addresses only) and the monitored pages.
@@ -285,6 +290,13 @@ struct CommandPaletteView: View {
                                  subtitle: "\(SidebarItem.desk.title) · \(row.item.domain.displayTitle) · \(row.bucket.title)",
                                  keywords: ["desk", row.item.domain.name, row.item.subject, row.item.evidence.location], group: .entity,
                                  symbol: row.item.severity.symbol), .go(.desk, .deskItem(row.id)))
+        }
+        // Obligations that are open: title and product; choosing one shows it on its screen.
+        for o in obligations.register().obligations where !o.isClosed {
+            add(PaletteCandidate(id: "obligation.\(o.id)", title: o.displayTitle,
+                                 subtitle: "\(SidebarItem.obligations.title) · \(o.due?.description ?? String(localized: "Date unknown"))",
+                                 keywords: ["obligation", "due", o.product ?? "", o.area.rawValue], group: .entity,
+                                 symbol: "calendar.badge.exclamationmark"), .go(.obligations, .obligation(o.id)))
         }
         for p in model.products.sorted(by: { $0.name < $1.name }) {
             add(PaletteCandidate(id: "product.\(p.id)", title: p.name, subtitle: String(localized: "Product"),

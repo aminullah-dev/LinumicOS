@@ -292,6 +292,7 @@ struct AutomationJobCard: View {
             } else {
                 Text("Not run yet").font(.caption).foregroundStyle(.secondary)
             }
+            if spec.id == .backup { backupFolderLine }
             Divider()
             HStack(spacing: 8) {
                 Text("Every \(cadenceText(spec.cadence))").font(.caption).foregroundStyle(.secondary)
@@ -313,6 +314,30 @@ struct AutomationJobCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.background.secondary, in: RoundedRectangle(cornerRadius: 14))
         .opacity(enabled ? 1 : 0.6)
+    }
+
+    /// What `Backups/` holds now, beside what the log says: the two can differ (a file deleted after the run).
+    @ViewBuilder private var backupFolderLine: some View {
+        if let s = engine.backupFolder {
+            if let error = s.listError {
+                Label { Text("Backups/ could not be read: \(error)") } icon: { Image(systemName: "xmark.octagon.fill").foregroundStyle(.red) }
+                    .font(.caption)
+            } else if let newest = s.newest {
+                Label {
+                    Text(s.restores ? "In Backups/ now: \(newest.name) (\(s.files) in all), read back"
+                                    : "In Backups/ now: \(newest.name) (\(s.files) in all), does not restore")
+                } icon: {
+                    Image(systemName: s.restores ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                        .foregroundStyle(s.restores ? .green : .red)
+                }
+                .font(.caption)
+            } else {
+                Label { Text("Backups/ is empty now.") } icon: { Image(systemName: "xmark.octagon.fill").foregroundStyle(.red) }
+                    .font(.caption)
+            }
+        } else {
+            Text("Backups/ not checked yet.").font(.caption).foregroundStyle(.secondary)
+        }
     }
 
     private func nextText(now: Date) -> Text {

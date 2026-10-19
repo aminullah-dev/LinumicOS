@@ -29,6 +29,9 @@ final class AutomationEngine {
     private(set) var lowPower = ProcessInfo.processInfo.isLowPowerModeEnabled
     private(set) var isReady = false
     let startedAt = Date.now
+    /// What `Backups/` holds, read from the disk (newest file, its day, read back or not). The run log alone never
+    /// stands for a backup: a "succeeded" run whose file is gone is shown as gone.
+    private(set) var backupFolder: BackupFolderStatus?
 
     /// The jobs this device runs. Keys & Backups reads files on the Mac only.
     let specs: [AutomationJobSpec]
@@ -46,6 +49,9 @@ final class AutomationEngine {
     private let siteMessages: SiteMessagesModel
     private let sentinel: SentinelModel
     private let desk: DeskModel
+    private let obligations: ObligationsModel
+    /// What a run that did the work left on disk (the backup's file name), recorded with the run.
+    private var pendingArtifacts: [AutomationJobID: String] = [:]
 
     private var bootstrap: Task<Void, Never>?
     private var loop: Task<Void, Never>?
@@ -58,7 +64,8 @@ final class AutomationEngine {
 
     init(inventory: InventoryModel, licences: LicenceModel, platforms: PlatformHubModel, worktrack: WorkTrackModel,
          operations: OperationsModel, releases: ReleaseCenterModel, monitor: MonitorModel, brief: BriefModel,
-         keys: KeysModel, siteMessages: SiteMessagesModel, sentinel: SentinelModel, desk: DeskModel) {
+         keys: KeysModel, siteMessages: SiteMessagesModel, sentinel: SentinelModel, desk: DeskModel,
+         obligations: ObligationsModel) {
         self.inventory = inventory
         self.licences = licences
         self.platforms = platforms
@@ -71,6 +78,7 @@ final class AutomationEngine {
         self.siteMessages = siteMessages
         self.sentinel = sentinel
         self.desk = desk
+        self.obligations = obligations
         #if os(macOS)
         specs = AutomationCatalog.jobs
         #else
@@ -96,7 +104,26 @@ final class AutomationEngine {
 
     /// When the job runs next; nil when it is due now (never run yet).
     func nextDue(_ job: AutomationJobID) -> Date? {
-        AutomationScheduler.nextDue(AutomationCatalog.spec(job), state: ledger.states[job], lowPower: lowPower, cadence: cadences[job])
+        AutomationScheduler.nextDue(AutomationCatalog.spec(job), state: ledger.states[job], lowPower: lowPower, cadence: cadences[job],
+                                    artifactMissing: missingArtifacts.contains(job))
+    }
+
+    /// Jobs whose last successful run's file is gone from the disk: the backup, when the copy it wrote or confirmed is
+    /// no longer in `Backups/`. A directory listing only, cheap enough for every look of the loop.
+    private var missingArtifacts: Set<AutomationJobID> {
+        guard let backup = try? InventoryBackup.default() else { return [] }
+        // A folder that can't be listed is left to the job's own run to report.
+        guard let names = try? (backup.files() ?? []).map(\.name) else { return [] }
+        return InventoryBackup.artifactMissing(ledger.states[.backup], fileNames: names) ? [.backup] : []
+    }
+
+    /// Reads `Backups/` and its newest copy now (off the main actor) for the Desk, the Brief and the Automation screen.
+    func refreshBackupStatus() async {
+        let status = await Task.detached(priority: .utility) { () -> BackupFolderStatus? in
+            (try? InventoryBackup.default())?.status()
+        }.value
+        backupFolder = status
+        brief.backup = status
     }
 
     /// The Monitor stretches its own interval after rounds in which nothing answered.
@@ -119,6 +146,8 @@ final class AutomationEngine {
             await releases.load()
             // Local files only: the Desk shows the ledgers (or "not granted") from the first moment.
             await desk.refreshLedgers()
+            // The backup is what the folder holds, from the first moment too.
+            await refreshBackupStatus()
             // Asked once, up front, so the first real alert isn't lost to a prompt nobody saw.
             await StoreNotifier.requestPermission()
             isReady = true
@@ -131,12 +160,13 @@ final class AutomationEngine {
         var trigger = AutomationTrigger.launch
         while !Task.isCancelled {
             let due = AutomationScheduler.dueJobs(specs, states: ledger.states, disabled: ledger.disabled, conditions: conditions,
-                                                  now: .now, cadences: cadences)
+                                                  now: .now, cadences: cadences, missingArtifacts: missingArtifacts)
             for job in due { await execute(job, trigger: trigger) }
             trigger = .schedule
             if nudged == nil {
                 let wait = AutomationScheduler.sleepInterval(specs, states: ledger.states, disabled: ledger.disabled,
-                                                             conditions: conditions, now: .now, cadences: cadences)
+                                                             conditions: conditions, now: .now, cadences: cadences,
+                                                             missingArtifacts: missingArtifacts)
                 // A floor, so a job that can never finish "due" can't spin the loop.
                 await sleep(max(wait, due.isEmpty ? 5 : 1))
             }
@@ -228,8 +258,10 @@ final class AutomationEngine {
         let elapsed = ContinuousClock.now - clock
         let duration = Double(elapsed.components.seconds) + Double(elapsed.components.attoseconds) / 1e18
         let failuresBefore = ledger.states[job]?.consecutiveFailures ?? 0
-        ledger.record(AutomationRun(job: job, trigger: trigger, startedAt: started, duration: duration, outcome: outcome))
+        ledger.record(AutomationRun(job: job, trigger: trigger, startedAt: started, duration: duration, outcome: outcome),
+                      artifact: pendingArtifacts.removeValue(forKey: job))
         save()
+        if job == .backup { await refreshBackupStatus() }
         let failures = ledger.states[job]?.consecutiveFailures ?? 0
         if failures == AutomationHealth.failingAfter, case .failed(let message) = outcome {
             await AutomationNotifier.failing(spec, count: failures, message: message)
@@ -426,9 +458,11 @@ final class AutomationEngine {
             }.value
             switch result {
             case .success(let r) where r.kind == .unchanged:
-                return .succeeded(String(localized: "Unchanged since the last copy; it still restores (\(r.products) products)"))
+                pendingArtifacts[.backup] = r.file.lastPathComponent
+                return .succeeded(String(localized: "Unchanged since \(r.file.lastPathComponent); it still restores (\(r.products) products)"))
             case .success(let r):
-                return .succeeded(String(localized: "Copy saved and read back: \(r.products) products"))
+                pendingArtifacts[.backup] = r.file.lastPathComponent
+                return .succeeded(String(localized: "\(r.file.lastPathComponent) saved and read back: \(r.products) products"))
             case .failure(InventoryBackup.BackupError.noInventory):
                 return .skipped(.notReady)
             case .failure(let error):
@@ -467,8 +501,10 @@ final class AutomationEngine {
             #endif
 
         case .brief:
+            await refreshBackupStatus()
             await brief.record()
             desk.pruneObsoleteMarks()
+            await obligations.postDueAlerts()
             return .succeeded(nil)
         }
     }
@@ -522,7 +558,8 @@ final class AutomationEngine {
         await bootstrap?.value
         guard !isPaused else { return }
         for spec in specs where spec.runsInBackground && isEnabled(spec.id)
-            && AutomationScheduler.isDue(spec, state: ledger.states[spec.id], now: .now, lowPower: lowPower, cadence: cadences[spec.id]) {
+            && AutomationScheduler.isDue(spec, state: ledger.states[spec.id], now: .now, lowPower: lowPower, cadence: cadences[spec.id],
+                                         artifactMissing: missingArtifacts.contains(spec.id)) {
             await execute(spec.id, trigger: .background)
         }
     }
