@@ -95,6 +95,20 @@ Suggested display (the app layer decides):
   `supabase/functions/sentinel/targets.ts` disagree. `SentinelParityTests` fails the build in that case.
 - `SupabaseError.notAuthorized` means the signed-in Apple ID is not in `app_admins`.
 
+## Deployed (2026-10-19 00:57 UTC)
+
+Approved by the owner and applied to `mczuclgfqxffcbiwvecf` through the Supabase MCP: migrations `sentinel` and
+`sentinel_schedule`, Edge Function `sentinel` version 1 (JWT verification off). Evidence:
+- First round (manual): 15 targets, 15 up, function reply `{"recorded":{"events":0,"roundID":1},"up":15,...}` (HTTP 200).
+- Calls without the secret or with a wrong one: HTTP 401.
+- `inventory_snapshots` id 1: 169,127 bytes, schema 2. Licence sweep: 0 events (nothing within 30 days).
+- `cron.job`: sentinel-round, sentinel-licences, sentinel-snapshot, sentinel-prune, all active.
+- Security advisors: `ack_sentinel_event` and `request_sentinel_round` are SECURITY DEFINER callable by `authenticated`
+  (intended: both check `private.is_admin()` first). The other warning (leaked password protection) predates this.
+
+The snapshots live in the same database, so they cover mistakes and bad imports, not the loss of the project itself;
+the app's daily local backup (automation.md) is the copy outside Supabase.
+
 ## Owner deploy steps (needs approval; changes the live project)
 
 1. **Apply the migrations**, in order, with the Supabase CLI linked to the project or in the SQL editor:
