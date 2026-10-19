@@ -359,6 +359,30 @@ struct ReleaseCenterGitHubTests {
         #expect(CIRollup.from([GitHubWorkflowRunInfo(id: 4, name: "Dependabot", event: "dynamic", status: "completed", conclusion: "failure")]) == .none)
     }
 
+    @Test func runsOfDeletedWorkflowsDontCount() throws {
+        // MediFlow, read 2026-10-19: "Django CI" (workflow 319214483) last failed on 2026-07-23 and its file was deleted;
+        // GitHub lists only CI (319234564, green) and the Dependency Graph. Main showed "CI failing" until this filter.
+        let runs = [GitHubWorkflowRunInfo(id: 37873633625, name: "CI", workflowID: 319234564, event: "push", status: "completed",
+                                          conclusion: "success", createdAt: day("2026-10-09T02:14:40Z")),
+                    GitHubWorkflowRunInfo(id: 30049420763, name: "Django CI", workflowID: 319214483, event: "push", status: "completed",
+                                          conclusion: "failure", createdAt: day("2026-07-23T22:18:26Z"))]
+        let listing = Data("""
+        {"total_count": 2, "workflows": [
+          {"id": 319234564, "name": "CI", "path": ".github/workflows/ci.yml", "state": "active"},
+          {"id": 371848465, "name": "Dependency Graph", "path": "dynamic/dependabot/update-graph", "state": "active"},
+          {"id": 5, "name": "Old", "path": ".github/workflows/old.yml", "state": "disabled_manually"}]}
+        """.utf8)
+        let active = try ReleaseCenterParser.gitHubActiveWorkflowIDs(listing)
+        #expect(active == [319234564, 371848465])
+        #expect(CIRollup.from(runs) == .failure)
+        #expect(CIRollup.from(CIRollup.activeOnly(runs, activeWorkflowIDs: active)) == .success)
+        // Without the list, nothing is dropped.
+        #expect(CIRollup.activeOnly(runs, activeWorkflowIDs: nil).count == 2)
+        // A run without a workflow id is kept.
+        #expect(CIRollup.activeOnly([GitHubWorkflowRunInfo(id: 1, name: "CI", status: "completed", conclusion: "failure")],
+                                    activeWorkflowIDs: active).count == 1)
+    }
+
     @Test func dependencyUpdatesAreGroupedAndFailingMainIsFlagged() throws {
         var pulls = try ReleaseCenterParser.gitHubPulls(try fixture("release-gh-pulls-worktrack"))
         #expect(pulls.count == 13)

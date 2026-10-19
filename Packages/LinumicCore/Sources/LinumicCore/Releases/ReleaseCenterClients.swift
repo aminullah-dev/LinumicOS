@@ -190,6 +190,10 @@ extension GitHubClient {
         do {
             struct Repo: Decodable { let default_branch: String }
             let branch = try ReleaseCenterParser.gitHubDecoder.decode(Repo.self, from: try await getData(base)).default_branch
+            // Unknown (nil) if the list can't be read: then every run counts, as before.
+            let active = try? ReleaseCenterParser.gitHubActiveWorkflowIDs(try await getData("\(base)/actions/workflows", query: [
+                URLQueryItem(name: "per_page", value: "100"),
+            ]))
             var pulls = try ReleaseCenterParser.gitHubPulls(try await getData("\(base)/pulls", query: [
                 URLQueryItem(name: "state", value: "open"), URLQueryItem(name: "per_page", value: "100"),
             ]))
@@ -198,9 +202,10 @@ extension GitHubClient {
                     pulls[i].mergeable = m.mergeable
                     pulls[i].mergeableState = m.state
                 }
-                if !pulls[i].headSHA.isEmpty, let runs = try? ReleaseCenterParser.gitHubRuns(try await getData("\(base)/actions/runs", query: [
+                if !pulls[i].headSHA.isEmpty, let fetched = try? ReleaseCenterParser.gitHubRuns(try await getData("\(base)/actions/runs", query: [
                     URLQueryItem(name: "head_sha", value: pulls[i].headSHA), URLQueryItem(name: "per_page", value: "30"),
                 ])) {
+                    let runs = CIRollup.activeOnly(fetched, activeWorkflowIDs: active)
                     pulls[i].ciRuns = CIRollup.latestPerWorkflow(runs)
                     pulls[i].ci = CIRollup.from(runs)
                 }
@@ -214,10 +219,11 @@ extension GitHubClient {
                     }
                 }
             }
-            let mainRuns = (try? ReleaseCenterParser.gitHubRuns(try await getData("\(base)/actions/runs", query: [
+            let allMainRuns = (try? ReleaseCenterParser.gitHubRuns(try await getData("\(base)/actions/runs", query: [
                 URLQueryItem(name: "branch", value: branch), URLQueryItem(name: "per_page", value: "30"),
                 URLQueryItem(name: "exclude_pull_requests", value: "true"),
             ])))?.filter { !["pull_request", "pull_request_target"].contains($0.event ?? "") } ?? []
+            let mainRuns = CIRollup.activeOnly(allMainRuns, activeWorkflowIDs: active)
 
             var release: GitHubReleaseRef?
             var releaseRead = false
