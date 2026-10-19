@@ -105,6 +105,10 @@ final class ContinuityModel {
     /// only for this call.
     func export(_ bundle: ContinuityBundle, passphrase: String) async {
         guard !isWorking else { return }
+        guard passphrase.count >= ContinuityPassphrase.minimumLength else {
+            errorMessage = ContinuityPassphrase.problem(passphrase, confirmation: passphrase)
+            return
+        }
         guard let url = ContinuityFolderStore.resolve(), let folderPath else {
             errorMessage = String(localized: "Choose a folder first.")
             return

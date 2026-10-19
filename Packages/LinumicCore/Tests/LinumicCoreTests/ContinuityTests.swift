@@ -77,6 +77,18 @@ struct ContinuityExportTests {
         #expect(ContinuityBundle.forbiddenKinds(in: Data("LNM1 licences for MediFlow".utf8)).isEmpty)
     }
 
+    @Test func aFileThatIsNotTheOneWrittenFailsTheCheck() throws {
+        let dir = try folder()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        // Other bytes than were written (a folder that hands back something else): caught by the file's SHA-256 before
+        // any decryption, so nothing is recorded as verified.
+        let target = dir.appending(path: "x.json.age")
+        try Data("not age".utf8).write(to: target)
+        #expect(throws: ContinuityExporter.Failure.readBackDiffers) {
+            try ContinuityExporter.verify(file: target, passphrase: passphrase, fileSHA256: "0", plaintextSHA256: "0", now: now)
+        }
+    }
+
     @Test func neverOverwritesAndChecksAgainLater() throws {
         let dir = try folder()
         defer { try? FileManager.default.removeItem(at: dir) }

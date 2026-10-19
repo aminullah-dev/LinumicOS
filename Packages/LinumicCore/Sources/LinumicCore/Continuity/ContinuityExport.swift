@@ -325,8 +325,8 @@ public enum ContinuityExporter {
     static func hex(_ digest: SHA256.Digest) -> String { digest.map { String(format: "%02x", $0) }.joined() }
 
     /// Encrypts the bundle, writes it into `folder` (never over an existing file), reads it back from the disk,
-    /// decrypts it with the same passphrase and compares it with what was written. Throws, and records nothing, when
-    /// any step fails; the record it returns is the evidence that the export was verified.
+    /// decrypts it with the same passphrase and compares it with what was written. Throws, records nothing and removes
+    /// the file it wrote when any step fails; the record it returns is the evidence that the export was verified.
     public static func export(_ bundle: ContinuityBundle, passphrase: String, to folder: URL, folderName: String,
                               folderKind: ContinuityFolderKind, now: Date, workFactor: Int = AgeFile.defaultWorkFactor,
                               calendar: Calendar = InventoryBackup.gregorian) throws -> ContinuityExportRecord {
@@ -345,8 +345,15 @@ public enum ContinuityExporter {
         }
         try ciphertext.write(to: target, options: [.withoutOverwriting])
 
-        let verifiedAt = try verify(file: target, passphrase: passphrase, fileSHA256: hex(SHA256.hash(data: ciphertext)),
+        let verifiedAt: Date
+        do {
+            verifiedAt = try verify(file: target, passphrase: passphrase, fileSHA256: hex(SHA256.hash(data: ciphertext)),
                                     plaintextSHA256: hex(SHA256.hash(data: plaintext)), now: now)
+        } catch {
+            // A file that did not pass is not left behind to be mistaken for an export later.
+            try? FileManager.default.removeItem(at: target)
+            throw error
+        }
         return ContinuityExportRecord(fileName: name, folder: folderName, folderKind: folderKind, createdAt: now,
                                       verifiedAt: verifiedAt, fileBytes: ciphertext.count,
                                       fileSHA256: hex(SHA256.hash(data: ciphertext)), plaintextBytes: plaintext.count,
