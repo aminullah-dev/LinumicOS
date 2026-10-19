@@ -25,6 +25,34 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - No network host, Supabase table or entitlement added. 32 new tests (459 run, 1 opt-in live check that reads the
   real ledgers: 49 open checkboxes, 5 BE-PAYA items, 5 TODAY + 7 THIS WEEK items on 2026-10-19). Dari for 90 strings.
 
+### Fixed: Desk and Ledgers, review of PR #21 (2026-10-19)
+- A ledger with Windows line endings (CRLF) is read line by line like any other; before, it gave 0 items and still a
+  review date. Same for NEXT-ACTIONS.
+- The lines indented under a ledger item travel with it: the row shows the ledger's own dated corrections (a line that
+  starts with a date, or says «اصلاح» or «درست نیست») always, and every line under it on "More"; the agent brief
+  carries them too. A note added under a line brings back a Waiting or Dismiss mark.
+- A part of a Brief section that was not read (a product not signed in, a store without a key, endpoints not checked)
+  is a Desk item of its own; "all clear" no longer hides it. A focus product's unread source goes to This week.
+- Marks are no longer deleted by a reading that could not see their line: a Brief mark is dropped only when its
+  section was read after the mark and the line's part (for Operations, its product) was read too. An offline launch or
+  an expired admin sign-in keeps every mark.
+- `desk-state.json` keeps no titles (a website message's sender or a customer's name was written there); the agent
+  brief for website messages, WorkTrack customers and licences carries the Brief entry id instead of the customer.
+- NEXT-ACTIONS: a numbered line with an unknown tag no longer ends the TODAY section; another numbering style, a
+  bulleted line, a second or orphan «منبع» line are set aside by line number; «منبع» is also read as "- منبع:",
+  "**منبع:**" or "منبع :"; every product a «منبع» line names is kept (grey pills, and the whole line in the agent
+  brief). Lines set aside and a report with no owner section are This week, not Later. Settings shows the report as
+  "TODAY + THIS WEEK, report of <day>" instead of a made-up "0 ticked".
+- PRIORITIES.md: a checkbox in a quote, after a number or in a table is set aside instead of lost; the shared ledger's
+  «… (اول این‌ها)» section counts as P1.
+- Reading: a denied check is "could not be read", not "not found"; files are opened with `O_NOFOLLOW`, checked and
+  capped on the open file, and must really be inside the granted folder. Only the two ledger folders can be granted;
+  "Open" opens only allow-listed files; links in ledger lines open only for http and https.
+- Smaller: mark times are whole seconds so they survive a relaunch unchanged; an issued licence's read time is the
+  ledger's sync time; an unread source's caption says "checked", not "read"; Done in Dari says that you pressed it,
+  and for a fact with no read time that it stays hidden until the fact changes; the "0 today" badge is grey, with "N
+  sources to check", while a source item is open; the ledgers job is partial when lines were set aside.
+
 ### Fixed: Keys & Backups, the registry matches the keys on this Mac (2026-10-18)
 - VELRO: the Play upload key is the file in iCloud Drive > importand (`velro-play-upload`). The copy in `~/Keys/velro`
   has the same name and size and is in the Android bundle; the key in `~/.velro-keys` is recorded as not the Play key.
