@@ -86,7 +86,8 @@ struct KeysTests {
 
     @Test func seedHoldsTheVerifiedFacts() throws {
         let seed = KeysRegistry.seed
-        #expect(seed.keys.count == 11)
+        #expect(seed.keys.count == 15)
+        #expect(seed.seedRevision == KeysRegistry.currentSeedRevision)
         #expect(seed.backups.map(\.id) == [KeysRegistry.androidBundleID, KeysRegistry.licenceBundleID])
         let android = try #require(seed.backup(KeysRegistry.androidBundleID))
         #expect(android.driveFileID == "1mBSWqt_JwvEU7BMSFcJ-FJucPGJeuS4q")
@@ -105,6 +106,96 @@ struct KeysTests {
         #expect(seed.gaps.allSatisfy { !$0.source.isEmpty })
         #expect(seed.keys.first { $0.id == "velro-from-downloads" }?.doNotDelete == true)
         #expect(seed.keys.first { $0.id == "asc-api-keys" }?.backupIDs.isEmpty == true)
+    }
+
+    @Test func seedHasTheCorrectionsOf20261018() throws {
+        let seed = KeysRegistry.seed
+        let icloud = "~/Library/Mobile Documents/com~apple~CloudDocs/importand"
+        // VELRO: the Play upload key is the iCloud file; the one in ~/.velro-keys is not.
+        let play = try #require(seed.keys.first { $0.id == "velro-play-upload" })
+        #expect(play.path == "\(icloud)/velro-release.jks")
+        #expect(play.backupIDs == [KeysRegistry.androidBundleID])
+        #expect(play.doNotDelete)
+        let other = try #require(seed.keys.first { $0.id == "velro-release" })
+        #expect(other.path == "~/.velro-keys/velro-release.jks")
+        #expect(other.note?.contains("Not the key Google Play expects") == true)
+        let copy = try #require(seed.keys.first { $0.id == "velro-from-downloads" })
+        #expect(copy.title == "VELRO Play upload key (copy from Downloads)")
+        #expect(copy.note?.contains("origin unknown") == false)
+        // Keys the first seed missed: on this Mac, in no backup yet.
+        let added = ["khayatyar-release": "~/Documents/Khayatyar.jks", "talar-release": "\(icloud)/Untitled.jks",
+                     "namazia-release": "\(icloud)/Namazia.jks"]
+        for (id, path) in added {
+            let key = try #require(seed.keys.first { $0.id == id })
+            #expect(key.path == path)
+            #expect(key.kind == .androidSigning)
+            #expect(key.backupIDs.isEmpty)
+            #expect(key.doNotDelete)
+            #expect(key.recordedOn == day("2026-10-18"))
+        }
+        // The registry holds no hash of any kind, not even a certificate fingerprint from a document.
+        #expect(!seed.keys.contains { ($0.note ?? "").contains("SHA") || ($0.note ?? "").contains("33:23") })
+        // Gaps: the Talar key exists now; NerkhTimes and DukanPro keys are not on this Mac; the iCloud disk image is unverified.
+        let future = try #require(seed.gaps.first { $0.id == "future-keys" })
+        #expect(future.detail?.contains("not created yet") == false)
+        #expect(future.detail?.contains("Talar") == true)
+        for id in ["nerkhtimes-upload-key", "dukanpro-upload-key", "icloud-dmg-unverified"] {
+            let gap = try #require(seed.gaps.first { $0.id == id })
+            #expect(gap.isOpen)
+            #expect(!gap.source.isEmpty)
+        }
+        #expect(seed.gaps.count == 6)
+        #expect(Set(seed.keys.map(\.id)).count == seed.keys.count)
+        #expect(Set(seed.gaps.map(\.id)).count == seed.gaps.count)
+    }
+
+    @Test func savedRegistryFromTheFirstSeedGetsTheCorrectionsOnce() throws {
+        // A registry as the 2026-10-09 seed wrote it: no revision, the old VELRO notes and the old gap text.
+        var old = KeysRegistry.seed
+        old.seedRevision = nil
+        old.keys.removeAll { KeysRegistry.revision2AddedKeyIDs.contains($0.id) }
+        old.gaps.removeAll { KeysRegistry.revision2AddedGapIDs.contains($0.id) }
+        for (id, note) in KeysRegistry.revision1KeyNotes {
+            let i = try #require(old.keys.firstIndex { $0.id == id })
+            old.keys[i].title = "old title"
+            old.keys[i].note = note
+        }
+        let g = try #require(old.gaps.firstIndex { $0.id == "future-keys" })
+        old.gaps[g].detail = KeysRegistry.revision1GapDetails["future-keys"]
+        old.gaps[g].closedOn = day("2026-10-12")   // the owner closed it: stays closed
+        // An owner-added key survives; an owner-edited note is left alone.
+        old.keys.append(TrackedKey(id: "owner-added", title: "Owner key", kind: .androidSigning, path: "~/Keys/owner.jks",
+                                   source: "Entered in Linumic OS", recordedOn: day("2026-10-10")))
+        let fromDownloads = try #require(old.keys.firstIndex { $0.id == "velro-from-downloads" })
+        old.keys[fromDownloads].note = "Owner's own note"
+
+        let dir = FileManager.default.temporaryDirectory.appending(path: "keys-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let store = KeysRegistryStore(fileURL: dir.appending(path: "keys-registry.json"))
+        try store.save(old)
+        let loaded = try #require(store.load())
+        #expect(loaded.seedRevision == 2)
+        for id in KeysRegistry.revision2AddedKeyIDs { #expect(loaded.keys.contains { $0.id == id }, "\(id)") }
+        for id in KeysRegistry.revision2AddedGapIDs { #expect(loaded.gaps.contains { $0.id == id }, "\(id)") }
+        let velro = try #require(loaded.keys.first { $0.id == "velro-release" })
+        #expect(velro.title == "Other VELRO key (not the Play key)")
+        #expect(velro.path == "~/.velro-keys/velro-release.jks")
+        #expect(velro.backupIDs == [KeysRegistry.androidBundleID])
+        #expect(loaded.keys.first { $0.id == "velro-from-downloads" }?.note == "Owner's own note")
+        #expect(loaded.keys.first { $0.id == "velro-from-downloads" }?.title == "old title")
+        let future = try #require(loaded.gaps.first { $0.id == "future-keys" })
+        #expect(future.detail == KeysRegistry.seed.gaps.first { $0.id == "future-keys" }?.detail)
+        #expect(future.closedOn == day("2026-10-12"))
+        #expect(loaded.keys.contains { $0.id == "owner-added" })
+        var again = loaded
+        #expect(again.applySeedCorrections() == false)   // idempotent
+
+        // The owner removes an added key; it is not added back on the next load.
+        var edited = loaded
+        edited.removeKey("namazia-release", now: at("2026-10-19"))
+        try store.save(edited)
+        let reloaded = try #require(store.load())
+        #expect(!reloaded.keys.contains { $0.id == "namazia-release" })
     }
 
     @Test func passphraseFileIsRecordedAsDeletedNotMissing() throws {
@@ -187,9 +278,9 @@ struct KeysTests {
         key.note = "edited"
         reg.upsert(key, now: now)
         #expect(reg.keys[0].note == "edited")
-        #expect(reg.keys.count == 11)
+        #expect(reg.keys.count == 15)
         reg.removeKey(key.id, now: now)
-        #expect(reg.keys.count == 10)
+        #expect(reg.keys.count == 14)
     }
 
     @Test func keyDayParsesComparesAndCounts() {
@@ -234,9 +325,11 @@ struct KeysTests {
     @Test func everythingPresentAndBackedUpLeavesOnlyKnownGaps() {
         let reminders = KeysRules.reminders(input(seededFS()))
         let kinds = Set(reminders.map(\.kind))
-        // Known open gaps only: no second copy, ASC keys not backed up. Restore tests are recent.
+        // Known open gaps only: no second copy; the ASC keys and the KhayatYar, Talar and Namazia keys not backed up.
+        // Restore tests are recent.
         #expect(kinds == [.secondCopyMissing, .keyNotBackedUp])
-        #expect(reminders.filter { $0.kind == .keyNotBackedUp }.map(\.keyID) == ["asc-api-keys"])
+        #expect(Set(reminders.filter { $0.kind == .keyNotBackedUp }.compactMap(\.keyID))
+            == ["asc-api-keys", "khayatyar-release", "talar-release", "namazia-release"])
         let check = KeyChecker.check(KeysRegistry.seed.keys.first { $0.id == "asc-api-keys" }!, home: home, access: .all, fs: seededFS())
         #expect(check.files.count == 5)
     }
