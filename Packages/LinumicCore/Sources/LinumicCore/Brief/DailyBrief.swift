@@ -319,11 +319,14 @@ public struct BriefInput: Sendable {
     public var siteMessages: BriefSiteMessagesInput?
     /// The automation engine's run ledger; nil before the engine has loaded it.
     public var automation: AutomationLedger?
+    /// What `Backups/` holds, read from the disk; nil before it was checked.
+    public var backup: BackupFolderStatus?
 
     public init(now: Date, monitor: MonitorSnapshot, monitorTargets: [MonitorTarget] = MonitorCatalog.targets,
                 releases: ReleaseCenterSnapshot, licences: BriefLicenceInput, worktrack: BriefWorkTrackInput,
                 operations: [BriefOperationsInput], oversight: BriefOversightInput, keys: BriefKeysInput? = nil,
-                siteMessages: BriefSiteMessagesInput? = nil, automation: AutomationLedger? = nil) {
+                siteMessages: BriefSiteMessagesInput? = nil, automation: AutomationLedger? = nil,
+                backup: BackupFolderStatus? = nil) {
         self.now = now
         self.monitor = monitor
         self.monitorTargets = monitorTargets
@@ -335,6 +338,7 @@ public struct BriefInput: Sendable {
         self.keys = keys
         self.siteMessages = siteMessages
         self.automation = automation
+        self.backup = backup
     }
 }
 
@@ -370,7 +374,8 @@ public enum DailyBriefBuilder {
 
     // MARK: Automation
 
-    /// Jobs whose last run failed (high after three in a row) and, as notes, jobs this device can't run.
+    /// Jobs whose last run failed (high after three in a row), what `Backups/` really holds (never the run log alone),
+    /// and, as notes, jobs this device can't run.
     static func automation(_ input: BriefInput) -> BriefSection {
         let source = L("Automation run log on this device (automation.json)")
         let now = input.now
@@ -378,7 +383,7 @@ public enum DailyBriefBuilder {
             return BriefSection(kind: .automation, state: .neverRead(L("No automatic run yet.")), readAt: nil, source: source)
         }
         let health = AutomationHealth(ledger: ledger)
-        let lines = health.failing.map { f in
+        var lines = health.failing.map { f in
             let spec = AutomationCatalog.spec(f.job)
             return BriefLine(id: "automation.\(f.job.rawValue)", kind: .automation,
                              severity: f.count >= AutomationHealth.failingAfter ? .high : .normal,
@@ -386,7 +391,13 @@ public enum DailyBriefBuilder {
                              source: source, readAt: ledger.states[f.job]?.lastRun?.finishedAt, destination: .automation,
                              product: "Linumic OS")
         }
+        lines += BackupRules.lines(input.backup, state: ledger.states[.backup], now: now)
         var gaps: [BriefGap] = []
+        // The log says the backup ran, but the folder was not looked at: the log alone never stands for a copy.
+        if input.backup == nil, ledger.states[.backup]?.lastRun != nil {
+            gaps.append(BriefGap(key: "backupFolder", text: L("The backup job ran, but Backups/ has not been checked yet, so whether a copy is there is unknown."),
+                                 product: "Linumic OS"))
+        }
         if !health.notConnected.isEmpty {
             gaps.append(BriefGap(key: "notConnected", text: LF("Not connected on this device: %@.", health.notConnected.map { L(AutomationCatalog.spec($0).title) }.joined(separator: ", "))))
         }

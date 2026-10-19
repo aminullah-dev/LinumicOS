@@ -27,13 +27,20 @@ public struct AutomationConditions: Sendable, Hashable {
 public enum AutomationScheduler {
     /// Longest the engine sleeps between looks, so a changed setting or a missed wake is noticed.
     public static let maxSleep: TimeInterval = 5 * 60
+    /// How soon after a run that did the work the job runs again when what it left on disk is gone.
+    public static let artifactRecheck: TimeInterval = 60
 
     /// When `job` is next due. Never run: now. After work was done or skipped: one cadence after the last run
     /// (twice as long in Low Power Mode). After a failure: `retryAfter`, doubling with each further failure,
     /// capped at the cadence. `cadence` overrides the job's own (the Monitor stretches its own after silent rounds).
+    ///
+    /// `artifactMissing`: what the last successful run left on disk is gone (a backup file deleted after the run). The
+    /// job is then due `artifactRecheck` after that run, not a cadence later; after a failure or a skip the usual timing
+    /// holds. Either way it can't spin: at most one extra run a minute, and only while the last run did the work.
     public static func nextDue(_ spec: AutomationJobSpec, state: AutomationJobState?, lowPower: Bool,
-                               cadence: TimeInterval? = nil) -> Date? {
+                               cadence: TimeInterval? = nil, artifactMissing: Bool = false) -> Date? {
         guard let last = state?.lastRun else { return nil }   // nil = due now
+        if artifactMissing, state?.lastRunDidTheWork == true { return last.finishedAt.addingTimeInterval(artifactRecheck) }
         let base = (cadence ?? spec.cadence) * (lowPower ? 2 : 1)
         let failures = state?.consecutiveFailures ?? 0
         if last.outcome.isFailure, failures > 0 {
@@ -44,32 +51,37 @@ public enum AutomationScheduler {
     }
 
     public static func isDue(_ spec: AutomationJobSpec, state: AutomationJobState?, now: Date, lowPower: Bool,
-                             cadence: TimeInterval? = nil) -> Bool {
-        guard let due = nextDue(spec, state: state, lowPower: lowPower, cadence: cadence) else { return true }
+                             cadence: TimeInterval? = nil, artifactMissing: Bool = false) -> Bool {
+        guard let due = nextDue(spec, state: state, lowPower: lowPower, cadence: cadence, artifactMissing: artifactMissing) else { return true }
         return due <= now
     }
 
     /// The jobs to run now, in catalog order. Nothing while paused; jobs that need the network wait while offline
     /// (they are not recorded as skipped on every look: the engine runs them when the network returns).
+    /// `missingArtifacts`: jobs whose last successful run's file is gone (see `nextDue`).
     public static func dueJobs(_ specs: [AutomationJobSpec], states: [AutomationJobID: AutomationJobState],
                                disabled: Set<AutomationJobID>, conditions: AutomationConditions, now: Date,
-                               cadences: [AutomationJobID: TimeInterval] = [:]) -> [AutomationJobID] {
+                               cadences: [AutomationJobID: TimeInterval] = [:],
+                               missingArtifacts: Set<AutomationJobID> = []) -> [AutomationJobID] {
         guard !conditions.isPaused(at: now) else { return [] }
         return specs.filter { spec in
             !disabled.contains(spec.id)
                 && (conditions.online || !spec.needsNetwork)
-                && isDue(spec, state: states[spec.id], now: now, lowPower: conditions.lowPower, cadence: cadences[spec.id])
+                && isDue(spec, state: states[spec.id], now: now, lowPower: conditions.lowPower, cadence: cadences[spec.id],
+                         artifactMissing: missingArtifacts.contains(spec.id))
         }.map(\.id)
     }
 
     /// How long to sleep before the next look: until the earliest job is due, the pause ends, or `maxSleep`.
     public static func sleepInterval(_ specs: [AutomationJobSpec], states: [AutomationJobID: AutomationJobState],
                                      disabled: Set<AutomationJobID>, conditions: AutomationConditions, now: Date,
-                                     cadences: [AutomationJobID: TimeInterval] = [:]) -> TimeInterval {
+                                     cadences: [AutomationJobID: TimeInterval] = [:],
+                                     missingArtifacts: Set<AutomationJobID> = []) -> TimeInterval {
         if let until = conditions.pausedUntil, until > now { return min(until.timeIntervalSince(now), maxSleep) }
         var earliest = maxSleep
         for spec in specs where !disabled.contains(spec.id) && (conditions.online || !spec.needsNetwork) {
-            guard let due = nextDue(spec, state: states[spec.id], lowPower: conditions.lowPower, cadence: cadences[spec.id]) else { return 0 }
+            guard let due = nextDue(spec, state: states[spec.id], lowPower: conditions.lowPower, cadence: cadences[spec.id],
+                                    artifactMissing: missingArtifacts.contains(spec.id)) else { return 0 }
             earliest = min(earliest, max(0, due.timeIntervalSince(now)))
         }
         return earliest
@@ -93,14 +105,16 @@ public struct AutomationLedger: Codable, Sendable, Hashable {
 
     public init() {}
 
-    /// Records a finished run and updates the job's state.
-    public mutating func record(_ run: AutomationRun) {
+    /// Records a finished run and updates the job's state. `artifact` is what a run that did the work left on disk
+    /// (the backup's file name); it replaces the one recorded before.
+    public mutating func record(_ run: AutomationRun, artifact: String? = nil) {
         var state = states[run.job] ?? AutomationJobState()
         state.lastRun = run
         switch run.outcome {
         case .succeeded, .partial:
             state.lastSuccess = run.finishedAt
             state.consecutiveFailures = 0
+            if let artifact { state.artifact = artifact }
         case .failed:
             state.consecutiveFailures += 1
         case .skipped:

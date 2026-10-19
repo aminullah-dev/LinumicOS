@@ -94,3 +94,164 @@ public struct InventoryBackup: Sendable {
 
     private static func digest(_ data: Data) -> SHA256.Digest { SHA256.hash(data: data) }
 }
+
+// MARK: - What Backups/ really holds
+
+/// One backup file as it is on disk now.
+public struct BackupFile: Sendable, Hashable {
+    public var name: String
+    /// The day in its name ("inventory-2026-10-19.json"), in the Mac's local time zone when it was written.
+    public var day: KeyDay?
+    public var bytes: Int?
+    public var modifiedAt: Date?
+
+    public init(name: String, day: KeyDay?, bytes: Int? = nil, modifiedAt: Date? = nil) {
+        self.name = name
+        self.day = day
+        self.bytes = bytes
+        self.modifiedAt = modifiedAt
+    }
+}
+
+/// The state of `Backups/` as read from the disk at `checkedAt`, never from the run log: how many copies, the newest,
+/// and whether it restores (read back and decoded, as on a restore).
+public struct BackupFolderStatus: Sendable, Hashable {
+    public enum Check: Sendable, Hashable {
+        /// Read back and decoded as the app would on restore.
+        case restores(products: Int)
+        /// It is there but does not restore.
+        case fails(String)
+    }
+
+    public var checkedAt: Date
+    public var files: Int
+    /// Every backup file's name, newest first.
+    public var names: [String]
+    public var newest: BackupFile?
+    /// The newest copy, read back. Nil when there is none.
+    public var newestCheck: Check?
+    /// The newest copy holds exactly the inventory as it is now; nil when either could not be read.
+    public var matchesInventory: Bool?
+    /// The folder could not be listed, which is not the same as empty.
+    public var listError: String?
+
+    public init(checkedAt: Date, files: Int, names: [String] = [], newest: BackupFile? = nil, newestCheck: Check? = nil,
+                matchesInventory: Bool? = nil, listError: String? = nil) {
+        self.checkedAt = checkedAt
+        self.files = files
+        self.names = names
+        self.newest = newest
+        self.newestCheck = newestCheck
+        self.matchesInventory = matchesInventory
+        self.listError = listError
+    }
+
+    public var isEmpty: Bool { listError == nil && files == 0 }
+    public var restores: Bool { if case .restores = newestCheck { true } else { false } }
+}
+
+public extension InventoryBackup {
+    /// The day in "inventory-YYYY-MM-DD.json", or nil for any other name.
+    static func day(fromFileName name: String) -> KeyDay? {
+        guard let m = name.wholeMatch(of: #/inventory-(\d{4}-\d{2}-\d{2})\.json/#) else { return nil }
+        return KeyDay(String(m.1))
+    }
+
+    /// The backup files, newest first. Nil when the folder is not there (no backup yet); throws when it can't be listed.
+    func files() throws -> [BackupFile]? {
+        let names: [String]
+        do {
+            names = try FileManager.default.contentsOfDirectory(atPath: folder.path(percentEncoded: false))
+        } catch let error as CocoaError where error.code == .fileReadNoSuchFile || error.code == .fileNoSuchFile {
+            return nil
+        }
+        return names.filter { $0.hasPrefix("inventory-") && $0.hasSuffix(".json") }.sorted(by: >).map { name in
+            let attributes = try? FileManager.default.attributesOfItem(atPath: folder.appending(path: name).path(percentEncoded: false))
+            return BackupFile(name: name, day: Self.day(fromFileName: name), bytes: (attributes?[.size] as? NSNumber)?.intValue,
+                              modifiedAt: attributes?[.modificationDate] as? Date)
+        }
+    }
+
+    /// Reads the folder and the newest copy now. Never throws: what could not be read is said in the status.
+    func status(now: Date = .now) -> BackupFolderStatus {
+        let list: [BackupFile]
+        do {
+            list = try files() ?? []
+        } catch {
+            return BackupFolderStatus(checkedAt: now, files: 0, listError: error.localizedDescription)
+        }
+        guard let newest = list.first else { return BackupFolderStatus(checkedAt: now, files: 0) }
+        let file = folder.appending(path: newest.name)
+        let check: BackupFolderStatus.Check
+        do {
+            check = .restores(products: try verify(file).products.count)
+        } catch {
+            check = .fails(error.localizedDescription)
+        }
+        var matches: Bool?
+        if let current = try? Data(contentsOf: source), let copy = try? Data(contentsOf: file) {
+            matches = SHA256.hash(data: current) == SHA256.hash(data: copy)
+        }
+        return BackupFolderStatus(checkedAt: now, files: list.count, names: list.map(\.name), newest: newest, newestCheck: check,
+                                  matchesInventory: matches)
+    }
+
+    /// Whether the file the last successful run vouched for is gone, so the job must run again now. A ledger written
+    /// before artifacts were recorded has none: then an empty folder after a success counts as gone.
+    static func artifactMissing(_ state: AutomationJobState?, fileNames: [String]) -> Bool {
+        guard let state, state.lastRunDidTheWork else { return false }
+        if let artifact = state.artifact { return !fileNames.contains(artifact) }
+        return fileNames.isEmpty
+    }
+}
+
+// MARK: - What the Brief and the Desk say about it
+
+/// Lines about the daily backup, from what `Backups/` holds now and what the run log says. The log alone never makes a
+/// backup: an empty folder after a "succeeded" run is the first thing said, not hidden behind the green run.
+public enum BackupRules {
+    /// The job runs daily; a newest copy older than this means it has not been running (or not been able to write).
+    public static let staleDays = 2
+
+    public static var sourceText: String { L("Backups/ on this device (inventory-YYYY-MM-DD.json), read back") }
+
+    public static func lines(_ status: BackupFolderStatus?, state: AutomationJobState?, now: Date,
+                             calendar: Calendar = InventoryBackup.gregorian) -> [BriefLine] {
+        guard let status else { return [] }
+        let source = sourceText
+        func line(_ kind: String, _ severity: BriefSeverity, _ text: String, _ detail: String?) -> BriefLine {
+            BriefLine(id: "automation.backup.\(kind)", kind: .automation, severity: severity, text: text, detail: detail,
+                      source: source, readAt: status.checkedAt, destination: .automation, product: "Linumic OS")
+        }
+        if let error = status.listError {
+            return [line("unreadable", .high, LF("Backups/ could not be read: %@", error), nil)]
+        }
+        let vouched = state?.lastRunDidTheWork == true ? state?.lastRun?.finishedAt : nil
+        guard let newest = status.newest else {
+            if let vouched {
+                return [line("empty", .high,
+                             LF("Backups/ is empty, although the run log says the backup of %@ succeeded",
+                                vouched.formatted(date: .abbreviated, time: .shortened)),
+                             L("The file that run wrote is no longer there. The backup job runs again within a minute; until a copy is read back from Backups/, there is no local backup."))]
+            }
+            return [line("none", .normal, L("No daily backup in Backups/ yet"),
+                         L("The backup job writes one when the inventory has loaded, and reads it back."))]
+        }
+        var out: [BriefLine] = []
+        if case .fails(let why) = status.newestCheck {
+            out.append(line("restore", .high, LF("The newest backup, %@, does not restore", newest.name), why))
+        }
+        if let day = newest.day {
+            let age = day.days(until: KeyDay(now, calendar: calendar))
+            if age > staleDays {
+                out.append(line("old", .normal, LF("The newest backup is from %@ (%d days ago)", day.description, age),
+                                L("The backup job has not written or confirmed a copy since then.")))
+            }
+        }
+        if let artifact = state?.artifact, state?.lastRunDidTheWork == true, !status.names.contains(artifact) {
+            out.append(line("gone", .normal, LF("%@, which the run log recorded, is gone from Backups/", artifact),
+                            LF("The newest copy there now is %@.", newest.name)))
+        }
+        return out
+    }
+}
