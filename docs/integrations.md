@@ -98,8 +98,8 @@ only when explicit credentials and authorization are provided.
 
 ## Automatic refresh and store change alerts
 
-- With either console connected, the app reads it on launch and every 30 minutes while open
-  (toggle in Settings → Integrations). Reads only.
+- With either console connected, the app reads it on launch and every 30 minutes, with or without a window
+  (toggle in Settings → Integrations; timing, retries and the run log are in [automation.md](automation.md)). Reads only.
 - Each read is compared with the previous console read of the same listing (`StoreChangeDetector`).
   Only console-to-console differences count, so the first read after seed or screenshot data is silent.
 - Changes are listed in the dashboard ("Store changes", kept per device) and posted as local
