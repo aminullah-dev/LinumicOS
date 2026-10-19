@@ -7,7 +7,16 @@ public protocol HTTPTransport: Sendable {
 
 public struct URLSessionTransport: HTTPTransport {
     let session: URLSession
-    public init(session: URLSession = .shared) { self.session = session }
+    public init(session: URLSession = URLSessionTransport.bounded) { self.session = session }
+
+    /// The default session for every API client: a request that sends nothing for 30 seconds, or takes more than
+    /// 2 minutes in all, fails instead of waiting for days (URLSession.shared allows 7 days per resource).
+    public static let bounded: URLSession = {
+        let c = URLSessionConfiguration.default
+        c.timeoutIntervalForRequest = 30
+        c.timeoutIntervalForResource = 120
+        return URLSession(configuration: c)
+    }()
 
     public func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
         let (data, response) = try await session.data(for: request)
