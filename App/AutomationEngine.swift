@@ -430,6 +430,17 @@ final class AutomationEngine {
             if read.count < reading.files.count {
                 return .partial(String(localized: "\(read.count) of \(reading.files.count) ledgers read, \(open) open items"))
             }
+            // Lines set aside are owner items that could not be read: not a clean success.
+            let skipped = read.reduce(0) { sum, file in
+                switch file.status {
+                case .read(.priorities(let p)): sum + p.skippedLines.count
+                case .read(.nextActions(let n)): sum + n.skippedLines.count
+                default: sum
+                }
+            }
+            if skipped > 0 {
+                return .partial(String(localized: "\(read.count) ledgers read, \(open) open items, \(skipped) lines set aside"))
+            }
             return .succeeded(String(localized: "\(read.count) ledgers read, \(open) open items"))
             #else
             return .skipped(.notConnected)

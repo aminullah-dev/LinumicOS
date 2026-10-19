@@ -37,7 +37,7 @@ final class DeskModel {
             loadError = String(localized: "desk-state.json could not be read (\(why)). Nothing is saved until the file is fixed or removed.")
         case .empty?, nil: break
         }
-        grantedFolders = LedgerAccessStore.grantedPaths().map { KeyPaths.abbreviate($0, home: home) }
+        grantedFolders = LedgerAccessStore.grantedPaths(home: home).map { KeyPaths.abbreviate($0, home: home) }
     }
 
     /// Ledgers are read on the Mac only: the owner's folders are not on an iPhone or iPad.
@@ -69,7 +69,7 @@ final class DeskModel {
         isReading = true
         defer { isReading = false }
         let home = home
-        let urls = LedgerAccessStore.resolveAll()
+        let urls = LedgerAccessStore.resolveAll(home: home)
         grantedFolders = urls.map { KeyPaths.abbreviate($0.path, home: home) }
         reading = await Task.detached(priority: .utility) { () -> LedgerReading in
             let started = urls.filter { $0.startAccessingSecurityScopedResource() }
@@ -137,10 +137,16 @@ final class DeskModel {
     }
 
     #if os(macOS)
-    /// Opens a ledger file in its default app, inside the granted folder's scope. Nothing is written by the app.
+    /// Opens a ledger file in its default app, inside the granted folder's scope. Nothing is written by the app. Only a
+    /// file on the ledger allow-list is opened, whatever path the item carries.
     func openFile(_ path: String) {
         let absolute = KeyPaths.expand(path, home: home)
-        let urls = LedgerAccessStore.resolveAll()
+        let relative = KeyPaths.abbreviate(absolute, home: home)
+        guard relative.hasPrefix("~/"), LedgerAllowList.allows(String(relative.dropFirst(2))) else {
+            errorMessage = String(localized: "\(path) is not a ledger on the allow-list, so it is not opened.")
+            return
+        }
+        let urls = LedgerAccessStore.resolveAll(home: home)
         let started = urls.filter { $0.startAccessingSecurityScopedResource() }
         defer { started.forEach { $0.stopAccessingSecurityScopedResource() } }
         guard started.contains(where: { KeyPaths.isInside(absolute, root: $0.path) }) else {
@@ -152,11 +158,21 @@ final class DeskModel {
         }
     }
 
-    /// Asks the owner to grant read-only access to a ledger folder, then reads at once.
+    /// Asks the owner to grant read-only access to a ledger folder, then reads at once. Only the ledger folders
+    /// themselves are accepted: a wider one (the home folder, ~/Projects) would also cover keys and `.env` files.
     func chooseFolder(suggested: String) {
-        guard LedgerAccessStore.choose(suggested: KeyPaths.expand(suggested, home: home)) != nil else { return }
-        grantedFolders = LedgerAccessStore.grantedPaths().map { KeyPaths.abbreviate($0, home: home) }
-        Task { await refreshLedgers() }
+        switch LedgerAccessStore.choose(suggested: KeyPaths.expand(suggested, home: home), home: home) {
+        case .cancelled:
+            return
+        case .refused(let path):
+            let allowed = LedgerAllowList.folders.map { "~/\($0)" }.joined(separator: ", ")
+            errorMessage = String(localized: "\(KeyPaths.abbreviate(path, home: home)) is not a ledger folder, so it was not granted. Choose exactly one of: \(allowed).")
+        case .failed(let why):
+            errorMessage = why
+        case .granted:
+            grantedFolders = LedgerAccessStore.grantedPaths(home: home).map { KeyPaths.abbreviate($0, home: home) }
+            Task { await refreshLedgers() }
+        }
     }
 
     func revokeFolders() {
@@ -169,17 +185,37 @@ final class DeskModel {
 
 /// Read-only security-scoped bookmarks to the folders that hold the owner's ledgers (UserDefaults `LCCLedgerBookmarks`).
 /// Separate from `LCCKeysBookmarks`: the Keys grant promises that files are never read (KeysModel), while this one
-/// reads the allow-listed ledgers, and nothing else, in the folders it covers.
+/// reads the allow-listed ledgers, and nothing else, in the folders it covers. Only the folders named in
+/// `LedgerAllowList.folders` are kept: a grant of a wider folder would be a lasting read bookmark over keys and `.env`.
 enum LedgerAccessStore {
     private static let defaultsKey = "LCCLedgerBookmarks"
+
+    enum ChooseResult {
+        case granted(URL)
+        /// Not one of the ledger folders; nothing was saved.
+        case refused(String)
+        case failed(String)
+        case cancelled
+    }
 
     private static var bookmarks: [String: Data] {
         get { UserDefaults.standard.dictionary(forKey: defaultsKey) as? [String: Data] ?? [:] }
         set { UserDefaults.standard.set(newValue, forKey: defaultsKey) }
     }
 
-    /// Paths of the stored grants (for display before they are resolved).
-    static func grantedPaths() -> [String] { bookmarks.keys.sorted() }
+    /// The ledger folders as absolute paths under the real home.
+    static func allowedFolders(home: String) -> Set<String> {
+        Set(LedgerAllowList.folders.map { KeyPaths.expand("~/\($0)", home: home) })
+    }
+
+    static func isAllowed(_ path: String, home: String) -> Bool {
+        allowedFolders(home: home).contains(URL(fileURLWithPath: path).standardizedFileURL.path)
+    }
+
+    /// Paths of the stored grants that are ledger folders (for display before they are resolved).
+    static func grantedPaths(home: String = KeysModel.realHome()) -> [String] {
+        bookmarks.keys.filter { isAllowed($0, home: home) }.sorted()
+    }
 
     static func removeAll() {
         UserDefaults.standard.removeObject(forKey: defaultsKey)
@@ -187,7 +223,7 @@ enum LedgerAccessStore {
 
     #if os(macOS)
     @MainActor
-    static func choose(suggested: String) -> URL? {
+    static func choose(suggested: String, home: String) -> ChooseResult {
         let panel = NSOpenPanel()
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
@@ -195,26 +231,34 @@ enum LedgerAccessStore {
         panel.directoryURL = URL(fileURLWithPath: suggested)
         panel.prompt = String(localized: "Grant read access")
         panel.message = String(localized: "Choose a folder that holds your ledgers. Linumic OS reads only the PRIORITIES.md files and the newest NEXT-ACTIONS in it, never anything else, and never writes.")
-        guard panel.runModal() == .OK, let url = panel.url else { return nil }
+        guard panel.runModal() == .OK, let url = panel.url else { return .cancelled }
+        // Checked before any bookmark is made: nothing is saved for a folder that is not a ledger folder.
+        guard isAllowed(url.path, home: home) else { return .refused(url.path) }
         do {
             let data = try url.bookmarkData(options: [.withSecurityScope, .securityScopeAllowOnlyReadAccess],
                                             includingResourceValuesForKeys: nil, relativeTo: nil)
             var all = bookmarks
             all[url.path] = data
             bookmarks = all
-            return url
+            return .granted(url)
         } catch {
-            return nil
+            return .failed(error.localizedDescription)
         }
     }
 
-    /// Resolves every stored grant, refreshing stale bookmarks.
-    static func resolveAll() -> [URL] {
+    /// Resolves every stored grant of a ledger folder, refreshing stale bookmarks. A stored grant of any other folder
+    /// (none can be made any more) is dropped, not used.
+    static func resolveAll(home: String) -> [URL] {
         var out: [URL] = []
         var all = bookmarks
         for (path, data) in all {
+            guard isAllowed(path, home: home) else {
+                all[path] = nil
+                continue
+            }
             var stale = false
-            guard let url = try? URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &stale) else {
+            guard let url = try? URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &stale),
+                  isAllowed(url.path, home: home) else {
                 continue
             }
             if stale, let fresh = try? url.bookmarkData(options: [.withSecurityScope, .securityScopeAllowOnlyReadAccess],
@@ -227,6 +271,6 @@ enum LedgerAccessStore {
         return out
     }
     #else
-    static func resolveAll() -> [URL] { [] }
+    static func resolveAll(home: String) -> [URL] { [] }
     #endif
 }

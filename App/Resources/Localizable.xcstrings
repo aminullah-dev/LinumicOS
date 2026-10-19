@@ -21059,7 +21059,7 @@
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "در %@ انجام شد؛ اگر خواندن بعدی هنوز آن را نشان دهد، برمی‌گردد."
+            "value": "شما در %@ «انجام شد» زدید؛ اگر خواندن بعدی هنوز آن را نشان دهد، برمی‌گردد."
           }
         }
       }
@@ -21494,16 +21494,6 @@
         }
       }
     },
-    "You marked these done on the Desk. They stay here until the line in the ledger is ticked or changed, so the ledger stays the record.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "این‌ها را در میز کار انجام‌شده زدید. تا وقتی سطرشان در دفتر تیک نخورد یا عوض نشود این‌جا می‌مانند، تا دفتر سند اصلی بماند."
-          }
-        }
-      }
-    },
     "Yours": {
       "localizations": {
         "fa-AF": {
@@ -21520,6 +21510,176 @@
           "stringUnit": {
             "state": "translated",
             "value": "desk-state.json خوانده نشد (%@). تا وقتی فایل درست یا برداشته نشود، چیزی ذخیره نمی‌شود."
+          }
+        }
+      }
+    },
+    "%@ is not a ledger folder, so it was not granted. Choose exactly one of: %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ پوشهٔ دفترها نیست، پس اجازه داده نشد. دقیقاً یکی از این‌ها را انتخاب کنید: %2$@."
+          }
+        }
+      }
+    },
+    "%@ is not a ledger on the allow-list, so it is not opened.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ دفتری در فهرست مجاز نیست، پس باز نمی‌شود."
+          }
+        }
+      }
+    },
+    "%lld TODAY + %lld THIS WEEK, report of %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld امروز (TODAY) + %2$lld این هفته (THIS WEEK)، گزارش %3$@"
+          }
+        }
+      }
+    },
+    "%lld TODAY + %lld THIS WEEK, report of %@, %lld lines set aside": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld امروز (TODAY) + %2$lld این هفته (THIS WEEK)، گزارش %3$@، %4$lld سطر کنار گذاشته شد"
+          }
+        }
+      }
+    },
+    "%lld ledgers read, %lld open items, %lld lines set aside": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld دفتر خوانده شد، %2$lld مورد باز، %3$lld سطر کنار گذاشته شد"
+          }
+        }
+      }
+    },
+    "%lld sources to check": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld منبع برای بررسی"
+          }
+        }
+      }
+    },
+    "Correction in the ledger: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اصلاح در دفتر: %@"
+          }
+        }
+      }
+    },
+    "Done here. It stays listed until its title changes or it leaves the newest NEXT-ACTIONS.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این‌جا انجام شد. تا وقتی عنوانش عوض نشود یا از تازه‌ترین NEXT-ACTIONS بیرون نرود، در فهرست می‌ماند."
+          }
+        }
+      }
+    },
+    "Done. Hidden until this fact changes; its source gives no read time.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انجام شد. تا وقتی این واقعیت عوض نشود پنهان می‌ماند؛ منبعش زمان خواندن نمی‌دهد."
+          }
+        }
+      }
+    },
+    "It is not UTF-8 text, so it was not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متن UTF-8 نیست، پس خوانده نشد."
+          }
+        }
+      }
+    },
+    "Its real location is outside the granted folder, so it was not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جای واقعی آن بیرون از پوشهٔ اجازه‌داده‌شده است، پس خوانده نشد."
+          }
+        }
+      }
+    },
+    "Source: %@, checked %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع: %1$@، بررسی‌شده %2$@"
+          }
+        }
+      }
+    },
+    "This part was not read, so it is unknown here, not zero.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این بخش خوانده نشده؛ پس این‌جا نامعلوم است، نه صفر."
+          }
+        }
+      }
+    },
+    "Under this line in the ledger:": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زیر این سطر در دفتر:"
+          }
+        }
+      }
+    },
+    "You marked it done %@; hidden until this fact changes, since its source gives no read time.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شما در %@ «انجام شد» زدید؛ چون منبعش زمان خواندن نمی‌دهد، تا وقتی این واقعیت عوض نشود پنهان می‌ماند."
+          }
+        }
+      }
+    },
+    "You marked it done %@; the newest NEXT-ACTIONS still lists it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شما در %@ آن را انجام‌شده زدید؛ تازه‌ترین NEXT-ACTIONS هنوز آن را دارد."
+          }
+        }
+      }
+    },
+    "You marked these done on the Desk. A PRIORITIES.md line stays here until it is ticked or changed in the ledger, so the ledger stays the record. A NEXT-ACTIONS item has no checkbox: it stays until its title changes or it is no longer in the newest report.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این‌ها را در میز کار انجام‌شده زدید. سطر PRIORITIES.md تا وقتی در دفتر تیک نخورد یا عوض نشود این‌جا می‌ماند، تا دفتر سند اصلی بماند. مورد NEXT-ACTIONS چک‌باکس ندارد: تا وقتی عنوانش عوض نشده و در تازه‌ترین گزارش هست، این‌جا می‌ماند."
           }
         }
       }

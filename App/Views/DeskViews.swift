@@ -45,7 +45,7 @@ struct DeskView: View {
                     if !desk.markedNotTicked.isEmpty {
                         DisclosureGroup(isExpanded: $showMarked) {
                             VStack(alignment: .leading, spacing: 8) {
-                                Text("You marked these done on the Desk. They stay here until the line in the ledger is ticked or changed, so the ledger stays the record.")
+                                Text("You marked these done on the Desk. A PRIORITIES.md line stays here until it is ticked or changed in the ledger, so the ledger stays the record. A NEXT-ACTIONS item has no checkbox: it stays until its title changes or it is no longer in the newest report.")
                                     .font(.caption).foregroundStyle(.secondary)
                                 groups(desk.markedNotTicked)
                             }
@@ -104,10 +104,16 @@ struct DeskView: View {
             Text(now.formatted(date: .complete, time: .omitted))
                 .font(.title2.weight(.semibold))
                 .accessibilityAddTraits(.isHeader)
+            // Green only when nothing is open today and every source was read: an unread source is not "all clear".
+            let unknown = desk.open.count { $0.item.kind == .source }
             FitRow(spacing: 8) {
-                ReleaseBadge(text: String(localized: "\(desk.today.count) today"), symbol: "sun.max", color: desk.today.isEmpty ? .green : .red)
+                ReleaseBadge(text: String(localized: "\(desk.today.count) today"), symbol: "sun.max",
+                             color: !desk.today.isEmpty ? .red : (unknown > 0 ? .gray : .green))
                 ReleaseBadge(text: String(localized: "\(desk.thisWeek.count) this week"), symbol: "calendar", color: .orange)
                 ReleaseBadge(text: String(localized: "\(desk.later.count) later"), symbol: "tray", color: .gray)
+                if unknown > 0 {
+                    ReleaseBadge(text: String(localized: "\(unknown) sources to check"), symbol: "questionmark.circle", color: .gray)
+                }
             }
             ledgerLine(desk)
         }
@@ -116,7 +122,7 @@ struct DeskView: View {
     @ViewBuilder
     private func ledgerLine(_ desk: Desk) -> some View {
         if DeskModel.supportsLedgers {
-            let read = desk.sources.filter { if case .read = $0.state { true } else { false } }
+            let read = desk.sources.filter(\.isRead)
             HStack(spacing: 8) {
                 if model.isReading {
                     ProgressView().controlSize(.small)
@@ -232,6 +238,9 @@ struct DeskRowView: View {
                 Text(DeskText.text(item.title, of: item)).fixedSize(horizontal: false, vertical: true)
                 FitRow(spacing: 6) {
                     ReleaseBadge(text: item.domain.displayTitle, symbol: "shippingbox", color: .accentColor)
+                    ForEach(item.related) { other in
+                        ReleaseBadge(text: other.displayTitle, symbol: "shippingbox", color: .gray)
+                    }
                     if let due = item.due {
                         ReleaseBadge(text: String(localized: "Due \(due.start().formatted(date: .abbreviated, time: .omitted))"),
                                      symbol: "calendar.badge.clock", color: .red)
@@ -249,16 +258,29 @@ struct DeskRowView: View {
                         .font(.caption).foregroundStyle(.secondary)
                         .lineLimit(expanded ? nil : 2)
                         .fixedSize(horizontal: false, vertical: true)
-                    if detail.count > 140 || detail.contains("\n") {
-                        Button(expanded ? String(localized: "Less") : String(localized: "More")) { expanded.toggle() }
-                            .buttonStyle(.borderless).font(.caption)
+                }
+                // The ledger's own dated corrections under the line are always shown: the line above may be wrong.
+                ForEach(Array(item.corrections.enumerated()), id: \.offset) { _, note in
+                    Label { Text(DeskText.text(note, of: item)).fixedSize(horizontal: false, vertical: true) } icon: {
+                        Image(systemName: "exclamationmark.bubble").foregroundStyle(.orange)
+                    }
+                    .font(.caption)
+                    .accessibilityLabel(Text("Correction in the ledger: \(note)"))
+                }
+                if expanded, !item.notes.isEmpty {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Under this line in the ledger:").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+                        ForEach(Array(item.notes.enumerated()), id: \.offset) { _, note in
+                            Text(DeskText.text(note, of: item)).font(.caption).foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                     }
                 }
-                if let at = item.evidence.readAt {
-                    ReleaseSourceLine(source: item.evidence.location, at: at)
-                } else {
-                    Text("Source: \(item.evidence.location)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
+                if hasMore {
+                    Button(expanded ? String(localized: "Less") : String(localized: "More")) { expanded.toggle() }
+                        .buttonStyle(.borderless).font(.caption)
                 }
+                sourceLine
             }
             Spacer(minLength: 8)
             actions
@@ -266,6 +288,27 @@ struct DeskRowView: View {
         .padding(4)
         .background(highlighted ? Color.accentColor.opacity(0.15) : .clear, in: RoundedRectangle(cornerRadius: 8))
         .accessibilityElement(children: .contain)
+    }
+
+    /// More to show than the collapsed row holds: a long detail, or lines under it in the ledger.
+    private var hasMore: Bool {
+        let detail = item.detail ?? ""
+        return detail.count > 140 || detail.contains("\n") || !item.notes.isEmpty
+    }
+
+    /// Where it was read and when; "checked" for a source that says it was not read, since its time is an attempt.
+    @ViewBuilder
+    private var sourceLine: some View {
+        if let at = item.evidence.readAt {
+            if item.wasRead {
+                ReleaseSourceLine(source: item.evidence.location, at: at)
+            } else {
+                Text("Source: \(item.evidence.location), checked \(at.formatted(date: .abbreviated, time: .shortened))")
+                    .font(.caption2).foregroundStyle(.tertiary).lineLimit(3).textSelection(.enabled)
+            }
+        } else {
+            Text("Source: \(item.evidence.location)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
+        }
     }
 
     /// What the owner did with it, in words (colour is never the only sign).
@@ -277,12 +320,18 @@ struct DeskRowView: View {
         }
         switch row.resolution {
         case .markedNotTicked(let m):
-            Label { Text("You marked it done \(m.at.formatted(date: .abbreviated, time: .shortened)); the ledger still lists it.") } icon: {
+            Label {
+                if item.origin == .nextActions {
+                    Text("You marked it done \(m.at.formatted(date: .abbreviated, time: .shortened)); the newest NEXT-ACTIONS still lists it.")
+                } else {
+                    Text("You marked it done \(m.at.formatted(date: .abbreviated, time: .shortened)); the ledger still lists it.")
+                }
+            } icon: {
                 Image(systemName: "checkmark.circle").foregroundStyle(.green)
             }
             .font(.caption)
         case .hidden(let m):
-            Label { Text(verbatim: DeskText.hiddenReason(m)) } icon: { Image(systemName: "eye.slash").foregroundStyle(.secondary) }
+            Label { Text(verbatim: DeskText.hiddenReason(m, of: item)) } icon: { Image(systemName: "eye.slash").foregroundStyle(.secondary) }
                 .font(.caption).foregroundStyle(.secondary)
         case .open, .reopened:
             EmptyView()
@@ -306,8 +355,7 @@ struct DeskRowView: View {
             case .open, .reopened:
                 Button { model.markDone(item) } label: { Label("Done", systemImage: "checkmark").labelStyle(.titleAndIcon) }
                     .buttonStyle(.borderless)
-                    .help(item.kind == .task ? Text("Done here. It stays listed until the ledger line is ticked.")
-                                             : Text("Done. It comes back if the next reading still shows it."))
+                    .help(doneHelp)
                     .minTapTarget()
                 Menu {
                     Menu("Snooze") {
@@ -346,6 +394,16 @@ struct DeskRowView: View {
             }
         }
         .labelStyle(.iconOnly)
+    }
+
+    private var doneHelp: Text {
+        switch (item.kind, item.origin) {
+        case (.task, .nextActions): Text("Done here. It stays listed until its title changes or it leaves the newest NEXT-ACTIONS.")
+        case (.task, _): Text("Done here. It stays listed until the ledger line is ticked.")
+        default:
+            item.evidence.readAt == nil ? Text("Done. Hidden until this fact changes; its source gives no read time.")
+                                        : Text("Done. It comes back if the next reading still shows it.")
+        }
     }
 
     private var canOpen: Bool {
@@ -414,11 +472,26 @@ enum DeskText {
     /// Ledger lines are Markdown written by people and agents (**bold**, `code`, ~~struck~~) and are shown as such.
     /// Everything else (Brief lines, file paths) is shown exactly as read, so an underscore or a # stays itself.
     static func text(_ s: String, of item: DeskItem) -> AttributedString {
-        guard item.kind == .task else { return AttributedString(s) }
-        return (try? AttributedString(markdown: s, options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace))) ?? AttributedString(s)
+        guard item.kind == .task,
+              let text = try? AttributedString(markdown: s, options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)) else {
+            return AttributedString(s)
+        }
+        return webLinksOnly(text)
     }
 
-    static func hiddenReason(_ m: DeskMark) -> String {
+    /// Keeps only http and https links. A ledger line is written by people and agents; a `file://` or custom-scheme
+    /// link in it would open a local file or app with one click, so it is shown as plain text.
+    static func webLinksOnly(_ input: AttributedString) -> AttributedString {
+        var text = input
+        let unsafe = text.runs.compactMap { run -> Range<AttributedString.Index>? in
+            guard let url = run.link else { return nil }
+            return ["http", "https"].contains(url.scheme?.lowercased() ?? "") ? nil : run.range
+        }
+        for range in unsafe { text[range].link = nil }
+        return text
+    }
+
+    static func hiddenReason(_ m: DeskMark, of item: DeskItem) -> String {
         let when = m.at.formatted(date: .abbreviated, time: .shortened)
         switch m.kind {
         case .snoozed:
@@ -428,7 +501,10 @@ enum DeskText {
         case .dismissed:
             return String(localized: "Dismissed \(when): \(m.reason ?? "")")
         case .done:
-            return String(localized: "Done \(when); back if the next reading still shows it.")
+            // Done on a fact only says the owner pressed it; whether it is done is for the next reading to show.
+            return item.evidence.readAt == nil
+                ? String(localized: "You marked it done \(when); hidden until this fact changes, since its source gives no read time.")
+                : String(localized: "Done \(when); back if the next reading still shows it.")
         }
     }
 }
@@ -502,6 +578,10 @@ struct LedgerAccessSettingsSection: View {
             skipped.isEmpty
                 ? String(localized: "\(open) open, \(ticked) ticked, reviewed \(reviewed?.description ?? "?")")
                 : String(localized: "\(open) open, \(ticked) ticked, reviewed \(reviewed?.description ?? "?"), \(skipped.count) lines set aside")
+        case .report(let today, let week, let skipped, let day):
+            skipped.isEmpty
+                ? String(localized: "\(today) TODAY + \(week) THIS WEEK, report of \(day?.description ?? "?")")
+                : String(localized: "\(today) TODAY + \(week) THIS WEEK, report of \(day?.description ?? "?"), \(skipped.count) lines set aside")
         }
     }
 }
