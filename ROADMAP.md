@@ -29,7 +29,7 @@ the app.
 - [x] 0–100 fleet-health score and per-repo health roll-up (`OversightSummary`)
 - [x] Local `.git` scan via a security-scoped bookmark: current branch, tip-vs-remote divergence, and exact uncommitted-tracked-file count by blob SHA (Increment 2; the app is sandboxed so it parses `.git` directly rather than running git)
 - [x] Periodic oversight sweep (launch + every 30 min while open) and change alerts with local notifications (Increment 3)
-- [ ] Background sweep while the app is closed (needs BGTaskScheduler / a login item)
+- [x] Background sweep while the window is closed: the automation engine keeps every job running behind the menu bar, opens at login, and uses iOS background refresh (PR #13, merged 2026-10-19; docs/automation.md)
 
 ## Platform control (manage every Linumic platform from Linumic OS)
 
@@ -40,17 +40,21 @@ the app.
 - [ ] Operations writes, after the product fixes: SafeBeauty audited callables for provider approval and platform config; Talar idempotent settlements; VELRO staging (research/platform-admin-apis.md §7)
 - [ ] WorkTrack: sync the local action log to Supabase; TEST / DUPLICATE marks from the app
 
-## Phase 3: Backend (deferred at the owner's instruction; see docs/backend-plan.md)
+## Phase 3: Backend (Supabase; see docs/backend-plan.md)
 
-- [ ] Choose a backend (see ARCHITECTURE.md), authentication, roles, audit log
-- [ ] `RemoteInventoryStore`, migrating local data up
-- [ ] Integration credentials move server-side
+- [x] Backend chosen (Supabase, 2026-09-23), Sign in with Apple, admins (`app_admins`) and an append-only audit log
+- [x] `RemoteInventoryStore` behind `HybridInventoryStore` (2026-09-23; the first sync uploads the local data), the licence
+  ledger (2026-10-09) and the oversight register (2026-10-09) in the cloud
+- [x] Server-side checks while the Mac is off: the Sentinel (deployed 2026-10-19; docs/sentinel.md)
+- [ ] Integration credentials move server-side (they are still in this device's Keychain)
 
 ## Phase 4: Stores
 
 - [x] Store listings screens and the public App Store lookup refresh (no credentials)
-- [ ] App Store Connect API (read-only status). Needs an API key (.p8) from the owner.
-- [ ] Google Play Developer API (read-only status). Needs a service account from the owner.
+- [x] App Store Connect API (read-only status): the owner's key connected 2026-09-23; versions, builds and review
+  state in the Release Center (2026-10-09)
+- [x] Google Play Developer API (read-only status): the owner's service account connected 2026-09-23; tracks and
+  rollouts in the Release Center through an edit that is never committed (2026-10-09)
 
 ## Phase 5: Marketing
 
@@ -63,6 +67,13 @@ the app.
 - [ ] Collectors for specific sources (after the terms of use are checked)
 - [x] AI assistant with verified/derived/unknown labelling (local engine, no language model)
 - [ ] Optional language model for phrasing, restating grounded statements only (needs a provider key)
+
+## Company OS (docs/company-os-roadmap.md)
+
+- [x] Phase 1: the Desk and the ledgers (PR #21, merged 2026-10-19)
+- [ ] Phase 2: obligations and accounts, the encrypted continuity export, the daily backup counted from `Backups/`
+  (built; the owner's steps are in the pull request)
+- [ ] Phases 3 to 6: sync and reminders with the Mac off, money, sales, legal and marketing
 
 ## Clients
 

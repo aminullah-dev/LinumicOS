@@ -9,7 +9,7 @@ import Foundation
 
 /// Where a line or section comes from. The order is the order of the sections on screen.
 public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiable {
-    case monitor, siteMessages, releases, licences, worktrack, operations, oversight, keys, automation, changes
+    case monitor, siteMessages, releases, licences, worktrack, operations, oversight, keys, obligations, automation, changes
 
     public var id: String { rawValue }
 
@@ -23,6 +23,7 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .operations: L("Operations")
         case .oversight: L("Oversight")
         case .keys: L("Keys & Backups")
+        case .obligations: L("Obligations")
         case .automation: L("Automation")
         case .changes: L("What changed since yesterday")
         }
@@ -38,6 +39,7 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .operations: "tray.full"
         case .oversight: "scope"
         case .keys: "externaldrive.badge.checkmark"
+        case .obligations: "calendar.badge.exclamationmark"
         case .automation: "gearshape.2"
         case .changes: "clock.arrow.circlepath"
         }
@@ -57,6 +59,12 @@ public enum BriefDestination: Hashable, Sendable {
     case keys
     case siteMessages
     case automation
+    /// The Obligations & accounts screen.
+    case obligations
+    /// One obligation on that screen.
+    case obligation(String)
+    /// The Continuity screen (the encrypted export).
+    case continuity
 }
 
 public enum BriefSeverity: Int, Codable, Sendable, Comparable {
@@ -100,9 +108,21 @@ public struct BriefLine: Identifiable, Hashable, Sendable {
     /// The product the line is about, as its source names it ("WorkTrack", an app name, a repository), when it is known.
     /// The Desk groups by it; nil when the line is about several products or none.
     public var product: String?
+    /// What else makes the fact, beside the line's id and severity: a coarse bucket of a count ("3 halls waiting"), so
+    /// that a "Waiting on others" mark on 3 does not hide 30. Nil for a line whose id says it all.
+    public var factKey: String?
+    /// The day it is due, when the source gives one (an obligation). The Desk puts it in Today, This week or Later by it.
+    public var due: KeyDay?
+    /// The obligation the line is about, when it is one. Its Done is recorded on the Obligations screen, with evidence,
+    /// unless `closesAtSource`.
+    public var obligationID: String?
+    /// A live obligation (the continuity export, a restore test, a licence, a domain): it closes only when its source
+    /// records it, so its Done goes to that source's screen, never to the evidence sheet or a Desk mark.
+    public var closesAtSource: Bool
 
     public init(id: String, kind: BriefSourceKind, severity: BriefSeverity, text: String, detail: String? = nil,
-                source: String, readAt: Date?, destination: BriefDestination, links: [BriefLink] = [], product: String? = nil) {
+                source: String, readAt: Date?, destination: BriefDestination, links: [BriefLink] = [], product: String? = nil,
+                factKey: String? = nil, due: KeyDay? = nil, obligationID: String? = nil, closesAtSource: Bool = false) {
         self.id = id
         self.kind = kind
         self.severity = severity
@@ -113,6 +133,19 @@ public struct BriefLine: Identifiable, Hashable, Sendable {
         self.destination = destination
         self.links = links
         self.product = product
+        self.factKey = factKey
+        self.due = due
+        self.obligationID = obligationID
+        self.closesAtSource = closesAtSource
+    }
+
+    /// A count's power-of-two bucket ("1", "2-3", "4-7", "8-15", …): a queue that grows from 3 to 4 or to 30 is a new
+    /// fact for the Desk, one that moves between 2 and 3 is not.
+    public static func countBucket(_ n: Int) -> String {
+        guard n > 1 else { return n <= 0 ? "0" : "1" }
+        var low = 1
+        while low * 2 <= n { low *= 2 }
+        return "\(low)-\(low * 2 - 1)"
     }
 }
 
@@ -302,11 +335,16 @@ public struct BriefInput: Sendable {
     public var siteMessages: BriefSiteMessagesInput?
     /// The automation engine's run ledger; nil before the engine has loaded it.
     public var automation: AutomationLedger?
+    /// What `Backups/` holds, read from the disk; nil before it was checked.
+    public var backup: BackupFolderStatus?
+    /// The obligations register; nil before it was built.
+    public var obligations: BriefObligationsInput?
 
     public init(now: Date, monitor: MonitorSnapshot, monitorTargets: [MonitorTarget] = MonitorCatalog.targets,
                 releases: ReleaseCenterSnapshot, licences: BriefLicenceInput, worktrack: BriefWorkTrackInput,
                 operations: [BriefOperationsInput], oversight: BriefOversightInput, keys: BriefKeysInput? = nil,
-                siteMessages: BriefSiteMessagesInput? = nil, automation: AutomationLedger? = nil) {
+                siteMessages: BriefSiteMessagesInput? = nil, automation: AutomationLedger? = nil,
+                backup: BackupFolderStatus? = nil, obligations: BriefObligationsInput? = nil) {
         self.now = now
         self.monitor = monitor
         self.monitorTargets = monitorTargets
@@ -318,6 +356,8 @@ public struct BriefInput: Sendable {
         self.keys = keys
         self.siteMessages = siteMessages
         self.automation = automation
+        self.backup = backup
+        self.obligations = obligations
     }
 }
 
@@ -340,6 +380,7 @@ public enum DailyBriefBuilder {
             operations(input),
             oversight(input),
             keys(input),
+            obligations(input),
             automation(input),
         ]
         sections.append(changesSection(changes, now: input.now))
@@ -353,7 +394,8 @@ public enum DailyBriefBuilder {
 
     // MARK: Automation
 
-    /// Jobs whose last run failed (high after three in a row) and, as notes, jobs this device can't run.
+    /// Jobs whose last run failed (high after three in a row), what `Backups/` really holds (never the run log alone),
+    /// and, as notes, jobs this device can't run.
     static func automation(_ input: BriefInput) -> BriefSection {
         let source = L("Automation run log on this device (automation.json)")
         let now = input.now
@@ -361,7 +403,7 @@ public enum DailyBriefBuilder {
             return BriefSection(kind: .automation, state: .neverRead(L("No automatic run yet.")), readAt: nil, source: source)
         }
         let health = AutomationHealth(ledger: ledger)
-        let lines = health.failing.map { f in
+        var lines = health.failing.map { f in
             let spec = AutomationCatalog.spec(f.job)
             return BriefLine(id: "automation.\(f.job.rawValue)", kind: .automation,
                              severity: f.count >= AutomationHealth.failingAfter ? .high : .normal,
@@ -369,7 +411,14 @@ public enum DailyBriefBuilder {
                              source: source, readAt: ledger.states[f.job]?.lastRun?.finishedAt, destination: .automation,
                              product: "Linumic OS")
         }
+        lines += BackupRules.lines(input.backup, state: ledger.states[.backup], now: now, jobOff: ledger.disabled.contains(.backup),
+                                   pausedUntil: ledger.pausedUntil)
         var gaps: [BriefGap] = []
+        // The log says the backup ran, but the folder was not looked at: the log alone never stands for a copy.
+        if input.backup == nil, ledger.states[.backup]?.lastRun != nil {
+            gaps.append(BriefGap(key: "backupFolder", text: L("The backup job ran, but Backups/ has not been checked yet, so whether a copy is there is unknown."),
+                                 product: "Linumic OS"))
+        }
         if !health.notConnected.isEmpty {
             gaps.append(BriefGap(key: "notConnected", text: LF("Not connected on this device: %@.", health.notConnected.map { L(AutomationCatalog.spec($0).title) }.joined(separator: ", "))))
         }
@@ -418,7 +467,8 @@ public enum DailyBriefBuilder {
                                        text: LF("%@ was down in %d of %d checks in the last 24 hours", name, downs.count, recent.count),
                                        detail: downs.last.map { LF("Last failure %@", $0.at.formatted(date: .omitted, time: .shortened)) },
                                        source: L("Monitor history, last 24 hours (monitor.json)"),
-                                       readAt: recent.last?.at, destination: .monitor, product: t.product.title))
+                                       readAt: recent.last?.at, destination: .monitor, product: t.product.title,
+                                       factKey: BriefLine.countBucket(downs.count)))
             }
         }
         let hosts = Set(input.monitorTargets.map(\.host))
@@ -538,8 +588,15 @@ public enum DailyBriefBuilder {
                                        product: r.product.displayName))
             }
         }
-        let gaps = l.records.isEmpty ? [BriefGap(key: "empty", text: L("The ledger is empty on this device."))] : []
-        return finish(.licences, lines: lines, readAt: l.lastSyncedAt, source: source, gaps: gaps)
+        // Empty and never synced: whether licences exist elsewhere is unknown, a part not read. Empty after a sync with
+        // the cloud: read, and none there (a note, not a gap).
+        let gaps = l.records.isEmpty && l.lastSyncedAt == nil
+            ? [BriefGap(key: "empty", text: L("The ledger is empty on this device and has never been synced, so whether licences exist elsewhere is unknown."))]
+            : []
+        let notes = l.records.isEmpty && l.lastSyncedAt != nil ? [L("The ledger is empty, also in the cloud.")] : []
+        let section = finish(.licences, lines: lines, readAt: l.lastSyncedAt, source: source, gaps: gaps)
+        return BriefSection(kind: .licences, state: section.state, lines: section.lines, readAt: section.readAt, source: source,
+                            notes: notes, gaps: gaps)
     }
 
     // MARK: WorkTrack
@@ -613,7 +670,8 @@ public enum DailyBriefBuilder {
                 let where_ = c.isProduction ? p.product.title : "\(p.product.title) (\(c.environment))"
                 lines.append(BriefLine(id: "ops.\(c.queue.rawValue)", kind: .operations, severity: c.isProduction ? .normal : .info,
                                        text: c.queue.sentence(c.count), source: LF("%@ admin, %@", where_, c.queue.title),
-                                       readAt: c.readAt, destination: .operations(p.product), product: p.product.title))
+                                       readAt: c.readAt, destination: .operations(p.product), product: p.product.title,
+                                       factKey: BriefLine.countBucket(c.count)))
             }
         }
         return finish(.operations, lines: lines, readAt: newest, source: source, gaps: gaps)
@@ -633,24 +691,31 @@ public enum DailyBriefBuilder {
         if summary.openSecurityAlerts > 0 {
             lines.append(BriefLine(id: "oversight.alerts", kind: .oversight, severity: .normal,
                                    text: LF("%d open security alerts in %d repositories", summary.openSecurityAlerts, summary.reposWithOpenAlerts),
-                                   source: source, readAt: lastScan, destination: .oversight))
+                                   source: source, readAt: lastScan, destination: .oversight,
+                                   factKey: BriefLine.countBucket(summary.openSecurityAlerts)))
         }
         if summary.unprotectedDefaultBranches > 0 {
             lines.append(BriefLine(id: "oversight.unprotected", kind: .oversight, severity: .info,
                                    text: LF("%d default branches are not protected", summary.unprotectedDefaultBranches),
-                                   source: source, readAt: lastScan, destination: .oversight))
+                                   source: source, readAt: lastScan, destination: .oversight,
+                                   factKey: BriefLine.countBucket(summary.unprotectedDefaultBranches)))
         }
         if summary.reposWithUncommittedChanges > 0 {
             lines.append(BriefLine(id: "oversight.uncommitted", kind: .oversight, severity: .info,
                                    text: LF("%d local repositories have uncommitted changes", summary.reposWithUncommittedChanges),
-                                   source: L("Local Git scan of the chosen folder"), readAt: lastScan, destination: .oversight))
+                                   source: L("Local Git scan of the chosen folder"), readAt: lastScan, destination: .oversight,
+                                   factKey: BriefLine.countBucket(summary.reposWithUncommittedChanges)))
         }
         for change in o.recentChanges where input.now.timeIntervalSince(change.detectedAt) < day {
             lines.append(BriefLine(id: "oversight.change.\(change.id.uuidString)", kind: .oversight,
                                    severity: change.isImportant ? .normal : .info, text: change.message,
                                    source: source, readAt: change.detectedAt, destination: .oversight))
         }
-        return finish(.oversight, lines: lines, readAt: lastScan, source: source)
+        // Repositories the sweep has not reached are unknown, not clean.
+        let gaps = summary.neverScanned > 0
+            ? [BriefGap(key: "neverScanned", text: LF("%d of %d repositories not scanned yet.", summary.neverScanned, summary.totalRepos))]
+            : []
+        return finish(.oversight, lines: lines, readAt: lastScan, source: source, gaps: gaps)
     }
 
     // MARK: Keys & Backups

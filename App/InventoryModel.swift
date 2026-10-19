@@ -16,7 +16,12 @@ final class InventoryModel {
     private(set) var oversight: [OversightRepo] = []
     /// Seed revision of the current data. It has to be saved back, or every launch would look outdated.
     private var seedRevision = 1
+    /// The first load has ended, whether or not it succeeded.
     private(set) var isLoaded = false
+    /// An inventory was read (from the store, the cloud or the seed). False before the load ends and after a load that
+    /// failed: `products` is then empty without being known to be empty, so nothing may count it (the continuity
+    /// export refuses to run without it).
+    private(set) var isRead = false
     var errorMessage: String?
     /// One-time information for the user, e.g. that an older inventory file was archived.
     var notice: String?
@@ -375,6 +380,7 @@ final class InventoryModel {
     }
 
     private func apply(_ inventory: Inventory) {
+        isRead = true
         products = inventory.products
         unresolved = inventory.unresolved
         market = inventory.market
@@ -438,9 +444,14 @@ final class InventoryModel {
         return candidate
     }
 
+    /// The inventory as it is now (what is saved, and what the continuity export carries).
+    var current: Inventory {
+        Inventory(seedRevision: seedRevision, products: products, unresolved: unresolved, market: market, content: content, oversight: oversight)
+    }
+
     /// Saves are chained so they reach the store in the same order as the mutations.
     private func persist() {
-        let snapshot = Inventory(seedRevision: seedRevision, products: products, unresolved: unresolved, market: market, content: content, oversight: oversight)
+        let snapshot = current
         let previous = saveTask
         saveTask = Task { [store, hybrid] in
             await previous?.value

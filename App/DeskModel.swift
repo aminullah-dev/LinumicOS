@@ -19,8 +19,14 @@ final class DeskModel {
     private(set) var loadError: String?
     private(set) var reading: LedgerReading?
     private(set) var isReading = false
+    /// A read was asked for while one was running (a grant changed, the job came round): one more read follows, so the
+    /// Desk never keeps lines from a grant that was just removed.
+    private var readAgain = false
     /// The granted ledger folders, home-relative, for display.
     private(set) var grantedFolders: [String] = []
+    /// Stored grants whose bookmark could not be resolved at the last read, home-relative. They are kept (the failure
+    /// may pass) and skipped for that read; Settings says so.
+    private(set) var unresolvedFolders: [String] = []
     var errorMessage: String?
 
     private let store: DeskStateStore?
@@ -65,19 +71,29 @@ final class DeskModel {
     /// records each ledger as "not granted", so the Desk says so instead of showing nothing.
     func refreshLedgers() async {
         #if os(macOS)
-        guard !isReading else { return }
+        guard !isReading else {
+            readAgain = true
+            return
+        }
         isReading = true
         defer { isReading = false }
-        let home = home
-        let urls = LedgerAccessStore.resolveAll(home: home)
-        let entitled = LedgerAccessStore.entitledFolders(home: home)
-        grantedFolders = Array(Set(urls.map(\.path) + entitled)).sorted().map { KeyPaths.abbreviate($0, home: home) }
-        reading = await Task.detached(priority: .utility) { () -> LedgerReading in
-            let started = urls.filter { $0.startAccessingSecurityScopedResource() }
-            defer { started.forEach { $0.stopAccessingSecurityScopedResource() } }
-            let roots = Array(Set(started.map(\.path) + entitled)).sorted()
-            return LedgerReader.read(home: home, granted: roots, fs: LocalLedgerFileSystem(), now: .now)
-        }.value
+        repeat {
+            readAgain = false
+            let home = home
+            let resolved = LedgerAccessStore.resolveAll(home: home)
+            let urls = resolved.urls
+            let entitled = LedgerAccessStore.entitledFolders(home: home)
+            grantedFolders = Array(Set(urls.map(\.path) + entitled)).sorted().map { KeyPaths.abbreviate($0, home: home) }
+            unresolvedFolders = resolved.unresolved.filter { !entitled.contains($0) }.map { KeyPaths.abbreviate($0, home: home) }
+            let result = await Task.detached(priority: .utility) { () -> LedgerReading in
+                let started = urls.filter { $0.startAccessingSecurityScopedResource() }
+                defer { started.forEach { $0.stopAccessingSecurityScopedResource() } }
+                let roots = Array(Set(started.map(\.path) + entitled)).sorted()
+                return LedgerReader.read(home: home, granted: roots, fs: LocalLedgerFileSystem(), now: .now)
+            }.value
+            // A read that started before a grant changed is replaced by the next one, never shown.
+            if !readAgain { reading = result }
+        } while readAgain
         #endif
         pruneObsoleteMarks()
     }
@@ -148,7 +164,7 @@ final class DeskModel {
             errorMessage = String(localized: "\(path) is not a ledger on the allow-list, so it is not opened.")
             return
         }
-        let urls = LedgerAccessStore.resolveAll(home: home)
+        let urls = LedgerAccessStore.resolveAll(home: home).urls
         let started = urls.filter { $0.startAccessingSecurityScopedResource() }
         defer { started.forEach { $0.stopAccessingSecurityScopedResource() } }
         let roots = started.map(\.path) + LedgerAccessStore.entitledFolders(home: home)
@@ -156,7 +172,16 @@ final class DeskModel {
             errorMessage = String(localized: "The folder of \(path) is not granted. Grant it in Settings → Integrations → Ledger access.")
             return
         }
-        if !NSWorkspace.shared.open(URL(fileURLWithPath: absolute)) {
+        // The same rules as reading: a regular file with one name, really inside a granted folder. A link (at the file
+        // or a folder on the way) would hand its target, e.g. a file under ~/Keys, to the default app.
+        let info = try? LocalLedgerFileSystem().info(atPath: absolute)
+        guard let info, info.isRegularFile, !info.isSymbolicLink, info.links <= 1,
+              let real = Self.realPath(absolute),
+              roots.contains(where: { root in KeyPaths.isInside(real, root: Self.realPath(root) ?? root) }) else {
+            errorMessage = String(localized: "\(path) is not a regular ledger file inside the granted folder, so it is not opened.")
+            return
+        }
+        if !NSWorkspace.shared.open(URL(fileURLWithPath: real)) {
             errorMessage = String(localized: "Could not open \(path).")
         }
     }
@@ -181,7 +206,17 @@ final class DeskModel {
     func revokeFolders() {
         LedgerAccessStore.removeAll()
         grantedFolders = []
+        unresolvedFolders = []
+        // Lines read through the removed grant leave the screen now, not at the next read.
+        reading = nil
         Task { await refreshLedgers() }
+    }
+
+    /// The path with every link resolved, or nil when it can't be resolved.
+    static func realPath(_ path: String) -> String? {
+        guard let p = realpath(path, nil) else { return nil }
+        defer { free(p) }
+        return String(cString: p)
     }
     #endif
 }
@@ -256,9 +291,12 @@ enum LedgerAccessStore {
     }
 
     /// Resolves every stored grant of a ledger folder, refreshing stale bookmarks. A stored grant of any other folder
-    /// (none can be made any more) is dropped, not used.
-    static func resolveAll(home: String) -> [URL] {
+    /// (none can be made any more), or one that resolves somewhere else, is dropped, not used. One that can't be
+    /// resolved right now (the call throws) is kept and skipped for this read: the failure may pass, and dropping it
+    /// would make the owner grant it again. Its path is returned in `unresolved`, for Settings to say so.
+    static func resolveAll(home: String) -> (urls: [URL], unresolved: [String]) {
         var out: [URL] = []
+        var unresolved: [String] = []
         var all = bookmarks
         for (path, data) in all {
             guard isAllowed(path, home: home) else {
@@ -266,8 +304,17 @@ enum LedgerAccessStore {
                 continue
             }
             var stale = false
-            guard let url = try? URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &stale),
-                  isAllowed(url.path, home: home) else {
+            let url: URL
+            do {
+                url = try URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &stale)
+            } catch {
+                unresolved.append(path)
+                continue
+            }
+            guard isAllowed(url.path, home: home) else {
+                // It resolves to another folder (moved or renamed): drop it, so Settings doesn't say "Granted" for a
+                // grant that reads nothing.
+                all[path] = nil
                 continue
             }
             if stale, let fresh = try? url.bookmarkData(options: [.withSecurityScope, .securityScopeAllowOnlyReadAccess],
@@ -277,9 +324,9 @@ enum LedgerAccessStore {
             out.append(url)
         }
         bookmarks = all
-        return out
+        return (out, unresolved.sorted())
     }
     #else
-    static func resolveAll(home: String) -> [URL] { [] }
+    static func resolveAll(home: String) -> (urls: [URL], unresolved: [String]) { ([], []) }
     #endif
 }

@@ -2,8 +2,8 @@ import LinumicCore
 import SwiftUI
 
 /// Every recorded listing on one store, across products. The App Store screen can refresh
-/// public data. Review state and pending versions need App Store Connect / Play Console
-/// credentials, which aren't connected.
+/// public data. Review state, versions in progress and Play tracks are read with the owner's
+/// App Store Connect and Google Play keys by the Store listings job and the Release Center.
 struct StoreListingsView: View {
     let store: AppStore
     @Environment(InventoryModel.self) private var model

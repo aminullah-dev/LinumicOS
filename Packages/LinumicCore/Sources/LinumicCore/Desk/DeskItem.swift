@@ -23,6 +23,11 @@ public struct DeskDomain: Hashable, Codable, Sendable, Identifiable {
         self.name = name
     }
 
+    // The key is the identity: two spellings of one unknown product ("Signing Keys", "Signing-Keys") are the same
+    // domain, so the Desk makes one group of them (keeping the first name seen) and never two rows with one id.
+    public static func == (a: DeskDomain, b: DeskDomain) -> Bool { a.key == b.key }
+    public func hash(into hasher: inout Hasher) { hasher.combine(key) }
+
     public static let worktrack = DeskDomain("worktrack", "WorkTrack")
     public static let safeBeauty = DeskDomain("safebeauty", "SafeBeauty")
     public static let talar = DeskDomain("talar", "Talar")
@@ -57,6 +62,9 @@ public struct DeskDomain: Hashable, Codable, Sendable, Identifiable {
         map["website"] = .website
         map["afghanjama"] = .khayatYar
         map["afghanprayertimes"] = .namazia
+        // Repository slugs that don't carry the product's name (the Release Center names lines by repository).
+        map["stealthservicevault"] = .safeBeauty
+        map["talarreleases"] = .talar
         return map
     }()
 
@@ -216,6 +224,12 @@ public struct DeskItem: Identifiable, Hashable, Sendable {
     public var related: [DeskDomain]
     /// The source's own reference line, as written (the NEXT-ACTIONS «منبع: …» text).
     public var reference: String?
+    /// The obligation an item of the Obligations section is about. Its Done opens the evidence sheet: an obligation is
+    /// never done on the Desk's word alone.
+    public var obligationID: String?
+    /// A live obligation: its Done goes to the screen of its source (Continuity, Keys & Backups, the licence, the
+    /// Monitor), where what closes it is recorded.
+    public var closesAtSource: Bool
 
     public var id: String { "\(origin.key)|\(subjectKey)|\(kindKey)" }
 
@@ -231,7 +245,8 @@ public struct DeskItem: Identifiable, Hashable, Sendable {
     public init(origin: DeskOrigin, subjectKey: String, kindKey: String, kind: DeskItemKind, domain: DeskDomain,
                 severity: BriefSeverity, title: String, detail: String? = nil, subject: String, due: KeyDay? = nil,
                 horizon: DeskHorizon? = nil, ownerAction: Bool, evidence: DeskEvidence, factHash: String,
-                destination: DeskDestination, notes: [String] = [], related: [DeskDomain] = [], reference: String? = nil) {
+                destination: DeskDestination, notes: [String] = [], related: [DeskDomain] = [], reference: String? = nil,
+                obligationID: String? = nil, closesAtSource: Bool = false) {
         self.origin = origin
         self.subjectKey = subjectKey
         self.kindKey = kindKey
@@ -250,6 +265,8 @@ public struct DeskItem: Identifiable, Hashable, Sendable {
         self.notes = notes
         self.related = related
         self.reference = reference
+        self.obligationID = obligationID
+        self.closesAtSource = closesAtSource
     }
 
     /// The origin part of an item id ("ledger.worktrack|…" → "ledger.worktrack").

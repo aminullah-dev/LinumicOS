@@ -42,11 +42,40 @@ enum LedgerText {
         suffix(after: needle, in: s) != nil
     }
 
-    /// The first YYYY-MM-DD day in `s` (any digits), or nil.
+    /// Gregorian years a ledger date can have. A Solar Hijri date («۱۴۰۵-۰۷-۲۷») has the same shape, and read as
+    /// Gregorian it would be about 600 years old; it is not guessed, so it reads as no date at all.
+    static let plausibleYears = 2000...2199
+
+    /// The first YYYY-MM-DD day in `s` (any digits) with a plausible Gregorian year, or nil.
     static func firstDay(in s: String) -> KeyDay? {
         let ascii = asciiDigits(s)
-        guard let m = ascii.firstMatch(of: #/(\d{4})-(\d{2})-(\d{2})/#) else { return nil }
-        return KeyDay("\(m.1)-\(m.2)-\(m.3)")
+        guard let m = ascii.firstMatch(of: #/(\d{4})-(\d{2})-(\d{2})/#), let day = KeyDay("\(m.1)-\(m.2)-\(m.3)"),
+              plausibleYears.contains(day.year) else { return nil }
+        return day
+    }
+
+    /// Direction marks an editor may put at the start of a line (LRM, RLM, the embeddings and isolates). They are
+    /// invisible, so "\u{200F}- [ ] …" reads as a checkbox to the owner and must read as one here too.
+    static func isBidiMark(_ u: Unicode.Scalar) -> Bool {
+        switch u.value {
+        case 0x200E, 0x200F, 0x202A...0x202E, 0x2066...0x2069: true
+        default: false
+        }
+    }
+
+    /// The line without the direction marks before its first visible character (indentation is kept).
+    static func withoutLeadingBidiMarks(_ line: Substring) -> Substring {
+        guard line.unicodeScalars.contains(where: isBidiMark) else { return line }
+        var out = String.UnicodeScalarView()
+        var leading = true
+        for u in line.unicodeScalars {
+            if leading {
+                if isBidiMark(u) { continue }
+                if u != " " && u != "\t" { leading = false }
+            }
+            out.append(u)
+        }
+        return Substring(String(out))
     }
 
     /// The lines of a text, split at any line break. "\r\n" is a single Character in Swift, so splitting at "\n" alone
@@ -172,8 +201,9 @@ public enum LedgerParser {
         // The items (and ticked or set-aside lines, with no index) whose indented lines are still being collected,
         // innermost last. A line belongs to the innermost one indented less than it.
         var open: [(item: Int?, indent: Int)] = []
-        for (index, raw) in LedgerText.lines(text).enumerated() {
+        for (index, line) in LedgerText.lines(text).enumerated() {
             let number = index + 1
+            let raw = LedgerText.withoutLeadingBidiMarks(line)
             let trimmed = raw.trimmingCharacters(in: .whitespaces)
             if trimmed.hasPrefix("```") || trimmed.hasPrefix("~~~") {
                 inFence.toggle()
@@ -200,6 +230,7 @@ public enum LedgerParser {
             }
             let priority = priority(headings)
             let section = headings.last?.text
+            let sectionLevel = headings.last?.level ?? 0
             switch checkbox(raw) {
             case .open(let body, let indent):
                 let (title, detail) = LedgerText.titleAndDetail(body)
@@ -218,7 +249,9 @@ public enum LedgerParser {
             case .none:
                 break
             }
-            if let section, LedgerText.contains(section, prioritiesMarker) {
+            // Under a «اولویت…» heading of level 2 or deeper: every file's own title is «# اولویت‌های X», and a numbered
+            // line in its preamble is not a task.
+            if let section, sectionLevel >= 2, LedgerText.contains(section, prioritiesMarker) {
                 switch numbered(raw) {
                 case .open(let body, let indent):
                     let (title, detail) = LedgerText.titleAndDetail(body)
@@ -261,7 +294,7 @@ public enum LedgerParser {
     /// that says «اول این‌ها» ("these first") without a P marker counts as P1.
     static func priority(_ headings: [(level: Int, text: String)]) -> LedgerPriority {
         for h in headings.reversed() {
-            let text = LedgerText.asciiDigits(h.text).trimmingCharacters(in: .whitespaces)
+            let text = plainHeading(h.text)
             if let m = text.prefixMatch(of: #/[Pp](\d)\b/#) {
                 switch m.1 {
                 case "0": return .p0
@@ -274,6 +307,18 @@ public enum LedgerParser {
         return .other
     }
 
+    /// A heading's text with ASCII digits and without emphasis marks or emoji ("**P0** — فوری" → "P0 — فوری"), so a bold
+    /// or decorated P marker still decides the section.
+    static func plainHeading(_ text: String) -> String {
+        var out = String.UnicodeScalarView()
+        for u in LedgerText.asciiDigits(text).unicodeScalars {
+            if u == "*" || u == "_" || u == "`" || u.value == 0xFE0F || u.value == 0x200D { continue }
+            if u.value > 0x7F, u.properties.isEmoji || u.properties.isEmojiPresentation { continue }
+            out.append(u)
+        }
+        return String(out).trimmingCharacters(in: .whitespaces)
+    }
+
     static func checkbox(_ raw: Substring) -> Shape? {
         let line = String(raw)
         if let m = line.wholeMatch(of: #/(\s*)[-*+]\s+\[ \]\s+(\S.*)/#) {
@@ -282,13 +327,13 @@ public enum LedgerParser {
         if line.wholeMatch(of: #/\s*[-*+]\s+\[[xX]\](\s+.*)?/#) != nil { return .ticked }
         // Looks like a checkbox ("- []", "-[ ]", "- [ ]" alone, "- [-] …", "- [ ]text") but is none of the above.
         // A link ("- [PR](…)") is not a checkbox.
-        if line.prefixMatch(of: #/\s*[-*+]\s*\[.?\](?!\()/#) != nil { return .broken }
+        if line.prefixMatch(of: #/\s*[-*+]\s*\[\s*.?\s*\](?!\()/#) != nil { return .broken }
         // A checkbox in a quote ("> - [ ] …"), after a number ("1. [ ] …") or in a table ("| - [ ] … |") is not read
         // as an item either, but it is set aside rather than lost.
         let ascii = LedgerText.asciiDigits(line)
-        if ascii.prefixMatch(of: #/\s*(?:>\s*)+(?:[-*+]\s*)?\[[ xX]?\](?!\()/#) != nil { return .broken }
-        if ascii.prefixMatch(of: #/\s*\d+[.)]\s*\[[ xX]?\](?!\()/#) != nil { return .broken }
-        if ascii.prefixMatch(of: #/\s*\|.*\[[ xX]\](?!\()/#) != nil { return .broken }
+        if ascii.prefixMatch(of: #/\s*(?:>\s*)+(?:[-*+]\s*)?\[\s*[xX]?\s*\](?!\()/#) != nil { return .broken }
+        if ascii.prefixMatch(of: #/\s*\d+[.)]\s*\[\s*[xX]?\s*\](?!\()/#) != nil { return .broken }
+        if ascii.prefixMatch(of: #/\s*\|.*\[\s*[xX]?\s*\](?!\()/#) != nil { return .broken }
         return nil
     }
 

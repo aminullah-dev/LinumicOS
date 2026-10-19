@@ -25,7 +25,16 @@ notification) summarising what all of these last read, with sources, read times 
 Command Palette (⌘K): fuzzy search over screens, records and existing actions, English and Dari. Keys & Backups:
 every signing key, licence key and encrypted backup with source and date, whether each key file is still on this Mac
 (existence, size and date only), whether it changed after its backup or is in no backup, the last restore test, and
-a read-only restore guide; reminders feed the Daily Brief. See
+a read-only restore guide; reminders feed the Daily Brief. **Automation** (since 2026-10-19): every read above runs on
+its own schedule while the app runs, with or without a window (menu bar, open at login, iOS background refresh), with
+retries, a run log and a notification after three failures; the daily local backup counts only as what `Backups/`
+holds, read back, never the log's word. **Sentinel** on Supabase (deployed 2026-10-19) keeps the health checks, a daily
+licence sweep and a weekly inventory snapshot running while the Mac is off. **Obligations & accounts** (Phase 2 of the
+company OS roadmap): every dated obligation with what happens if it is missed, its source and its day (or "date
+unknown"), alerts at 30, 14, 7 and 1 days, live dates from the Monitor, the licence ledger and Keys & Backups, and the
+accounts the company depends on with whose name each is in; they reach the Desk by due day. **Continuity**: an
+encrypted export (age, with a passphrase that is never stored) of the inventory, obligations, accounts, licence ledger
+and keys registry to a folder off this Mac, read back and checked, that opens without Linumic OS. See
 [docs/integrations.md](docs/integrations.md) and [docs/security.md](docs/security.md).
 
 ## Layout
@@ -51,6 +60,9 @@ LinumicCommandCenter/
 ```bash
 # Run the core test suite
 swift test --package-path Packages/LinumicCore
+
+# The same suite with the Persian calendar as the device's own (as on the owner's Mac, fa_AF)
+tools/test/persian-calendar.sh
 
 # Generate the Xcode project and open it
 xcodegen generate && open LinumicOS.xcodeproj
@@ -88,7 +100,12 @@ find strings with no Dari translation.
 - [ARCHITECTURE.md](ARCHITECTURE.md): system design and module boundaries
 - [PRODUCTS.md](PRODUCTS.md): product data model
 - [ROADMAP.md](ROADMAP.md): Linumic OS roadmap
-- [docs/company-os-roadmap.md](docs/company-os-roadmap.md): running the whole company from Linumic OS (Dari); Phase 1 is the Desk and Ledgers
+- [docs/company-os-roadmap.md](docs/company-os-roadmap.md): running the whole company from Linumic OS (Dari); Phase 1 is the Desk and Ledgers, Phase 2 obligations and continuity
+- [docs/automation.md](docs/automation.md): the automation engine, the daily backup and what counts as one
+- [docs/sentinel.md](docs/sentinel.md): the server-side checks on Supabase
+- [docs/obligations.md](docs/obligations.md): obligations and accounts, every seed row with its source
+- [docs/continuity.md](docs/continuity.md): the encrypted export, its format and how to open it without Linumic OS
+- [docs/backend-plan.md](docs/backend-plan.md): Supabase
 - [CHANGELOG.md](CHANGELOG.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md): working rules
 - [docs/product-inventory.md](docs/product-inventory.md): current inventory with sources

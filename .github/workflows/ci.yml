@@ -26,5 +26,7 @@ jobs:
           swift --version
       - name: LinumicCore tests
         run: swift test --package-path Packages/LinumicCore
+      - name: LinumicCore tests with the Persian calendar (as on the owner's Mac)
+        run: tools/test/persian-calendar.sh
       - name: Dari translations
         run: python3 tools/l10n/check_catalog.py

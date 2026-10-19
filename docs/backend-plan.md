@@ -1,15 +1,17 @@
 # Backend Plan
 
-**Status (2026-09-23):** the owner chose **Supabase**. The project is created, and the schema, security and
-import/export are in place and tested. The app doesn't use it yet: the next step is Sign in with Apple, then
-`RemoteInventoryStore`.
+**Status (2026-10-19):** the owner chose **Supabase** (2026-09-23). The app uses it through Sign in with Apple and
+`HybridInventoryStore` (since 2026-09-23), keeps the licence ledger (2026-10-09) and the oversight register there, and
+the Sentinel runs on it (deployed 2026-10-19, [sentinel.md](sentinel.md)). Integration credentials are still in each
+device's Keychain. The company OS tables (Desk state, obligations, accounts) come in its Phase 3, each migration only
+after the owner approves it ([company-os-roadmap.md](company-os-roadmap.md)).
 
 | | |
 |---|---|
 | Organization | `mjkdmjrjalelcmqwdwok` (Free plan) |
 | Project | `linumic-command-center`, ref `mczuclgfqxffcbiwvecf`, region **ca-central-1** |
 | API URL | `https://mczuclgfqxffcbiwvecf.supabase.co` |
-| Migrations | `supabase/migrations/` (applied: core_schema, inventory_import_export, private_is_admin) |
+| Migrations | `supabase/migrations/`: core_schema, inventory_import_export, private_is_admin, rename_linumic_os, store_listing_insights, licences, oversight_sync, sentinel, sentinel_schedule |
 
 ### What's built
 - Tables mirroring the model: products (facts as JSON, validated), repositories, platforms, store_listings, releases,
@@ -37,11 +39,13 @@ import/export are in place and tested. The app doesn't use it yet: the next step
 - Building a signed app with Sign in with Apple needs Xcode signed in to the owner's Apple ID
   (Settings → Accounts), so automatic signing can create the provisioning profile.
 
-### Status (2026-09-23)
+### Status (2026-09-23, kept for the record)
 - The owner signed in with Apple (a personal Apple ID, not the developer account). Supabase user
   `f60cfcf6-2c35-4158-a270-8b084bb05e41` was added to `app_admins`.
-- Next: press **Sync Now** in Settings → Account → Cloud. The first sync uploads the local inventory.
-3. Later: scheduled GitHub and App Store syncs (Edge Functions + pg_cron); integration keys in Vault.
+- The first **Sync Now** (Settings → Account → Cloud) uploads the local inventory.
+- Scheduled server work now exists for health checks, licences and inventory snapshots (the Sentinel, pg_cron + an
+  Edge Function, 2026-10-19). Scheduled GitHub and store syncs on the server, and integration keys in Supabase Vault,
+  are not built: those reads run on the device.
 
 ## When to build it
 

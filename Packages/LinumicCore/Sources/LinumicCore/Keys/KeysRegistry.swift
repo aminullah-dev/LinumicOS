@@ -15,17 +15,33 @@ public struct KeyDay: Codable, Hashable, Comparable, Sendable, CustomStringConve
     public let month: Int
     public let day: Int
 
+    /// "yyyy-MM-dd", a day that exists in the Gregorian calendar: "2026-02-30" is refused, not read as 2 March (it
+    /// would show as that day but sort and count as another).
     public init?(_ string: String) {
         let parts = string.split(separator: "-")
         guard parts.count == 3, parts[0].count == 4, let y = Int(parts[0]), let m = Int(parts[1]), let d = Int(parts[2]),
               (1...12).contains(m), (1...31).contains(d) else { return nil }
+        var utc = Calendar(identifier: .gregorian)
+        utc.timeZone = TimeZone(identifier: "UTC")!
+        guard let date = utc.date(from: DateComponents(year: y, month: m, day: d)) else { return nil }
+        let back = utc.dateComponents([.year, .month, .day], from: date)
+        guard back.year == y, back.month == m, back.day == d else { return nil }
         year = y
         month = m
         day = d
     }
 
+    /// Gregorian, in this device's time zone. A `KeyDay` is a Gregorian day whatever calendar the device shows: the app
+    /// runs with the fa_AF locale on the owner's Mac, whose `Calendar.current` is the Persian one, which would turn
+    /// 2026-10-19 into 1405-07-27 (or read "2026-10-31" as a Persian year).
+    public static var calendar: Calendar {
+        var c = Calendar(identifier: .gregorian)
+        c.timeZone = .current
+        return c
+    }
+
     /// The day `date` falls on in `calendar`'s time zone.
-    public init(_ date: Date, calendar: Calendar = .current) {
+    public init(_ date: Date, calendar: Calendar = KeyDay.calendar) {
         let c = calendar.dateComponents([.year, .month, .day], from: date)
         year = c.year ?? 1970
         month = c.month ?? 1
@@ -35,7 +51,7 @@ public struct KeyDay: Codable, Hashable, Comparable, Sendable, CustomStringConve
     public var description: String { String(format: "%04d-%02d-%02d", year, month, day) }
 
     /// Midnight at the start of the day in `calendar`'s time zone.
-    public func start(calendar: Calendar = .current) -> Date {
+    public func start(calendar: Calendar = KeyDay.calendar) -> Date {
         calendar.date(from: DateComponents(year: year, month: month, day: day)) ?? .distantPast
     }
 
@@ -328,7 +344,7 @@ public struct KeysRegistry: Codable, Hashable, Sendable {
 
     /// Records a restore test for one backup. Returns false when the backup does not exist or the day is in the future.
     @discardableResult
-    public mutating func recordRestoreTest(backupID: String, _ test: RestoreTest, now: Date, calendar: Calendar = .current) -> Bool {
+    public mutating func recordRestoreTest(backupID: String, _ test: RestoreTest, now: Date, calendar: Calendar = KeyDay.calendar) -> Bool {
         guard let i = backups.firstIndex(where: { $0.id == backupID }), test.on <= KeyDay(now, calendar: calendar) else { return false }
         backups[i].restoreTests.append(test)
         updatedAt = now
@@ -337,7 +353,7 @@ public struct KeysRegistry: Codable, Hashable, Sendable {
 
     /// Closes a gap with the day and how. Returns false for an unknown gap or a future day.
     @discardableResult
-    public mutating func closeGap(_ id: String, on day: KeyDay, note: String?, now: Date, calendar: Calendar = .current) -> Bool {
+    public mutating func closeGap(_ id: String, on day: KeyDay, note: String?, now: Date, calendar: Calendar = KeyDay.calendar) -> Bool {
         guard let i = gaps.firstIndex(where: { $0.id == id }), day <= KeyDay(now, calendar: calendar) else { return false }
         gaps[i].closedOn = day
         gaps[i].closedNote = note

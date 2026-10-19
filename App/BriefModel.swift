@@ -17,6 +17,8 @@ final class BriefModel {
     private(set) var history: BriefSnapshotHistory
     /// The automation run log, kept current by `AutomationEngine` after every run.
     var automation: AutomationLedger?
+    /// What `Backups/` holds, read from the disk by `AutomationEngine` (never taken from the run log).
+    var backup: BackupFolderStatus?
     /// When the morning notification is next due, as scheduled (nil when off or not allowed).
     private(set) var nextNotification: Date?
 
@@ -29,9 +31,11 @@ final class BriefModel {
     private let monitor: MonitorModel
     private let keys: KeysModel
     private let siteMessages: SiteMessagesModel
+    private let obligations: ObligationsModel
 
     init(inventory: InventoryModel, licences: LicenceModel, worktrack: WorkTrackModel, operations: OperationsModel,
-         releases: ReleaseCenterModel, monitor: MonitorModel, keys: KeysModel, siteMessages: SiteMessagesModel) {
+         releases: ReleaseCenterModel, monitor: MonitorModel, keys: KeysModel, siteMessages: SiteMessagesModel,
+         obligations: ObligationsModel) {
         self.inventory = inventory
         self.licences = licences
         self.worktrack = worktrack
@@ -40,6 +44,7 @@ final class BriefModel {
         self.monitor = monitor
         self.keys = keys
         self.siteMessages = siteMessages
+        self.obligations = obligations
         store = (try? BriefSnapshotStore.defaultFileURL()).map(BriefSnapshotStore.init(fileURL:))
         history = store?.load() ?? BriefSnapshotHistory()
     }
@@ -72,7 +77,9 @@ final class BriefModel {
             oversight: BriefOversightInput(repos: inventory.oversight, recentChanges: inventory.recentOversightChanges),
             keys: keys.briefInput,
             siteMessages: siteMessages.briefInput,
-            automation: automation)
+            automation: automation,
+            backup: backup,
+            obligations: obligations.briefInput)
     }
 
     /// The brief for right now, with the changes since the last snapshot of an earlier day.

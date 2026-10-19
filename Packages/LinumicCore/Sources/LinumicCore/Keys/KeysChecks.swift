@@ -313,7 +313,7 @@ public struct KeysCheckInput: Sendable {
     public var calendar: Calendar
 
     public init(registry: KeysRegistry, now: Date, home: String = "", results: [KeyCheckResult] = [], scan: KeysScanResult? = nil,
-                passphrase: [String: KeychainPresence] = [:], checkedAt: Date? = nil, calendar: Calendar = .current) {
+                passphrase: [String: KeychainPresence] = [:], checkedAt: Date? = nil, calendar: Calendar = KeyDay.calendar) {
         self.registry = registry
         self.now = now
         self.home = home
@@ -381,7 +381,7 @@ public enum KeysRules {
     public static let restoreTestMaxDays = 90
 
     /// Backup state of a registry key, from the registry and (when checked) the files' modification days.
-    public static func backupState(_ key: TrackedKey, registry: KeysRegistry, result: KeyCheckResult?, calendar: Calendar = .current) -> KeyBackupState {
+    public static func backupState(_ key: TrackedKey, registry: KeysRegistry, result: KeyCheckResult?, calendar: Calendar = KeyDay.calendar) -> KeyBackupState {
         guard key.kind.needsBackup, !key.isDeleted else { return .notApplicable }
         let backups = key.backupIDs.compactMap(registry.backup)
         guard !backups.isEmpty else { return .notBackedUp }
@@ -409,7 +409,7 @@ public enum KeysRules {
     }
 
     /// Days since a backup's last restore test, or nil when none is recorded.
-    public static func restoreTestAge(_ backup: BackupRecord, now: Date, calendar: Calendar = .current) -> Int? {
+    public static func restoreTestAge(_ backup: BackupRecord, now: Date, calendar: Calendar = KeyDay.calendar) -> Int? {
         backup.lastRestoreTest.map { $0.on.days(until: KeyDay(now, calendar: calendar)) }
     }
 

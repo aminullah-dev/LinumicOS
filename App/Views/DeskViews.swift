@@ -116,6 +116,7 @@ struct DeskView: View {
                 }
             }
             ledgerLine(desk)
+            DeskBackupCard()
         }
     }
 
@@ -220,6 +221,7 @@ struct DeskView: View {
 
 struct DeskRowView: View {
     @Environment(DeskModel.self) private var model
+    @Environment(Router.self) private var router
     let row: DeskRow
     let highlighted: Bool
     let open: () -> Void
@@ -251,6 +253,11 @@ struct DeskRowView: View {
                     if item.ownerAction {
                         ReleaseBadge(text: String(localized: "Yours"), symbol: "person", color: .purple)
                     }
+                    // The report scheduled it for this week; the Desk puts the owner's work in a focus product in Today.
+                    // Say so, so the Desk and the report don't seem to disagree.
+                    if item.horizon == .thisWeek, row.bucket == .today {
+                        ReleaseBadge(text: String(localized: "This week in the report"), symbol: "calendar", color: .gray)
+                    }
                 }
                 status
                 if let detail = item.detail, !detail.isEmpty {
@@ -258,6 +265,13 @@ struct DeskRowView: View {
                         .font(.caption).foregroundStyle(.secondary)
                         .lineLimit(expanded ? nil : 2)
                         .fixedSize(horizontal: false, vertical: true)
+                }
+                // The report's own «منبع» line can say what is not known («… ندیده‌ام»), so it is shown as written.
+                if let reference = item.reference, !reference.isEmpty {
+                    Text("Source in the report: \(reference)")
+                        .font(.caption).foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .textSelection(.enabled)
                 }
                 // The ledger's own dated corrections under the line are always shown: the line above may be wrong.
                 ForEach(Array(item.corrections.enumerated()), id: \.offset) { _, note in
@@ -307,7 +321,7 @@ struct DeskRowView: View {
                     .font(.caption2).foregroundStyle(.tertiary).lineLimit(3).textSelection(.enabled)
             }
         } else {
-            Text("Source: \(item.evidence.location)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
+            Text("Source: \(item.evidence.location), read time unknown").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
         }
     }
 
@@ -353,10 +367,29 @@ struct DeskRowView: View {
             .disabled(!canOpen)
             switch row.resolution {
             case .open, .reopened:
-                Button { model.markDone(item) } label: { Label("Done", systemImage: "checkmark").labelStyle(.titleAndIcon) }
+                if item.closesAtSource, let id = obligationID, case .screen(let destination) = item.destination {
+                    // A live obligation (the continuity export, a restore test, a licence) closes only when its source
+                    // records it: Done goes there, never to a typed sentence or a Desk mark.
+                    Button { router.closeAtSource(id, destination: destination) } label: {
+                        Label("Done…", systemImage: "checkmark").labelStyle(.titleAndIcon)
+                    }
                     .buttonStyle(.borderless)
-                    .help(doneHelp)
+                    .help("It closes when its source records it (an export off this Mac, a restore test, a renewal): this opens that place")
                     .minTapTarget()
+                } else if let id = obligationID {
+                    // An obligation is done only with what proves it: the Obligations screen asks for it.
+                    Button { router.go(.obligations, request: .completeObligation(id)) } label: {
+                        Label("Done…", systemImage: "checkmark").labelStyle(.titleAndIcon)
+                    }
+                    .buttonStyle(.borderless)
+                    .help("Record it done with what proves it (a receipt, a page, a screenshot's name)")
+                    .minTapTarget()
+                } else {
+                    Button { model.markDone(item) } label: { Label("Done", systemImage: "checkmark").labelStyle(.titleAndIcon) }
+                        .buttonStyle(.borderless)
+                        .help(doneHelp)
+                        .minTapTarget()
+                }
                 Menu {
                     Menu("Snooze") {
                         Button("Until tomorrow") { model.snooze(item, days: 1) }
@@ -396,13 +429,22 @@ struct DeskRowView: View {
         .labelStyle(.iconOnly)
     }
 
+    /// The obligation this item is about, if it is one: from the Brief line, or (for an item made before lines carried
+    /// it) from an obligation destination.
+    private var obligationID: String? {
+        if let id = item.obligationID { return id }
+        if case .screen(.obligation(let id)) = item.destination { return id }
+        return nil
+    }
+
+    /// What pressing Done will do, worded as the action (nothing is done until it is pressed).
     private var doneHelp: Text {
         switch (item.kind, item.origin) {
-        case (.task, .nextActions): Text("Done here. It stays listed until its title changes or it leaves the newest NEXT-ACTIONS.")
-        case (.task, _): Text("Done here. It stays listed until the ledger line is ticked.")
+        case (.task, .nextActions): Text("Mark it done here: it stays listed until its title changes or it leaves the newest NEXT-ACTIONS.")
+        case (.task, _): Text("Mark it done here: it stays listed until the ledger line is ticked.")
         default:
-            item.evidence.readAt == nil ? Text("Done. Hidden until this fact changes; its source gives no read time.")
-                                        : Text("Done. It comes back if the next reading still shows it.")
+            item.evidence.readAt == nil ? Text("Mark it done: hidden until this fact changes, since its source gives no read time.")
+                                        : Text("Mark it done: it comes back if the next reading still shows it.")
         }
     }
 
@@ -430,6 +472,73 @@ struct DeskRowView: View {
             try? await Task.sleep(for: .seconds(2))
             withAnimation { copied = false }
         }
+    }
+}
+
+// MARK: - Daily backup, as Backups/ holds it
+
+/// The daily backup as the folder holds it now: the newest file, its day, whether it was read back and decoded, and
+/// whether it is the inventory as it is now. Never the run log's word alone.
+struct DeskBackupCard: View {
+    @Environment(AutomationEngine.self) private var engine
+    @Environment(Router.self) private var router
+
+    var body: some View {
+        let status = engine.backupFolder
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
+            Image(systemName: symbol(status)).foregroundStyle(color(status))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(headline(status)).font(.callout.weight(.medium)).fixedSize(horizontal: false, vertical: true)
+                if let detail = detail(status) {
+                    Text(verbatim: detail).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            Spacer(minLength: 8)
+            Button("Automation…") { router.go(.automation) }
+                .buttonStyle(.borderless).font(.caption)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(.background.secondary, in: Capsule())
+        .accessibilityElement(children: .combine)
+    }
+
+    private func symbol(_ s: BackupFolderStatus?) -> String {
+        guard let s else { return "questionmark.circle" }
+        if s.listError != nil || s.isEmpty { return "externaldrive.badge.xmark" }
+        return s.restores ? "externaldrive.badge.checkmark" : "externaldrive.badge.exclamationmark"
+    }
+
+    private func color(_ s: BackupFolderStatus?) -> Color {
+        guard let s else { return .gray }
+        if s.listError != nil || s.isEmpty || !s.restores { return .red }
+        return .green
+    }
+
+    private func headline(_ s: BackupFolderStatus?) -> String {
+        guard let s else { return String(localized: "Daily backup: Backups/ not checked yet") }
+        if let error = s.listError { return String(localized: "Daily backup: Backups/ could not be read (\(error))") }
+        guard let newest = s.newest else { return String(localized: "Daily backup: Backups/ is empty") }
+        let day = newest.day.map { $0.start().formatted(date: .abbreviated, time: .omitted) } ?? newest.name
+        switch s.newestCheck {
+        case .restores(let products)?:
+            return String(localized: "Daily backup: \(day), read back (\(products) products)")
+        case .fails?, nil:
+            return String(localized: "Daily backup: \(day) does not restore")
+        }
+    }
+
+    private func detail(_ s: BackupFolderStatus?) -> String? {
+        guard let s, s.listError == nil else { return nil }
+        guard let newest = s.newest else {
+            return String(localized: "The run log alone never counts as a backup. The backup job writes a copy and reads it back.")
+        }
+        var parts = [String(localized: "\(newest.name), \(s.files) in the folder, checked \(s.checkedAt.formatted(date: .omitted, time: .shortened))")]
+        if case .fails(let why)? = s.newestCheck { parts.append(why) }
+        // Nothing is promised about the next run: it copies the change only while the job is on and automation runs.
+        if s.matchesInventory == false { parts.append(String(localized: "The inventory has changed since this copy.")) }
+        return parts.joined(separator: " · ")
     }
 }
 
@@ -469,10 +578,11 @@ struct DeskDismissSheet: View {
 // MARK: - Text helpers
 
 enum DeskText {
-    /// Ledger lines are Markdown written by people and agents (**bold**, `code`, ~~struck~~) and are shown as such.
-    /// Everything else (Brief lines, file paths) is shown exactly as read, so an underscore or a # stays itself.
+    /// PRIORITIES.md lines are Markdown written by people and agents (**bold**, `code`, ~~struck~~) and are shown as
+    /// such. Everything else (NEXT-ACTIONS, which is plain text; Brief lines; file paths) is shown exactly as read, so
+    /// an underscore, a tilde or an asterisk stays itself.
     static func text(_ s: String, of item: DeskItem) -> AttributedString {
-        guard item.kind == .task,
+        guard item.kind == .task, case .ledger = item.origin,
               let text = try? AttributedString(markdown: s, options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)) else {
             return AttributedString(s)
         }
@@ -530,7 +640,14 @@ struct LedgerAccessSettingsSection: View {
                     if granted {
                         StatusBadge(text: "Granted", color: .green)
                     } else {
-                        Button("Grant…") { model.chooseFolder(suggested: "~/\(folder)") }
+                        HStack(spacing: 8) {
+                            // A stored grant that could not be resolved at the last read: kept, and tried again at the next.
+                            if model.unresolvedFolders.contains("~/\(folder)") {
+                                StatusBadge(text: "Could not be resolved", color: .orange)
+                                    .help("The stored grant could not be resolved at the last read. It is kept and tried again at the next read; grant the folder again if this stays.")
+                            }
+                            Button("Grant…") { model.chooseFolder(suggested: "~/\(folder)") }
+                        }
                     }
                 } label: {
                     Text(verbatim: "~/\(folder)").font(.callout.monospaced())

@@ -8,7 +8,7 @@ post as Linumic, so it is treated as a production system.
 | Asset | Threat | Control |
 |---|---|---|
 | Integration credentials (GitHub, ASC, Play, social, AI) | Leak through Git, logs or backups | Keychain / backend secret store, `.gitignore` patterns, never logged |
-| Inventory data | Tampering, loss | Sandboxed app container, and later a backend with audit log and backups |
+| Inventory data | Tampering, loss | Sandboxed app container; Supabase with an audit log and the Sentinel's weekly snapshots; the daily local backup, counted only as what `Backups/` holds, read back; the encrypted continuity export off this Mac |
 | Repositories and store listings | Unintended destructive action | Read-only integrations, per-action confirmation for writes |
 | WorkTrack customer licences (vendor account) | Wrong or accidental licence change, perpetual licence by omission | Refresh token only in the Keychain, one write (licence PUT) built from the fetched licence with `expiresAt` always sent, diff + typed confirmation in production, stale-licence check, no retry, local and server audit |
 | Talar, SafeBeauty, VELRO admin sessions (Operations) | Leaked session, accidental production write, identity documents on disk, VELRO refresh-token replay signing the owner out everywhere | Refresh token only (Keychain), read-only clients with no write calls except Talar's audited hall decision, SafeBeauty field masks that never request identity fields, VELRO rotation persisted before use and never replayed, counts the only cached data |
@@ -17,8 +17,10 @@ post as Linumic, so it is treated as a production system.
 | Release Center (store and repository state) | An accidental App Store release, a Play edit committed by mistake, a credential copied into a cache | One write only (`appStoreVersionReleaseRequests`), offered only for PENDING_DEVELOPER_RELEASE, behind a confirmation naming app, version and build, state re-checked first, sent once, read back and logged; Play edits are opened to read tracks and deleted, never committed (no commit call exists); GitHub GET only; credentials read from the existing Keychain items when needed, never copied; the cache holds observations only |
 | Daily Brief and Command Palette | A summary or search result exposing a secret, a palette shortcut making a write | No requests and no credentials of their own; the daily snapshot (`brief-snapshots.json`, this device) holds states, counts and PR titles only; the palette indexes Vault titles and products, never logins or passwords, keeps only chosen ids as recents, and its actions only navigate or read (writes stay behind each screen's own confirmation) |
 | Keys & Backups (registry and checks) | The app reading, copying or leaking a signing key, keystore password or backup passphrase; broad file access; a stale backup trusted | No key content is ever read: only FileManager attributes (exists, size, modification date) and directory listings, inside read-only security-scoped bookmarks the owner chose (plus the Oversight workspace); the passphrase item is looked up with `kSecReturnAttributes` only, never `kSecReturnData`; the registry (`keys-registry.json`, this device) holds paths, titles, days, sizes and Drive file ids, nothing secret; restore commands make openssl prompt for the passphrase, never pass it; no network |
-| Desk and Ledgers | The app reading more of the owner's folders than its ledgers (code, keys, `.env`), writing to a ledger, a guessed status shown as fact | Read-only security-scoped bookmarks of their own (`LCCLedgerBookmarks`, created with `.securityScopeAllowOnlyReadAccess`), separate from the Keys grant; only the two ledger folders themselves can be granted (a wider folder such as `~` is refused before any bookmark is made); inside them only the exact allow-listed paths are opened (`LedgerAllowList`: eight PRIORITIES.md files and NEXT-ACTIONS-<day>.md directly in ~/Projects/Multiplatform; no `..`; the file is opened with `O_NOFOLLOW`, so a file that is a link is refused; the open file's real path (`F_GETPATH`) must be inside the granted folder, so a folder link on the way that leads out of it is refused; type and the 1 MB cap are checked on the open file and at most 1 MB is read); "Open" hands only allow-listed files to their app; links in ledger lines open only if they are http or https; nothing is written to a ledger; `desk-state.json` (this device) holds item ids, mark kinds, times, fact hashes and dismiss reasons, no titles or details (so no customer name or address from a Brief line); no network |
+| Desk and Ledgers | The app reading more of the owner's folders than its ledgers (code, keys, `.env`), writing to a ledger, a guessed status shown as fact | Read-only security-scoped bookmarks of their own (`LCCLedgerBookmarks`, created with `.securityScopeAllowOnlyReadAccess`), separate from the Keys grant; only the two ledger folders themselves can be granted (a wider folder such as `~` is refused before any bookmark is made); inside them only the exact allow-listed paths are opened (`LedgerAllowList`: eight PRIORITIES.md files and NEXT-ACTIONS-<day>.md directly in ~/Projects/Multiplatform; no `..`; the file is opened with `O_NOFOLLOW`, so a file that is a link is refused; the open file's real path (`F_GETPATH`) must be inside the granted folder, so a folder link on the way that leads out of it is refused; type, a single name (a hard link is refused) and the 256 KB cap are checked on the open file and at most 256 KB is read); "Open" hands only allow-listed files to their app, after the same checks (a regular file with one name whose real path is inside the granted folder); links in ledger lines open only if they are http or https; nothing is written to a ledger; `desk-state.json` (this device) holds item ids, mark kinds, times, fact hashes and dismiss reasons, no titles or details (so no customer name or address from a Brief line); no network |
 | Website messages (linumic.com contact form) | The WordPress application password leaking or reaching another host; customers' names, addresses and messages on disk; an accidental change to entries | Keychain item `wordpress.linumic.apppassword` only (redacted description, never logged), sent only as HTTPS Basic auth to https://linumic.com on an ephemeral session that refuses redirects; GET only to the two read-only SureForms abilities (no call marks, edits or deletes); messages in memory only, `site-messages.json` holds ids and times; reply links only for plain addresses (no injected headers); notifications show names, never addresses |
+| Obligations and accounts | A guessed date, a Done nobody can prove, a card number or password in a register | Every row and every value needs a source and the day it was recorded, Done needs evidence (`validate()` refuses, the builder doesn't apply, the screen shows the refusal); accounts hold purpose, holder, renewal and an amount read from a bill, never a password, card number or login (the Vault holds sign-ins); `obligations.json` on this device only; no network |
+| Continuity export | A copy of the company's records readable by whoever finds the file, a secret carried off the Mac in it, a passphrase stored next to it, a "verified" export that does not open | age (scrypt, work factor 18) with a passphrase typed each time and never stored (no file, no Keychain, no log); the document holds no credential, key file or licence key text, and is searched for key and token patterns before anything is written (a match stops the export); written only into the folder the owner chose, never over a file; read back, decrypted and compared before it is recorded; `continuity.json` holds file names, sizes, hashes and dates only; no network |
 | Assistant | Invented status, prompt injection from ingested content | Grounded answers with verified/derived/unknown labels. Ingested text is treated as data, and actions are only proposals. |
 
 ## MVP (local app)
@@ -143,14 +145,22 @@ post as Linumic, so it is treated as a production system.
   PRIORITIES.md files, and the newest `NEXT-ACTIONS-YYYY-MM-DD.md` found by listing ~/Projects/Multiplatform), reads
   them as UTF-8 text and parses them in memory. A file that is itself a symbolic link is refused (`O_NOFOLLOW`); a
   folder on the way may be a link, but the open file's real path must still be inside the granted folder, or it is
-  refused; files over 1 MB are refused, and at most 1 MB is read. Only `~/Projects/Multiplatform` itself can be
+  refused; a file with more than one name (a hard link) is refused, since its name says nothing about where it lives;
+  files over 256 KB are refused, and at most 256 KB is read. "Open" applies the same rules (`lstat`, one name, the real
+  path inside a granted folder) before it hands the file to its default app. Only `~/Projects/Multiplatform` itself can be
   granted; choosing any other folder (the home folder, `~/Projects`) is refused before a bookmark is
-  made, and a stored grant of another folder is dropped. It never writes to them ("Open" hands an allow-listed file to
+  made, and a stored grant of another folder (or one that now resolves somewhere else, after a move or rename) is
+  dropped. The stored grant is read-only, but while the open panel is showing and until the app quits, the folder the
+  owner picked carries the read-write access of the existing `files.user-selected.read-write` entitlement (see Sandbox
+  below); nothing writes there. It never writes to them ("Open" hands an allow-listed file to
   its default app, and nothing else). Links written in a ledger line are clickable only when they are http or https,
   so a `file://` or custom-scheme link can't open a local file or app. The Desk's own file `desk-state.json` holds
   only the owner's marks: item ids, kinds, times, fact hashes and dismiss reasons. It keeps no titles, so a Brief
   line's customer name or email address (a website message, a WorkTrack company, a licence holder) is not written to
-  disk. "Copy agent brief" puts Dari text on the clipboard: for ledger and NEXT-ACTIONS items the line, the lines under
+  disk. An item id does carry the source's own entry id: a website entry number, a licence number, or a WorkTrack
+  company id, which is a ULID for a self-signup company but can be a readable slug (a place or company name, such as
+  `emu_herat` in the vendor fixtures) for a company the vendor or a seed script created. The same id is the
+  «شناسه» in a customer item's agent brief. "Copy agent brief" puts Dari text on the clipboard: for ledger and NEXT-ACTIONS items the line, the lines under
   it, file:line and read time (ledgers hold no secret); for website messages, WorkTrack customers and licences only
   the Brief entry id, never the customer's name, address or message; for other Brief items the line as shown.
   "Remove access" forgets the ledger grants. iPhone and iPad have no ledger access.
@@ -172,6 +182,29 @@ post as Linumic, so it is treated as a production system.
   the signed fields immutable. The issued key text is not a secret (the customer holds it); a private key is.
 - **Sandbox:** user-selected files are read-write (not read-only) since 2026-10-09, so the owner can save
   `.lnmlic` and CSV files with the save panel. The app still reads or writes only files the owner picks.
+- **Obligations and accounts (since Phase 2):** `obligations.json` (this device) holds the owner's own rows, the dates
+  he set, Done marks with their evidence, his accounts and their recorded facts (renewal, holder, cost), each with its
+  source. No password, login or card number is asked for or kept. The seed (`ObligationSeed`) cites a file and line or
+  a reading for every row. The readings it cites are public data only: the end dates of the Developer ID Application
+  and Apple Development certificates in this Mac's Keychain (`security find-certificate`, `find-identity`), the
+  installed Mac provisioning profile (`security cms -D`) and the installed app's signature (`codesign -dvv`, `spctl`),
+  and the GitHub API `users/aminullah-dev` (account type). Rows and accounts in `obligations.json` that the app's own
+  forms would not have written are refused and left out. Alerts carry titles only.
+- **Continuity export (since Phase 2):** the export folder is a read-write security-scoped bookmark
+  (`LCCContinuityFolder`) the owner chose in an open panel; only `linumic-os-continuity-….json.age` files are written
+  there, with `.withoutOverwriting`, and only when the folder is off this Mac (an external drive, a cloud folder under
+  the owner's real home, a network volume). The file is forced onto the device (`F_FULLFSYNC`) before it is read back.
+  A file that fails its check, or a write that stops halfway, is removed; a file that was already there is never
+  touched. Nothing is written while the inventory or `obligations.json` is not read. The passphrase is printable ASCII
+  with no leading, trailing or doubled space (so it opens the file on any keyboard, typed from paper) and lives only in
+  the two fields of the Continuity screen and in memory for the export call; it is never written anywhere and never
+  logged. The file is age v1 (scrypt N = 2^18, r = 8, p = 1;
+  ChaCha20-Poly1305; HMAC-SHA256 header), implemented on CryptoKit and checked against age's own test vectors. The
+  document leaves out every Keychain item, key file and licence key text, and `ContinuityBundle.forbiddenPatterns`
+  (PEM blocks, LNM1 keys, GitHub, Anthropic, Supabase secret, Google API key, age secret key, JWT, Stripe live key, AWS
+  access key, Notion, OpenAI, ElevenLabs, Slack, Google OAuth and Meta formats) stops an export before anything is
+  written. It does carry customer names and machine codes of the licence ledger and the inventory's
+  records: whoever has the file and the passphrase has those. See docs/continuity.md.
 - **No secrets in source or Git.** `.gitignore` blocks `.env*`, `*.p8`, `*.p12`,
   `*.pem`, `*.key`, keystores, provisioning profiles and service-account JSON.
   Check `git diff --cached` before each commit.

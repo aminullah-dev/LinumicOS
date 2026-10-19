@@ -5,6 +5,96 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Obligations & accounts, Continuity, and the daily backup counted from the folder; Phase 2 of the company OS roadmap (2026-10-19)
+- **Daily backup truth.** The run log said "Copy saved and read back: 12 products" (2026-10-19 00:00:01Z) while
+  `Backups/` was empty: the file was removed 65 seconds after the run and nothing looked at the folder again. Each run
+  now records the file it wrote or confirmed; when it is gone the job is due a minute after the run (never spinning
+  after a failure). `Backups/` is read (newest file, its day, decoded as a restore would) at launch, after each backup
+  and before each Brief; the Desk shows a "Daily backup" line and an empty folder after a "succeeded" run is a Today
+  item. The run note names the file.
+- **Obligations & accounts** («تعهدات و حساب‌ها», sidebar after the Desk): every obligation with what happens if it
+  is missed, its source and recorded day, a due day or "date unknown"; lanes Overdue, Within 7 days, Within 30 days,
+  Later, Date unknown, Done; Done only with evidence and only for that due day; a date, holder or cost only with its
+  source; `validate()` refusals shown in red and as Today items. Seed rows only from facts recorded with a source
+  (docs/obligations.md lists each). Live rows from RDAP, TLS, the licence ledger, the keys registry and the continuity
+  log. Accounts (Apple, Play, GoDaddy, Microsoft 365, Hetzner, Google Cloud, Supabase, GitHub, Meta, ElevenLabs,
+  Notion) with whose name each is in, renewal and cost when known. Alerts at 30, 14, 7 and 1 days and on the day,
+  once each (key `obligation:<id>:<due>:<lead>`). A Daily Brief section brings them to the Desk by due day and window.
+- **Continuity** («تداوم», sidebar after Keys & Backups, Mac): an encrypted export of the inventory, obligations,
+  accounts, licence ledger (without key text) and keys registry to a folder off this Mac, as an age file with a
+  passphrase typed each time and never stored; written, read back, decrypted and compared before it is recorded;
+  "Check again" and "Opened outside this Mac" with evidence. Opens with `age -d` anywhere (docs/continuity.md).
+  age and scrypt are written on CryptoKit, no new dependency, and checked against age's own test vectors.
+- Command Palette: open obligations and "Encrypted export off this Mac…". Dari for 261 strings; `check_catalog.py`
+  also checks seed consequences and account purposes.
+
+### Fixed: the Phase 2 review (2026-10-19)
+- **Continuity counts only a copy off this Mac.** The obligation and the Continuity screen's "Next export due" come from
+  the newest verified export to an external drive, a cloud folder or a network volume; an export to this Mac's own disk
+  or to a folder the system can't place no longer turns "No encrypted copy off this Mac yet" into a date 30 days out,
+  and the app refuses to make one there.
+- **An obligation's Done on the Desk asks for evidence** (a live row's goes to its source: see the second review below):
+  each Brief line carries its obligation's id. Rows read from the app's own files are read again at each Brief, so no
+  Desk mark hides one for good.
+- **The register leaves out what it refuses**: a row or account without a source, a hand-written row that is not the
+  owner's (one could replace a seed row), a date for a live row or for no row (each reported). An account's renewal is
+  an obligation only once its day or a monthly or yearly bill is recorded.
+- **Seed:** SafeBeauty's Pashto and reel times due 2026-10-30 and 2026-11-09 («پیش از» read as the day before, as for
+  WorkTrack); a row for the Apple Development certificate that signs the installed copy (ends 2027-09-08); the Play
+  target API title no longer says "yearly"; citations added or corrected (PRIORITIES.md:15, PROTOCOL.md:75,
+  PRIORITIES.md:52-54 quoted, backend-plan.md:11, ExportOptions.plist:6); the continuity consequence says which records
+  are in Supabase and which are only on this Mac.
+- **Continuity export:** a passphrase is printable ASCII only (a Dari passphrase can be typed differently elsewhere);
+  a write that stops halfway is removed; a licence ledger or keys registry that was not loaded is absent from the
+  export and its counts, not zero; four more secret formats are refused (age secret keys, JWTs, Stripe live keys, AWS
+  access keys); network volumes count as off this Mac.
+- **Daily backup:** a copy the job confirmed (inventory unchanged) is not called old; a run log from before artifacts
+  counts the file as gone when none is named for that run's day; the empty-folder line no longer promises "within a
+  minute" (the next look, within 5 minutes, or that the job is off or paused).
+- The Obligations header marks its counts partial while a live source is unread; continuity.json that can't be read is
+  an unread part, not "no export yet"; the date sheet saves only a picked day; the account sheet does not pretend to
+  clear a value; a ledger grant whose bookmark fails to resolve is kept (and shown as such), not deleted.
+
+### Fixed: the second Phase 2 review (2026-10-19)
+- **An account's renewal day has one place: the account's card.** A date set on an `account.<id>.renewal` row is no
+  longer applied (it is reported, and recording the renewal on the card supersedes it); the row's "Set date…" opens
+  the card. Before, a date set on the row won over every later renewal recorded on the card, so next year's renewal
+  never reached the Desk or the alerts. The renewal row's source and recorded day are those of the fact it comes from
+  (the day the renewal or the bill was entered), not the account's.
+- **A live row closes only through its source.** A Done typed for the continuity export (or a restore test, a licence,
+  a domain) is not applied and is reported: with no copy off this Mac, "I think I copied it" closed the P0 row and
+  took it off the Desk and the Brief. On the Obligations screen a live row offers its source's action ("Export…",
+  "Record restore test…" for that backup, or Open); on the Desk its Done goes there.
+- **No export without the inventory and obligations.json.** Before the inventory had loaded, after its load failed, or
+  with obligations.json unreadable, an export was written, verified and recorded with 0 products, and dated the
+  obligation 30 days out. It is now refused with the reason named, on the screen before Export is pressed and in the
+  exporter (`ContinuityBundle.inventory` and `obligationEntries` are absent when not read, and never counted).
+- **A cloud folder's export counts once it was opened outside this Mac**: the Mac's own copy of the folder reads back
+  whether or not it was uploaded. Such an export is marked "Upload not checked" until then. Cloud folders are
+  recognised under the real home only, not by a path that merely holds `Library/CloudStorage`.
+- **Continuity export:** the file is forced onto the device (`F_FULLFSYNC`) before it is read back; a passphrase with
+  a leading, trailing or doubled space is refused (age does not trim, and a space can't be seen on paper); Notion,
+  OpenAI, ElevenLabs, Slack, Google OAuth and Meta token formats are refused too.
+- **Obligations:** a restore test's due day is shown "due today" by the Obligations section (Keys & Backups says it
+  from the next day), so no day falls between the two; the undated continuity row reads "(to do now)", not "(date
+  unknown)"; hand-written input is checked as the forms check it (a cost of zero or less or a currency that is not a
+  three-letter code, lead days that would never alert, facts for an unknown account, a day such as 2026-02-30 that does
+  not exist); the add sheet saves a due day only once one is picked; the header is marked partial, naming
+  obligations.json, when that file can't be read. Seed revision 3: linumic.com's consequence says what
+  docs/integrations.md says (its subdomains depend on it, Google's hosts do not), without the mailbox it never named.
+- **Daily backup:** the Desk no longer promises that the next run copies a changed inventory (the job may be off or
+  automation paused); a test now holds that a confirmation stops counting once the newest file is not the inventory.
+
+### Fixed (2026-10-19)
+- A `KeyDay` is a Gregorian day whatever calendar the device shows. The app runs with fa_AF on the owner's Mac, where
+  `Calendar.current` is Persian: a date picked in Keys & Backups was stored as 1405-…, and the Desk compared ledger days
+  with a Persian "today".
+- A dated Desk item goes by its due day and window, not by the focus-product rule.
+- Stale lines: docs/automation.md (Sentinel deployed; Website messages "not connected"), docs/sentinel.md (status; the
+  local backup is on the same Mac), ARCHITECTURE.md (shape, backend, stores; Automation, Obligations and Continuity
+  modules), README (automation, Sentinel, obligations, continuity), ROADMAP.md (backend and stores phases),
+  docs/backend-plan.md (status, migrations), the StoreListingsView comment.
+
 ### Added: Desk and Ledgers, Phase 1 of the company OS roadmap (2026-10-19)
 - New home screen **Desk** («میز کار»), first in the sidebar and the launch screen: Today, This week and Later
   (collapsed), grouped by product with WorkTrack and SafeBeauty first. Every row has its title, product pill, source

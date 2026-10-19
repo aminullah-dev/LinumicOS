@@ -190,10 +190,22 @@ public struct AutomationJobState: Codable, Sendable, Hashable {
     public var lastSuccess: Date?
     /// Failures since the last run that did the work; skips don't count either way.
     public var consecutiveFailures: Int = 0
+    /// What the last run that did the work left on disk and vouched for (the backup job: the file name it wrote or
+    /// confirmed). When it is gone the job is due again at once: a log line alone never stands for a file.
+    public var artifact: String?
 
-    public init(lastRun: AutomationRun? = nil, lastSuccess: Date? = nil, consecutiveFailures: Int = 0) {
+    public init(lastRun: AutomationRun? = nil, lastSuccess: Date? = nil, consecutiveFailures: Int = 0, artifact: String? = nil) {
         self.lastRun = lastRun
         self.lastSuccess = lastSuccess
         self.consecutiveFailures = consecutiveFailures
+        self.artifact = artifact
+    }
+
+    /// The last run did the work (succeeded or partial).
+    public var lastRunDidTheWork: Bool {
+        switch lastRun?.outcome {
+        case .succeeded?, .partial?: true
+        default: false
+        }
     }
 }

@@ -1,22 +1,23 @@
 # Architecture
 
-## Target shape
+## Shape (2026-10-19)
 
 ```text
-Mac Client (SwiftUI)        iOS/iPadOS client (later)      Web client (later)
-        │                            │                            │
-        └──────────── LinumicCore (Swift, shared) ────────────────┘
+Mac client (SwiftUI, menu bar)       iOS/iPadOS client (same target)       Web client: not planned
+        │                                      │
+        └────────────── LinumicCore (Swift, shared) ──────────────┘
                                      │  InventoryStore protocol
+                          HybridInventoryStore
                      ┌───────────────┴────────────────┐
-             JSONFileInventoryStore            RemoteInventoryStore (later)
-             (local, MVP)                              │
-                                               API / Cloud Backend (later)
+             JSONFileInventoryStore            RemoteInventoryStore
+             (local cache, this device)        (Supabase RPCs, Sign in with Apple)
                                                        │
-                                                   Database
-                                                       │
-                                     External integrations (GitHub, App Store
-                                     Connect, Google Play, social, AI), called
-                                     server-side only
+                                     Supabase (Postgres, RLS, audit; licences,
+                                     oversight, Sentinel: pg_cron + Edge Function)
+
+External integrations (GitHub, App Store Connect, Google Play, WorkTrack, Talar, SafeBeauty, VELRO, WordPress) are
+called from the device with the owner's keys in its Keychain, read-only except the confirmed actions listed below.
+Moving their credentials server-side is still open (docs/backend-plan.md).
 ```
 
 ## Technology decision (2026-09-23)
@@ -32,7 +33,7 @@ Not installed: Docker, pnpm, Supabase CLI, AWS/Azure CLIs.
 | Persistence (MVP) | Codable JSON file behind `InventoryStore` | Portable, inspectable, and the same DTO shape a future REST API returns. SwiftData was avoided so the domain model isn't tied to Apple persistence. |
 | Project generation | XcodeGen (`project.yml`) | Reviewable project definition, no merge conflicts in `.pbxproj` |
 | Secrets | macOS Keychain via `SecretStore` | See [docs/security.md](docs/security.md) |
-| Cloud backend | **Supabase** (Postgres, RLS, audit), project `mczuclgfqxffcbiwvecf`, ca-central-1. See [docs/backend-plan.md](docs/backend-plan.md) | Relational data, server-side rules and roles; the app will switch to it through `InventoryStore` |
+| Cloud backend | **Supabase** (Postgres, RLS, audit), project `mczuclgfqxffcbiwvecf`, ca-central-1. See [docs/backend-plan.md](docs/backend-plan.md) | Relational data, server-side rules and roles; the app uses it through `HybridInventoryStore` since 2026-09-23 |
 
 ## Modules
 
@@ -51,11 +52,14 @@ Not installed: Docker, pnpm, Supabase CLI, AWS/Azure CLIs.
 | 0j | Keys & Backups | Registry of signing keys, licence keys and encrypted off-Mac backups, every fact with source and day (`LinumicCore/Keys`: `KeysRegistry` with the 2026-10-09 seed, corrected 2026-10-18 (seed revision 2), `KeysRegistryStore` → `keys-registry.json`). Local checks behind `KeyFileSystem` (attributes only: exists, size, modification date; `LocalKeyFileSystem` uses FileManager attributes and directory listings, never file contents): `KeyChecker` per registry path or `AuthKey_*.p8`-style pattern, `KeysScanner` by file name (`*.jks`, `*.keystore`, `*-private.pem`, `AuthKey_*.p8`; skips node_modules/build/.git and links; ignores debug.keystore) in five fixed folders, `KeyAccess` for the sandbox grants (ungranted = "not granted", never guessed). `KeysRules`: backup state per key (covered, changed on a later day than its newest backup, not backed up), unregistered key files, restore test older than 90 days, open second-copy gap, passphrase Keychain item missing. App: `KeysModel` (read-only security-scoped bookmarks plus the Oversight workspace, Keychain presence via attributes only), `KeysViews`; reminders become the Brief's Keys section; palette "Mark restore test done…" opens the sheet. iOS shows the registry only. |
 | 0k | Website messages | linumic.com contact-form entries (`LinumicCore/SiteMessages`): `SiteMessagesClient` runs the read-only SureForms abilities `sureforms/list-entries` and `sureforms/bulk-get-entries` through WordPress core `/wp-json/wp-abilities/v1/abilities/{name}/run` (GET, application password, Keychain `wordpress.linumic.apppassword`); `SiteMessagesParser` (fields to name, email, message; site time Asia/Kabul), `SiteMessagesState` (seen and notified ids, `site-messages.json`), `SiteMessageText` (140-character excerpt, safe mailto), `SiteMessagesNotificationText`. App: `SiteMessagesModel`, `SiteMessagesViews`; a Daily Brief section with per-line links (`BriefLink`), a Dashboard "Waiting for you" row and palette entries. See docs/integrations.md. |
 | 0l | Desk and Ledgers | Phase 1 of [docs/company-os-roadmap.md](docs/company-os-roadmap.md). The home screen (`LinumicCore/Desk`): `DeskBuilder.build(brief:ledgers:state:now:)` turns every Daily Brief line (routing through `BriefDestination`) and every open ledger item into `DeskItem`s (id `<origin>\|<subjectKey>\|<kindKey>`), grouped by product (`DeskDomain`, focus WorkTrack then SafeBeauty) into Today / This week / Later; a source not read, not granted, not found or unreadable, a part of a Brief section not read (`BriefSection.gaps`: a product not signed in, a store without a key), an old «آخرین بازبینی» and lines set aside are items of their own, never zero. Ledgers: `LedgerParser` (PRIORITIES.md: `- [ ]` at any indentation, the numbered list under «اولویت», P0 high, P1 normal, the lines indented under each item as its notes, any line break including CRLF), `NextActionsParser` (the owner's TODAY and THIS WEEK items with their «منبع: Product / slug»), `LedgerAllowList` (8 PRIORITIES.md files and the newest NEXT-ACTIONS-<day>.md, exact paths) and `LedgerReader` behind `LedgerFileSystem`. `DeskState` (Done until the next reading for Brief lines, until the line changes for ledger lines; Snooze; Waiting on others and Dismiss until the fact hash changes; a Brief mark is dropped only after a later reading of its own part) in `desk-state.json` (ids, kinds, times, hashes and reasons, no titles); `DeskAgentBrief` (Dari, file:line). App: `DeskModel` (read-only bookmarks `LCCLedgerBookmarks`, Mac only), `DeskViews`, "Ledger access" in Settings → Integrations, the `ledgers` automation job (30 min, no network, before the Brief), palette entries. |
+| 0m | Automation and Sentinel | `AutomationEngine` (App) runs every job of `AutomationCatalog` on its own schedule (`AutomationScheduler`: cadence, backoff, offline, wake, pause, Low Power), one at a time, records each run in `automation.json`, notifies after 3 failures; menu bar, login item, iOS background refresh. The backup job is due again a minute after its file is gone from `Backups/` (`AutomationJobState.artifact`), and `InventoryBackup.status()` (what the folder holds, read back) feeds the Desk and the Brief, never the log alone. Sentinel on Supabase (deployed 2026-10-19): the same health checks every 10 minutes, a daily licence sweep, a weekly `inventory_snapshots`. See [docs/automation.md](docs/automation.md), [docs/sentinel.md](docs/sentinel.md). |
+| 0n | Obligations and accounts | Phase 2 of the company OS roadmap (`LinumicCore/Obligations`). `Obligation` (what, due day or unknown, consequence, source, recorded day, 30/14/7/1-day lead windows), `VendorAccount` (purpose, holder personal or company, renewal, cost, each with a source), `ObligationSeed` (only facts recorded with a source), live rows from RDAP, TLS, the licence ledger, the keys registry and the continuity log, `ObligationsBuilder.validate` (no row without a source, no Done without evidence), lanes, `ObligationAlerts` (key `obligation:<id>:<due>:<lead>`), and a Daily Brief section, so the Desk shows them by due day and window. App: `ObligationsModel` (`obligations.json`), `ObligationsViews`. See [docs/obligations.md](docs/obligations.md). |
+| 0o | Continuity | Phase 2 of the company OS roadmap (`LinumicCore/Continuity`). `ContinuityBundle` (inventory, obligations, accounts, licence ledger without key text, keys registry; refuses key and token patterns), `AgeFile` + `Scrypt` (age v1 with a passphrase, CryptoKit only, checked against age's test vectors), `ContinuityExporter` (write, read back, decrypt, compare), `ContinuityLog` (`continuity.json`: evidence, later checks, "opened outside this Mac"). App: `ContinuityModel` (read-write folder bookmark, passphrase never stored), `ContinuityViews`. See [docs/continuity.md](docs/continuity.md). |
 | 1 | Dashboard | Implemented from local data |
 | 2 | Products | Implemented, with verification and evidence on every fact |
 | 3 | Version & release management | Manual records (sidebar "Release records"); live store and repository state is in Releases (0g) |
 | 4 | Repository management | Typed repositories with verified links, and read-only GitHub sync (`GitHubClient`) |
-| 5 | App Store / Google Play | Listings with evidence, plus the public App Store lookup refresh. Store consoles aren't connected. |
+| 5 | App Store / Google Play | Listings with evidence and the public App Store lookup; App Store Connect and Google Play are read with the owner's keys by the Store listings job and the Release Center (0g). |
 | 6 | Social media | Content calendar with approval workflow. Networks aren't connected. |
 | 7 | Market intelligence | Source → evidence → finding register with enforced citations ([docs/market-intelligence.md](docs/market-intelligence.md)) |
 | 8 | AI assistant | Local, grounded answer engine (`Assistant`): Verified / Derived / Unknown labels, English and Persian questions, no language model |
