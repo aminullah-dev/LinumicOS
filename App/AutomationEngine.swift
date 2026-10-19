@@ -504,13 +504,24 @@ enum AutomationNotifier {
 
 #if os(macOS)
 /// Opens Linumic OS when the owner logs in (System Settings > General > Login Items), through `SMAppService`.
+/// The owner's choice is also kept in `wantedKey`, and every launch makes the system match it, so the login item
+/// survives a reinstall or a move of the app (the registration belongs to one copy of the app).
 enum LoginItem {
+    static let wantedKey = "LCCOpenAtLogin"
     static var status: SMAppService.Status { SMAppService.mainApp.status }
     static var isOn: Bool { status == .enabled }
     static var needsApproval: Bool { status == .requiresApproval }
 
     static func set(_ on: Bool) throws {
+        UserDefaults.standard.set(on, forKey: wantedKey)
         if on { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() }
+    }
+
+    /// At launch: registers when the owner asked for it and this copy isn't registered yet. Never unregisters on its
+    /// own, and does nothing when the owner never chose.
+    static func reconcile() {
+        guard UserDefaults.standard.bool(forKey: wantedKey), status == .notRegistered || status == .notFound else { return }
+        try? SMAppService.mainApp.register()
     }
 
     static func openSystemSettings() { SMAppService.openSystemSettingsLoginItems() }
@@ -555,6 +566,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        LoginItem.reconcile()
         if MacPresence.startsHidden, MacPresence.hidesDock { NSApp.setActivationPolicy(.accessory) }
         observer = NotificationCenter.default.addObserver(forName: NSWindow.willCloseNotification, object: nil, queue: .main) { _ in
             MainActor.assumeIsolated { MacPresence.windowClosed() }
