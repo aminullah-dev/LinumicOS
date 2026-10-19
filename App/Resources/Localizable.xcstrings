@@ -170,6 +170,16 @@
         }
       }
     },
+    "%@ (read on the Mac)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ (خوانده‌شده روی مک)"
+          }
+        }
+      }
+    },
     "%@ (to do now)": {
       "localizations": {
         "fa-AF": {
@@ -818,6 +828,16 @@
         }
       }
     },
+    "%lld changed on two devices: choose on the Desk": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مورد در دو دستگاه تغییر کرده: در «میز کار» انتخاب کنید"
+          }
+        }
+      }
+    },
     "%lld characters; a machine code has 16": {
       "localizations": {
         "fa-AF": {
@@ -894,6 +914,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld تازه"
+          }
+        }
+      }
+    },
+    "%lld not accepted by the server; see Settings → Account": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مورد را سرور نپذیرفت؛ تنظیمات ← حساب را ببینید"
           }
         }
       }
@@ -1068,12 +1098,32 @@
         }
       }
     },
+    "%lld sent, %lld received": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld فرستاده شد، %2$lld دریافت شد"
+          }
+        }
+      }
+    },
     "%lld sources": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "%lld منبع"
+          }
+        }
+      }
+    },
+    "%lld synced rows were written by a newer version of the app; this one leaves them alone.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld سطر همگام‌شده را نسخهٔ تازه‌تری از برنامه نوشته است؛ این نسخه به آن‌ها دست نمی‌زند."
           }
         }
       }
@@ -1235,6 +1285,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "هزینهٔ %@ به کار نمی‌رود: مبلغ باید بیشتر از صفر باشد و واحد پول یک کد سه‌حرفی."
+          }
+        }
+      }
+    },
+    "A Desk item that this device does not show": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "موردی از «میز کار» که این دستگاه نشان نمی‌دهد"
           }
         }
       }
@@ -1459,6 +1519,16 @@
         }
       }
     },
+    "Account…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب…"
+          }
+        }
+      }
+    },
     "Actions": {
       "localizations": {
         "fa-AF": {
@@ -1555,6 +1625,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "افزودهٔ شما"
+          }
+        }
+      }
+    },
+    "Added: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افزوده‌شده: %@"
+          }
+        }
+      }
+    },
+    "Added: %@, due %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افزوده‌شده: %1$@، سررسید %2$@"
           }
         }
       }
@@ -2430,12 +2520,32 @@
         }
       }
     },
+    "Both your devices changed these while they were apart. Nothing was written over: each keeps its own version until you choose which one stays.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر دو دستگاه شما این‌ها را جدا از هم تغییر داده‌اند. هیچ‌کدام روی دیگری نوشته نشد: هر دستگاه نسخهٔ خودش را نگه می‌دارد تا شما انتخاب کنید کدام بماند."
+          }
+        }
+      }
+    },
     "Change date…": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "تغییر تاریخ…"
+          }
+        }
+      }
+    },
+    "Changed on two devices (%lld)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تغییر در دو دستگاه (%lld)"
           }
         }
       }
@@ -2516,6 +2626,66 @@
           "stringUnit": {
             "state": "translated",
             "value": "پوشهٔ ابری"
+          }
+        }
+      }
+    },
+    "Cloud sync failed: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همگام‌سازی با ابر ناکام ماند: %@"
+          }
+        }
+      }
+    },
+    "Cloud sync: %@; %lld not accepted by the server (Settings → Account).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همگام‌سازی با ابر: %1$@؛ %2$lld مورد را سرور نپذیرفت (تنظیمات ← حساب)."
+          }
+        }
+      }
+    },
+    "Cloud sync: in step with your other devices, %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همگام‌سازی با ابر: با دستگاه‌های دیگر شما یکسان است، %@."
+          }
+        }
+      }
+    },
+    "Cloud sync: not signed in. Your marks and obligations stay on this device.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همگام‌سازی با ابر: وارد نشده‌اید. علامت‌ها و تعهدات شما روی همین دستگاه می‌مانند."
+          }
+        }
+      }
+    },
+    "Cloud sync: not synced yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همگام‌سازی با ابر: هنوز همگام نشده."
+          }
+        }
+      }
+    },
+    "Cloud sync: the server side is not deployed yet (docs/desk-sync.md).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همگام‌سازی با ابر: بخش سرور هنوز نصب نشده (docs/desk-sync.md)."
           }
         }
       }
@@ -2650,12 +2820,52 @@
         }
       }
     },
+    "Desk and obligations": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "میز کار و تعهدات"
+          }
+        }
+      }
+    },
+    "Desk sync": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همگام‌سازی میز کار"
+          }
+        }
+      }
+    },
+    "desk-sync.json could not be read (%@). The Desk is not synced until the file is fixed or removed; removing it loses nothing you entered, and differences then show as conflicts.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "desk-sync.json خوانده نشد (%@). تا این فایل درست یا پاک نشود، «میز کار» همگام نمی‌شود؛ پاک کردن آن چیزی از آنچه وارد کرده‌اید را از بین نمی‌برد و تفاوت‌ها پس از آن به شکل تعارض دیده می‌شوند."
+          }
+        }
+      }
+    },
     "Developer ID Application certificate (team 27RXPRW77S) ends": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "گواهی Developer ID Application (تیم 27RXPRW77S) پایان می‌یابد"
+          }
+        }
+      }
+    },
+    "Dismissed, %@: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنار گذاشته شد، %1$@: %2$@"
           }
         }
       }
@@ -2690,6 +2900,26 @@
         }
       }
     },
+    "Done on %@: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انجام‌شده در %1$@: %2$@"
+          }
+        }
+      }
+    },
+    "Done, %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انجام‌شده، %@"
+          }
+        }
+      }
+    },
     "Done, with evidence": {
       "localizations": {
         "fa-AF": {
@@ -2716,6 +2946,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "سررسید"
+          }
+        }
+      }
+    },
+    "Due %@ (source: %@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سررسید %1$@ (منبع: %2$@)"
+          }
+        }
+      }
+    },
+    "Each PRIORITIES.md and NEXT-ACTIONS line as the Desk shows it (title, product, file:line, severity), never the lines under it. A line that holds an email address, a phone number or a key is sent without its text. Turned off, the copy in the cloud is emptied.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر سطر PRIORITIES.md و NEXT-ACTIONS همان‌طور که «میز کار» نشان می‌دهد (عنوان، محصول، file:line، شدت)، هرگز سطرهای زیر آن. سطری که آدرس ایمیل، شماره تلفن یا کلید داشته باشد بدون متنش فرستاده می‌شود. اگر خاموش شود، نسخهٔ ابر خالی می‌شود."
           }
         }
       }
@@ -2810,6 +3060,16 @@
         }
       }
     },
+    "Failed: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ناکام: %@"
+          }
+        }
+      }
+    },
     "From 2026-10-27 nothing is scheduled on WorkTrack's Facebook and Instagram; 24 launch packages and 4 videos are ready but not scheduled.": {
       "localizations": {
         "fa-AF": {
@@ -2870,6 +3130,16 @@
         }
       }
     },
+    "holder: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به نام: %@"
+          }
+        }
+      }
+    },
     "How often": {
       "localizations": {
         "fa-AF": {
@@ -2926,6 +3196,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "به نام چه کسی"
+          }
+        }
+      }
+    },
+    "iPhone or iPad": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آیفون یا آیپد"
           }
         }
       }
@@ -3070,6 +3350,26 @@
         }
       }
     },
+    "Keep the other's": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ دستگاه دیگر بماند"
+          }
+        }
+      }
+    },
+    "Keep this device's": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ این دستگاه بماند"
+          }
+        }
+      }
+    },
     "Keys & Backups registry: last restore test %@ (%@)": {
       "localizations": {
         "fa-AF": {
@@ -3116,6 +3416,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "دفترها فقط روی مک خوانده می‌شوند."
+          }
+        }
+      }
+    },
+    "Ledgers are read on the Mac. Its reading reaches this device through the cloud once the Mac has synced; until then the Desk shows the Daily Brief's items only.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفترها روی مک خوانده می‌شوند. خواندن مک پس از همگام‌سازی مک از راه ابر به این دستگاه می‌رسد؛ تا آن وقت «میز کار» فقط موردهای «گزارش روز» را نشان می‌دهد."
+          }
+        }
+      }
+    },
+    "Ledgers: the Mac's reading of %@, %lld of %lld read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفترها: خواندن مک در %1$@، %2$lld از %3$lld خوانده شد."
           }
         }
       }
@@ -3350,6 +3670,16 @@
         }
       }
     },
+    "No mark (undone)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون علامت (برگردانده شد)"
+          }
+        }
+      }
+    },
     "No second copy of the key backups off this Mac": {
       "localizations": {
         "fa-AF": {
@@ -3366,6 +3696,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "هنوز هیچ."
+          }
+        }
+      }
+    },
+    "Not accepted by the server: %@: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرور نپذیرفت: %1$@: %2$@"
+          }
+        }
+      }
+    },
+    "Not deployed on the server yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز روی سرور نصب نشده"
+          }
+        }
+      }
+    },
+    "Not done (reopened)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انجام‌نشده (دوباره باز شد)"
           }
         }
       }
@@ -3400,12 +3760,32 @@
         }
       }
     },
+    "Not sent: it holds what reads as %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فرستاده نشد: چیزی دارد که %@ به نظر می‌رسد."
+          }
+        }
+      }
+    },
     "Nothing here.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "این‌جا چیزی نیست."
+          }
+        }
+      }
+    },
+    "Nothing recorded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چیزی ثبت نشده"
           }
         }
       }
@@ -3496,6 +3876,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "فهرست تعهدات در همین دستگاه (obligations.json، سطرهای ثبت‌شده و تاریخ‌های زنده)"
+          }
+        }
+      }
+    },
+    "On %@, %@: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در %1$@، %2$@: %3$@"
+          }
+        }
+      }
+    },
+    "On %@: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در %1$@: %2$@"
+          }
+        }
+      }
+    },
+    "On this device: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در این دستگاه: %@"
           }
         }
       }
@@ -3750,12 +4160,42 @@
         }
       }
     },
+    "Refused by the server.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرور نپذیرفت."
+          }
+        }
+      }
+    },
     "Registrar of linumic.com and host of the linumic.com WordPress site. The domain's own date is read from RDAP.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "ثبت‌کنندهٔ linumic.com و میزبان سایت WordPress آن. تاریخ خود دامنه از RDAP خوانده می‌شود."
+          }
+        }
+      }
+    },
+    "Removed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برداشته شد"
+          }
+        }
+      }
+    },
+    "renewal %@ (source: %@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمدید %1$@ (منبع: %2$@)"
           }
         }
       }
@@ -3836,6 +4276,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "لازم: این از کجا آمده (فایل و شمارهٔ سطر، یک صفحه، یک ایمیل، یک رسید). بدون منبع چیزی ذخیره نمی‌شود. وقتی تاریخ معلوم نیست، خالی بگذارید: آن‌وقت ستون خودش را دارد."
+          }
+        }
+      }
+    },
+    "Send the ledgers' lines for iPhone and iPad": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فرستادن سطرهای دفترها برای آیفون و آیپد"
           }
         }
       }
@@ -3960,6 +4410,16 @@
         }
       }
     },
+    "Snoozed until %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به تعویق تا %@"
+          }
+        }
+      }
+    },
     "Sounds and voices (about 3,200 credits used for BE-PAYA).": {
       "localizations": {
         "fa-AF": {
@@ -4020,6 +4480,16 @@
         }
       }
     },
+    "Synced %@; %lld to choose on the Desk": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همگام‌شده %1$@؛ %2$lld مورد برای انتخاب در «میز کار»"
+          }
+        }
+      }
+    },
     "The continuity export log was not read here (it is kept on the Mac only, or continuity.json could not be read), so whether there is an encrypted copy off this Mac is not known here.": {
       "localizations": {
         "fa-AF": {
@@ -4046,6 +4516,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "تاریخی که برای %@ ثبت شده به کار نمی‌رود: آن سطر تاریخش را از منبع خودش می‌گیرد (یک خواندن، یا کارت حساب)، یا در فهرست تعهدات نیست."
+          }
+        }
+      }
+    },
+    "The Desk is built on this device from the Daily Brief and the ledgers (the PRIORITIES.md files and the newest NEXT-ACTIONS), read-only. A source that was not read is shown as an item, never as zero. Only your marks are saved, in desk-state.json on this device; when you are signed in to the cloud they sync with your other devices, without titles.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "میز کار روی همین دستگاه از «گزارش روز» و دفترها (فایل‌های PRIORITIES.md و تازه‌ترین NEXT-ACTIONS) ساخته می‌شود، فقط با خواندن. منبعی که خوانده نشده، خودش یک مورد است، هرگز صفر. فقط علامت‌های شما ذخیره می‌شود، در desk-state.json روی همین دستگاه؛ وقتی به ابر وارد شده باشید، بدون عنوان با دستگاه‌های دیگر شما همگام می‌شوند."
           }
         }
       }
@@ -4120,12 +4600,62 @@
         }
       }
     },
+    "The ledger reading was not accepted: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن دفترها پذیرفته نشد: %@"
+          }
+        }
+      }
+    },
     "the licence ledger": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "دفتر لایسنس‌ها"
+          }
+        }
+      }
+    },
+    "the Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مک"
+          }
+        }
+      }
+    },
+    "The Mac does not send its ledger lines (turned off in its Settings), so they are not shown here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مک سطرهای دفترهایش را نمی‌فرستد (در تنظیمات آن خاموش است)، پس این‌جا نشان داده نمی‌شوند."
+          }
+        }
+      }
+    },
+    "The Mac has not sent a newer reading since then (it reads every 30 minutes while it runs). What the ledgers say now may differ.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مک از آن وقت خواندن تازه‌تری نفرستاده (تا وقتی روشن است هر ۳۰ دقیقه می‌خواند). آنچه دفترها اکنون می‌گویند ممکن است فرق کند."
+          }
+        }
+      }
+    },
+    "The Mac's reading": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن مک"
           }
         }
       }
@@ -4160,12 +4690,32 @@
         }
       }
     },
+    "the other device": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دستگاه دیگر"
+          }
+        }
+      }
+    },
     "The stored grant could not be resolved at the last read. It is kept and tried again at the next read; grant the folder again if this stays.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "اجازهٔ ذخیره‌شده در خواندن گذشته باز نشد. نگه داشته می‌شود و در خواندن بعدی دوباره امتحان می‌شود؛ اگر همین‌طور ماند، دوباره به پوشه اجازه بدهید."
+          }
+        }
+      }
+    },
+    "This line's text was kept off the cloud (it holds an address, a phone number or a key). Read it on the Mac.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متن این سطر به ابر فرستاده نشد (آدرس، شماره تلفن یا کلید دارد). آن را روی مک بخوانید."
           }
         }
       }
@@ -4656,6 +5206,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "سرور VELRO (Docker Compose)."
+          }
+        }
+      }
+    },
+    "Waiting on others, since %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منتظر دیگران، از %@"
           }
         }
       }
@@ -14420,6 +14980,16 @@
         }
       }
     },
+    "written by a newer version of the app (version %ld)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نوشته‌شده با نسخهٔ تازه‌تر برنامه (نسخهٔ %ld)"
+          }
+        }
+      }
+    },
     "X": {
       "extractionState": "stale",
       "localizations": {
@@ -14458,6 +15028,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "بلی"
+          }
+        }
+      }
+    },
+    "Your Desk marks, obligations and accounts with the cloud, and the Mac's ledger reading for iPhone and iPad. Conflicts are shown on the Desk, never overwritten.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "علامت‌های «میز کار»، تعهدات و حساب‌های شما با ابر، و خواندن دفترها در مک برای آیفون و آیپد. تعارض‌ها در «میز کار» نشان داده می‌شوند و هیچ‌کدام روی دیگری نوشته نمی‌شود."
           }
         }
       }
