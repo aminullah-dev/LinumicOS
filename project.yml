@@ -12,8 +12,8 @@ settings:
     DEVELOPMENT_TEAM: 27RXPRW77S
     SWIFT_EMIT_LOC_STRINGS: YES
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
-    MARKETING_VERSION: "0.1.0"
-    CURRENT_PROJECT_VERSION: "1"
+    MARKETING_VERSION: "0.2.0"
+    CURRENT_PROJECT_VERSION: "2"
 packages:
   LinumicCore:
     path: Packages/LinumicCore
@@ -30,6 +30,9 @@ targets:
       path: App/Support/Info.plist
       properties:
         CFBundleDisplayName: Linumic OS
+        # From MARKETING_VERSION / CURRENT_PROJECT_VERSION above (XcodeGen otherwise writes 1.0 (1)).
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         CFBundleName: Linumic OS
         CFBundleDevelopmentRegion: en
         CFBundleLocalizations: [en, fa-AF]

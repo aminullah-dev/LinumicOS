@@ -16,7 +16,7 @@ PROFILE=LinumicOS
 OUT=build/Release
 VERSION=$(grep -m1 'MARKETING_VERSION' project.yml | sed -E 's/.*"([^"]+)".*/\1/')
 # Remove only this script's own outputs. A copy of the app you've unzipped here (and may be running) is left alone.
-mkdir -p "$OUT" && rm -rf "$OUT/LinumicOS.xcarchive" "$OUT/export" "$OUT"/LinumicOS-*.zip
+mkdir -p "$OUT" && rm -rf "$OUT/LinumicOS.xcarchive" "$OUT/export" "$OUT"/LinumicOS-*.zip(N)
 
 xcodegen generate >/dev/null
 swift test --package-path Packages/LinumicCore >/dev/null
