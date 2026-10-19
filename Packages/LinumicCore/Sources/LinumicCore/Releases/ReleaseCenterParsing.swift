@@ -189,6 +189,15 @@ public enum ReleaseCenterParser {
         }
     }
 
+    /// `GET /repos/{r}/actions/workflows`: the ids of the workflows GitHub still runs. A workflow whose file was
+    /// deleted is no longer listed, and a disabled one isn't "active"; their old runs say nothing about CI today.
+    public static func gitHubActiveWorkflowIDs(_ data: Data) throws -> Set<Int> {
+        struct W: Decodable { let id: Int; let state: String? }
+        struct Response: Decodable { let workflows: [W] }
+        return Set(try decodeResponse(Response.self, from: data, decoder: gitHubDecoder, what: "actions/workflows").workflows
+            .filter { $0.state == "active" }.map(\.id))
+    }
+
     /// `GET /repos/{r}/releases/latest`.
     public static func gitHubLatestRelease(_ data: Data) throws -> GitHubReleaseRef {
         struct R: Decodable { let tag_name: String; let name: String?; let published_at: Date?; let html_url: URL? }

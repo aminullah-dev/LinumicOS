@@ -451,6 +451,13 @@ extension CIRollup {
         return .none
     }
 
+    /// Drops runs of workflows that are no longer active (deleted file or disabled), so a workflow removed months ago
+    /// can't keep main "failing" forever. Runs without a workflow id are kept; with no list (`nil`), all are kept.
+    public static func activeOnly(_ runs: [GitHubWorkflowRunInfo], activeWorkflowIDs: Set<Int>?) -> [GitHubWorkflowRunInfo] {
+        guard let activeWorkflowIDs else { return runs }
+        return runs.filter { run in run.workflowID.map(activeWorkflowIDs.contains) ?? true }
+    }
+
     /// The newest run of each workflow, newest first (what the rollup was computed from).
     public static func latestPerWorkflow(_ runs: [GitHubWorkflowRunInfo]) -> [GitHubWorkflowRunInfo] {
         var newest: [String: GitHubWorkflowRunInfo] = [:]
