@@ -25,13 +25,23 @@ Phase 3.
 - two rows with one id (the first stays); a row without a title;
 - a row or account in `obligations.json` that the app's own forms would not have written: its origin is not the
   owner's, or its id does not start with `owner.`. Such a row could stand in for a seed or live row, so it is left out;
-- a date in `obligations.json` for a live row (it takes its date from its own source) or for no row in the register.
+- a date in `obligations.json` for a live row (it takes its date from its own source), for an account's renewal (its
+  day is recorded on the account's card, the one place for it) or for no row in the register;
+- a Done in `obligations.json` for a live row: it closes only through its source (below);
+- a cost the account sheet would refuse (an amount of zero or less, a currency that is not a three-letter code),
+  whether in an account edit or on an account itself;
+- facts recorded for an account that is not in the register.
+
+Lead days that would never bring a row forward (an empty list, or a day outside 1 to 366, written by hand) are replaced
+by the defaults, 30, 14, 7 and 1. A day that does not exist (`2026-02-30`) is not a day: `KeyDay` refuses it, so a file
+that holds one can't be read and is reported, never shown as 2 March and counted as another day.
 
 Each refusal is a high line in the Daily Brief (so it is under Today on the Desk) and a red card on the Obligations
 screen. Entering one through the app is impossible: the sheets don't save without the source or the evidence. The
 date sheet saves only a day that was picked (its first value, today or the recorded date, is never saved as the day a
-source states), and the account sheet does not clear a recorded value: it stays, with its source, until a new one is
-recorded.
+source states), the add sheet saves a due day only once one was picked (switching "The due date is known" on starts at
+today, which is never saved as the day), and the account sheet does not clear a recorded value: it stays, with its
+source, until a new one is recorded.
 
 ## Lanes, lead windows and the Desk
 
@@ -44,18 +54,31 @@ recorded.
 | 15 to 30 days (the 30-day window) | Within 30 days | info | Later |
 | Beyond 30 days | Later | info | Later |
 | Date unknown | Date unknown | info | Later |
-| No encrypted export off this Mac yet (continuity) | Date unknown | normal | This week |
+| No encrypted export off this Mac yet (continuity): no date, but due now, shown as "to do now" | Date unknown | normal | This week |
 
 The Desk puts a dated item by its day and its own window, not by the focus-product rule (a SafeBeauty post time due in
 12 days is this week's). The Brief's Obligations section leaves out what another section already says: a domain or a
 licence inside the Monitor's or the Licences' 30-day window, the Keys & Backups reminders, and TLS certificates (they
 renew by themselves; the Monitor brings one forward from 30 days before it ends). Those stay on the Obligations screen.
+A restore test's next day is this section's up to and on that day ("due today", high, so Today on the Desk); from the
+day after, Keys & Backups says it ("last restore test was 91 days ago"). No day falls in neither.
 
-**Done** on an obligation needs evidence and holds for that due day only: a renewed licence, or the next period of a
-yearly item, opens again. On the Desk, every obligation's Done opens the evidence sheet, the live rows' too (the
-continuity export, a restore test), whose Open goes to their own screen: each Brief line carries its obligation's id.
-A row built from a file the app keeps itself (the continuity log, the keys registry) is read again at each Brief, so a
-Desk mark on it (a snooze, "waiting on others") never hides it past the next reading while it is still there.
+**Done** on an obligation needs evidence and holds for that due day only: the next period of a yearly item, or a new
+renewal day recorded on the account, opens it again. On the Desk, an obligation's Done opens the evidence sheet: each
+Brief line carries its obligation's id.
+
+**A live row closes only through its source**, never by a typed sentence: the continuity export when a verified export
+off this Mac is recorded, a restore test when one is recorded in Keys & Backups, a licence or a domain when the ledger
+or the next reading shows the new end. Its button on the Obligations screen and its Done on the Desk go there
+("Export…" opens Continuity, "Record restore test…" opens that backup's restore-test sheet, the rest open their
+screen), and a Done for one in `obligations.json` is reported, not applied. A row built from a file the app keeps
+itself (the continuity log, the keys registry) is read again at each Brief, so a Desk mark on it (a snooze, "waiting
+on others") never hides it past the next reading while it is still there.
+
+**An account's renewal day is entered in one place: the account's card** ("Edit…"). The renewal row's "Set date…"
+opens that card, so a renewal recorded next year always reaches the obligation, the Desk and the alerts; recording it
+there also supersedes a date once set on the row itself. The row's source and recorded day are those of the fact it
+comes from: the renewal date as entered (its source, the day it was entered), else the bill.
 
 **Alerts:** one notification when an obligation enters a window (30, 14, 7, 1 days) and on or after its day, posted
 after each Daily Brief round (every 30 minutes while the app runs), once per window. The key is
@@ -73,9 +96,9 @@ screens (Monitor, Licences) and are left out. Settings: the switch on the Obliga
 | Monitor TLS readings | `tls.<host>`: certificate end, monitored hosts only |
 | Licence ledger | `licence.<id>`: active licences with an end day (no customer name) |
 | Keys & Backups registry | `keys.restore.<backup>`: next restore test (90 days after the last), or "no restore test recorded"; `keys.second-copy` while that gap is open |
-| Continuity log (`continuity.json`) | `continuity.export`: 30 days after the last verified export **off this Mac** (an external drive, a cloud folder or a network volume), or "no encrypted copy off this Mac yet". An export to this Mac's own disk, or to a folder whose place is not known, does not count (and the app refuses to make one) |
+| Continuity log (`continuity.json`) | `continuity.export`: 30 days after the last verified export **known to be off this Mac** (an external drive, a network volume, or a cloud folder once the export was opened outside this Mac), or "no encrypted copy off this Mac yet". An export to this Mac's own disk, or to a folder whose place is not known, does not count (and the app refuses to make one); one in a cloud folder that was not opened elsewhere does not count yet, since its local copy reads back whether or not it was uploaded |
 
-### Seed (`ObligationSeed`, revision 2)
+### Seed (`ObligationSeed`, revision 3)
 
 Only facts already recorded with a source. NA = `~/Projects/Multiplatform/NEXT-ACTIONS-2026-10-19.md`,
 M = `~/.claude/projects/-Users-aminullahhashemi/memory/`.
@@ -88,7 +111,7 @@ M = `~/.claude/projects/-Users-aminullahhashemi/memory/`.
 | `marketing.safebeauty-dst-pashto` | 2026-10-30 | NA:119 («پیش از ۳۱ اکتبر»); M/safebeauty-marketing.md:57 |
 | `marketing.safebeauty-dst-reels` | 2026-11-09 | NA:119 («پیش از ۱۰ نومبر»); M/safebeauty-marketing.md:57 |
 | `marketing.worktrack-queue-end` | 2026-10-26 | M/worktrack-marketing.md:15; NA:117 («پیش از ۲۷ اکتبر») |
-| `domain.linumic.com` | 2029-08-15 | docs/integrations.md:548-551 (RDAP, 2026-10-09) |
+| `domain.linumic.com` | 2029-08-15 | docs/integrations.md:548-551 (RDAP, 2026-10-09). Its consequence is worded as that source says it: linumic.com and its subdomains (such as console.linumic.com) depend on it, Google's `web.app` and `cloudfunctions.net` hosts do not; no mailbox is named, since the source names none (revision 3) |
 | `stores.play-target-api` | unknown | docs/product-discovery-report.md:79 (the notice named 31 August 2026, already past when it was read on 2026-09-23; the next deadline is not recorded) |
 
 **"Before" a day.** NA says «پیش از ۳۱ اکتبر», «پیش از ۱۰ نومبر» and «پیش از ۲۷ اکتبر» (before 31 October, before 10
@@ -156,4 +179,6 @@ read is reported and never overwritten.
 - تاریخ عضویت Apple و هر مبلغی را که از صورت‌حساب می‌دانید، در کارت همان حساب با «ویرایش…» و منبعش وارد کنید.
 - تاریخ ۲۰۲۷-۰۹-۲۳ تاریخ پروفایل توسعه است؛ گواهی Developer ID خودش در ۲۰۲۷-۰۲-۰۱ تمام می‌شود، و گواهی Apple Development که نسخهٔ نصب‌شده را امضا کرده در ۲۰۲۷-۰۹-۰۸.
 - «انجام شد» روی «میز کار» برای هر تعهد، صفحهٔ مدرک را باز می‌کند؛ بدون مدرک هیچ تعهدی انجام‌شده حساب نمی‌شود.
+- سطرهای زنده (خروجی تداوم، بازیابی آزمایشی، لایسنس، دامنه) با جملهٔ تایپ‌شده بسته نمی‌شوند: فقط وقتی منبع خودشان ثبت کند. دکمهٔ آن‌ها همان‌جا را باز می‌کند.
+- تاریخ تمدید هر حساب فقط در کارت همان حساب («ویرایش…») ثبت می‌شود؛ «تعیین تاریخ…» در سطر تمدید هم همان کارت را باز می‌کند.
 - تمدید یک حساب فقط وقتی تعهد می‌شود که تاریخش یا هزینهٔ ماهانه/سالانه‌اش با منبع ثبت شده باشد.

@@ -33,9 +33,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   the newest verified export to an external drive, a cloud folder or a network volume; an export to this Mac's own disk
   or to a folder the system can't place no longer turns "No encrypted copy off this Mac yet" into a date 30 days out,
   and the app refuses to make one there.
-- **An obligation's Done on the Desk always asks for evidence**, the live rows' too (the continuity export, a restore
-  test): each Brief line carries its obligation's id. Rows read from the app's own files are read again at each Brief,
-  so no Desk mark hides one for good.
+- **An obligation's Done on the Desk asks for evidence** (a live row's goes to its source: see the second review below):
+  each Brief line carries its obligation's id. Rows read from the app's own files are read again at each Brief, so no
+  Desk mark hides one for good.
 - **The register leaves out what it refuses**: a row or account without a source, a hand-written row that is not the
   owner's (one could replace a seed row), a date for a live row or for no row (each reported). An account's renewal is
   an obligation only once its day or a monthly or yearly bill is recorded.
@@ -54,6 +54,36 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - The Obligations header marks its counts partial while a live source is unread; continuity.json that can't be read is
   an unread part, not "no export yet"; the date sheet saves only a picked day; the account sheet does not pretend to
   clear a value; a ledger grant whose bookmark fails to resolve is kept (and shown as such), not deleted.
+
+### Fixed: the second Phase 2 review (2026-10-19)
+- **An account's renewal day has one place: the account's card.** A date set on an `account.<id>.renewal` row is no
+  longer applied (it is reported, and recording the renewal on the card supersedes it); the row's "Set date…" opens
+  the card. Before, a date set on the row won over every later renewal recorded on the card, so next year's renewal
+  never reached the Desk or the alerts. The renewal row's source and recorded day are those of the fact it comes from
+  (the day the renewal or the bill was entered), not the account's.
+- **A live row closes only through its source.** A Done typed for the continuity export (or a restore test, a licence,
+  a domain) is not applied and is reported: with no copy off this Mac, "I think I copied it" closed the P0 row and
+  took it off the Desk and the Brief. On the Obligations screen a live row offers its source's action ("Export…",
+  "Record restore test…" for that backup, or Open); on the Desk its Done goes there.
+- **No export without the inventory and obligations.json.** Before the inventory had loaded, after its load failed, or
+  with obligations.json unreadable, an export was written, verified and recorded with 0 products, and dated the
+  obligation 30 days out. It is now refused with the reason named, on the screen before Export is pressed and in the
+  exporter (`ContinuityBundle.inventory` and `obligationEntries` are absent when not read, and never counted).
+- **A cloud folder's export counts once it was opened outside this Mac**: the Mac's own copy of the folder reads back
+  whether or not it was uploaded. Such an export is marked "Upload not checked" until then. Cloud folders are
+  recognised under the real home only, not by a path that merely holds `Library/CloudStorage`.
+- **Continuity export:** the file is forced onto the device (`F_FULLFSYNC`) before it is read back; a passphrase with
+  a leading, trailing or doubled space is refused (age does not trim, and a space can't be seen on paper); Notion,
+  OpenAI, ElevenLabs, Slack, Google OAuth and Meta token formats are refused too.
+- **Obligations:** a restore test's due day is shown "due today" by the Obligations section (Keys & Backups says it
+  from the next day), so no day falls between the two; the undated continuity row reads "(to do now)", not "(date
+  unknown)"; hand-written input is checked as the forms check it (a cost of zero or less or a currency that is not a
+  three-letter code, lead days that would never alert, facts for an unknown account, a day such as 2026-02-30 that does
+  not exist); the add sheet saves a due day only once one is picked; the header is marked partial, naming
+  obligations.json, when that file can't be read. Seed revision 3: linumic.com's consequence says what
+  docs/integrations.md says (its subdomains depend on it, Google's hosts do not), without the mailbox it never named.
+- **Daily backup:** the Desk no longer promises that the next run copies a changed inventory (the job may be off or
+  automation paused); a test now holds that a confirmation stops counting once the newest file is not the inventory.
 
 ### Fixed (2026-10-19)
 - A `KeyDay` is a Gregorian day whatever calendar the device shows. The app runs with fa_AF on the owner's Mac, where

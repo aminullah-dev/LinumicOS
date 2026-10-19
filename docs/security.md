@@ -192,15 +192,18 @@ post as Linumic, so it is treated as a production system.
   forms would not have written are refused and left out. Alerts carry titles only.
 - **Continuity export (since Phase 2):** the export folder is a read-write security-scoped bookmark
   (`LCCContinuityFolder`) the owner chose in an open panel; only `linumic-os-continuity-….json.age` files are written
-  there, with `.withoutOverwriting`, and only when the folder is off this Mac (an external drive, a cloud folder, a
-  network volume). A file that fails its check, or a write that stops halfway, is removed; a file that was already
-  there is never touched. The passphrase is printable ASCII (so it opens the file on any keyboard) and lives only in
+  there, with `.withoutOverwriting`, and only when the folder is off this Mac (an external drive, a cloud folder under
+  the owner's real home, a network volume). The file is forced onto the device (`F_FULLFSYNC`) before it is read back.
+  A file that fails its check, or a write that stops halfway, is removed; a file that was already there is never
+  touched. Nothing is written while the inventory or `obligations.json` is not read. The passphrase is printable ASCII
+  with no leading, trailing or doubled space (so it opens the file on any keyboard, typed from paper) and lives only in
   the two fields of the Continuity screen and in memory for the export call; it is never written anywhere and never
   logged. The file is age v1 (scrypt N = 2^18, r = 8, p = 1;
   ChaCha20-Poly1305; HMAC-SHA256 header), implemented on CryptoKit and checked against age's own test vectors. The
   document leaves out every Keychain item, key file and licence key text, and `ContinuityBundle.forbiddenPatterns`
-  (PEM blocks, LNM1 keys, GitHub, Anthropic, Supabase secret, Google API key, age secret key, JWT, Stripe live key and
-  AWS access key formats) stops an export before anything is written. It does carry customer names and machine codes of the licence ledger and the inventory's
+  (PEM blocks, LNM1 keys, GitHub, Anthropic, Supabase secret, Google API key, age secret key, JWT, Stripe live key, AWS
+  access key, Notion, OpenAI, ElevenLabs, Slack, Google OAuth and Meta formats) stops an export before anything is
+  written. It does carry customer names and machine codes of the licence ledger and the inventory's
   records: whoever has the file and the passphrase has those. See docs/continuity.md.
 - **No secrets in source or Git.** `.gitignore` blocks `.env*`, `*.p8`, `*.p12`,
   `*.pem`, `*.key`, keystores, provisioning profiles and service-account JSON.
