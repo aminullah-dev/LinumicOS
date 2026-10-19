@@ -1,7 +1,7 @@
 # Sentinel (server-side checks)
 
-**Status, 2026-10-18:** built and tested locally, **not deployed**. Nothing has been applied to the live Supabase
-project (`mczuclgfqxffcbiwvecf`); the owner approves and runs the deploy steps below.
+**Status, 2026-10-19:** **deployed** to the live Supabase project (`mczuclgfqxffcbiwvecf`) on 2026-10-19 at 00:57 UTC,
+after the owner's approval; the evidence is under "Deployed" below. The deploy steps are kept for a redeploy.
 
 The Monitor in the app only checks while the app is open. The Sentinel runs the same checks on Supabase, so they keep
 running while the Mac is off or asleep:
@@ -106,8 +106,9 @@ Approved by the owner and applied to `mczuclgfqxffcbiwvecf` through the Supabase
 - Security advisors: `ack_sentinel_event` and `request_sentinel_round` are SECURITY DEFINER callable by `authenticated`
   (intended: both check `private.is_admin()` first). The other warning (leaked password protection) predates this.
 
-The snapshots live in the same database, so they cover mistakes and bad imports, not the loss of the project itself;
-the app's daily local backup (automation.md) is the copy outside Supabase.
+The snapshots live in the same database, so they cover mistakes and bad imports, not the loss of the project itself.
+The app's daily local backup (automation.md) is outside Supabase but on the same Mac; the copy off the Mac is the
+encrypted continuity export ([continuity.md](continuity.md)).
 
 ## Owner deploy steps (needs approval; changes the live project)
 

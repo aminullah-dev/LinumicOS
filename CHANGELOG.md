@@ -5,6 +5,39 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Obligations & accounts, Continuity, and the daily backup counted from the folder; Phase 2 of the company OS roadmap (2026-10-19)
+- **Daily backup truth.** The run log said "Copy saved and read back: 12 products" (2026-10-19 00:00:01Z) while
+  `Backups/` was empty: the file was removed 65 seconds after the run and nothing looked at the folder again. Each run
+  now records the file it wrote or confirmed; when it is gone the job is due a minute after the run (never spinning
+  after a failure). `Backups/` is read (newest file, its day, decoded as a restore would) at launch, after each backup
+  and before each Brief; the Desk shows a "Daily backup" line and an empty folder after a "succeeded" run is a Today
+  item. The run note names the file.
+- **Obligations & accounts** («تعهدات و حساب‌ها», sidebar after the Desk): every obligation with what happens if it
+  is missed, its source and recorded day, a due day or "date unknown"; lanes Overdue, Within 7 days, Within 30 days,
+  Later, Date unknown, Done; Done only with evidence and only for that due day; a date, holder or cost only with its
+  source; `validate()` refusals shown in red and as Today items. Seed rows only from facts recorded with a source
+  (docs/obligations.md lists each). Live rows from RDAP, TLS, the licence ledger, the keys registry and the continuity
+  log. Accounts (Apple, Play, GoDaddy, Microsoft 365, Hetzner, Google Cloud, Supabase, GitHub, Meta, ElevenLabs,
+  Notion) with whose name each is in, renewal and cost when known. Alerts at 30, 14, 7 and 1 days and on the day,
+  once each (key `obligation:<id>:<due>:<lead>`). A Daily Brief section brings them to the Desk by due day and window.
+- **Continuity** («تداوم», sidebar after Keys & Backups, Mac): an encrypted export of the inventory, obligations,
+  accounts, licence ledger (without key text) and keys registry to a folder off this Mac, as an age file with a
+  passphrase typed each time and never stored; written, read back, decrypted and compared before it is recorded;
+  "Check again" and "Opened outside this Mac" with evidence. Opens with `age -d` anywhere (docs/continuity.md).
+  age and scrypt are written on CryptoKit, no new dependency, and checked against age's own test vectors.
+- Command Palette: open obligations and "Encrypted export off this Mac…". Dari for 261 strings; `check_catalog.py`
+  also checks seed consequences and account purposes.
+
+### Fixed (2026-10-19)
+- A `KeyDay` is a Gregorian day whatever calendar the device shows. The app runs with fa_AF on the owner's Mac, where
+  `Calendar.current` is Persian: a date picked in Keys & Backups was stored as 1405-…, and the Desk compared ledger days
+  with a Persian "today".
+- A dated Desk item goes by its due day and window, not by the focus-product rule.
+- Stale lines: docs/automation.md (Sentinel deployed; Website messages "not connected"), docs/sentinel.md (status; the
+  local backup is on the same Mac), ARCHITECTURE.md (shape, backend, stores; Automation, Obligations and Continuity
+  modules), README (automation, Sentinel, obligations, continuity), ROADMAP.md (backend and stores phases),
+  docs/backend-plan.md (status, migrations), the StoreListingsView comment.
+
 ### Added: Desk and Ledgers, Phase 1 of the company OS roadmap (2026-10-19)
 - New home screen **Desk** («میز کار»), first in the sidebar and the launch screen: Today, This week and Later
   (collapsed), grouped by product with WorkTrack and SafeBeauty first. Every row has its title, product pill, source

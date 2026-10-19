@@ -9,7 +9,7 @@ credentials already in this device's Keychain.
 | Layer | Where | Runs when | Status |
 |---|---|---|---|
 | Automation engine | This Mac (menu bar) or iPhone | The app runs; at login if enabled | Implemented (this document) |
-| Sentinel | Supabase (pg_cron + Edge Function) | Always, every 10 minutes | Ready, not deployed: [sentinel.md](sentinel.md) |
+| Sentinel | Supabase (pg_cron + Edge Function) | Always, every 10 minutes | Deployed 2026-10-19 00:57 UTC: [sentinel.md](sentinel.md) |
 | CI | GitHub Actions | Every pull request and push to main | `.github/workflows/ci.yml` (PR #12) |
 
 ## Jobs (`AutomationCatalog`)
@@ -17,7 +17,7 @@ credentials already in this device's Keychain.
 | Job | Every | Needs | Notes |
 |---|---|---|---|
 | Monitor | 5 min (longer after silent rounds) | network | public GETs only |
-| Server watch | 10 min | cloud sign-in, Sentinel deployed | reads the Sentinel RPCs; notifies new server events; "not deployed" until then |
+| Server watch | 10 min | cloud sign-in | reads the Sentinel RPCs; notifies new server events; says "not deployed" only if the server side is missing |
 | Store listings | 30 min | network | console reads only with saved keys; switch in Settings → Integrations |
 | Oversight sweep | 30 min | GitHub token | plus local working copies when a folder is granted |
 | Platforms | 30 min | GitHub token | |
@@ -27,9 +27,9 @@ credentials already in this device's Keychain.
 | Operations | 30 min | sign-in per product | VELRO counts are expensive; SafeBeauty counts are billed |
 | Website messages | 30 min | WordPress application password | |
 | Keys & Backups | 1 h | a granted folder (Mac only) | attributes only, never contents |
-| Local inventory backup | 24 h | nothing | see below |
+| Local inventory backup | 24 h, or a minute after its file is gone | nothing | see below |
 | Ledgers | 30 min | a granted ledger folder (Mac only) | the PRIORITIES.md files and the newest NEXT-ACTIONS for the Desk, read-only; runs just before the Brief; without a grant it still records each ledger as "not granted" for the Desk |
-| Daily Brief | 30 min | nothing | runs last: summarises what the others read |
+| Daily Brief | 30 min | nothing | runs last: summarises what the others read, reads `Backups/`, posts obligation alerts ([obligations.md](obligations.md)) |
 
 ## Scheduling (`AutomationScheduler`, pure and tested)
 
@@ -64,7 +64,30 @@ delivered silently to Notification Center: no banner, no sound. Scheduled remind
 Daily copy of `inventory.json` to `Backups/inventory-YYYY-MM-DD.json` (Gregorian date, local time zone, whatever
 calendar the Mac uses). Each copy is decoded after writing with the same decoder a restore uses, so a backup counts only
 when it is proven to restore. A copy identical to the newest one is not written again. The newest 30 are kept. This
-covers the local file only; the cloud copy is the Sentinel's weekly `inventory_snapshots`.
+covers the local file on this Mac only; the cloud copy is the Sentinel's weekly `inventory_snapshots` (same Supabase
+project), and the copy off this Mac is the encrypted continuity export ([continuity.md](continuity.md)).
+
+### What `Backups/` holds, not what the log says (2026-10-19)
+
+On 2026-10-19 the run log said "Copy saved and read back: 12 products" (00:00:01Z) while `Backups/` was empty. The
+folder's own times tell what happened: it was created by that run (birth 2026-10-18 20:00:01 EDT) and changed again at
+20:01:06, 65 seconds later, when the file in it was removed; the app removes a backup only beyond the newest 30. Nothing
+looked at the folder again, so the job was not due for 24 hours and every screen showed a green run.
+
+Now:
+
+- Each run that did the work records the file it wrote or confirmed (`AutomationJobState.artifact`). On every look of
+  the loop the engine lists `Backups/`; when that file is gone, the job is due **one minute after the run**
+  (`AutomationScheduler.artifactRecheck`) instead of a day later. After a failure the usual backoff holds, so it can't
+  spin. A run log from before this change has no artifact: an empty folder after a success counts as gone.
+- `InventoryBackup.status()` reads the folder (newest file, its day, decoded as a restore would, same as the inventory
+  now or not, or why it can't be listed) at launch, after each backup run and before each Brief.
+- The Desk shows a "Daily backup" line from that reading, and the backup job's card shows the folder beside its log.
+  The Brief's Automation section (and so the Desk) has a **high** item for an empty folder after a "succeeded" run or a
+  newest copy that does not restore, and a normal one for no backup yet, a newest copy older than 2 days, or a recorded
+  file that is gone while others remain; a job that ran while the folder was not looked at is a part not read, never
+  "all clear".
+- The run note names the file: "inventory-2026-10-19.json saved and read back: 12 products".
 
 ## Mac: menu bar, login item, Dock
 
@@ -87,4 +110,5 @@ outage the server saw while the Mac was off to the iPhone as a notification, wit
 - برای اینکه با روشن شدن مک خودش باز شود: «خودکارسازی» ← «باز شدن هنگام ورود به مک». اگر macOS اجازه خواست، دکمهٔ «باز کردن Login Items» را بزنید و Linumic OS را روشن کنید.
 - هر کار با یک کلید روشن و خاموش می‌شود و «اجرا همین حالا» دارد. تاریخچهٔ همهٔ اجراها پایین همان صفحه است.
 - اگر کاری سه بار پشت سر هم ناکام شود، یک اعلان می‌آید. شب‌ها (۱۱ شب تا ۷ صبح) اعلان‌ها بی‌صدا می‌آیند.
-- «پیام‌های سایت» تا وقتی «Enable Abilities» در SureForms روشن نشود ناکام می‌ماند. یا آن را روشن کنید، یا این کار را در صفحهٔ «خودکارسازی» خاموش کنید.
+- «پیام‌های سایت» تا وقتی «Enable Abilities» در SureForms روشن نشود «وصل نیست» ثبت می‌شود (نه ناکام؛ از PR #18). برای خواندن پیام‌ها آن را روشن کنید و رمز برنامهٔ WordPress را در تنظیمات بگذارید.
+- پشتیبان روزانه همان است که در پوشهٔ Backups/ هست، نه آنچه دفتر اجرا می‌گوید. اگر فایل پاک شود، کار پشتیبان یک دقیقه بعد دوباره اجرا می‌شود و «میز کار» تا آن وقت آن را «امروز» نشان می‌دهد.
