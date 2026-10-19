@@ -17,22 +17,25 @@ public struct ObligationDateEntry: Codable, Hashable, Sendable {
     }
 }
 
-/// What the owner recorded about an account: its renewal and whose name it is in, each with a source.
+/// What the owner recorded about an account: its renewal, whose name it is in and what it costs, each with a source.
 public struct VendorAccountEdit: Codable, Hashable, Sendable {
     public var accountID: String
     public var renewal: KeyDay?
     public var renewalSource: String?
     public var holder: AccountHolder?
     public var holderSource: String?
+    /// What it costs, with the bill it was read from (in the cost itself).
+    public var cost: AccountCost?
     public var enteredAt: Date
 
     public init(accountID: String, renewal: KeyDay? = nil, renewalSource: String? = nil, holder: AccountHolder? = nil,
-                holderSource: String? = nil, enteredAt: Date) {
+                holderSource: String? = nil, cost: AccountCost? = nil, enteredAt: Date) {
         self.accountID = accountID
         self.renewal = renewal
         self.renewalSource = renewalSource
         self.holder = holder
         self.holderSource = holderSource
+        self.cost = cost
         self.enteredAt = enteredAt
     }
 }
@@ -116,14 +119,21 @@ public struct ObligationsFile: Codable, Hashable, Sendable {
         return a
     }
 
-    /// Records an account's renewal day, whose name it is in, or both; each needs a source.
+    /// Records an account's renewal day, whose name it is in, what it costs, or any of them; each needs a source.
     public mutating func editAccount(_ accountID: String, renewal: KeyDay?, renewalSource: String?, holder: AccountHolder?,
-                                     holderSource: String?, now: Date) throws {
+                                     holderSource: String?, cost: AccountCost? = nil, now: Date) throws {
         if renewal != nil, Self.clean(renewalSource) == nil { throw ObligationError.missingSource }
         if holder != nil, Self.clean(holderSource) == nil { throw ObligationError.missingSource }
-        guard renewal != nil || holder != nil else { return }
+        var cleanCost = cost
+        if let c = cost {
+            guard let source = Self.clean(c.source) else { throw ObligationError.missingSource }
+            let code = c.currency.trimmingCharacters(in: .whitespaces).uppercased()
+            guard c.amount > 0, code.count == 3, code.allSatisfy({ $0.isASCII && $0.isLetter }) else { throw ObligationError.badAmount }
+            cleanCost = AccountCost(amount: c.amount, currency: code, cycle: c.cycle, source: source)
+        }
+        guard renewal != nil || holder != nil || cleanCost != nil else { return }
         accountEdits.append(VendorAccountEdit(accountID: accountID, renewal: renewal, renewalSource: Self.clean(renewalSource),
-                                              holder: holder, holderSource: Self.clean(holderSource), enteredAt: now))
+                                              holder: holder, holderSource: Self.clean(holderSource), cost: cleanCost, enteredAt: now))
     }
 }
 
@@ -312,6 +322,9 @@ public enum ObligationsBuilder {
                 accounts[i].holder = h
                 accounts[i].holderSource = source
             }
+            if let c = edit.cost, ObligationsFile.clean(c.source) != nil {
+                accounts[i].cost = c
+            }
         }
 
         var rows = seed + file.added + accounts.map(renewal) + derived(live, calendar: calendar)
@@ -453,11 +466,13 @@ public enum ObligationsBuilder {
             if a.source.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || a.recordedOn == nil { issues.append(.noSource(a.id)) }
             if a.renewal != nil, ObligationsFile.clean(a.renewalSource) == nil { issues.append(.valueWithoutSource(a.id)) }
             if a.holder != nil, ObligationsFile.clean(a.holderSource) == nil { issues.append(.valueWithoutSource(a.id)) }
+            if let c = a.cost, ObligationsFile.clean(c.source) == nil { issues.append(.valueWithoutSource(a.id)) }
         }
         for c in file.completions where ObligationsFile.clean(c.evidence) == nil { issues.append(.doneWithoutEvidence(c.obligationID)) }
         for d in file.dates where ObligationsFile.clean(d.source) == nil { issues.append(.valueWithoutSource(d.obligationID)) }
         for e in file.accountEdits where (e.renewal != nil && ObligationsFile.clean(e.renewalSource) == nil)
-            || (e.holder != nil && ObligationsFile.clean(e.holderSource) == nil) {
+            || (e.holder != nil && ObligationsFile.clean(e.holderSource) == nil)
+            || (e.cost.map { ObligationsFile.clean($0.source) == nil } ?? false) {
             issues.append(.valueWithoutSource(e.accountID))
         }
         return issues

@@ -87,8 +87,10 @@ final class ObligationsModel {
     }
 
     @discardableResult
-    func editAccount(_ id: String, renewal: KeyDay?, renewalSource: String?, holder: AccountHolder?, holderSource: String?) -> Bool {
-        mutate { try $0.editAccount(id, renewal: renewal, renewalSource: renewalSource, holder: holder, holderSource: holderSource, now: .now) }
+    func editAccount(_ id: String, renewal: KeyDay?, renewalSource: String?, holder: AccountHolder?, holderSource: String?,
+                     cost: AccountCost?) -> Bool {
+        mutate { try $0.editAccount(id, renewal: renewal, renewalSource: renewalSource, holder: holder, holderSource: holderSource,
+                                    cost: cost, now: .now) }
     }
 
     @discardableResult

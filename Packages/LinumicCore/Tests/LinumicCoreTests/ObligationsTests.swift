@@ -154,6 +154,37 @@ struct ObligationValidationTests {
         #expect(renewal.source == "Hetzner invoice 2026-10")
     }
 
+    @Test func aCostIsOneAmountInOneCurrencyWithItsBill() throws {
+        var file = ObligationsFile()
+        #expect(throws: ObligationError.missingSource) {
+            try file.editAccount("apple-developer", renewal: nil, renewalSource: nil, holder: nil, holderSource: nil,
+                                 cost: AccountCost(amount: 99, currency: "USD", cycle: .yearly, source: " "), now: now)
+        }
+        #expect(throws: ObligationError.badAmount) {
+            try file.editAccount("apple-developer", renewal: nil, renewalSource: nil, holder: nil, holderSource: nil,
+                                 cost: AccountCost(amount: 99, currency: "US$", cycle: .yearly, source: "receipt"), now: now)
+        }
+        #expect(throws: ObligationError.badAmount) {
+            try file.editAccount("apple-developer", renewal: nil, renewalSource: nil, holder: nil, holderSource: nil,
+                                 cost: AccountCost(amount: 0, currency: "USD", cycle: .yearly, source: "receipt"), now: now)
+        }
+        try file.editAccount("apple-developer", renewal: day("2027-03-01"), renewalSource: "Apple membership page",
+                             holder: nil, holderSource: nil,
+                             cost: AccountCost(amount: 99, currency: "usd", cycle: .yearly, source: "Apple receipt 2026-03-01"), now: now)
+        let register = build(file)
+        let apple = try #require(register.accounts.first { $0.id == "apple-developer" })
+        #expect(apple.cost == AccountCost(amount: 99, currency: "USD", cycle: .yearly, source: "Apple receipt 2026-03-01"))
+        #expect(register.obligation(apple.renewalObligationID)?.due == day("2027-03-01"))
+        #expect(register.issues.isEmpty)
+        // A cost written without its bill (by hand in the file) is refused, not shown.
+        var bad = ObligationsFile()
+        bad.accountEdits = [VendorAccountEdit(accountID: "hetzner", cost: AccountCost(amount: 5, currency: "EUR", cycle: .monthly, source: ""),
+                                              enteredAt: now)]
+        let refused = build(bad)
+        #expect(refused.accounts.first { $0.id == "hetzner" }?.cost == nil)
+        #expect(refused.issues == [.valueWithoutSource("hetzner")])
+    }
+
     @Test func theFileSurvivesARestartAndABadFileIsNeverOverwritten() throws {
         let url = FileManager.default.temporaryDirectory.appending(path: "obligations-\(UUID().uuidString).json")
         defer { try? FileManager.default.removeItem(at: url) }

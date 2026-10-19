@@ -163,8 +163,43 @@ public enum AccountHolder: String, Codable, CaseIterable, Sendable, Identifiable
     }
 }
 
+/// How often a cost is paid, as the bill says.
+public enum BillingCycle: String, Codable, CaseIterable, Sendable, Identifiable {
+    case monthly, yearly, once
+
+    public var id: String { rawValue }
+
+    public var title: String {
+        switch self {
+        case .monthly: L("per month")
+        case .yearly: L("per year")
+        case .once: L("once")
+        }
+    }
+}
+
+/// What an account costs, as the owner read it on a bill: an amount in one currency (never converted, never added to
+/// another currency), how often, and where it was read.
+public struct AccountCost: Codable, Hashable, Sendable {
+    public var amount: Decimal
+    /// ISO 4217 code ("USD", "CAD", "AFN").
+    public var currency: String
+    public var cycle: BillingCycle
+    public var source: String
+
+    public init(amount: Decimal, currency: String, cycle: BillingCycle, source: String) {
+        self.amount = amount
+        self.currency = currency
+        self.cycle = cycle
+        self.source = source
+    }
+
+    /// "99 USD per year".
+    public var text: String { LF("%@ %@ %@", amount.formatted(), currency, cycle.title) }
+}
+
 /// An account the company depends on (a store, a host, a registrar). Never a password or card: the Vault holds
-/// sign-ins, and this holds only what the account is and whose it is.
+/// sign-ins, and this holds only what the account is, whose it is, when it renews and what it costs (when known).
 public struct VendorAccount: Codable, Identifiable, Hashable, Sendable {
     public var id: String
     /// The vendor's name of record.
@@ -177,6 +212,8 @@ public struct VendorAccount: Codable, Identifiable, Hashable, Sendable {
     /// The next renewal, when known.
     public var renewal: KeyDay?
     public var renewalSource: String?
+    /// What it costs, when a bill says so. Nil: unknown, never estimated.
+    public var cost: AccountCost?
     /// Where the account itself is recorded. Never empty.
     public var source: String
     public var recordedOn: KeyDay?
@@ -184,7 +221,7 @@ public struct VendorAccount: Codable, Identifiable, Hashable, Sendable {
     public var note: String?
 
     public init(id: String, name: String, purpose: String, holder: AccountHolder? = nil, holderSource: String? = nil,
-                renewal: KeyDay? = nil, renewalSource: String? = nil, source: String, recordedOn: KeyDay?,
+                renewal: KeyDay? = nil, renewalSource: String? = nil, cost: AccountCost? = nil, source: String, recordedOn: KeyDay?,
                 origin: ObligationOrigin, note: String? = nil) {
         self.id = id
         self.name = name
@@ -193,6 +230,7 @@ public struct VendorAccount: Codable, Identifiable, Hashable, Sendable {
         self.holderSource = holderSource
         self.renewal = renewal
         self.renewalSource = renewalSource
+        self.cost = cost
         self.source = source
         self.recordedOn = recordedOn
         self.origin = origin
@@ -250,6 +288,7 @@ public enum ObligationError: LocalizedError, Equatable {
     case duplicateID(String)
     case unknownID(String)
     case futureDay
+    case badAmount
 
     public var errorDescription: String? {
         switch self {
@@ -259,6 +298,7 @@ public enum ObligationError: LocalizedError, Equatable {
         case .duplicateID(let id): LF("An obligation with the id %@ already exists.", id)
         case .unknownID(let id): LF("Nothing with the id %@ is in the register.", id)
         case .futureDay: L("The day it was done can't be in the future.")
+        case .badAmount: L("Write the amount as a number above zero, and the currency as its three-letter code (USD, CAD, AFN).")
         }
     }
 }

@@ -368,13 +368,21 @@ struct AccountCard: View {
                 Label { Text("Renewal date unknown") } icon: { Image(systemName: "questionmark.circle") }
                     .font(.caption).foregroundStyle(.secondary)
             }
+            if let cost = account.cost {
+                Label { Text(verbatim: cost.text) } icon: { Image(systemName: "banknote") }
+                    .font(.caption)
+            } else {
+                Label { Text("Cost unknown") } icon: { Image(systemName: "questionmark.circle") }
+                    .font(.caption).foregroundStyle(.secondary)
+            }
             if let s = account.holderSource { Text("Holder from: \(s)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled) }
+            if let s = account.cost?.source { Text("Cost from: \(s)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled) }
             if let s = account.renewalSource { Text("Renewal from: \(s)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled) }
             Text("Source: \(account.source)").font(.caption2).foregroundStyle(.tertiary).lineLimit(3).textSelection(.enabled)
             HStack {
                 Spacer()
                 Button("Edit…", action: edit).buttonStyle(.borderless).font(.callout)
-                    .help("Record its renewal date or whose name it is in, with the source")
+                    .help("Record its renewal date, whose name it is in or what it costs, with the source")
             }
         }
         .padding(14)
@@ -505,13 +513,31 @@ struct AccountEditSheet: View {
     @State private var renewalSource = ""
     @State private var holder: AccountHolder?
     @State private var holderSource = ""
+    @State private var amount = ""
+    @State private var currency = ""
+    @State private var cycle = BillingCycle.yearly
+    @State private var costSource = ""
 
     private var renewalChanged: Bool { renewal.map { KeyDay($0) } != account.renewal }
     private var holderChanged: Bool { holder != account.holder && holder != nil }
+    /// The amount as typed, in Latin or Persian digits, with "." or "٫" as the decimal mark.
+    private var parsedAmount: Decimal? {
+        let latin = PaletteText.normalize(clean(amount)).replacingOccurrences(of: "٫", with: ".")
+            .replacingOccurrences(of: "٬", with: "").replacingOccurrences(of: ",", with: "")
+        // Digits with at most one decimal mark, nothing else: "12abc" is not read as 12.
+        guard latin.wholeMatch(of: #/[0-9]+(\.[0-9]+)?/#) != nil else { return nil }
+        return Decimal(string: latin, locale: Locale(identifier: "en_US_POSIX"))
+    }
+    private var cost: AccountCost? {
+        guard let value = parsedAmount else { return nil }
+        return AccountCost(amount: value, currency: clean(currency), cycle: cycle, source: costSource)
+    }
+    private var costEntered: Bool { !clean(amount).isEmpty }
     private var canSave: Bool {
-        (renewalChanged || holderChanged)
+        (renewalChanged || holderChanged || costEntered)
             && (!renewalChanged || renewal == nil || !clean(renewalSource).isEmpty)
             && (!holderChanged || !clean(holderSource).isEmpty)
+            && (!costEntered || (parsedAmount != nil && clean(currency).count == 3 && !clean(costSource).isEmpty))
     }
 
     var body: some View {
@@ -520,7 +546,8 @@ struct AccountEditSheet: View {
                     onSave: {
                         let r = renewalChanged ? renewal.map { KeyDay($0) } : nil
                         if model.editAccount(account.id, renewal: r, renewalSource: r == nil ? nil : renewalSource,
-                                             holder: holderChanged ? holder : nil, holderSource: holderChanged ? holderSource : nil) {
+                                             holder: holderChanged ? holder : nil, holderSource: holderChanged ? holderSource : nil,
+                                             cost: costEntered ? cost : nil) {
                             dismiss()
                         }
                     }) {
@@ -535,6 +562,16 @@ struct AccountEditSheet: View {
             }
             if holderChanged {
                 TextField("Source of the holder", text: $holderSource, axis: .vertical)
+            }
+            Section("Cost, as a bill says it") {
+                TextField("Amount", text: $amount)
+                TextField("Currency (USD, CAD, AFN)", text: $currency)
+                Picker("How often", selection: $cycle) {
+                    ForEach(BillingCycle.allCases) { Text(verbatim: $0.title).tag($0) }
+                }
+                TextField("Source of the cost", text: $costSource, axis: .vertical)
+                Text("Leave it empty when no bill says it: an unknown cost stays unknown, never estimated. Amounts in different currencies are never added together.")
+                    .font(.caption).foregroundStyle(.secondary)
             }
             Text("Each value needs its source (the account page, an invoice). A value already recorded keeps its own source until you replace it.")
                 .font(.caption).foregroundStyle(.secondary)

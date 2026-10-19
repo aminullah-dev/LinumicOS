@@ -1672,6 +1672,16 @@
         }
       }
     },
+    "Amount": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مبلغ"
+          }
+        }
+      }
+    },
     "An activity feed will come with the backend audit log.": {
       "extractionState": "stale",
       "localizations": {
@@ -2300,6 +2310,16 @@
         }
       }
     },
+    "Close": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بستن"
+          }
+        }
+      }
+    },
     "Cloud folder": {
       "localizations": {
         "fa-AF": {
@@ -2316,6 +2336,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "تداوم"
+          }
+        }
+      }
+    },
+    "Cost from: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هزینه از: %@"
+          }
+        }
+      }
+    },
+    "Cost unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هزینه نامعلوم"
+          }
+        }
+      }
+    },
+    "Cost, as a bill says it": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هزینه، همان‌طور که در صورت‌حساب آمده"
+          }
+        }
+      }
+    },
+    "Currency (USD, CAD, AFN)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "واحد پول (USD، CAD، AFN)"
           }
         }
       }
@@ -2600,6 +2660,16 @@
         }
       }
     },
+    "How often": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر چند وقت"
+          }
+        }
+      }
+    },
     "If it is missed (optional)": {
       "localizations": {
         "fa-AF": {
@@ -2746,6 +2816,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "آخرین خروجی بررسی‌شده: %@"
+          }
+        }
+      }
+    },
+    "Leave it empty when no bill says it: an unknown cost stays unknown, never estimated. Amounts in different currencies are never added together.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی هیچ صورت‌حسابی آن را نمی‌گوید، خالی بگذارید: هزینهٔ نامعلوم نامعلوم می‌ماند و هرگز تخمین زده نمی‌شود. مبلغ‌های واحدهای پول مختلف هرگز با هم جمع نمی‌شوند."
+          }
+        }
+      }
+    },
+    "Ledgers are read on the Mac only.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفترها فقط روی مک خوانده می‌شوند."
           }
         }
       }
@@ -3240,6 +3330,16 @@
         }
       }
     },
+    "Record its renewal date, whose name it is in or what it costs, with the source": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ تمدید، اینکه به نام کیست یا هزینه‌اش را با منبعش ثبت کنید"
+          }
+        }
+      }
+    },
     "Refused by the register's check": {
       "localizations": {
         "fa-AF": {
@@ -3456,6 +3556,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "صداها و آوازها (حدود ۳٬۲۰۰ اعتبار برای BE-PAYA مصرف شده)."
+          }
+        }
+      }
+    },
+    "Source of the cost": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع هزینه"
           }
         }
       }
@@ -4046,6 +4156,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "پست‌های زمان‌بندی‌شدهٔ WorkTrack در Meta در ۲۰۲۶-۱۰-۲۶ تمام می‌شوند"
+          }
+        }
+      }
+    },
+    "Write the amount as a number above zero, and the currency as its three-letter code (USD, CAD, AFN).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مبلغ را به شکل عددی بزرگ‌تر از صفر بنویسید، و واحد پول را با کد سه‌حرفی‌اش (USD، CAD، AFN)."
           }
         }
       }
@@ -12026,6 +12146,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "obligations.json خوانده نشد (%@). سطرهای ثبت‌شده و تاریخ‌های زنده نشان داده می‌شوند؛ تا وقتی فایل درست یا برداشته نشود، آنچه وارد می‌کنید ذخیره نمی‌شود."
+          }
+        }
+      }
+    },
+    "once": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک بار"
+          }
+        }
+      }
+    },
+    "per month": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در ماه"
+          }
+        }
+      }
+    },
+    "per year": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در سال"
           }
         }
       }
