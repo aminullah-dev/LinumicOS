@@ -1193,6 +1193,8 @@ struct VelroSignInSheet: View {
     @State private var environment: VelroEnvironment = .production
     @State private var phone = ""
     @State private var code = ""
+    /// SMS goes to the SIM; email reaches the owner wherever the SIM is not (the account needs an address in VELRO).
+    @State private var channel = "sms"
     @State private var sent: VelroOtpSent?
     @State private var isWorking = false
     @State private var error: String?
@@ -1222,12 +1224,18 @@ struct VelroSignInSheet: View {
                         #if os(iOS)
                         .keyboardType(.phonePad)
                         #endif
+                    Picker("Send the code by", selection: $channel) {
+                        Text("SMS").tag("sms")
+                        Text("Email").tag("email")
+                    }
+                    .pickerStyle(.segmented)
+                    .disabled(sent != nil)
                     if sent == nil {
                         Button("Send Code") { Task { await requestCode() } }
                             .disabled(isWorking || phone.trimmingCharacters(in: .whitespaces).count < 6)
                     }
                 } footer: {
-                    Text("VELRO sends a code only to a number that already holds a staff role, and at most 3 codes a minute. A code costs VELRO an SMS.")
+                    Text("VELRO sends a code only to a number that already holds a staff role, and at most 3 codes a minute. A code costs VELRO an SMS. Email goes to the address on your VELRO account; with no address VELRO sends an SMS instead and says so below.")
                 }
                 if let sent {
                     Section {
@@ -1278,7 +1286,7 @@ struct VelroSignInSheet: View {
         defer { isWorking = false }
         error = nil
         do {
-            sent = try await ops.velro.requestCode(environment: environment, phone: phone)
+            sent = try await ops.velro.requestCode(environment: environment, phone: phone, channel: channel)
         } catch {
             self.error = error.localizedDescription
         }

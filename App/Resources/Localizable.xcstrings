@@ -16464,16 +16464,6 @@
         }
       }
     },
-    "VELRO sends a code only to a number that already holds a staff role, and at most 3 codes a minute. A code costs VELRO an SMS.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "VELRO فقط به شماره‌ای کد می‌فرستد که نقش کارمندی دارد، و در هر دقیقه حداکثر ۳ کد. هر کد برای VELRO هزینهٔ یک پیامک دارد."
-          }
-        }
-      }
-    },
     "VELRO sends at most 3 codes a minute to a number. Wait a minute and ask again.": {
       "localizations": {
         "fa-AF": {
@@ -21690,6 +21680,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "پس از %lld دقیقه بی‌پاسخ متوقف شد."
+          }
+        }
+      }
+    },
+    "VELRO sends a code only to a number that already holds a staff role, and at most 3 codes a minute. A code costs VELRO an SMS. Email goes to the address on your VELRO account; with no address VELRO sends an SMS instead and says so below.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VELRO فقط به شماره‌ای کد می‌فرستد که نقش کارمندی دارد، و در هر دقیقه حداکثر ۳ کد. هر کد برای VELRO هزینهٔ یک پیامک دارد. ایمیل به نشانی‌ای می‌رود که روی حساب VELRO شما ثبت است؛ اگر نشانی‌ای نباشد، VELRO به جای آن SMS می‌فرستد و پایین می‌گوید."
+          }
+        }
+      }
+    },
+    "Send the code by": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فرستادن کد با"
+          }
+        }
+      }
+    },
+    "SMS": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیامک"
           }
         }
       }
