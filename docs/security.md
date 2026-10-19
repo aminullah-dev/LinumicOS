@@ -185,16 +185,22 @@ post as Linumic, so it is treated as a production system.
 - **Obligations and accounts (since Phase 2):** `obligations.json` (this device) holds the owner's own rows, the dates
   he set, Done marks with their evidence, his accounts and their recorded facts (renewal, holder, cost), each with its
   source. No password, login or card number is asked for or kept. The seed (`ObligationSeed`) cites a file and line or
-  a reading for every row; the only reading of this Mac it cites is the Developer ID certificate's end date (public
-  certificate data, docs/obligations.md). Alerts carry titles only.
+  a reading for every row. The readings it cites are public data only: the end dates of the Developer ID Application
+  and Apple Development certificates in this Mac's Keychain (`security find-certificate`, `find-identity`), the
+  installed Mac provisioning profile (`security cms -D`) and the installed app's signature (`codesign -dvv`, `spctl`),
+  and the GitHub API `users/aminullah-dev` (account type). Rows and accounts in `obligations.json` that the app's own
+  forms would not have written are refused and left out. Alerts carry titles only.
 - **Continuity export (since Phase 2):** the export folder is a read-write security-scoped bookmark
   (`LCCContinuityFolder`) the owner chose in an open panel; only `linumic-os-continuity-….json.age` files are written
-  there, with `.withoutOverwriting`. The passphrase lives only in the two fields of the Continuity screen and in memory
-  for the export call; it is never written anywhere and never logged. The file is age v1 (scrypt N = 2^18, r = 8, p = 1;
+  there, with `.withoutOverwriting`, and only when the folder is off this Mac (an external drive, a cloud folder, a
+  network volume). A file that fails its check, or a write that stops halfway, is removed; a file that was already
+  there is never touched. The passphrase is printable ASCII (so it opens the file on any keyboard) and lives only in
+  the two fields of the Continuity screen and in memory for the export call; it is never written anywhere and never
+  logged. The file is age v1 (scrypt N = 2^18, r = 8, p = 1;
   ChaCha20-Poly1305; HMAC-SHA256 header), implemented on CryptoKit and checked against age's own test vectors. The
   document leaves out every Keychain item, key file and licence key text, and `ContinuityBundle.forbiddenPatterns`
-  (PEM blocks, LNM1 keys, GitHub, Anthropic, Supabase secret and Google API key formats) stops an export before
-  anything is written. It does carry customer names and machine codes of the licence ledger and the inventory's
+  (PEM blocks, LNM1 keys, GitHub, Anthropic, Supabase secret, Google API key, age secret key, JWT, Stripe live key and
+  AWS access key formats) stops an export before anything is written. It does carry customer names and machine codes of the licence ledger and the inventory's
   records: whoever has the file and the passphrase has those. See docs/continuity.md.
 - **No secrets in source or Git.** `.gitignore` blocks `.env*`, `*.p8`, `*.p12`,
   `*.pem`, `*.key`, keystores, provisioning profiles and service-account JSON.

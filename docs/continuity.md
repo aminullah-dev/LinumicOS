@@ -9,18 +9,26 @@ opens **without Linumic OS**. Local only: no network, nothing uploaded by the ap
 Sidebar → **Continuity** («تداوم»):
 
 1. **Folder.** Choose it once (a read-write bookmark, `LCCContinuityFolder`). The screen says where it is: an external
-   drive, a cloud folder (Google Drive for desktop, iCloud Drive), or **this Mac's own disk**, which is not off this
-   Mac.
-2. **Passphrase**, typed twice, at least 16 characters. It is typed for each export and **never stored**: not in a
-   file, not in the Keychain, not in the log. "Suggest a passphrase" shows six groups of four letters and digits that
-   can't be mistaken for one another (about 119 bits) once; write it on paper and keep the paper apart from the folder.
+   drive, a cloud folder (Google Drive for desktop, iCloud Drive), a network volume, **this Mac's own disk**, or a place
+   the system does not report. Only the first three are off this Mac, and the app makes an export only there: a copy on
+   this Mac's own disk, or somewhere it can't place, would look like the copy that is still missing.
+2. **Passphrase**, typed twice, at least 16 characters, **Latin letters, digits, spaces and punctuation only** (printable
+   ASCII). age uses the passphrase's bytes as typed, with no normalisation, and a Dari passphrase can hold letters that
+   look the same on paper but are different characters on another keyboard (ي and ی, ك and ک, the half-space): typed
+   elsewhere, it would not open the file. It is typed for each export and **never stored**: not in a file, not in the
+   Keychain, not in the log. "Suggest a passphrase" shows six groups of four letters and digits that can't be mistaken
+   for one another (about 119 bits) once; write it on paper and keep the paper apart from the folder.
 3. **Export and verify.** The app builds the document, refuses to write if it finds a key or token pattern in it,
    encrypts it, writes `linumic-os-continuity-YYYY-MM-DD-HHmm.json.age` (never over an existing file), then **reads the
    file back from the folder**, checks it is the file it wrote (SHA-256), decrypts it with the passphrase, checks the
-   result is the document it encrypted (SHA-256) and that it still decodes. Only then is the export recorded.
+   result is the document it encrypted (SHA-256) and that it still decodes. Only then is the export recorded. A file
+   that fails any step is removed, a write that stops halfway (a full or pulled USB stick, a cloud folder's error)
+   included; a file of the same name that appeared in the meantime is someone else's and is left alone.
 
-The obligation `continuity.export` is "date unknown" (This week on the Desk) until there is a verified export, then due
-30 days after the last one.
+The obligation `continuity.export` is "date unknown" (This week on the Desk) until there is a verified export **off this
+Mac**, then due 30 days after the last one; the Continuity screen's "Next export due" is the same date. An older export
+on this Mac's own disk (from before the app refused them) is named on the screen and in the row's source, but it does
+not count.
 
 ## Opening one without Linumic OS
 
@@ -52,15 +60,19 @@ One UTF-8 JSON object, keys sorted, dates in ISO 8601 (UTC):
 | `obligationEntries` | The owner's entries as `obligations.json` holds them (docs/obligations.md) |
 | `obligations` | Every obligation as the register showed it: seed, owner's, accounts' renewals and live dates, each with `source` and `recordedOn` |
 | `accounts` | Every account with its holder, renewal and cost, each with its source |
-| `licences`, `licencesSyncedAt` | The licence ledger, with `keyText` always null |
-| `keysRegistry` | The Keys & Backups registry: which keys and backups exist, where, since when, with sources |
+| `licences`, `licencesSyncedAt` | The licence ledger, with `keyText` always null. **Absent** when the ledger was not loaded when the export was made: not read, which is not the same as no licences |
+| `keysRegistry` | The Keys & Backups registry: which keys and backups exist, where, since when, with sources. **Absent** when the registry could not be read |
+
+The record's `counts` follow the same rule: a part that was not read has no count, never a zero. The Continuity screen
+names such a part before the export is made.
 
 **Never in it:** passwords, tokens, API keys and sessions (Keychain); signing keys, keystores, `.p8` and `.pem` files and
 their passwords (their own encrypted backups are described in the keys registry); licence key text (in the Supabase
 ledger and the customer's `.lnmlic` file); the run log, Desk marks and cached readings (read again from their sources).
-Before encrypting, the document is searched for PEM blocks, LNM1 licence keys, GitHub, Anthropic, Supabase secret and
-Google API key formats (`ContinuityBundle.forbiddenPatterns`); a match stops the export and names the kind, never the
-text.
+Before encrypting, the document is searched for PEM blocks, LNM1 licence keys, GitHub, Anthropic, Supabase secret,
+Google API key, age secret key, JSON Web Token (such as Supabase's legacy `service_role` key), Stripe live key and AWS
+access key formats (`ContinuityBundle.forbiddenPatterns`); a match stops the export and names the kind, never the text.
+The document has no field meant for a secret; this is a second check on free text (notes, sources).
 
 ## The encryption
 
@@ -90,7 +102,7 @@ not keep it next to the export or in a Notion page shared with an integration.
 
 ## For the owner (دری)
 
-- «تداوم» در نوار کنار: یک بار پوشه‌ای بیرون از مک انتخاب کنید (فلش‌دیسک یا پوشهٔ Google Drive for desktop).
-- عبارت رمز را دو بار بنویسید و روی کاغذ نگه دارید؛ برنامه آن را هیچ‌جا نگه نمی‌دارد.
+- «تداوم» در نوار کنار: یک بار پوشه‌ای بیرون از مک انتخاب کنید (فلش‌دیسک یا پوشهٔ Google Drive for desktop). برنامه در پوشه‌ای روی دیسک خود مک خروجی نمی‌گیرد.
+- عبارت رمز را دو بار بنویسید و روی کاغذ نگه دارید؛ برنامه آن را هیچ‌جا نگه نمی‌دارد. فقط حروف لاتین، رقم و نشانه‌ها؛ حروف دری روی کیبورد دیگری ممکن است حرف دیگری شوند.
 - «خروجی و بررسی» فایل را می‌نویسد، دوباره از پوشه می‌خواند و با عبارت رمز باز و مقایسه می‌کند.
 - روی کمپیوتر دیگری با `age -d` باز کنید، SHA-256 را مقایسه کنید و در برنامه «بیرون از این مک باز شد…» را ثبت کنید.

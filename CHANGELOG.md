@@ -28,6 +28,33 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Command Palette: open obligations and "Encrypted export off this Mac…". Dari for 261 strings; `check_catalog.py`
   also checks seed consequences and account purposes.
 
+### Fixed: the Phase 2 review (2026-10-19)
+- **Continuity counts only a copy off this Mac.** The obligation and the Continuity screen's "Next export due" come from
+  the newest verified export to an external drive, a cloud folder or a network volume; an export to this Mac's own disk
+  or to a folder the system can't place no longer turns "No encrypted copy off this Mac yet" into a date 30 days out,
+  and the app refuses to make one there.
+- **An obligation's Done on the Desk always asks for evidence**, the live rows' too (the continuity export, a restore
+  test): each Brief line carries its obligation's id. Rows read from the app's own files are read again at each Brief,
+  so no Desk mark hides one for good.
+- **The register leaves out what it refuses**: a row or account without a source, a hand-written row that is not the
+  owner's (one could replace a seed row), a date for a live row or for no row (each reported). An account's renewal is
+  an obligation only once its day or a monthly or yearly bill is recorded.
+- **Seed:** SafeBeauty's Pashto and reel times due 2026-10-30 and 2026-11-09 («پیش از» read as the day before, as for
+  WorkTrack); a row for the Apple Development certificate that signs the installed copy (ends 2027-09-08); the Play
+  target API title no longer says "yearly"; citations added or corrected (PRIORITIES.md:15, PROTOCOL.md:75,
+  PRIORITIES.md:52-54 quoted, backend-plan.md:11, ExportOptions.plist:6); the continuity consequence says which records
+  are in Supabase and which are only on this Mac.
+- **Continuity export:** a passphrase is printable ASCII only (a Dari passphrase can be typed differently elsewhere);
+  a write that stops halfway is removed; a licence ledger or keys registry that was not loaded is absent from the
+  export and its counts, not zero; four more secret formats are refused (age secret keys, JWTs, Stripe live keys, AWS
+  access keys); network volumes count as off this Mac.
+- **Daily backup:** a copy the job confirmed (inventory unchanged) is not called old; a run log from before artifacts
+  counts the file as gone when none is named for that run's day; the empty-folder line no longer promises "within a
+  minute" (the next look, within 5 minutes, or that the job is off or paused).
+- The Obligations header marks its counts partial while a live source is unread; continuity.json that can't be read is
+  an unread part, not "no export yet"; the date sheet saves only a picked day; the account sheet does not pretend to
+  clear a value; a ledger grant whose bookmark fails to resolve is kept (and shown as such), not deleted.
+
 ### Fixed (2026-10-19)
 - A `KeyDay` is a Gregorian day whatever calendar the device shows. The app runs with fa_AF on the owner's Mac, where
   `Calendar.current` is Persian: a date picked in Keys & Backups was stored as 1405-…, and the Desk compared ledger days

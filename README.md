@@ -61,6 +61,9 @@ LinumicCommandCenter/
 # Run the core test suite
 swift test --package-path Packages/LinumicCore
 
+# The same suite with the Persian calendar as the device's own (as on the owner's Mac, fa_AF)
+tools/test/persian-calendar.sh
+
 # Generate the Xcode project and open it
 xcodegen generate && open LinumicOS.xcodeproj
 

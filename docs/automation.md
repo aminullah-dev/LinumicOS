@@ -78,14 +78,20 @@ Now:
 
 - Each run that did the work records the file it wrote or confirmed (`AutomationJobState.artifact`). On every look of
   the loop the engine lists `Backups/`; when that file is gone, the job is due **one minute after the run**
-  (`AutomationScheduler.artifactRecheck`) instead of a day later. After a failure the usual backoff holds, so it can't
-  spin. A run log from before this change has no artifact: an empty folder after a success counts as gone.
+  (`AutomationScheduler.artifactRecheck`) instead of a day later, so it runs at the loop's next look: within the
+  loop's longest sleep, 5 minutes (`AutomationScheduler.maxSleep`), while the job is on and automation is not paused.
+  After a failure the usual backoff holds, so it can't spin. A run log from before this change has no artifact: then
+  the file counts as gone when no file in the folder is named for the day that run ran (an empty folder, or only older
+  copies left), which costs at most one extra run.
 - `InventoryBackup.status()` reads the folder (newest file, its day, decoded as a restore would, same as the inventory
   now or not, or why it can't be listed) at launch, after each backup run and before each Brief.
 - The Desk shows a "Daily backup" line from that reading, and the backup job's card shows the folder beside its log.
   The Brief's Automation section (and so the Desk) has a **high** item for an empty folder after a "succeeded" run or a
   newest copy that does not restore, and a normal one for no backup yet, a newest copy older than 2 days, or a recorded
-  file that is gone while others remain; a job that ran while the folder was not looked at is a part not read, never
+  file that is gone while others remain. A run that found the inventory unchanged writes no new file but confirms the
+  newest one: when it vouched for that very file and the file still holds the inventory as it is now, the copy's age is
+  counted from that run, not from the day in its name. The empty-folder line says when the job runs again: at the
+  next look (within 5 minutes), or that it is turned off, or that automation is paused until a given time; a job that ran while the folder was not looked at is a part not read, never
   "all clear".
 - The run note names the file: "inventory-2026-10-19.json saved and read back: 12 products".
 
@@ -111,4 +117,4 @@ outage the server saw while the Mac was off to the iPhone as a notification, wit
 - هر کار با یک کلید روشن و خاموش می‌شود و «اجرا همین حالا» دارد. تاریخچهٔ همهٔ اجراها پایین همان صفحه است.
 - اگر کاری سه بار پشت سر هم ناکام شود، یک اعلان می‌آید. شب‌ها (۱۱ شب تا ۷ صبح) اعلان‌ها بی‌صدا می‌آیند.
 - «پیام‌های سایت» تا وقتی «Enable Abilities» در SureForms روشن نشود «وصل نیست» ثبت می‌شود (نه ناکام؛ از PR #18). برای خواندن پیام‌ها آن را روشن کنید و رمز برنامهٔ WordPress را در تنظیمات بگذارید.
-- پشتیبان روزانه همان است که در پوشهٔ Backups/ هست، نه آنچه دفتر اجرا می‌گوید. اگر فایل پاک شود، کار پشتیبان یک دقیقه بعد دوباره اجرا می‌شود و «میز کار» تا آن وقت آن را «امروز» نشان می‌دهد.
+- پشتیبان روزانه همان است که در پوشهٔ Backups/ هست، نه آنچه دفتر اجرا می‌گوید. اگر فایل پاک شود، کار پشتیبان در سرکشی بعدی خودکارسازی (تا ۵ دقیقه) دوباره اجرا می‌شود، به شرطی که روشن باشد و خودکارسازی متوقف نباشد؛ «میز کار» تا آن وقت آن را «امروز» نشان می‌دهد. اگر کار پشتیبان خاموش یا خودکارسازی متوقف باشد، همان سطر همین را می‌گوید.
