@@ -51,7 +51,8 @@ final class ObligationsModel {
                             licencesReadAt: licences.lastSyncedAt,
                             licencesSynced: licences.lastSyncedAt != nil,
                             keys: keys.loadError == nil ? keys.registry : nil,
-                            continuity: continuity.isAvailable ? continuity.log : nil)
+                            // continuity.json that could not be read is unknown, not "no export yet".
+                            continuity: continuity.isAvailable && continuity.loadError == nil ? continuity.log : nil)
     }
 
     func register(now: Date = .now) -> ObligationsRegister {

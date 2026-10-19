@@ -55,8 +55,9 @@ final class ContinuityModel {
             return
         }
         folderPath = Self.display(url.path, home: home)
-        let internalVolume = (try? url.resourceValues(forKeys: [.volumeIsInternalKey]))?.volumeIsInternal
-        folderKind = ContinuityFolderKind.classify(path: url.path, volumeIsInternal: internalVolume)
+        let values = try? url.resourceValues(forKeys: [.volumeIsInternalKey, .volumeIsLocalKey])
+        folderKind = ContinuityFolderKind.classify(path: url.path, volumeIsInternal: values?.volumeIsInternal,
+                                                   volumeIsLocal: values?.volumeIsLocal)
     }
 
     static func display(_ path: String, home: String) -> String {
@@ -90,27 +91,50 @@ final class ContinuityModel {
     // MARK: Export and checks
 
     /// Builds the bundle from what the app holds now: the inventory, the obligations and accounts, the licence ledger
-    /// (without key text) and the keys registry.
+    /// (without key text) and the keys registry. A ledger or registry that was not loaded is left out (absent, "not
+    /// read"), never written as an empty list.
     func bundle(inventory: InventoryModel, obligations: ObligationsModel, licences: LicenceModel, keys: KeysModel,
                 now: Date = .now) -> ContinuityBundle {
         let register = obligations.register(now: now)
         let info = Bundle.main.infoDictionary
         let version = "Linumic OS \(info?["CFBundleShortVersionString"] as? String ?? "?") (\(info?["CFBundleVersion"] as? String ?? "?"))"
         return ContinuityBundle(createdAt: now, app: version, inventory: inventory.current, obligationEntries: obligations.file,
-                                obligations: register.obligations, accounts: register.accounts, licences: licences.records,
-                                licencesSyncedAt: licences.lastSyncedAt, keysRegistry: keys.loadError == nil ? keys.registry : nil)
+                                obligations: register.obligations, accounts: register.accounts,
+                                licences: licences.isLoaded ? licences.records : nil,
+                                licencesSyncedAt: licences.isLoaded ? licences.lastSyncedAt : nil,
+                                keysRegistry: keys.loadError == nil ? keys.registry : nil)
+    }
+
+    /// Why an export to the chosen folder is refused, or nil when it can be made: only a folder off this Mac counts,
+    /// so an export is not made where it would look like the copy that is still missing.
+    var folderProblem: String? {
+        guard folderPath != nil else { return String(localized: "Choose a folder first.") }
+        switch folderKind ?? .unknown {
+        case .external, .cloud, .network:
+            return nil
+        case .thisMac:
+            return String(localized: "This folder is on this Mac's own disk, so a copy there is not off this Mac. Choose a USB stick or a Google Drive for desktop folder.")
+        case .unknown:
+            return String(localized: "Linumic OS can't tell where this folder is, so a copy there would not count as off this Mac. Choose a USB stick or a Google Drive for desktop folder.")
+        }
     }
 
     /// Encrypts, writes, reads back and checks; records the evidence only when every step held. The passphrase lives
     /// only for this call.
     func export(_ bundle: ContinuityBundle, passphrase: String) async {
         guard !isWorking else { return }
-        guard passphrase.count >= ContinuityPassphrase.minimumLength else {
-            errorMessage = ContinuityPassphrase.problem(passphrase, confirmation: passphrase)
+        // The screen checks the same rules; this holds whatever calls it.
+        if let problem = ContinuityPassphrase.problem(passphrase, confirmation: passphrase) {
+            errorMessage = problem
             return
         }
+        refreshFolder()
         guard let url = ContinuityFolderStore.resolve(), let folderPath else {
             errorMessage = String(localized: "Choose a folder first.")
+            return
+        }
+        if let problem = folderProblem {
+            errorMessage = problem
             return
         }
         isWorking = true

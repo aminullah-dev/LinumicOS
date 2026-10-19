@@ -230,6 +230,16 @@
         }
       }
     },
+    "%@ in obligations.json is not a row you added in the app, so it is left out.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ در obligations.json سطری نیست که شما در برنامه افزوده باشید، پس کنار گذاشته شد."
+          }
+        }
+      }
+    },
     "%@ is back up": {
       "localizations": {
         "fa-AF": {
@@ -545,6 +555,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@: %2$@."
+          }
+        }
+      }
+    },
+    "%@: %lld (partial)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$lld (ناقص)"
           }
         }
       }
@@ -1199,6 +1219,16 @@
         }
       }
     },
+    "a JSON Web Token": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک JSON Web Token (JWT)"
+          }
+        }
+      }
+    },
     "A local notification with the sender's name when a refresh finds a message you haven't seen. Read when the app opens and every 30 minutes.": {
       "localizations": {
         "fa-AF": {
@@ -1215,6 +1245,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "محصول تازه با همهٔ معلومات «نامعلوم» شروع می‌شود. معلومات را از بخش «نمای کلی» هر کدام با منبعش ثبت کنید."
+          }
+        }
+      }
+    },
+    "A newer export, %@, is in %@ (%@): not off this Mac, so it does not count here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خروجی تازه‌تر، %1$@، در %2$@ (%3$@) است: بیرون از این مک نیست، پس این‌جا حساب نمی‌شود."
           }
         }
       }
@@ -1239,6 +1279,16 @@
         }
       }
     },
+    "A recorded value is not removed here: it stays, with its source, until you record a new one.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مقدار ثبت‌شده این‌جا پاک نمی‌شود: با منبعش می‌ماند تا وقتی مقدار تازه‌ای ثبت کنید."
+          }
+        }
+      }
+    },
     "A row without a source, or a Done without evidence, is not counted as known or done until it is corrected.": {
       "localizations": {
         "fa-AF": {
@@ -1255,6 +1305,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "سطر بدون منبع، یا «انجام‌شده» بدون مدرک، رد می‌شود: معلوم یا انجام‌شده شمرده نمی‌شود."
+          }
+        }
+      }
+    },
+    "a Stripe live key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک کلید زندهٔ Stripe"
           }
         }
       }
@@ -1693,6 +1753,26 @@
         }
       }
     },
+    "an age secret key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک کلید محرمانهٔ age"
+          }
+        }
+      }
+    },
+    "an AWS access key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک کلید دسترسی AWS"
+          }
+        }
+      }
+    },
     "An obligation with the id %@ already exists.": {
       "localizations": {
         "fa-AF": {
@@ -1921,6 +2001,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "اپل درخواست را پذیرفت؛ خواندن دوباره ناکام شد: %@"
+          }
+        }
+      }
+    },
+    "Apple Development certificate (T9QW4K4J88) ends": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گواهی Apple Development (T9QW4K4J88) پایان می‌یابد"
           }
         }
       }
@@ -2370,6 +2460,16 @@
         }
       }
     },
+    "Could not be resolved": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازه باز نشد"
+          }
+        }
+      }
+    },
     "Currency (USD, CAD, AFN)": {
       "localizations": {
         "fa-AF": {
@@ -2630,12 +2730,12 @@
         }
       }
     },
-    "Google Play target API level (a yearly deadline)": {
+    "Google Play target API level: the next deadline": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "سطح API هدف در Google Play (مهلت سالانه)"
+            "value": "سطح API هدف در Google Play: مهلت بعدی"
           }
         }
       }
@@ -2750,6 +2850,16 @@
         }
       }
     },
+    "It signs the installed Linumic OS 0.2.0 (2), which is development-signed and not notarized. Whether that copy still opens after the certificate ends is not recorded in a source.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ نصب‌شدهٔ Linumic OS 0.2.0 (2) با همین گواهی امضا شده است؛ امضای توسعه است و notarize نشده. اینکه آن نسخه پس از پایان گواهی باز می‌شود یا نه، در هیچ منبعی ثبت نشده است."
+          }
+        }
+      }
+    },
     "Its age header is malformed (%@).": {
       "localizations": {
         "fa-AF": {
@@ -2810,12 +2920,12 @@
         }
       }
     },
-    "Last verified export: %@": {
+    "Last verified export off this Mac: %@": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "آخرین خروجی بررسی‌شده: %@"
+            "value": "آخرین خروجی بررسی‌شده بیرون از این مک: %@"
           }
         }
       }
@@ -2836,6 +2946,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "دفترها فقط روی مک خوانده می‌شوند."
+          }
+        }
+      }
+    },
+    "Linumic OS can't tell where this folder is, so a copy there would not count as off this Mac. Choose a USB stick or a Google Drive for desktop folder.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Linumic OS نمی‌تواند بگوید این پوشه کجاست، پس نسخه‌ای که آن‌جا باشد بیرون از این مک حساب نمی‌شود. فلش‌دیسک یا پوشهٔ Google Drive for desktop را انتخاب کنید."
           }
         }
       }
@@ -2950,6 +3070,16 @@
         }
       }
     },
+    "Network volume": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درایو شبکه"
+          }
+        }
+      }
+    },
     "Never a password or a card number: the Vault holds sign-ins. Required: where the account is recorded.": {
       "localizations": {
         "fa-AF": {
@@ -3046,6 +3176,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "هنوز هیچ."
+          }
+        }
+      }
+    },
+    "Not loaded, so left out of this export and marked as not read: %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بارگذاری نشده است، پس در این خروجی نمی‌آید و «خوانده‌نشده» حساب می‌شود، نه خالی: %@."
           }
         }
       }
@@ -3230,6 +3370,16 @@
         }
       }
     },
+    "Partial: some live dates are not read yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ناقص: بعضی تاریخ‌های زنده هنوز خوانده نشده‌اند"
+          }
+        }
+      }
+    },
     "Passphrase": {
       "localizations": {
         "fa-AF": {
@@ -3266,6 +3416,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "شخصی"
+          }
+        }
+      }
+    },
+    "Pick the day the source states.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روزی را که منبع می‌گوید انتخاب کنید."
+          }
+        }
+      }
+    },
+    "Pick the new day the source states.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روز تازه‌ای را که منبع می‌گوید انتخاب کنید."
           }
         }
       }
@@ -3376,6 +3546,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "تمدید از: %@"
+          }
+        }
+      }
+    },
+    "Renewal: not recorded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمدید: ثبت نشده"
           }
         }
       }
@@ -3610,6 +3790,116 @@
         }
       }
     },
+    "The continuity export log was not read here (it is kept on the Mac only, or continuity.json could not be read), so whether there is an encrypted copy off this Mac is not known here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر خروجی تداوم این‌جا خوانده نشد (فقط روی مک نگه داشته می‌شود، یا continuity.json خوانده نشد)، پس اینکه نسخهٔ رمزگذاری‌شده‌ای بیرون از این مک هست یا نه، این‌جا معلوم نیست."
+          }
+        }
+      }
+    },
+    "The counts leave out the rows of the sources listed below, which have not been read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این شمارش‌ها سطرهای منبع‌هایی را که پایین آمده‌اند و هنوز خوانده نشده‌اند، ندارند."
+          }
+        }
+      }
+    },
+    "The date set for %@ is not applied: that row takes its date from its own source, or it is not in the register.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخی که برای %@ ثبت شده به کار نمی‌رود: آن سطر تاریخش را از منبع خودش می‌گیرد، یا در فهرست تعهدات نیست."
+          }
+        }
+      }
+    },
+    "The file that run wrote is no longer there, and the backup job is turned off, so it does not run again until you turn it on. Until a copy is read back from Backups/, there is no local backup.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایلی که آن اجرا نوشته بود دیگر آن‌جا نیست، و کار پشتیبان خاموش است، پس تا آن را روشن نکنید دوباره اجرا نمی‌شود. تا وقتی نسخه‌ای از Backups/ دوباره خوانده نشود، پشتیبان محلی وجود ندارد."
+          }
+        }
+      }
+    },
+    "The file that run wrote is no longer there. Automation is paused until %@; the backup job runs again after that. Until a copy is read back from Backups/, there is no local backup.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایلی که آن اجرا نوشته بود دیگر آن‌جا نیست. خودکارسازی تا %@ متوقف است؛ کار پشتیبان پس از آن دوباره اجرا می‌شود. تا وقتی نسخه‌ای از Backups/ دوباره خوانده نشود، پشتیبان محلی وجود ندارد."
+          }
+        }
+      }
+    },
+    "The file that run wrote is no longer there. The backup job runs again at automation's next look, within 5 minutes; until a copy is read back from Backups/, there is no local backup.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایلی که آن اجرا نوشته بود دیگر آن‌جا نیست. کار پشتیبان در سرکشی بعدی خودکارسازی، تا ۵ دقیقه، دوباره اجرا می‌شود؛ تا وقتی نسخه‌ای از Backups/ دوباره خوانده نشود، پشتیبان محلی وجود ندارد."
+          }
+        }
+      }
+    },
+    "the keys registry": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست کلیدها"
+          }
+        }
+      }
+    },
+    "the licence ledger": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر لایسنس‌ها"
+          }
+        }
+      }
+    },
+    "The newest backup, %1$@, was last confirmed on %2$@ (%3$d days ago)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه‌ترین پشتیبان، %1$@، آخرین بار در %2$@ تأیید شد (%3$d روز پیش)"
+          }
+        }
+      }
+    },
+    "the newest verified export, %1$@, is in a folder that is not off this Mac (%2$@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه‌ترین خروجی بررسی‌شده، %1$@، در پوشه‌ای است که بیرون از این مک نیست (%2$@)"
+          }
+        }
+      }
+    },
+    "The stored grant could not be resolved at the last read. It is kept and tried again at the next read; grant the folder again if this stays.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازهٔ ذخیره‌شده در خواندن گذشته باز نشد. نگه داشته می‌شود و در خواندن بعدی دوباره امتحان می‌شود؛ اگر همین‌طور ماند، دوباره به پوشه اجازه بدهید."
+          }
+        }
+      }
+    },
     "TLS certificate of %@ ends": {
       "localizations": {
         "fa-AF": {
@@ -3626,16 +3916,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "پس گرفتن «انجام‌شده» (اشتباهی زده شده)"
-          }
-        }
-      }
-    },
-    "That folder is not off this Mac. Export to a USB stick or a Google Drive folder.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "آن پوشه بیرون از این مک نیست. در فلش‌دیسک یا پوشهٔ Google Drive خروجی بگیرید."
           }
         }
       }
@@ -3706,16 +3986,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "صندوق contact@linumic.com در Outlook، جایی که ایمیل فورم سایت می‌رسد."
-          }
-        }
-      }
-    },
-    "The continuity export log is kept on the Mac, so the encrypted export's date is not known here.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "دفتر خروجی تداوم روی مک نگه داشته می‌شود، پس تاریخ خروجی رمزگذاری‌شده این‌جا معلوم نیست."
           }
         }
       }
@@ -3796,16 +4066,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "فایلی که از پوشه دوباره خوانده شد، همان فایلی نیست که نوشته شده بود."
-          }
-        }
-      }
-    },
-    "The file that run wrote is no longer there. The backup job runs again within a minute; until a copy is read back from Backups/, there is no local backup.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "فایلی که آن اجرا نوشته بود دیگر آن‌جا نیست. کار پشتیبان در یک دقیقه دوباره اجرا می‌شود؛ تا وقتی نسخه‌ای از Backups/ دوباره خوانده نشود، پشتیبان محلی وجود ندارد."
           }
         }
       }
@@ -3980,6 +4240,16 @@
         }
       }
     },
+    "tools/release/build-release.sh exports Linumic OS releases with the developer-id method, and this is the only Developer ID Application certificate on this Mac. What happens after it ends, to copies already signed or to new releases, is not recorded in a source.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tools/release/build-release.sh نسخه‌های Linumic OS را با روش developer-id خروجی می‌گیرد، و این تنها گواهی Developer ID Application روی این مک است. اینکه پس از پایانش بر نسخه‌های از قبل امضاشده یا نسخه‌های تازه چه می‌آید، در هیچ منبعی ثبت نشده است."
+          }
+        }
+      }
+    },
     "Two rows have the id %@.": {
       "localizations": {
         "fa-AF": {
@@ -4010,12 +4280,12 @@
         }
       }
     },
-    "Until there is one, the inventory, obligations, licence ledger and keys registry live only on this Mac and in Supabase, which keeps no point-in-time backup on the free plan.": {
+    "Until there is one, the inventory and the licence ledger are on this Mac and in Supabase, which keeps no point-in-time backup on the free plan; the obligations and the keys registry are only on this Mac.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "تا وقتی یکی نباشد، فهرست، تعهدات، دفتر لایسنس‌ها و فهرست کلیدها فقط روی این مک و در Supabase هستند، که در پلن رایگان پشتیبان لحظه‌به‌لحظه (PITR) ندارد."
+            "value": "تا وقتی یکی نباشد، فهرست و دفتر لایسنس‌ها روی این مک و در Supabase هستند، که در پلن رایگان پشتیبان لحظه‌به‌لحظه (PITR) ندارد؛ تعهدات و فهرست کلیدها فقط روی این مک هستند."
           }
         }
       }
@@ -4046,6 +4316,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "حرف‌های گوناگون بیشتری به کار ببرید."
+          }
+        }
+      }
+    },
+    "Use only Latin letters, digits, spaces and punctuation. A Dari letter can be typed as a different character on another keyboard, and the export would then not open. “Suggest a passphrase” gives one that can be typed anywhere.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط حروف لاتین، رقم، فاصله و نشانه‌های نقطه‌گذاری به کار ببرید. یک حرف دری ممکن است روی کیبورد دیگری حرف دیگری تایپ شود و آن‌وقت خروجی باز نمی‌شود. «پیشنهاد عبارت رمز» عبارتی می‌دهد که همه‌جا تایپ می‌شود."
           }
         }
       }
@@ -4130,12 +4410,12 @@
         }
       }
     },
-    "Without it, the inventory, obligations, licence ledger and keys registry exist only on this Mac and in Supabase, which keeps no point-in-time backup on the free plan.": {
+    "Without it, the inventory and the licence ledger are on this Mac and in Supabase, which keeps no point-in-time backup on the free plan; the obligations and the keys registry are only on this Mac.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "بدون آن، فهرست، تعهدات، دفتر لایسنس‌ها و فهرست کلیدها فقط روی این مک و در Supabase هستند، که در پلن رایگان پشتیبان لحظه‌به‌لحظه (PITR) ندارد."
+            "value": "بدون آن، فهرست و دفتر لایسنس‌ها روی این مک و در Supabase هستند، که در پلن رایگان پشتیبان لحظه‌به‌لحظه (PITR) ندارد؛ تعهدات و فهرست کلیدها فقط روی این مک هستند."
           }
         }
       }
@@ -13838,16 +14118,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "پروژهٔ Xcode"
-          }
-        }
-      }
-    },
-    "tools/release/build-release.sh signs Linumic OS for use outside the App Store with this certificate, so a new one is needed to sign after this day. What happens to copies already signed is not recorded in a source.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "tools/release/build-release.sh برنامهٔ Linumic OS را برای استفاده بیرون از App Store با همین گواهی امضا می‌کند، پس پس از این روز برای امضا گواهی تازه لازم است. اینکه بر نسخه‌های از قبل امضاشده چه می‌آید، در هیچ منبعی ثبت نشده است."
           }
         }
       }

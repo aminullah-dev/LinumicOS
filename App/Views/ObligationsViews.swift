@@ -68,7 +68,7 @@ struct ObligationsView: View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
-                    header(lanes)
+                    header(lanes, partial: !register.unread.isEmpty)
                     banners(register)
                     ForEach([ObligationLane.overdue, .week, .month], id: \.self) { lane in
                         laneSection(lane, rows: lanes[lane] ?? [], today: today, hideWhenEmpty: lane == .overdue)
@@ -120,12 +120,19 @@ struct ObligationsView: View {
 
     // MARK: Parts
 
-    private func header(_ lanes: [ObligationLane: [Obligation]]) -> some View {
+    /// The counts by lane. While a live source is unread its rows are missing, so the counts are marked partial: a
+    /// zero then means "none among what was read", not none.
+    private func header(_ lanes: [ObligationLane: [Obligation]], partial: Bool) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             FitRow(spacing: 8) {
                 ForEach([ObligationLane.overdue, .week, .month, .dateUnknown], id: \.self) { lane in
-                    ReleaseBadge(text: "\(lane.title): \(lanes[lane]?.count ?? 0)", symbol: lane.symbol,
-                                 color: (lanes[lane]?.isEmpty ?? true) ? .gray : lane.color)
+                    let count = lanes[lane]?.count ?? 0
+                    ReleaseBadge(text: partial ? String(localized: "\(lane.title): \(count) (partial)") : "\(lane.title): \(count)",
+                                 symbol: lane.symbol, color: count == 0 ? .gray : lane.color)
+                }
+                if partial {
+                    ReleaseBadge(text: String(localized: "Partial: some live dates are not read yet"), symbol: "questionmark.circle", color: .orange)
+                        .help("The counts leave out the rows of the sources listed below, which have not been read.")
                 }
             }
             HStack(spacing: 12) {
@@ -364,8 +371,13 @@ struct AccountCard: View {
             if let renewal = account.renewal {
                 Label { Text("Renews \(renewal.start().formatted(date: .abbreviated, time: .omitted))") } icon: { Image(systemName: "arrow.clockwise.circle") }
                     .font(.caption)
-            } else {
+            } else if account.hasRecordedTerm {
+                // A bill says it renews; the day is not recorded yet (an obligation, "date unknown").
                 Label { Text("Renewal date unknown") } icon: { Image(systemName: "questionmark.circle") }
+                    .font(.caption).foregroundStyle(.secondary)
+            } else {
+                // No source says it renews at all (a free plan, an ad account): nothing is presumed.
+                Label { Text("Renewal: not recorded") } icon: { Image(systemName: "minus.circle") }
                     .font(.caption).foregroundStyle(.secondary)
             }
             if let cost = account.cost {
@@ -464,14 +476,22 @@ struct ObligationDateSheet: View {
     @Environment(ObligationsModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     @State private var date = Date()
+    /// The picker was used: its first value (today, or the recorded date) is never saved as the day a source states.
+    @State private var picked = false
     @State private var source = ""
 
+    private var canSave: Bool { picked && KeyDay(date) != obligation.due && !clean(source).isEmpty }
+
     var body: some View {
-        EditorSheet(title: "Set the due date", canSave: !clean(source).isEmpty,
+        EditorSheet(title: "Set the due date", canSave: canSave,
                     onCancel: { dismiss() },
                     onSave: { if model.setDate(obligation.id, due: KeyDay(date), source: source) { dismiss() } }) {
             Text(verbatim: obligation.displayTitle).font(.callout.weight(.medium))
-            DatePicker("Due", selection: $date, displayedComponents: .date)
+            DatePicker("Due", selection: Binding(get: { date }, set: { date = $0; picked = true }), displayedComponents: .date)
+            if !picked {
+                Text(obligation.due == nil ? "Pick the day the source states." : "Pick the new day the source states.")
+                    .font(.caption).foregroundStyle(.orange)
+            }
             TextField("Source of the date", text: $source, axis: .vertical)
             Text("Required: where the date comes from (the renewal email, the account page). It replaces the recorded date; the record's own source stays shown.")
                 .font(.caption).foregroundStyle(.secondary)
@@ -510,6 +530,8 @@ struct AccountEditSheet: View {
     @Environment(ObligationsModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     @State private var renewal: Date?
+    /// A day was picked: switching "The renewal date is known" on starts at today, which is never saved as the day.
+    @State private var renewalPicked = false
     @State private var renewalSource = ""
     @State private var holder: AccountHolder?
     @State private var holderSource = ""
@@ -518,8 +540,11 @@ struct AccountEditSheet: View {
     @State private var cycle = BillingCycle.yearly
     @State private var costSource = ""
 
-    private var renewalChanged: Bool { renewal.map { KeyDay($0) } != account.renewal }
+    /// A new value only: clearing a recorded one is not a change this sheet makes (it would need its own source).
+    private var renewalChanged: Bool { renewalPicked && (renewal.map { KeyDay($0) != account.renewal } ?? false) }
     private var holderChanged: Bool { holder != account.holder && holder != nil }
+    /// A recorded value was switched off or set back to "Not recorded" in the sheet.
+    private var clearing: Bool { (renewal == nil && account.renewal != nil) || (holder == nil && account.holder != nil) }
     /// The amount as typed, in Latin or Persian digits, with "." or "٫" as the decimal mark.
     private var parsedAmount: Decimal? {
         let latin = PaletteText.normalize(clean(amount)).replacingOccurrences(of: "٫", with: ".")
@@ -535,7 +560,7 @@ struct AccountEditSheet: View {
     private var costEntered: Bool { !clean(amount).isEmpty }
     private var canSave: Bool {
         (renewalChanged || holderChanged || costEntered)
-            && (!renewalChanged || renewal == nil || !clean(renewalSource).isEmpty)
+            && (!renewalChanged || !clean(renewalSource).isEmpty)
             && (!holderChanged || !clean(holderSource).isEmpty)
             && (!costEntered || (parsedAmount != nil && clean(currency).count == 3 && !clean(costSource).isEmpty))
     }
@@ -552,7 +577,15 @@ struct AccountEditSheet: View {
                         }
                     }) {
             Text(verbatim: account.name).font(.callout.weight(.medium))
-            OptionalDatePicker(title: String(localized: "The renewal date is known"), date: $renewal)
+            OptionalDatePicker(title: String(localized: "The renewal date is known"), date: Binding(get: { renewal }, set: { new in
+                // Switched on (nil to today) is not a pick; a change of the day is.
+                if renewal != nil, new != nil { renewalPicked = true }
+                if new == nil { renewalPicked = false }
+                renewal = new
+            }))
+            if renewal != nil, !renewalPicked, account.renewal == nil {
+                Text("Pick the day the source states.").font(.caption).foregroundStyle(.orange)
+            }
             if renewalChanged, renewal != nil {
                 TextField("Source of the renewal date", text: $renewalSource, axis: .vertical)
             }
@@ -572,6 +605,10 @@ struct AccountEditSheet: View {
                 TextField("Source of the cost", text: $costSource, axis: .vertical)
                 Text("Leave it empty when no bill says it: an unknown cost stays unknown, never estimated. Amounts in different currencies are never added together.")
                     .font(.caption).foregroundStyle(.secondary)
+            }
+            if clearing {
+                Text("A recorded value is not removed here: it stays, with its source, until you record a new one.")
+                    .font(.caption).foregroundStyle(.orange)
             }
             Text("Each value needs its source (the account page, an invoice). A value already recorded keeps its own source until you replace it.")
                 .font(.caption).foregroundStyle(.secondary)

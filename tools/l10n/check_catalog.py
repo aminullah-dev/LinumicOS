@@ -23,6 +23,9 @@ for f in glob.glob("Packages/LinumicCore/Sources/**/*.swift", recursive=True) + 
     s = open(f).read()
     keys |= set(re.findall(r'\bLF?\("((?:[^"\\]|\\.)*)"', s))
     keys |= set(re.findall(r'\b(?:title|text|empty|message|hint|plan|emptyText|consequence|purpose):\s*"((?:[^"\\]|\\.)+)"', s))
+    # Constants shown through L(...) (a consequence used by several rows) and the secret kinds an export names.
+    keys |= set(re.findall(r'\bstatic let \w*Consequence = "((?:[^"\\]|\\.)+)"', s))
+    keys |= set(re.findall(r'\(#"(?:[^"]|"(?!#))*"#, "((?:[^"\\]|\\.)+)"\)', s))
 IGNORE = {"github_pat_…"}  # placeholders shown verbatim
 spec_only = re.compile(r"%(?:\d+\$)?(?:lld|ld|d|@|f)")
 keys = {k for k in keys if k not in IGNORE and "\\(" not in k and re.search(r"[A-Za-z]", spec_only.sub("", k))}

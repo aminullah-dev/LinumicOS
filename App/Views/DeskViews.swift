@@ -367,8 +367,9 @@ struct DeskRowView: View {
             .disabled(!canOpen)
             switch row.resolution {
             case .open, .reopened:
-                if case .screen(.obligation(let id)) = item.destination {
-                    // An obligation is done only with what proves it: the Obligations screen asks for it.
+                if let id = obligationID {
+                    // An obligation is done only with what proves it: the Obligations screen asks for it. That holds
+                    // for the live rows too (the continuity export, a restore test), whose Open goes to their own screen.
                     Button { router.go(.obligations, request: .completeObligation(id)) } label: {
                         Label("Done…", systemImage: "checkmark").labelStyle(.titleAndIcon)
                     }
@@ -418,6 +419,14 @@ struct DeskRowView: View {
             }
         }
         .labelStyle(.iconOnly)
+    }
+
+    /// The obligation this item is about, if it is one: from the Brief line, or (for an item made before lines carried
+    /// it) from an obligation destination.
+    private var obligationID: String? {
+        if let id = item.obligationID { return id }
+        if case .screen(.obligation(let id)) = item.destination { return id }
+        return nil
     }
 
     /// What pressing Done will do, worded as the action (nothing is done until it is pressed).
@@ -622,7 +631,14 @@ struct LedgerAccessSettingsSection: View {
                     if granted {
                         StatusBadge(text: "Granted", color: .green)
                     } else {
-                        Button("Grant…") { model.chooseFolder(suggested: "~/\(folder)") }
+                        HStack(spacing: 8) {
+                            // A stored grant that could not be resolved at the last read: kept, and tried again at the next.
+                            if model.unresolvedFolders.contains("~/\(folder)") {
+                                StatusBadge(text: "Could not be resolved", color: .orange)
+                                    .help("The stored grant could not be resolved at the last read. It is kept and tried again at the next read; grant the folder again if this stays.")
+                            }
+                            Button("Grant…") { model.chooseFolder(suggested: "~/\(folder)") }
+                        }
                     }
                 } label: {
                     Text(verbatim: "~/\(folder)").font(.callout.monospaced())

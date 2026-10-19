@@ -54,31 +54,34 @@ struct ContinuityView: View {
 
     // MARK: Status
 
+    /// What counts is the newest verified export off this Mac; one on this Mac's own disk is named, but it does not
+    /// make the copy that is missing, and it does not move the next due date.
     private var statusCard: some View {
-        let last = model.log.lastVerified
         let offMac = model.log.lastVerifiedOffMac
-        let tint: Color = offMac != nil ? .green : (last != nil ? .orange : .red)
+        let onMac = model.log.lastVerified.flatMap { $0.folderKind.isOffThisMac ? nil : $0 }
+        let tint: Color = offMac != nil ? .green : .red
         return StripeCard(tint: tint) {
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Image(systemName: offMac != nil ? "lock.doc.fill" : "lock.doc").font(.title2).foregroundStyle(tint)
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 4) {
-                    if let last {
-                        Text("Last verified export: \(last.createdAt.formatted(date: .abbreviated, time: .shortened))")
+                    if let offMac {
+                        Text("Last verified export off this Mac: \(offMac.createdAt.formatted(date: .abbreviated, time: .shortened))")
                             .font(.title3.weight(.semibold))
-                        Text(verbatim: "\(last.fileName) · \(last.folder) · \(last.folderKind.title)")
+                        Text(verbatim: "\(offMac.fileName) · \(offMac.folder) · \(offMac.folderKind.title)")
                             .font(.callout).foregroundStyle(.secondary).textSelection(.enabled)
-                        if offMac == nil {
-                            Text("That folder is not off this Mac. Export to a USB stick or a Google Drive folder.")
-                                .font(.callout).foregroundStyle(.orange)
+                        if let next = model.log.nextExportDue() {
+                            Text("Next export due \(next.formatted(date: .abbreviated, time: .omitted)) (every \(ObligationsBuilder.exportEveryDays) days).")
+                                .font(.caption).foregroundStyle(.secondary)
                         }
-                        let next = Calendar.current.date(byAdding: .day, value: ObligationsBuilder.exportEveryDays, to: last.createdAt) ?? last.createdAt
-                        Text("Next export due \(next.formatted(date: .abbreviated, time: .omitted)) (every \(ObligationsBuilder.exportEveryDays) days).")
-                            .font(.caption).foregroundStyle(.secondary)
                     } else {
                         Text("No encrypted copy off this Mac yet").font(.title3.weight(.semibold))
-                        Text("Until there is one, the inventory, obligations, licence ledger and keys registry live only on this Mac and in Supabase, which keeps no point-in-time backup on the free plan.")
+                        Text("Until there is one, the inventory and the licence ledger are on this Mac and in Supabase, which keeps no point-in-time backup on the free plan; the obligations and the keys registry are only on this Mac.")
                             .font(.callout).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                    }
+                    if let onMac, onMac.createdAt > (offMac?.createdAt ?? .distantPast) {
+                        Text("A newer export, \(onMac.fileName), is in \(onMac.folder) (\(onMac.folderKind.title)): not off this Mac, so it does not count here.")
+                            .font(.callout).foregroundStyle(.orange).fixedSize(horizontal: false, vertical: true)
                     }
                 }
             }
@@ -106,8 +109,8 @@ struct ContinuityView: View {
                 Button(model.folderPath == nil ? "Choose folder…" : "Change…") { model.chooseFolder() }
                 #endif
             }
-            if model.folderKind == .thisMac {
-                Text("This folder is on this Mac's own disk, so a copy there is not off this Mac. Choose a USB stick or a Google Drive for desktop folder.")
+            if model.folderPath != nil, let problem = model.folderProblem {
+                Text(verbatim: problem)
                     .font(.caption).foregroundStyle(.orange).fixedSize(horizontal: false, vertical: true)
             }
             Text("Linumic OS writes only its export files into this folder, never over an existing file, and reads each one back to check it.")
@@ -152,6 +155,15 @@ struct ContinuityView: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
             Divider()
+            // A part that was not loaded is left out of the export and marked as not read, never written as empty.
+            let notRead = [licences.isLoaded ? nil : String(localized: "the licence ledger"),
+                           keys.loadError == nil ? nil : String(localized: "the keys registry")].compactMap { $0 }
+            if !notRead.isEmpty {
+                Label { Text("Not loaded, so left out of this export and marked as not read: \(notRead.joined(separator: ", ")).") } icon: {
+                    Image(systemName: "exclamationmark.triangle").foregroundStyle(.orange)
+                }
+                .font(.caption)
+            }
             HStack(spacing: 10) {
                 Button {
                     let b = model.bundle(inventory: inventory, obligations: obligations, licences: licences, keys: keys)
@@ -172,7 +184,7 @@ struct ContinuityView: View {
                     }
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(model.isWorking || problem != nil || model.folderPath == nil)
+                .disabled(model.isWorking || problem != nil || model.folderProblem != nil)
                 if model.folderPath == nil { Text("Choose a folder first.").font(.caption).foregroundStyle(.secondary) }
             }
             if let r = model.lastResult, r.isVerified {
