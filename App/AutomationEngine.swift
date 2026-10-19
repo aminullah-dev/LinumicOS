@@ -223,7 +223,7 @@ final class AutomationEngine {
         } else if !isReady {
             outcome = .skipped(.notReady)
         } else {
-            outcome = await work(job, started: started)
+            outcome = await workWithin(spec, started: started)
         }
         let elapsed = ContinuousClock.now - clock
         let duration = Double(elapsed.components.seconds) + Double(elapsed.components.attoseconds) / 1e18
@@ -236,6 +236,26 @@ final class AutomationEngine {
         } else if failuresBefore >= AutomationHealth.failingAfter, failures == 0 {
             await AutomationNotifier.recovered(spec)
         }
+    }
+
+    /// Runs the job's work, but answers after `spec.timeLimit` at the latest: the work is then cancelled (URLSession
+    /// requests stop on cancellation) and the run is recorded as failed. If the work ignores cancellation it finishes in
+    /// the background; its model's own "already refreshing" guard keeps the next run from overlapping it.
+    private func workWithin(_ spec: AutomationJobSpec, started: Date) async -> AutomationOutcome {
+        let race = OutcomeRace()
+        let work = Task { @MainActor in
+            let outcome = await self.work(spec.id, started: started)
+            race.finish(outcome)
+        }
+        let timer = Task {
+            try? await Task.sleep(for: .seconds(spec.timeLimit))
+            guard !Task.isCancelled else { return }
+            work.cancel()
+            race.finish(.failed(String(localized: "Stopped after \(Int(spec.timeLimit / 60)) minutes without an answer.")))
+        }
+        let outcome = await race.value
+        timer.cancel()
+        return outcome
     }
 
     private func save() {
@@ -507,6 +527,36 @@ final class AutomationEngine {
         }
     }
     #endif
+}
+
+/// The first of two finishers wins: the job's work or its time limit.
+private final class OutcomeRace: @unchecked Sendable {
+    private let lock = NSLock()
+    private var result: AutomationOutcome?
+    private var waiter: CheckedContinuation<AutomationOutcome, Never>?
+
+    func finish(_ outcome: AutomationOutcome) {
+        let resume: CheckedContinuation<AutomationOutcome, Never>? = lock.withLock {
+            guard result == nil else { return nil }
+            result = outcome
+            defer { waiter = nil }
+            return waiter
+        }
+        resume?.resume(returning: outcome)
+    }
+
+    var value: AutomationOutcome {
+        get async {
+            await withCheckedContinuation { continuation in
+                let ready: AutomationOutcome? = lock.withLock {
+                    if let result { return result }
+                    waiter = continuation
+                    return nil
+                }
+                if let ready { continuation.resume(returning: ready) }
+            }
+        }
+    }
 }
 
 // MARK: - Notifications

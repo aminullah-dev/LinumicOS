@@ -21683,6 +21683,16 @@
           }
         }
       }
+    },
+    "Stopped after %lld minutes without an answer.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پس از %lld دقیقه بی‌پاسخ متوقف شد."
+          }
+        }
+      }
     }
   },
   "version": "1.1"

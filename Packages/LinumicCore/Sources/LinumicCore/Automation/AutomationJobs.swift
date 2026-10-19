@@ -39,9 +39,12 @@ public struct AutomationJobSpec: Sendable, Hashable, Identifiable {
     public let runsInBackground: Bool
     /// The old per-feature switch in Settings that this job still honours (nil: always on unless paused).
     public let settingsKey: String?
+    /// Longest a run may take. After it the run is recorded as failed and the queue moves on, so one request that never
+    /// answers can't stop every other job (found live on 2026-10-19: a Platforms run hung for hours).
+    public let timeLimit: TimeInterval
 
     public init(id: AutomationJobID, title: String, detail: String, cadence: TimeInterval, retryAfter: TimeInterval = 2 * 60,
-                needsNetwork: Bool = true, runsInBackground: Bool = false, settingsKey: String? = nil) {
+                needsNetwork: Bool = true, runsInBackground: Bool = false, settingsKey: String? = nil, timeLimit: TimeInterval = 10 * 60) {
         self.id = id
         self.title = title
         self.detail = detail
@@ -50,6 +53,7 @@ public struct AutomationJobSpec: Sendable, Hashable, Identifiable {
         self.needsNetwork = needsNetwork
         self.runsInBackground = runsInBackground
         self.settingsKey = settingsKey
+        self.timeLimit = timeLimit
     }
 }
 

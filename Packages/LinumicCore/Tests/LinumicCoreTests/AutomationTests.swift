@@ -34,6 +34,11 @@ struct AutomationCatalogTests {
         #expect(spec.cadence == 30 * 60 && !spec.needsNetwork && !spec.runsInBackground)
     }
 
+    @Test func everyJobHasATimeLimit() {
+        for spec in AutomationCatalog.jobs { #expect(spec.timeLimit > 0 && spec.timeLimit <= 30 * 60) }
+        #expect(URLSessionTransport.bounded.configuration.timeoutIntervalForResource == 120)
+    }
+
     @Test func retriesAreNeverSlowerThanTheCadence() {
         for spec in AutomationCatalog.jobs { #expect(spec.retryAfter <= spec.cadence) }
     }
