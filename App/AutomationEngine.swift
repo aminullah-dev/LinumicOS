@@ -44,6 +44,7 @@ final class AutomationEngine {
     private let brief: BriefModel
     private let keys: KeysModel
     private let siteMessages: SiteMessagesModel
+    private let sentinel: SentinelModel
 
     private var bootstrap: Task<Void, Never>?
     private var loop: Task<Void, Never>?
@@ -56,7 +57,7 @@ final class AutomationEngine {
 
     init(inventory: InventoryModel, licences: LicenceModel, platforms: PlatformHubModel, worktrack: WorkTrackModel,
          operations: OperationsModel, releases: ReleaseCenterModel, monitor: MonitorModel, brief: BriefModel,
-         keys: KeysModel, siteMessages: SiteMessagesModel) {
+         keys: KeysModel, siteMessages: SiteMessagesModel, sentinel: SentinelModel) {
         self.inventory = inventory
         self.licences = licences
         self.platforms = platforms
@@ -67,6 +68,7 @@ final class AutomationEngine {
         self.brief = brief
         self.keys = keys
         self.siteMessages = siteMessages
+        self.sentinel = sentinel
         #if os(macOS)
         specs = AutomationCatalog.jobs
         #else
@@ -249,6 +251,21 @@ final class AutomationEngine {
             return .succeeded(down == 0
                 ? String(localized: "\(monitor.targets.count) addresses up")
                 : String(localized: "\(monitor.targets.count) addresses checked, \(down) down"))
+
+        case .sentinel:
+            switch await sentinel.refresh() {
+            case .notConnected: return .skipped(.notConnected)
+            case .notDeployed: return .skipped(.notDeployed)
+            case .failed(let message): return .failed(message)
+            case .read:
+                guard let summary = sentinel.summary else { return .succeeded(nil) }
+                switch summary.health {
+                case .notRunning: return .failed(String(localized: "The server has not run a round yet."))
+                case .stale(let at): return .failed(String(localized: "The server's last round was \(at.formatted(date: .omitted, time: .shortened)); its schedule may have stopped."))
+                case .down(let count): return .succeeded(String(localized: "Server sees \(count) down; \(summary.unacknowledged) events not acknowledged"))
+                case .allUp, .slow: return .succeeded(String(localized: "Server sees everything up; \(summary.unacknowledged) events not acknowledged"))
+                }
+            }
 
         case .stores:
             guard inventory.isLoaded else { return .skipped(.notReady) }

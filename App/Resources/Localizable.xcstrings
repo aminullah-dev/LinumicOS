@@ -20253,6 +20253,246 @@
           }
         }
       }
+    },
+    "%lld down": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld از کار افتاده"
+          }
+        }
+      }
+    },
+    "%lld slow": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld کند"
+          }
+        }
+      }
+    },
+    "A round was asked for less than 2 minutes ago.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کمتر از ۲ دقیقه پیش یک دور خواسته شد."
+          }
+        }
+      }
+    },
+    "All up": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همه سالم"
+          }
+        }
+      }
+    },
+    "Ask for a round now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همین حالا یک دور بخواه"
+          }
+        }
+      }
+    },
+    "Checks run on Supabase every 10 minutes, so an outage or an expiring licence is caught even while this Mac is off. The app reads the results; on iPhone, background refresh reads them too.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی‌ها هر ۱۰ دقیقه روی Supabase اجرا می‌شوند، پس قطعی یا لایسنسی که رو به پایان است حتی وقتی این مک خاموش است دیده می‌شود. برنامه نتیجه‌ها را می‌خواند؛ روی آیفون، تازه‌سازی پس‌زمینه هم آن‌ها را می‌خواند."
+          }
+        }
+      }
+    },
+    "Cloud backup %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبان ابری %@"
+          }
+        }
+      }
+    },
+    "Its server side isn't deployed yet (docs/sentinel.md).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بخش سرور آن هنوز نصب نشده (docs/sentinel.md)."
+          }
+        }
+      }
+    },
+    "Last server round %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین دور سرور %@"
+          }
+        }
+      }
+    },
+    "Licence for %@ expires in %lld days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس %1$@ تا %2$lld روز دیگر تمام می‌شود"
+          }
+        }
+      }
+    },
+    "Licence for %@ has expired": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس %@ تمام شده است"
+          }
+        }
+      }
+    },
+    "No round yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز دوری نشده"
+          }
+        }
+      }
+    },
+    "Not acknowledged": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دیده‌نشده"
+          }
+        }
+      }
+    },
+    "Not deployed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نصب نشده"
+          }
+        }
+      }
+    },
+    "Not deployed yet. The migrations and the sentinel function are ready in the repository; the deploy steps are in docs/sentinel.md.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز نصب نشده. migration ها و تابع sentinel در مخزن آماده‌اند؛ مراحل نصب در docs/sentinel.md است."
+          }
+        }
+      }
+    },
+    "Schedule stopped?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زمان‌بندی متوقف شده؟"
+          }
+        }
+      }
+    },
+    "Seen": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دیده شد"
+          }
+        }
+      }
+    },
+    "Server sees %lld down; %lld events not acknowledged": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرور %1$lld مورد از کار افتاده می‌بیند؛ %2$lld رویداد دیده‌نشده"
+          }
+        }
+      }
+    },
+    "Server sees everything up; %lld events not acknowledged": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرور همه را سالم می‌بیند؛ %lld رویداد دیده‌نشده"
+          }
+        }
+      }
+    },
+    "Server watch": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دیده‌بانی سرور"
+          }
+        }
+      }
+    },
+    "Sign in to the cloud (Settings → Account) to read the server's checks.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای خواندن بررسی‌های سرور به ابر وارد شوید (تنظیمات ← حساب)."
+          }
+        }
+      }
+    },
+    "The server has not run a round yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرور هنوز هیچ دوری اجرا نکرده."
+          }
+        }
+      }
+    },
+    "The server's last round was %@; its schedule may have stopped.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین دور سرور %@ بود؛ شاید زمان‌بندی آن متوقف شده باشد."
+          }
+        }
+      }
+    },
+    "What the Sentinel on Supabase saw while this device was away: outages, recoveries, expiring licences.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آنچه Sentinel روی Supabase در نبود این دستگاه دید: قطعی‌ها، برگشت‌ها و لایسنس‌های رو به پایان."
+          }
+        }
+      }
     }
   },
   "version": "1.1"
