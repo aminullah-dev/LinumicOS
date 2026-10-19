@@ -1,0 +1,381 @@
+import CryptoKit
+import Foundation
+
+// MARK: - Continuity (تداوم): one encrypted copy of the company's records off this Mac
+//
+// The export is one JSON document (`ContinuityBundle`, format "linumic-os-continuity" v1) encrypted as an age file with
+// a passphrase (`AgeFile`), so it opens with the standard `age` tool on any computer, without Linumic OS
+// (docs/continuity.md). It holds the inventory, the obligations and accounts, the licence ledger (without licence key
+// text) and the keys registry (paths, dates and sources only). Never a password, token, key, keystore or key file:
+// those live in the Keychain and in the separate key backups. After writing, the file is read back from the folder,
+// decrypted and compared with what was written; only then is the export recorded as verified. No network.
+
+/// What the export holds, decrypted. Plain JSON, documented in docs/continuity.md.
+public struct ContinuityBundle: Codable, Hashable, Sendable {
+    public static let formatName = "linumic-os-continuity"
+    public static let currentFormatVersion = 1
+
+    public var format: String
+    public var formatVersion: Int
+    public var createdAt: Date
+    /// "Linumic OS 0.2.0 (2)".
+    public var app: String
+    /// What is never in the file, in words, so whoever opens it knows where those things are.
+    public var excluded: [String]
+    public var inventory: Inventory
+    /// The owner's own entries (dates, Done with evidence, accounts and their facts), as in obligations.json.
+    public var obligationEntries: ObligationsFile
+    /// Every obligation as the register showed it when exported: the seed, the owner's, accounts' renewals and the live
+    /// dates, each with its source.
+    public var obligations: [Obligation]
+    /// Every account with whose name it is in and its renewal, each with its source.
+    public var accounts: [VendorAccount]
+    /// The licence ledger, without each licence's key text (`keyText` is always nil here).
+    public var licences: [LicenceRecord]
+    public var licencesSyncedAt: Date?
+    /// The Keys & Backups registry: which keys and backups exist, where, since when, with sources. No key material.
+    public var keysRegistry: KeysRegistry?
+
+    public init(createdAt: Date, app: String, inventory: Inventory, obligationEntries: ObligationsFile, obligations: [Obligation],
+                accounts: [VendorAccount], licences: [LicenceRecord], licencesSyncedAt: Date?, keysRegistry: KeysRegistry?) {
+        format = Self.formatName
+        formatVersion = Self.currentFormatVersion
+        self.createdAt = createdAt
+        self.app = app
+        excluded = Self.excludedText
+        self.inventory = inventory
+        self.obligationEntries = obligationEntries
+        self.obligations = obligations
+        self.accounts = accounts
+        // A licence key is what a customer installs; it stays in the ledger on Supabase and in the customer's file.
+        self.licences = licences.map { var r = $0; r.keyText = nil; return r }
+        self.licencesSyncedAt = licencesSyncedAt
+        self.keysRegistry = keysRegistry
+    }
+
+    /// English on purpose: the file is read with other tools, by whoever restores it.
+    public static let excludedText = [
+        "Passwords, tokens, API keys and sessions: they are in the Keychain of the Mac (and the owner's Vault), never in this file.",
+        "Signing keys, keystores, .p8 and .pem files and their passwords: see the keys registry below for where their own encrypted backups are.",
+        "Licence key text: each licence's key is in the licence ledger on Supabase and in the customer's .lnmlic file.",
+        "The run log, the Desk marks and cached readings of stores, GitHub and the Monitor: they are read again from their sources.",
+    ]
+
+    /// How many of each record it holds (shown with the export and kept in its record).
+    public var counts: [String: Int] {
+        [
+            "products": inventory.products.count,
+            "obligations": obligations.count,
+            "accounts": accounts.count,
+            "licences": licences.count,
+            "keys": keysRegistry?.keys.count ?? 0,
+            "keyBackups": keysRegistry?.backups.count ?? 0,
+        ]
+    }
+
+    public func encoded() throws -> Data { try InventoryCoding.encoder().encode(self) }
+
+    public static func decode(_ data: Data) throws -> ContinuityBundle {
+        try InventoryCoding.decoder().decode(ContinuityBundle.self, from: data)
+    }
+
+    /// Patterns of secrets that must never be in an export: the key and token formats the company uses. Checked on the
+    /// plain JSON before anything is encrypted or written; a match stops the export and says which kind was found
+    /// (never the text itself).
+    public static let forbiddenPatterns: [(pattern: String, kind: String)] = [
+        (#"-----BEGIN [A-Z0-9 ]+-----"#, "a PEM key or certificate block"),
+        (#"LNM1\.[A-Za-z0-9_\-]{20,}"#, "a licence key"),
+        (#"github_pat_[A-Za-z0-9_]{20,}"#, "a GitHub token"),
+        (#"gh[pousr]_[A-Za-z0-9]{30,}"#, "a GitHub token"),
+        (#"sk-ant-[A-Za-z0-9_\-]{20,}"#, "an Anthropic API key"),
+        (#"sb_secret_[A-Za-z0-9_\-]{10,}"#, "a Supabase secret key"),
+        (#"AIza[0-9A-Za-z_\-]{35}"#, "a Google API key"),
+    ]
+
+    /// The kinds of secret found in `plaintext` (empty when it is clean).
+    public static func forbiddenKinds(in plaintext: Data) -> [String] {
+        let text = String(decoding: plaintext, as: UTF8.self)
+        var kinds: [String] = []
+        for (pattern, kind) in forbiddenPatterns where !kinds.contains(kind) {
+            if let regex = try? Regex(pattern), text.contains(regex) { kinds.append(kind) }
+        }
+        return kinds
+    }
+}
+
+// MARK: - The log (continuity.json, this device)
+
+/// The owner opened an export on another computer and checked it (the roadmap's "opened outside this Mac").
+public struct ContinuityOutsideCheck: Codable, Hashable, Sendable {
+    public var on: KeyDay
+    /// What was done and seen ("age -d on the office PC, SHA-256 matched"). Never empty.
+    public var evidence: String
+    public var enteredAt: Date
+
+    public init(on: KeyDay, evidence: String, enteredAt: Date) {
+        self.on = on
+        self.evidence = evidence
+        self.enteredAt = enteredAt
+    }
+}
+
+/// One export, with the evidence that it was read back and opened.
+public struct ContinuityExportRecord: Codable, Hashable, Sendable, Identifiable {
+    public var id: UUID
+    public var fileName: String
+    /// Where it was written, home-relative or as the volume names it.
+    public var folder: String
+    public var folderKind: ContinuityFolderKind
+    public var createdAt: Date
+    /// When the file was read back from the folder, decrypted and found identical. Nil: not verified.
+    public var verifiedAt: Date?
+    /// Later checks of the same file with the passphrase (read back again from the folder).
+    public var reverifiedAt: [Date]
+    public var fileBytes: Int
+    /// SHA-256 of the encrypted file as written.
+    public var fileSHA256: String
+    public var plaintextBytes: Int
+    /// SHA-256 of the decrypted JSON: `shasum -a 256` of what `age -d` writes must print this.
+    public var plaintextSHA256: String
+    public var workFactor: Int
+    public var formatVersion: Int
+    public var counts: [String: Int]
+    public var outsideChecks: [ContinuityOutsideCheck]
+
+    public init(id: UUID = UUID(), fileName: String, folder: String, folderKind: ContinuityFolderKind, createdAt: Date,
+                verifiedAt: Date?, reverifiedAt: [Date] = [], fileBytes: Int, fileSHA256: String, plaintextBytes: Int,
+                plaintextSHA256: String, workFactor: Int, formatVersion: Int, counts: [String: Int],
+                outsideChecks: [ContinuityOutsideCheck] = []) {
+        self.id = id
+        self.fileName = fileName
+        self.folder = folder
+        self.folderKind = folderKind
+        self.createdAt = createdAt
+        self.verifiedAt = verifiedAt
+        self.reverifiedAt = reverifiedAt
+        self.fileBytes = fileBytes
+        self.fileSHA256 = fileSHA256
+        self.plaintextBytes = plaintextBytes
+        self.plaintextSHA256 = plaintextSHA256
+        self.workFactor = workFactor
+        self.formatVersion = formatVersion
+        self.counts = counts
+        self.outsideChecks = outsideChecks
+    }
+
+    public var isVerified: Bool { verifiedAt != nil }
+    /// The newest time the file was read back and found identical.
+    public var lastVerifiedAt: Date? { (reverifiedAt + [verifiedAt].compactMap { $0 }).max() }
+}
+
+/// Where the chosen folder is, as the system reports its volume. Only a removable or network volume, or a cloud
+/// folder, is off this Mac; a folder on the Mac's own disk is said to be so.
+public enum ContinuityFolderKind: String, Codable, Sendable, Hashable {
+    /// A USB stick or an external disk.
+    case external
+    /// A folder synced by Google Drive for desktop, iCloud Drive or another File Provider.
+    case cloud
+    /// The Mac's own disk: not off this Mac.
+    case thisMac
+    case unknown
+
+    public var isOffThisMac: Bool { self == .external || self == .cloud }
+
+    public var title: String {
+        switch self {
+        case .external: L("External drive")
+        case .cloud: L("Cloud folder")
+        case .thisMac: L("This Mac's own disk")
+        case .unknown: L("Location not known")
+        }
+    }
+
+    /// Cloud folders by path; the volume's own "internal" flag decides the rest.
+    public static func classify(path: String, volumeIsInternal: Bool?) -> ContinuityFolderKind {
+        if path.contains("/Library/CloudStorage/") || path.contains("/Library/Mobile Documents/") { return .cloud }
+        switch volumeIsInternal {
+        case false?: return .external
+        case true?: return .thisMac
+        case nil: return .unknown
+        }
+    }
+}
+
+public struct ContinuityLog: Codable, Hashable, Sendable {
+    public static let currentVersion = 1
+
+    public var version: Int
+    /// Newest first.
+    public var exports: [ContinuityExportRecord]
+
+    public init(exports: [ContinuityExportRecord] = []) {
+        version = Self.currentVersion
+        self.exports = exports
+    }
+
+    /// The newest export that was read back and found identical.
+    public var lastVerified: ContinuityExportRecord? { exports.filter(\.isVerified).max { $0.createdAt < $1.createdAt } }
+
+    /// The newest verified export written to a folder off this Mac.
+    public var lastVerifiedOffMac: ContinuityExportRecord? {
+        exports.filter { $0.isVerified && $0.folderKind.isOffThisMac }.max { $0.createdAt < $1.createdAt }
+    }
+
+    public mutating func add(_ record: ContinuityExportRecord) {
+        exports.insert(record, at: 0)
+    }
+
+    public mutating func markReverified(_ id: UUID, at: Date) {
+        guard let i = exports.firstIndex(where: { $0.id == id }) else { return }
+        exports[i].reverifiedAt.append(at)
+    }
+
+    /// Records that the owner opened an export on another computer; refused without evidence or with a future day.
+    public mutating func recordOutsideCheck(_ id: UUID, on day: KeyDay, evidence: String, now: Date,
+                                            calendar: Calendar = KeyDay.calendar) throws {
+        guard let text = ObligationsFile.clean(evidence) else { throw ObligationError.missingEvidence }
+        guard day <= KeyDay(now, calendar: calendar) else { throw ObligationError.futureDay }
+        guard let i = exports.firstIndex(where: { $0.id == id }) else { throw ObligationError.unknownID(id.uuidString) }
+        exports[i].outsideChecks.append(ContinuityOutsideCheck(on: day, evidence: text, enteredAt: now))
+    }
+}
+
+/// `continuity.json` next to the inventory. A file that can't be read is reported and never overwritten.
+public struct ContinuityStore: Sendable {
+    public let fileURL: URL
+
+    public init(fileURL: URL) { self.fileURL = fileURL }
+
+    public static func defaultFileURL() throws -> URL {
+        try JSONFileInventoryStore.defaultFileURL().deletingLastPathComponent().appending(path: "continuity.json")
+    }
+
+    public enum LoadResult: Sendable {
+        case empty
+        case loaded(ContinuityLog)
+        case unreadable(String)
+    }
+
+    public func load() -> LoadResult {
+        guard FileManager.default.fileExists(atPath: fileURL.path(percentEncoded: false)) else { return .empty }
+        do {
+            return .loaded(try InventoryCoding.decoder().decode(ContinuityLog.self, from: Data(contentsOf: fileURL)))
+        } catch {
+            return .unreadable(error.localizedDescription)
+        }
+    }
+
+    public func save(_ log: ContinuityLog) throws {
+        try FileManager.default.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try InventoryCoding.encoder().encode(log).write(to: fileURL, options: [.atomic])
+    }
+}
+
+// MARK: - The passphrase
+
+/// The passphrase is typed for each export and never stored: not in a file, not in the Keychain, not in the log.
+public enum ContinuityPassphrase {
+    public static let minimumLength = 16
+
+    /// Why it can't be used, or nil when it can.
+    public static func problem(_ passphrase: String, confirmation: String) -> String? {
+        if passphrase.count < minimumLength { return LF("Use at least %d characters. A line of several words is easy to write on paper.", minimumLength) }
+        if Set(passphrase).count < 6 { return L("Use more different characters.") }
+        if passphrase != confirmation { return L("The two passphrases are not the same.") }
+        return nil
+    }
+
+    /// A random passphrase to write on paper: six groups of four from letters and digits that can't be mistaken for one
+    /// another (about 119 bits). Shown once, never stored.
+    public static func suggestion() -> String {
+        let alphabet = Array("23456789abcdefghjkmnpqrstuvwxyz")
+        var rng = SystemRandomNumberGenerator()
+        return (0..<6).map { _ in String((0..<4).map { _ in alphabet.randomElement(using: &rng)! }) }.joined(separator: "-")
+    }
+}
+
+// MARK: - Writing and verifying
+
+public enum ContinuityExporter {
+    public enum Failure: LocalizedError, Equatable {
+        case forbiddenContent([String])
+        case readBackDiffers
+        case decryptedDiffers
+        case notABundle(String)
+
+        public var errorDescription: String? {
+            switch self {
+            case .forbiddenContent(let kinds):
+                LF("Nothing was written: the export would contain %@. Remove it from the record that holds it, then export again.",
+                   kinds.map { L($0) }.joined(separator: ", "))
+            case .readBackDiffers: L("The file read back from the folder is not the file that was written.")
+            case .decryptedDiffers: L("The file read back decrypts to something other than what was written.")
+            case .notABundle(let why): LF("The decrypted file is not a Linumic OS continuity export (%@).", why)
+            }
+        }
+    }
+
+    /// "linumic-os-continuity-2026-10-19-1405.json.age" (local time, Gregorian, so the names sort by date).
+    public static func fileName(for date: Date, calendar: Calendar = InventoryBackup.gregorian) -> String {
+        let c = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+        return String(format: "linumic-os-continuity-%04d-%02d-%02d-%02d%02d.json.age",
+                      c.year ?? 0, c.month ?? 0, c.day ?? 0, c.hour ?? 0, c.minute ?? 0)
+    }
+
+    static func hex(_ digest: SHA256.Digest) -> String { digest.map { String(format: "%02x", $0) }.joined() }
+
+    /// Encrypts the bundle, writes it into `folder` (never over an existing file), reads it back from the disk,
+    /// decrypts it with the same passphrase and compares it with what was written. Throws, and records nothing, when
+    /// any step fails; the record it returns is the evidence that the export was verified.
+    public static func export(_ bundle: ContinuityBundle, passphrase: String, to folder: URL, folderName: String,
+                              folderKind: ContinuityFolderKind, now: Date, workFactor: Int = AgeFile.defaultWorkFactor,
+                              calendar: Calendar = InventoryBackup.gregorian) throws -> ContinuityExportRecord {
+        let plaintext = try bundle.encoded()
+        let forbidden = ContinuityBundle.forbiddenKinds(in: plaintext)
+        guard forbidden.isEmpty else { throw Failure.forbiddenContent(forbidden) }
+        let ciphertext = try AgeFile.encrypt(plaintext, passphrase: passphrase, workFactor: workFactor)
+
+        var name = fileName(for: now, calendar: calendar)
+        var target = folder.appending(path: name)
+        var n = 2
+        while FileManager.default.fileExists(atPath: target.path(percentEncoded: false)) {
+            name = fileName(for: now, calendar: calendar).replacingOccurrences(of: ".json.age", with: "-\(n).json.age")
+            target = folder.appending(path: name)
+            n += 1
+        }
+        try ciphertext.write(to: target, options: [.withoutOverwriting])
+
+        let verifiedAt = try verify(file: target, passphrase: passphrase, fileSHA256: hex(SHA256.hash(data: ciphertext)),
+                                    plaintextSHA256: hex(SHA256.hash(data: plaintext)), now: now)
+        return ContinuityExportRecord(fileName: name, folder: folderName, folderKind: folderKind, createdAt: now,
+                                      verifiedAt: verifiedAt, fileBytes: ciphertext.count,
+                                      fileSHA256: hex(SHA256.hash(data: ciphertext)), plaintextBytes: plaintext.count,
+                                      plaintextSHA256: hex(SHA256.hash(data: plaintext)), workFactor: workFactor,
+                                      formatVersion: bundle.formatVersion, counts: bundle.counts)
+    }
+
+    /// Reads the file back from the disk, checks it is the file that was written, decrypts it and checks the JSON is
+    /// what was written and still decodes as a bundle. Returns the time of the check.
+    @discardableResult
+    public static func verify(file: URL, passphrase: String, fileSHA256: String, plaintextSHA256: String, now: Date) throws -> Date {
+        let readBack = try Data(contentsOf: file, options: [.uncached])
+        guard hex(SHA256.hash(data: readBack)) == fileSHA256 else { throw Failure.readBackDiffers }
+        let decrypted = try AgeFile.decrypt(readBack, passphrase: passphrase)
+        guard hex(SHA256.hash(data: decrypted)) == plaintextSHA256 else { throw Failure.decryptedDiffers }
+        do {
+            let bundle = try ContinuityBundle.decode(decrypted)
+            guard bundle.format == ContinuityBundle.formatName else { throw Failure.notABundle(bundle.format) }
+        } catch let f as Failure {
+            throw f
+        } catch {
+            throw Failure.notABundle(error.localizedDescription)
+        }
+        return now
+    }
+
+    /// Checks an earlier export again, from its record.
+    public static func reverify(_ record: ContinuityExportRecord, in folder: URL, passphrase: String, now: Date) throws -> Date {
+        try verify(file: folder.appending(path: record.fileName), passphrase: passphrase, fileSHA256: record.fileSHA256,
+                   plaintextSHA256: record.plaintextSHA256, now: now)
+    }
+}

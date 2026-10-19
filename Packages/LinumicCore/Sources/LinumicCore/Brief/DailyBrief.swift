@@ -9,7 +9,7 @@ import Foundation
 
 /// Where a line or section comes from. The order is the order of the sections on screen.
 public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiable {
-    case monitor, siteMessages, releases, licences, worktrack, operations, oversight, keys, automation, changes
+    case monitor, siteMessages, releases, licences, worktrack, operations, oversight, keys, obligations, automation, changes
 
     public var id: String { rawValue }
 
@@ -23,6 +23,7 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .operations: L("Operations")
         case .oversight: L("Oversight")
         case .keys: L("Keys & Backups")
+        case .obligations: L("Obligations")
         case .automation: L("Automation")
         case .changes: L("What changed since yesterday")
         }
@@ -38,6 +39,7 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .operations: "tray.full"
         case .oversight: "scope"
         case .keys: "externaldrive.badge.checkmark"
+        case .obligations: "calendar.badge.exclamationmark"
         case .automation: "gearshape.2"
         case .changes: "clock.arrow.circlepath"
         }
@@ -57,6 +59,12 @@ public enum BriefDestination: Hashable, Sendable {
     case keys
     case siteMessages
     case automation
+    /// The Obligations & accounts screen.
+    case obligations
+    /// One obligation on that screen.
+    case obligation(String)
+    /// The Continuity screen (the encrypted export).
+    case continuity
 }
 
 public enum BriefSeverity: Int, Codable, Sendable, Comparable {
@@ -321,12 +329,14 @@ public struct BriefInput: Sendable {
     public var automation: AutomationLedger?
     /// What `Backups/` holds, read from the disk; nil before it was checked.
     public var backup: BackupFolderStatus?
+    /// The obligations register; nil before it was built.
+    public var obligations: BriefObligationsInput?
 
     public init(now: Date, monitor: MonitorSnapshot, monitorTargets: [MonitorTarget] = MonitorCatalog.targets,
                 releases: ReleaseCenterSnapshot, licences: BriefLicenceInput, worktrack: BriefWorkTrackInput,
                 operations: [BriefOperationsInput], oversight: BriefOversightInput, keys: BriefKeysInput? = nil,
                 siteMessages: BriefSiteMessagesInput? = nil, automation: AutomationLedger? = nil,
-                backup: BackupFolderStatus? = nil) {
+                backup: BackupFolderStatus? = nil, obligations: BriefObligationsInput? = nil) {
         self.now = now
         self.monitor = monitor
         self.monitorTargets = monitorTargets
@@ -339,6 +349,7 @@ public struct BriefInput: Sendable {
         self.siteMessages = siteMessages
         self.automation = automation
         self.backup = backup
+        self.obligations = obligations
     }
 }
 
@@ -361,6 +372,7 @@ public enum DailyBriefBuilder {
             operations(input),
             oversight(input),
             keys(input),
+            obligations(input),
             automation(input),
         ]
         sections.append(changesSection(changes, now: input.now))

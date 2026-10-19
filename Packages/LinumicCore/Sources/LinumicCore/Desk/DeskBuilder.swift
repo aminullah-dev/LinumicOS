@@ -147,15 +147,19 @@ public enum DeskBuilder {
 
     // MARK: Buckets and order
 
-    /// Today: high severity, due today or earlier (or "today" by its source), or the owner's own work in a focus
-    /// product. This week: due within
-    /// seven days, the source says "this week", or normal severity. Later: the rest.
+    /// Today: high severity, due today or earlier (or "today" by its source), or the owner's own undated work in a
+    /// focus product. This week: due within seven days, the source says "this week", or normal severity. Later: the
+    /// rest. A dated item (an obligation) goes by its day and its own urgency, which its lead window (30, 14, 7, 1
+    /// days) sets, not by the focus rule: a SafeBeauty post time due in 12 days is this week's, not today's.
     public static func bucket(_ item: DeskItem, today: KeyDay) -> DeskBucket {
         if item.severity == .high { return .today }
         if let due = item.due, due <= today { return .today }
         if item.horizon == .today { return .today }
+        if let due = item.due {
+            if today.days(until: due) <= weekDays { return .thisWeek }
+            return item.severity == .normal ? .thisWeek : .later
+        }
         if item.ownerAction, item.domain.isFocus { return .today }
-        if let due = item.due, today.days(until: due) <= weekDays { return .thisWeek }
         if item.horizon == .thisWeek { return .thisWeek }
         if item.severity == .normal { return .thisWeek }
         return .later
@@ -263,6 +267,7 @@ public enum DeskBuilder {
         case .operations: .operations(nil)
         case .oversight: .oversight
         case .keys: .keys
+        case .obligations: .obligations
         case .automation, .changes: .automation
         }
     }
@@ -278,7 +283,8 @@ public enum DeskBuilder {
         case .operations: .operations
         case .oversight: .oversight
         case .keys: .keys
-        case .automation, .changes: nil
+        // Built from what the other jobs read, every time the Brief is: never older than they are.
+        case .obligations, .automation, .changes: nil
         }
         return job.map { AutomationCatalog.spec($0).cadence }
     }
