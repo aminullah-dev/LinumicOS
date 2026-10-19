@@ -162,6 +162,27 @@ struct BackupTruthTests {
         #expect(confirmedLongAgo.first?.text.contains("2026-10-21") == true)
     }
 
+    @Test func aConfirmationStopsCountingOnceTheCopyIsNotTheInventory() {
+        // The job vouched for the newest file an hour ago, but the inventory has changed since: that file is not the
+        // inventory as it is now, so the confirmation does not count, and the copy is as old as its own day.
+        let now = t0.addingTimeInterval(5 * 86_400)   // 2026-10-23
+        var ledger = AutomationLedger()
+        ledger.record(run(.succeeded("unchanged"), at: now.addingTimeInterval(-3600)), artifact: "inventory-2026-10-18.json")
+        let newest = BackupFile(name: "inventory-2026-10-18.json", day: KeyDay("2026-10-18"))
+        func status(matches: Bool?) -> BackupFolderStatus {
+            BackupFolderStatus(checkedAt: now, files: 1, names: [newest.name], newest: newest, newestCheck: .restores(products: 0),
+                               matchesInventory: matches)
+        }
+        let lines = BackupRules.lines(status(matches: false), state: ledger.states[.backup], now: now, calendar: utc)
+        #expect(lines.map(\.id) == ["automation.backup.old"])
+        #expect(lines.first?.text == "The newest backup is from 2026-10-18 (5 days ago)")
+        // Not known whether it matches: not counted either.
+        #expect(BackupRules.lines(status(matches: nil), state: ledger.states[.backup], now: now, calendar: utc).map(\.id)
+                == ["automation.backup.old"])
+        // The same file, still the inventory: the confirmation counts.
+        #expect(BackupRules.lines(status(matches: true), state: ledger.states[.backup], now: now, calendar: utc).isEmpty)
+    }
+
     @Test func whatTheEmptyLineSaysAboutTheNextRun() {
         var ledger = AutomationLedger()
         ledger.record(run(.succeeded("saved"), at: t0), artifact: "inventory-2026-10-18.json")

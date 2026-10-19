@@ -85,7 +85,8 @@ public struct ObligationsFile: Codable, Hashable, Sendable {
     }
 
     /// Sets (or corrects) the due day of a row, with where the date comes from. Live rows take their date from their
-    /// own source and can't be set here.
+    /// own source, and an account's renewal from the account (`editAccount`): the register does not apply a date set
+    /// here for either.
     public mutating func setDate(_ obligationID: String, due: KeyDay, source: String, now: Date) throws {
         guard let source = Self.clean(source) else { throw ObligationError.missingSource }
         dates.removeAll { $0.obligationID == obligationID }
@@ -124,14 +125,16 @@ public struct ObligationsFile: Codable, Hashable, Sendable {
                                      holderSource: String?, cost: AccountCost? = nil, now: Date) throws {
         if renewal != nil, Self.clean(renewalSource) == nil { throw ObligationError.missingSource }
         if holder != nil, Self.clean(holderSource) == nil { throw ObligationError.missingSource }
-        var cleanCost = cost
+        var cleanCost: AccountCost?
         if let c = cost {
-            guard let source = Self.clean(c.source) else { throw ObligationError.missingSource }
-            let code = c.currency.trimmingCharacters(in: .whitespaces).uppercased()
-            guard c.amount > 0, code.count == 3, code.allSatisfy({ $0.isASCII && $0.isLetter }) else { throw ObligationError.badAmount }
-            cleanCost = AccountCost(amount: c.amount, currency: code, cycle: c.cycle, source: source)
+            guard Self.clean(c.source) != nil else { throw ObligationError.missingSource }
+            guard let checked = c.checked else { throw ObligationError.badAmount }
+            cleanCost = checked
         }
         guard renewal != nil || holder != nil || cleanCost != nil else { return }
+        // The account is the one place for its renewal day: a date once set on its renewal row is superseded (and so
+        // no longer reported as not applied).
+        if renewal != nil { dates.removeAll { $0.obligationID == VendorAccount.renewalObligationID(accountID) } }
         accountEdits.append(VendorAccountEdit(accountID: accountID, renewal: renewal, renewalSource: Self.clean(renewalSource),
                                               holder: holder, holderSource: Self.clean(holderSource), cost: cleanCost, enteredAt: now))
     }
@@ -321,19 +324,30 @@ public enum ObligationsBuilder {
         let screenedAccounts = screen(accounts: accountCandidates)
         var accounts = screenedAccounts.kept
         issues += screenedAccounts.issues
-        // The owner's latest facts on top. A value without its source is not applied (and is reported below).
+        // The owner's latest facts on top, each with the day it was entered. A value without its source is not applied
+        // (and is reported below); a cost the account sheet would refuse, and facts for an account that is not here,
+        // are not applied either, and are reported.
+        let candidateIDs = Set(accountCandidates.map(\.id))
         for edit in file.accountEdits.sorted(by: { $0.enteredAt < $1.enteredAt }) {
-            guard let i = accounts.firstIndex(where: { $0.id == edit.accountID }) else { continue }
+            guard let i = accounts.firstIndex(where: { $0.id == edit.accountID }) else {
+                // An account that was refused already has its own line.
+                if !candidateIDs.contains(edit.accountID) { issues.append(.unknownAccount(edit.accountID)) }
+                continue
+            }
+            let entered = KeyDay(edit.enteredAt, calendar: calendar)
             if let r = edit.renewal, let source = ObligationsFile.clean(edit.renewalSource) {
                 accounts[i].renewal = r
                 accounts[i].renewalSource = source
+                accounts[i].renewalRecordedOn = entered
             }
             if let h = edit.holder, let source = ObligationsFile.clean(edit.holderSource) {
                 accounts[i].holder = h
                 accounts[i].holderSource = source
             }
-            if let c = edit.cost, ObligationsFile.clean(c.source) != nil {
+            // A cost without its bill, or one the sheet would refuse, is reported by fileIssues.
+            if let c = edit.cost?.checked {
                 accounts[i].cost = c
+                accounts[i].costRecordedOn = entered
             }
         }
 
@@ -351,22 +365,29 @@ public enum ObligationsBuilder {
         var rows = screenedRows.kept
         issues += screenedRows.issues
 
-        // The owner's dates, then Done for the due day each row has now. A date without a source, a date for a live
-        // row or for no row, and a Done without evidence are not applied: each is reported, and the row stays as its
-        // source says.
+        // The owner's dates, then Done for the due day each row has now. Each day is entered in one place: a live row
+        // takes it from its source, an account's renewal from the account's card. A date without a source, a date for
+        // a live row, an account's renewal or no row, a Done without evidence and a Done for a live row (which closes
+        // only through its source) are not applied: each is reported, and the row stays as its source says.
         issues += fileIssues(file)
         let validDates = file.dates.filter { ObligationsFile.clean($0.source) != nil }
         let validDone = file.completions.filter { ObligationsFile.clean($0.evidence) != nil }
         let dates = Dictionary(validDates.map { ($0.obligationID, $0) }, uniquingKeysWith: { a, b in a.enteredAt >= b.enteredAt ? a : b })
-        for id in dates.keys.sorted() where !rows.contains(where: { $0.id == id && !$0.origin.isLive }) {
+        for id in dates.keys.sorted() where !rows.contains(where: { $0.id == id && $0.origin.takesDateHere }) {
             issues.append(.dateNotApplied(id))
         }
         for i in rows.indices {
-            if !rows[i].origin.isLive, let d = dates[rows[i].id] {
+            if rows[i].origin.takesDateHere, let d = dates[rows[i].id] {
                 rows[i].due = d.due
                 rows[i].dueSource = d.source
             }
-            rows[i].completion = validDone.last { $0.obligationID == rows[i].id && $0.due == rows[i].due }
+            if rows[i].origin.takesDoneHere {
+                rows[i].completion = validDone.last { $0.obligationID == rows[i].id && $0.due == rows[i].due }
+            } else if validDone.contains(where: { $0.obligationID == rows[i].id }) {
+                issues.append(.doneNotApplied(rows[i].id))
+            }
+            // Hand-written lead days that would never bring a row forward (none at all) give way to the defaults.
+            rows[i].leadDays = Obligation.usableLeadDays(rows[i].leadDays)
         }
 
         rows.sort { a, b in
@@ -391,12 +412,22 @@ public enum ObligationsBuilder {
         origin == .owner && id.hasPrefix("owner.")
     }
 
-    /// An account's renewal as an obligation: dated when known, "date unknown" when only its billing term is.
+    /// An account's renewal as an obligation: dated when known, "date unknown" when only its billing term is. Its
+    /// source and recorded day are those of the fact it comes from: the renewal date as entered, else the bill.
     static func renewal(_ a: VendorAccount) -> Obligation {
-        Obligation(id: a.renewalObligationID,
-                   title: a.renewal == nil ? LF("%@: renewal date unknown", a.name) : LF("%@: renewal", a.name),
-                   product: nil, area: .accounts, due: a.renewal,
-                   source: a.renewalSource ?? a.cost?.source ?? a.source, recordedOn: a.recordedOn, origin: .account, subject: a.id)
+        var source = a.source
+        var recorded = a.recordedOn
+        if a.renewal != nil, let s = a.renewalSource {
+            source = s
+            recorded = a.renewalRecordedOn ?? a.recordedOn
+        } else if let c = a.cost {
+            source = c.source
+            recorded = a.costRecordedOn ?? a.recordedOn
+        }
+        return Obligation(id: a.renewalObligationID,
+                          title: a.renewal == nil ? LF("%@: renewal date unknown", a.name) : LF("%@: renewal", a.name),
+                          product: nil, area: .accounts, due: a.renewal, source: source, recordedOn: recorded, origin: .account,
+                          subject: a.id)
     }
 
     // MARK: Live rows
@@ -408,9 +439,7 @@ public enum ObligationsBuilder {
                 guard let expires = d.expiresAt else { continue }
                 out.append(Obligation(id: "domain.\(name)", title: LF("%@ registration ends", name), product: name, area: .domains,
                                       due: KeyDay(expires, calendar: calendar),
-                                      consequence: name == "linumic.com"
-                                          ? "Every Linumic address depends on it: the website, contact@linumic.com and the subdomains such as console.linumic.com."
-                                          : nil,
+                                      consequence: name == "linumic.com" ? ObligationSeed.linumicComConsequence : nil,
                                       source: LF("RDAP: %@", d.sourceURL), recordedOn: KeyDay(d.fetchedAt, calendar: calendar),
                                       readAt: d.fetchedAt, origin: .domain, subject: name))
             }
@@ -468,15 +497,19 @@ public enum ObligationsBuilder {
 
     static let continuityConsequence = "Without it, the inventory and the licence ledger are on this Mac and in Supabase, which keeps no point-in-time backup on the free plan; the obligations and the keys registry are only on this Mac."
 
-    /// The encrypted copy of Linumic OS's data off this Mac: due 30 days after the last verified export to a folder off
-    /// this Mac, or "date unknown" (and to do now) while there is none. An export to a folder on this Mac's own disk, or
-    /// whose place is not known, is not a copy off this Mac and leaves the row as it was.
+    /// The encrypted copy of Linumic OS's data off this Mac: due 30 days after the last verified export known to be off
+    /// this Mac, or undated (and to do now) while there is none. An export to a folder on this Mac's own disk, or whose
+    /// place is not known, is not a copy off this Mac; one in a cloud folder counts once it was opened outside this Mac
+    /// (its local copy reads back whether or not it was uploaded). Either leaves the row as it was.
     static func continuityExport(_ log: ContinuityLog, calendar: Calendar) -> Obligation {
         guard let last = log.lastVerifiedOffMac else {
             var source = "\(continuitySource); continuity.json"
-            if let onMac = log.lastVerified {
-                source += "; " + LF("the newest verified export, %1$@, is in a folder that is not off this Mac (%2$@)",
-                                    onMac.fileName, onMac.folderKind.title)
+            if let newest = log.lastVerified {
+                source += "; " + (newest.folderKind == .cloud
+                    ? LF("the newest verified export, %@, is in a cloud folder and has not been opened outside this Mac, so whether it was uploaded is not known",
+                         newest.fileName)
+                    : LF("the newest verified export, %1$@, is in a folder that is not off this Mac (%2$@)",
+                         newest.fileName, newest.folderKind.title))
             }
             return Obligation(id: "continuity.export", title: "No encrypted copy of Linumic OS data off this Mac yet", product: "Linumic OS",
                               area: .continuity, due: nil, consequence: continuityConsequence, source: source,
@@ -513,7 +546,8 @@ public enum ObligationsBuilder {
     }
 
     /// The accounts that pass. An account without a source or a recorded day is left out; a renewal, holder or cost
-    /// without its own source is taken off the account (and reported), so it is never shown as known.
+    /// without its own source, and a cost the account sheet would refuse, are taken off the account (and reported), so
+    /// none is ever shown as known.
     static func screen(accounts: [VendorAccount]) -> (kept: [VendorAccount], issues: [ObligationIssue]) {
         var kept: [VendorAccount] = []
         var issues: [ObligationIssue] = []
@@ -533,24 +567,37 @@ public enum ObligationsBuilder {
                 a.holder = nil
                 a.holderSource = nil
             }
-            if let c = a.cost, ObligationsFile.clean(c.source) == nil {
-                issues.append(.valueWithoutSource(a.id))
-                a.cost = nil
+            if let c = a.cost {
+                if ObligationsFile.clean(c.source) == nil {
+                    issues.append(.valueWithoutSource(a.id))
+                    a.cost = nil
+                } else if let checked = c.checked {
+                    a.cost = checked
+                } else {
+                    issues.append(.badValue(a.id))
+                    a.cost = nil
+                }
             }
             kept.append(a)
         }
         return (kept, issues)
     }
 
-    /// The owner's entries that are not applied: a Done without evidence, a date or account value without a source.
+    /// The owner's entries that are not applied: a Done without evidence, a date or account value without a source, a
+    /// cost the account sheet would refuse.
     static func fileIssues(_ file: ObligationsFile) -> [ObligationIssue] {
         var issues: [ObligationIssue] = []
         for c in file.completions where ObligationsFile.clean(c.evidence) == nil { issues.append(.doneWithoutEvidence(c.obligationID)) }
         for d in file.dates where ObligationsFile.clean(d.source) == nil { issues.append(.valueWithoutSource(d.obligationID)) }
-        for e in file.accountEdits where (e.renewal != nil && ObligationsFile.clean(e.renewalSource) == nil)
-            || (e.holder != nil && ObligationsFile.clean(e.holderSource) == nil)
-            || (e.cost.map { ObligationsFile.clean($0.source) == nil } ?? false) {
-            issues.append(.valueWithoutSource(e.accountID))
+        for e in file.accountEdits {
+            if (e.renewal != nil && ObligationsFile.clean(e.renewalSource) == nil)
+                || (e.holder != nil && ObligationsFile.clean(e.holderSource) == nil)
+                || (e.cost.map { ObligationsFile.clean($0.source) == nil } ?? false) {
+                issues.append(.valueWithoutSource(e.accountID))
+            }
+            if let c = e.cost, ObligationsFile.clean(c.source) != nil, c.checked == nil {
+                issues.append(.badValue(e.accountID))
+            }
         }
         return issues
     }

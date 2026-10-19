@@ -42,4 +42,15 @@ struct KeyDayTests {
         let desk = DeskBuilder.build(brief: brief, ledgers: .unsupported, state: DeskState(), now: date)
         #expect(desk.today.map(\.item.subjectKey) == ["x"])
     }
+
+    @Test func aDayThatDoesNotExistIsRefused() throws {
+        #expect(KeyDay("2026-02-30") == nil)
+        #expect(KeyDay("2026-04-31") == nil)
+        #expect(KeyDay("2027-02-29") == nil)
+        #expect(KeyDay("2028-02-29")?.description == "2028-02-29")
+        #expect(KeyDay("2026-02-28")?.description == "2026-02-28")
+        #expect(KeyDay("2026-12-31")?.days(until: KeyDay("2027-01-01")!) == 1)
+        // Read from a file, it is an error, not a day that shows as one date and counts as another.
+        #expect(throws: DecodingError.self) { try JSONDecoder().decode([KeyDay].self, from: Data(#"["2026-02-30"]"#.utf8)) }
+    }
 }

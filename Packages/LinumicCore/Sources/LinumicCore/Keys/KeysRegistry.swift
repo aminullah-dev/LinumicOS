@@ -15,10 +15,17 @@ public struct KeyDay: Codable, Hashable, Comparable, Sendable, CustomStringConve
     public let month: Int
     public let day: Int
 
+    /// "yyyy-MM-dd", a day that exists in the Gregorian calendar: "2026-02-30" is refused, not read as 2 March (it
+    /// would show as that day but sort and count as another).
     public init?(_ string: String) {
         let parts = string.split(separator: "-")
         guard parts.count == 3, parts[0].count == 4, let y = Int(parts[0]), let m = Int(parts[1]), let d = Int(parts[2]),
               (1...12).contains(m), (1...31).contains(d) else { return nil }
+        var utc = Calendar(identifier: .gregorian)
+        utc.timeZone = TimeZone(identifier: "UTC")!
+        guard let date = utc.date(from: DateComponents(year: y, month: m, day: d)) else { return nil }
+        let back = utc.dateComponents([.year, .month, .day], from: date)
+        guard back.year == y, back.month == m, back.day == d else { return nil }
         year = y
         month = m
         day = d

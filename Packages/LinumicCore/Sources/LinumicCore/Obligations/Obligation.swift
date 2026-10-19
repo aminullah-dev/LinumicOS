@@ -57,6 +57,14 @@ public enum ObligationOrigin: String, Codable, Sendable, Hashable {
         case .seed, .owner, .account: false
         }
     }
+
+    /// Its due day is set on the Obligations screen (with a source). A live row takes its day from its own source, and
+    /// an account's renewal from the account's card, so each day is entered in one place only.
+    public var takesDateHere: Bool { self == .seed || self == .owner }
+
+    /// Done with evidence closes it. A live row closes only through its source (a verified export, a restore test, a
+    /// renewal the next reading shows): a sentence typed here never stands in for what the app reads itself.
+    public var takesDoneHere: Bool { !isLive }
 }
 
 /// The owner's Done, with what proves it. Keyed by the obligation and the due day it closes, so a renewed licence or
@@ -82,6 +90,12 @@ public struct ObligationCompletion: Codable, Hashable, Sendable {
 
 public struct Obligation: Codable, Identifiable, Hashable, Sendable {
     public static let defaultLeadDays = [30, 14, 7, 1]
+
+    /// Lead days the register can use: at least one, each a day from 1 to a year. Anything else (an empty list written
+    /// by hand) would keep a row from ever being brought forward, so the defaults are used instead.
+    public static func usableLeadDays(_ days: [Int]) -> [Int] {
+        !days.isEmpty && days.allSatisfy({ (1...366).contains($0) }) ? days : defaultLeadDays
+    }
 
     public var id: String
     /// English for the seed and live rows (localized when shown); the owner's own words for the rows he adds.
@@ -196,6 +210,15 @@ public struct AccountCost: Codable, Hashable, Sendable {
 
     /// "99 USD per year".
     public var text: String { LF("%@ %@ %@", amount.formatted(), currency, cycle.title) }
+
+    /// The cost as it may be recorded: an amount above zero and a three-letter code (upper-cased), with its bill. Nil
+    /// for anything else, whether typed in the account sheet or written into obligations.json by hand.
+    public var checked: AccountCost? {
+        guard let source = ObligationsFile.clean(source) else { return nil }
+        let code = currency.trimmingCharacters(in: .whitespaces).uppercased()
+        guard amount > 0, code.count == 3, code.allSatisfy({ $0.isASCII && $0.isLetter }) else { return nil }
+        return AccountCost(amount: amount, currency: code, cycle: cycle, source: source)
+    }
 }
 
 /// An account the company depends on (a store, a host, a registrar). Never a password or card: the Vault holds
@@ -212,8 +235,12 @@ public struct VendorAccount: Codable, Identifiable, Hashable, Sendable {
     /// The next renewal, when known.
     public var renewal: KeyDay?
     public var renewalSource: String?
+    /// The day the renewal was recorded with its source (the owner's entry), when it was not recorded with the account.
+    public var renewalRecordedOn: KeyDay?
     /// What it costs, when a bill says so. Nil: unknown, never estimated.
     public var cost: AccountCost?
+    /// The day the cost was recorded with its bill, when it was not recorded with the account.
+    public var costRecordedOn: KeyDay?
     /// Where the account itself is recorded. Never empty.
     public var source: String
     public var recordedOn: KeyDay?
@@ -241,7 +268,9 @@ public struct VendorAccount: Codable, Identifiable, Hashable, Sendable {
     public var displayNote: String? { note.map { origin == .owner ? $0 : L($0) } }
 
     /// The obligation for its renewal (dated, or "date unknown").
-    public var renewalObligationID: String { "account.\(id).renewal" }
+    public var renewalObligationID: String { Self.renewalObligationID(id) }
+
+    public static func renewalObligationID(_ accountID: String) -> String { "account.\(accountID).renewal" }
 
     /// A renewal is known to exist: its day is recorded, or a bill says the account is paid monthly or yearly. Only
     /// then is its renewal an obligation; otherwise the account card says "renewal: not recorded" and nothing presumes
@@ -268,9 +297,17 @@ public enum ObligationIssue: Hashable, Sendable, Identifiable {
     /// A row or account in obligations.json that the app's own forms would not have written (its origin is not the
     /// owner's, or its id does not start with "owner."): it could stand in for a seed or live row, so it is left out.
     case notOwners(String)
-    /// A date in obligations.json for a row that takes its date from its own source (a live row), or for a row that is
-    /// not in the register: it is not applied.
+    /// A date in obligations.json for a row that takes its date from its own source (a live row, or an account's
+    /// renewal, whose day is recorded on the account's card), or for a row that is not in the register: it is not
+    /// applied.
     case dateNotApplied(String)
+    /// A Done in obligations.json for a live row: it closes only through its source, so it is not applied.
+    case doneNotApplied(String)
+    /// A cost written into obligations.json that the account sheet would refuse (an amount of zero or less, a currency
+    /// that is not a three-letter code): it is not applied.
+    case badValue(String)
+    /// Facts recorded in obligations.json for an account that is not in the register: they are not applied.
+    case unknownAccount(String)
 
     public var id: String {
         switch self {
@@ -281,6 +318,9 @@ public enum ObligationIssue: Hashable, Sendable, Identifiable {
         case .noTitle(let i): "title.\(i)"
         case .notOwners(let i): "notOwners.\(i)"
         case .dateNotApplied(let i): "dateNotApplied.\(i)"
+        case .doneNotApplied(let i): "doneNotApplied.\(i)"
+        case .badValue(let i): "badValue.\(i)"
+        case .unknownAccount(let i): "unknownAccount.\(i)"
         }
     }
 
@@ -292,7 +332,10 @@ public enum ObligationIssue: Hashable, Sendable, Identifiable {
         case .valueWithoutSource(let i): LF("A value of %@ was set without a source.", i)
         case .noTitle(let i): LF("%@ has no title.", i)
         case .notOwners(let i): LF("%@ in obligations.json is not a row you added in the app, so it is left out.", i)
-        case .dateNotApplied(let i): LF("The date set for %@ is not applied: that row takes its date from its own source, or it is not in the register.", i)
+        case .dateNotApplied(let i): LF("The date set for %@ is not applied: that row takes its date from its own source (a reading, or the account's card), or it is not in the register.", i)
+        case .doneNotApplied(let i): LF("The Done recorded for %@ is not applied: that row closes only when its own source says so (an export, a restore test, a new reading).", i)
+        case .badValue(let i): LF("A cost of %@ is not applied: the amount must be above zero and the currency a three-letter code.", i)
+        case .unknownAccount(let i): LF("What was recorded for the account %@ is not applied: no account with that id is in the register.", i)
         }
     }
 }

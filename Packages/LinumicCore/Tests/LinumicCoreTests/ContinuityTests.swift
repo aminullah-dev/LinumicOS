@@ -54,7 +54,7 @@ struct ContinuityExportTests {
         #expect(sha(plain) == record.plaintextSHA256)
         let back = try ContinuityBundle.decode(plain)
         #expect(back.format == "linumic-os-continuity" && back.formatVersion == 1)
-        #expect(back.inventory.products.map(\.id) == ["worktrack"])
+        #expect(back.inventory?.products.map(\.id) == ["worktrack"])
         #expect(back.obligations.contains { $0.id == "signing.linumicos-mac-profile" })
         // No licence key text, ever; the rest of the ledger is there.
         #expect(back.licences?.first?.keyText == nil)
@@ -92,6 +92,24 @@ struct ContinuityExportTests {
         #expect(ContinuityBundle.forbiddenKinds(in: Data("key \(aws)".utf8)) == ["an AWS access key"])
         // Ordinary text near those shapes is not a secret.
         #expect(ContinuityBundle.forbiddenKinds(in: Data("eyJ only once; sk_test_ is not live; AKIA short".utf8)).isEmpty)
+        // The other services the owner uses.
+        let others: [(String, String)] = [
+            ("nt" + "n_" + String(repeating: "N", count: 46), "a Notion token"),
+            ("sec" + "ret_" + String(repeating: "n", count: 43), "a Notion token"),
+            ("sk" + "-proj-" + String(repeating: "o", count: 40), "an OpenAI API key"),
+            ("sk" + "_" + String(repeating: "a1", count: 24), "an ElevenLabs API key"),
+            ("xo" + "xb-" + "123456789012-" + String(repeating: "S", count: 24), "a Slack token"),
+            ("ya" + "29." + String(repeating: "g", count: 60), "a Google OAuth token"),
+            ("GOC" + "SPX-" + String(repeating: "c", count: 28), "a Google OAuth client secret"),
+            ("EA" + "AB" + String(repeating: "m", count: 120), "a Meta access token"),
+        ]
+        for (token, kind) in others {
+            #expect(ContinuityBundle.forbiddenKinds(in: Data("note: \(token) end".utf8)) == [kind], "\(kind)")
+        }
+        // Words that only start the same way, and a Supabase secret key (its own kind, not a Notion token).
+        #expect(ContinuityBundle.forbiddenKinds(in: Data("secret_key, sk_live is Stripe, EAAS team, ya29 short, xoxo".utf8)).isEmpty)
+        let supabase = "sb" + "_secret_" + String(repeating: "Q", count: 44)
+        #expect(ContinuityBundle.forbiddenKinds(in: Data(supabase.utf8)) == ["a Supabase secret key"])
         // A bundle with a JWT in a note is refused before anything is written.
         let dir = try folder()
         defer { try? FileManager.default.removeItem(at: dir) }
@@ -145,6 +163,35 @@ struct ContinuityExportTests {
         let left = try FileManager.default.contentsOfDirectory(atPath: dir.path(percentEncoded: false))
         #expect(left == ["linumic-os-continuity-2026-10-19-1200.json.age"])
         #expect(try Data(contentsOf: dir.appending(path: left[0])) == Data("theirs".utf8))
+    }
+
+    @Test func anUnreadInventoryOrObligationsFileIsNoExport() throws {
+        // Before the inventory has loaded, after its load failed, or with obligations.json unreadable: nothing is
+        // written, nothing is recorded, and no count stands in for what was not read.
+        let register = ObligationsBuilder.build(file: ObligationsFile(), live: ObligationLiveInput(), now: now, calendar: utc)
+        let noInventory = ContinuityBundle(createdAt: now, app: "Linumic OS 0.2.0 (2)", inventory: nil, obligationEntries: ObligationsFile(),
+                                           obligations: register.obligations, accounts: register.accounts, licences: [],
+                                           licencesSyncedAt: nil, keysRegistry: KeysRegistry.seed)
+        let noObligations = ContinuityBundle(createdAt: now, app: "Linumic OS 0.2.0 (2)", inventory: Inventory(seedRevision: 7, products: []),
+                                             obligationEntries: nil, obligations: register.obligations, accounts: register.accounts,
+                                             licences: [], licencesSyncedAt: nil, keysRegistry: KeysRegistry.seed)
+        #expect(noInventory.counts["products"] == nil && noInventory.requiredPartsNotRead == [.inventory])
+        #expect(noObligations.counts["obligations"] == nil && noObligations.counts["accounts"] == nil)
+        #expect(noObligations.counts["products"] == 0)   // read, and empty
+        #expect(noObligations.requiredPartsNotRead == [.obligationEntries])
+        let dir = try folder()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        var log = ContinuityLog()
+        for (b, missing) in [(noInventory, [ContinuityBundle.Part.inventory]), (noObligations, [.obligationEntries])] {
+            #expect(throws: ContinuityExporter.Failure.requiredPartsNotRead(missing)) {
+                log.add(try ContinuityExporter.export(b, passphrase: passphrase, to: dir, folderName: "USB", folderKind: .external,
+                                                      now: now, workFactor: 10, calendar: utc))
+            }
+        }
+        #expect(try FileManager.default.contentsOfDirectory(atPath: dir.path(percentEncoded: false)).isEmpty)
+        #expect(log.exports.isEmpty && log.lastVerifiedOffMac == nil)
+        #expect(ObligationsBuilder.build(file: ObligationsFile(), live: ObligationLiveInput(continuity: log), now: now, calendar: utc)
+                    .obligation("continuity.export")?.due == nil)
     }
 
     @Test func aPartThatWasNotReadIsAbsentNotZero() throws {
@@ -235,6 +282,10 @@ struct ContinuityExportTests {
         #expect(ContinuityPassphrase.problem("aaaaaaaaaaaaaaaaaaaa", confirmation: "aaaaaaaaaaaaaaaaaaaa") != nil)
         #expect(ContinuityPassphrase.problem("write this on paper 2026", confirmation: "write this on paper 2025") != nil)
         #expect(ContinuityPassphrase.problem("write this on paper 2026", confirmation: "write this on paper 2026") == nil)
+        // Spaces that can't be seen on paper: age reads them as typed, so the copy from the paper would not open it.
+        for spaced in [" write this on paper 2026", "write this on paper 2026 ", "write this  on paper 2026"] {
+            #expect(ContinuityPassphrase.problem(spaced, confirmation: spaced) != nil, "\(spaced)")
+        }
         let s = ContinuityPassphrase.suggestion()
         #expect(s.count == 29 && s.split(separator: "-").count == 6)
         #expect(ContinuityPassphrase.problem(s, confirmation: s) == nil)
@@ -242,12 +293,21 @@ struct ContinuityExportTests {
     }
 
     @Test func whereTheFolderIs() {
-        #expect(ContinuityFolderKind.classify(path: "/Users/a/Library/CloudStorage/GoogleDrive-a@b.c/My Drive/Mohem", volumeIsInternal: true) == .cloud)
-        #expect(ContinuityFolderKind.classify(path: "/Volumes/LINUMIC", volumeIsInternal: false) == .external)
-        #expect(ContinuityFolderKind.classify(path: "/Users/a/Documents", volumeIsInternal: true) == .thisMac)
-        #expect(ContinuityFolderKind.classify(path: "/x", volumeIsInternal: nil) == .unknown)
-        #expect(ContinuityFolderKind.classify(path: "/Volumes/share", volumeIsInternal: nil, volumeIsLocal: false) == .network)
-        #expect(ContinuityFolderKind.classify(path: "/Users/a/Documents", volumeIsInternal: true, volumeIsLocal: true) == .thisMac)
+        let home = "/Users/a"
+        #expect(ContinuityFolderKind.classify(path: "/Users/a/Library/CloudStorage/GoogleDrive-a@b.c/My Drive/Mohem", home: home,
+                                              volumeIsInternal: true) == .cloud)
+        #expect(ContinuityFolderKind.classify(path: "/Users/a/Library/Mobile Documents/com~apple~CloudDocs/Linumic", home: home + "/",
+                                              volumeIsInternal: true) == .cloud)
+        #expect(ContinuityFolderKind.classify(path: "/Volumes/LINUMIC", home: home, volumeIsInternal: false) == .external)
+        #expect(ContinuityFolderKind.classify(path: "/Users/a/Documents", home: home, volumeIsInternal: true) == .thisMac)
+        #expect(ContinuityFolderKind.classify(path: "/x", home: home, volumeIsInternal: nil) == .unknown)
+        #expect(ContinuityFolderKind.classify(path: "/Volumes/share", home: home, volumeIsInternal: nil, volumeIsLocal: false) == .network)
+        #expect(ContinuityFolderKind.classify(path: "/Users/a/Documents", home: home, volumeIsInternal: true, volumeIsLocal: true) == .thisMac)
+        // A folder on this Mac's disk whose path only holds those names (a copied tree) is not a cloud folder.
+        #expect(ContinuityFolderKind.classify(path: "/Users/a/Documents/x/Library/CloudStorage/y", home: home, volumeIsInternal: true) == .thisMac)
+        #expect(ContinuityFolderKind.classify(path: "/Users/b/Library/CloudStorage/GoogleDrive-b/My Drive", home: home,
+                                              volumeIsInternal: true) == .thisMac)
+        #expect(ContinuityFolderKind.classify(path: "/Users/a/Library/CloudStorage/x", home: "", volumeIsInternal: true) == .thisMac)
         #expect(ContinuityFolderKind.external.isOffThisMac && ContinuityFolderKind.network.isOffThisMac)
         #expect(!ContinuityFolderKind.thisMac.isOffThisMac && !ContinuityFolderKind.unknown.isOffThisMac)
     }

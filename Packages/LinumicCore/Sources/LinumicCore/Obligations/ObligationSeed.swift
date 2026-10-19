@@ -10,12 +10,16 @@ import Foundation
 
 public enum ObligationSeed {
     /// Bumped whenever a row is added or corrected (recorded in exports).
-    public static let revision = 2
+    public static let revision = 3
 
     static let multiplatform = "~/Projects/Multiplatform"
     static let nextActions = "~/Projects/Multiplatform/NEXT-ACTIONS-2026-10-19.md"
     static let memory = "~/.claude/projects/-Users-aminullahhashemi/memory"
     static let repo = "~/Projects/Multiplatform/Linumic/LinumicCommandCenter"
+
+    /// What docs/integrations.md:548-551 says depends on linumic.com, in its own terms (the seed row and the Monitor's
+    /// live reading share it). The source names no mailbox, so none is named here.
+    static let linumicComConsequence = "linumic.com and its subdomains (such as console.linumic.com) depend on this registration; the hosts on Google's web.app and cloudfunctions.net do not."
 
     public static var obligations: [Obligation] {
         let d19 = KeyDay("2026-10-19")!
@@ -65,7 +69,7 @@ public enum ObligationSeed {
             Obligation(id: "domain.linumic.com",
                        title: "linumic.com registration ends",
                        product: "linumic.com", area: .domains, due: KeyDay("2029-08-15"),
-                       consequence: "Every Linumic address depends on it: the website, contact@linumic.com and the subdomains such as console.linumic.com.",
+                       consequence: linumicComConsequence,
                        source: "~/Projects/Multiplatform/Linumic/LinumicCommandCenter/docs/integrations.md:548-551 (RDAP on 2026-10-09: expires 2029-08-15, registrar GoDaddy.com, LLC; every other host is a subdomain of it or Google's)",
                        recordedOn: KeyDay("2026-10-09"), origin: .seed, subject: "linumic.com"),
             Obligation(id: "stores.play-target-api",

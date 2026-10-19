@@ -113,13 +113,16 @@ public struct BriefLine: Identifiable, Hashable, Sendable {
     public var factKey: String?
     /// The day it is due, when the source gives one (an obligation). The Desk puts it in Today, This week or Later by it.
     public var due: KeyDay?
-    /// The obligation the line is about, when it is one: its Done is recorded on the Obligations screen, with evidence,
-    /// whatever screen its Open goes to.
+    /// The obligation the line is about, when it is one. Its Done is recorded on the Obligations screen, with evidence,
+    /// unless `closesAtSource`.
     public var obligationID: String?
+    /// A live obligation (the continuity export, a restore test, a licence, a domain): it closes only when its source
+    /// records it, so its Done goes to that source's screen, never to the evidence sheet or a Desk mark.
+    public var closesAtSource: Bool
 
     public init(id: String, kind: BriefSourceKind, severity: BriefSeverity, text: String, detail: String? = nil,
                 source: String, readAt: Date?, destination: BriefDestination, links: [BriefLink] = [], product: String? = nil,
-                factKey: String? = nil, due: KeyDay? = nil, obligationID: String? = nil) {
+                factKey: String? = nil, due: KeyDay? = nil, obligationID: String? = nil, closesAtSource: Bool = false) {
         self.id = id
         self.kind = kind
         self.severity = severity
@@ -133,6 +136,7 @@ public struct BriefLine: Identifiable, Hashable, Sendable {
         self.factKey = factKey
         self.due = due
         self.obligationID = obligationID
+        self.closesAtSource = closesAtSource
     }
 
     /// A count's power-of-two bucket ("1", "2-3", "4-7", "8-15", …): a queue that grows from 3 to 4 or to 30 is a new

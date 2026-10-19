@@ -7,8 +7,9 @@ import Foundation
 // a passphrase (`AgeFile`), so it opens with the standard `age` tool on any computer, without Linumic OS
 // (docs/continuity.md). It holds the inventory, the obligations and accounts, the licence ledger (without licence key
 // text) and the keys registry (paths, dates and sources only). Never a password, token, key, keystore or key file:
-// those live in the Keychain and in the separate key backups. After writing, the file is read back from the folder,
-// decrypted and compared with what was written; only then is the export recorded as verified. No network.
+// those live in the Keychain and in the separate key backups. It is refused while the inventory or obligations.json is
+// not read. After writing, the file is forced onto the device, read back from the folder, decrypted and compared with
+// what was written; only then is the export recorded as verified. No network.
 
 /// What the export holds, decrypted. Plain JSON, documented in docs/continuity.md.
 public struct ContinuityBundle: Codable, Hashable, Sendable {
@@ -22,9 +23,12 @@ public struct ContinuityBundle: Codable, Hashable, Sendable {
     public var app: String
     /// What is never in the file, in words, so whoever opens it knows where those things are.
     public var excluded: [String]
-    public var inventory: Inventory
-    /// The owner's own entries (dates, Done with evidence, accounts and their facts), as in obligations.json.
-    public var obligationEntries: ObligationsFile
+    /// The inventory. Nil when it was not read (still loading, or its load failed): the export is then refused, since
+    /// a copy without it would count as the copy off this Mac while it holds nothing.
+    public var inventory: Inventory?
+    /// The owner's own entries (dates, Done with evidence, accounts and their facts), as in obligations.json. Nil when
+    /// that file could not be read: the export is then refused too.
+    public var obligationEntries: ObligationsFile?
     /// Every obligation as the register showed it when exported: the seed, the owner's, accounts' renewals and the live
     /// dates, each with its source.
     public var obligations: [Obligation]
@@ -38,7 +42,7 @@ public struct ContinuityBundle: Codable, Hashable, Sendable {
     /// Absent (nil) when the registry could not be read.
     public var keysRegistry: KeysRegistry?
 
-    public init(createdAt: Date, app: String, inventory: Inventory, obligationEntries: ObligationsFile, obligations: [Obligation],
+    public init(createdAt: Date, app: String, inventory: Inventory?, obligationEntries: ObligationsFile?, obligations: [Obligation],
                 accounts: [VendorAccount], licences: [LicenceRecord]?, licencesSyncedAt: Date?, keysRegistry: KeysRegistry?) {
         format = Self.formatName
         formatVersion = Self.currentFormatVersion
@@ -64,13 +68,15 @@ public struct ContinuityBundle: Codable, Hashable, Sendable {
     ]
 
     /// How many of each record it holds (shown with the export and kept in its record). A part that was not read has
-    /// no count at all, never a zero.
+    /// no count at all, never a zero. Without obligations.json the register lacks the owner's rows and accounts, so
+    /// neither is counted then.
     public var counts: [String: Int] {
-        var c = [
-            "products": inventory.products.count,
-            "obligations": obligations.count,
-            "accounts": accounts.count,
-        ]
+        var c: [String: Int] = [:]
+        if let inventory { c["products"] = inventory.products.count }
+        if obligationEntries != nil {
+            c["obligations"] = obligations.count
+            c["accounts"] = accounts.count
+        }
         if let licences { c["licences"] = licences.count }
         if let keysRegistry {
             c["keys"] = keysRegistry.keys.count
@@ -79,13 +85,41 @@ public struct ContinuityBundle: Codable, Hashable, Sendable {
         return c
     }
 
-    /// The parts that were not read when the export was made (so they are absent from it, not empty), in words.
-    public var partsNotRead: [String] {
-        var parts: [String] = []
-        if licences == nil { parts.append(L("the licence ledger")) }
-        if keysRegistry == nil { parts.append(L("the keys registry")) }
-        return parts
+    /// A part read from its own file or store.
+    public enum Part: String, CaseIterable, Sendable, Hashable {
+        case inventory, obligationEntries, licences, keysRegistry
+
+        public var title: String {
+            switch self {
+            case .inventory: L("the inventory")
+            case .obligationEntries: L("your obligations file (obligations.json)")
+            case .licences: L("the licence ledger")
+            case .keysRegistry: L("the keys registry")
+            }
+        }
+
+        /// Without it an export is refused: the inventory and the owner's obligations are what the copy off this Mac
+        /// is for. The ledger and the registry are left out, and named, when they were not read.
+        public var isRequired: Bool { self == .inventory || self == .obligationEntries }
     }
+
+    /// The parts that were not read when the bundle was built (absent from it, not empty).
+    public var missingParts: [Part] {
+        Part.allCases.filter { part in
+            switch part {
+            case .inventory: inventory == nil
+            case .obligationEntries: obligationEntries == nil
+            case .licences: licences == nil
+            case .keysRegistry: keysRegistry == nil
+            }
+        }
+    }
+
+    /// The parts not read without which nothing is written.
+    public var requiredPartsNotRead: [Part] { missingParts.filter(\.isRequired) }
+
+    /// The parts that were not read when the export was made (so they are absent from it, not empty), in words.
+    public var partsNotRead: [String] { missingParts.map(\.title) }
 
     public func encoded() throws -> Data { try InventoryCoding.encoder().encode(self) }
 
@@ -110,6 +144,16 @@ public struct ContinuityBundle: Codable, Hashable, Sendable {
         (#"eyJ[A-Za-z0-9_\-]{8,}\.eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{16,}"#, "a JSON Web Token"),
         (#"[sr]k_live_[0-9A-Za-z]{16,}"#, "a Stripe live key"),
         (#"AKIA[0-9A-Z]{16}"#, "an AWS access key"),
+        // The other services the owner's products and tools use (Notion, OpenAI, ElevenLabs, Slack, Google sign-in,
+        // Meta). Each needs a long run after its prefix, so a word that only starts the same way is not one.
+        (#"\bntn_[A-Za-z0-9]{40,}"#, "a Notion token"),
+        (#"\bsecret_[A-Za-z0-9]{40,}"#, "a Notion token"),
+        (#"\bsk-(?:proj|svcacct|admin)-[A-Za-z0-9_\-]{20,}"#, "an OpenAI API key"),
+        (#"\bsk_[0-9a-f]{40,}"#, "an ElevenLabs API key"),
+        (#"\bxox[abpr]-[0-9A-Za-z\-]{10,}"#, "a Slack token"),
+        (#"\bya29\.[0-9A-Za-z_\-]{20,}"#, "a Google OAuth token"),
+        (#"\bGOCSPX-[0-9A-Za-z_\-]{20,}"#, "a Google OAuth client secret"),
+        (#"\bEAA[A-Za-z0-9]{60,}"#, "a Meta access token"),
     ]
 
     /// The kinds of secret found in `plaintext` (empty when it is clean).
@@ -184,13 +228,29 @@ public struct ContinuityExportRecord: Codable, Hashable, Sendable, Identifiable 
     }
 
     public var isVerified: Bool { verifiedAt != nil }
+
+    /// Known to be off this Mac: written to an external drive or a network volume, or written to a cloud folder and then
+    /// opened on another computer. A cloud folder's copy on this Mac reads back whether or not it was uploaded (sync
+    /// paused, signed out, storage full), so only an outside check shows that it left this Mac.
+    public var isKnownOffThisMac: Bool {
+        switch folderKind {
+        case .external, .network: true
+        case .cloud: !outsideChecks.isEmpty
+        case .thisMac, .unknown: false
+        }
+    }
+
+    /// Written to a cloud folder and not yet opened outside this Mac: whether it was uploaded is not known.
+    public var uploadNotChecked: Bool { folderKind == .cloud && outsideChecks.isEmpty }
+
     /// The newest time the file was read back and found identical.
     public var lastVerifiedAt: Date? { (reverifiedAt + [verifiedAt].compactMap { $0 }).max() }
 }
 
 /// Where the chosen folder is, as the system reports its volume. Only a removable, external or network volume, or a
-/// cloud folder, is off this Mac; a folder on the Mac's own disk is said to be so, and one whose place the system does
-/// not report is not counted as off this Mac.
+/// cloud folder, can be off this Mac; a folder on the Mac's own disk is said to be so, and one whose place the system
+/// does not report is not counted as off this Mac. An export in a cloud folder counts once it was opened outside this
+/// Mac (`ContinuityExportRecord.isKnownOffThisMac`).
 public enum ContinuityFolderKind: String, Codable, Sendable, Hashable {
     /// A USB stick or an external disk.
     case external
@@ -214,10 +274,13 @@ public enum ContinuityFolderKind: String, Codable, Sendable, Hashable {
         }
     }
 
-    /// Cloud folders by path; then a volume that is not local (a file share); the volume's own "internal" flag decides
-    /// the rest.
-    public static func classify(path: String, volumeIsInternal: Bool?, volumeIsLocal: Bool? = nil) -> ContinuityFolderKind {
-        if path.contains("/Library/CloudStorage/") || path.contains("/Library/Mobile Documents/") { return .cloud }
+    /// Cloud folders by path, under the user's real home only (a folder elsewhere whose path merely holds those names
+    /// is not one); then a volume that is not local (a file share); the volume's own "internal" flag decides the rest.
+    public static func classify(path: String, home: String, volumeIsInternal: Bool?, volumeIsLocal: Bool? = nil) -> ContinuityFolderKind {
+        let base = home.hasSuffix("/") ? String(home.dropLast()) : home
+        if !base.isEmpty, ["/Library/CloudStorage/", "/Library/Mobile Documents/"].contains(where: { path.hasPrefix(base + $0) }) {
+            return .cloud
+        }
         if volumeIsLocal == false { return .network }
         switch volumeIsInternal {
         case false?: return .external
@@ -242,9 +305,9 @@ public struct ContinuityLog: Codable, Hashable, Sendable {
     /// The newest export that was read back and found identical.
     public var lastVerified: ContinuityExportRecord? { exports.filter(\.isVerified).max { $0.createdAt < $1.createdAt } }
 
-    /// The newest verified export written to a folder off this Mac.
+    /// The newest verified export known to be off this Mac (`ContinuityExportRecord.isKnownOffThisMac`).
     public var lastVerifiedOffMac: ContinuityExportRecord? {
-        exports.filter { $0.isVerified && $0.folderKind.isOffThisMac }.max { $0.createdAt < $1.createdAt }
+        exports.filter { $0.isVerified && $0.isKnownOffThisMac }.max { $0.createdAt < $1.createdAt }
     }
 
     /// When the next export is due: `ObligationsBuilder.exportEveryDays` after the last verified export off this Mac.
@@ -322,6 +385,11 @@ public enum ContinuityPassphrase {
         if !isTypableAnywhere(passphrase) {
             return L("Use only Latin letters, digits, spaces and punctuation. A Dari letter can be typed as a different character on another keyboard, and the export would then not open. “Suggest a passphrase” gives one that can be typed anywhere.")
         }
+        // age reads the passphrase exactly as typed, with no trimming: a space that can't be seen on paper would be
+        // missing when it is typed from the paper elsewhere.
+        if passphrase.hasPrefix(" ") || passphrase.hasSuffix(" ") || passphrase.contains("  ") {
+            return L("Don't start or end it with a space, or put two spaces together: they can't be seen on paper, and age reads the passphrase exactly as typed, so a copy typed from the paper would not open the export.")
+        }
         if passphrase.count < minimumLength { return LF("Use at least %d characters. A line of several words is easy to write on paper.", minimumLength) }
         if Set(passphrase).count < 6 { return L("Use more different characters.") }
         if passphrase != confirmation { return L("The two passphrases are not the same.") }
@@ -341,6 +409,7 @@ public enum ContinuityPassphrase {
 
 public enum ContinuityExporter {
     public enum Failure: LocalizedError, Equatable {
+        case requiredPartsNotRead([ContinuityBundle.Part])
         case forbiddenContent([String])
         case readBackDiffers
         case decryptedDiffers
@@ -348,6 +417,9 @@ public enum ContinuityExporter {
 
         public var errorDescription: String? {
             switch self {
+            case .requiredPartsNotRead(let parts):
+                LF("Nothing was written: %@ could not be read, or has not loaded yet. An export without it would count as the copy off this Mac while it does not hold it. Wait until it has loaded, or fix what its screen reports, then export again.",
+                   parts.map(\.title).joined(separator: ", "))
             case .forbiddenContent(let kinds):
                 LF("Nothing was written: the export would contain %@. Remove it from the record that holds it, then export again.",
                    kinds.map { L($0) }.joined(separator: ", "))
@@ -367,11 +439,11 @@ public enum ContinuityExporter {
 
     static func hex(_ digest: SHA256.Digest) -> String { digest.map { String(format: "%02x", $0) }.joined() }
 
-    /// Encrypts the bundle, writes it into `folder` (never over an existing file), reads it back from the disk,
-    /// decrypts it with the same passphrase and compares it with what was written. Throws, records nothing and removes
-    /// the file it wrote when any step fails (a write that stops halfway included); the record it returns is the
-    /// evidence that the export was verified. `write` and `afterWrite` are test seams: the disk write, and a step
-    /// between writing and reading back.
+    /// Refuses a bundle without the inventory or obligations.json, then encrypts it, writes it into `folder` (never over
+    /// an existing file), forces it onto the device, reads it back from the disk, decrypts it with the same passphrase
+    /// and compares it with what was written. Throws, records nothing and removes the file it wrote when any step fails
+    /// (a write that stops halfway included); the record it returns is the evidence that the export was verified.
+    /// `write` and `afterWrite` are test seams: the disk write, and a step between writing and reading back.
     public static func export(_ bundle: ContinuityBundle, passphrase: String, to folder: URL, folderName: String,
                               folderKind: ContinuityFolderKind, now: Date, workFactor: Int = AgeFile.defaultWorkFactor,
                               calendar: Calendar = InventoryBackup.gregorian) throws -> ContinuityExportRecord {
@@ -383,6 +455,8 @@ public enum ContinuityExporter {
     static func export(_ bundle: ContinuityBundle, passphrase: String, to folder: URL, folderName: String,
                        folderKind: ContinuityFolderKind, now: Date, workFactor: Int, calendar: Calendar,
                        write: (Data, URL) throws -> Void, afterWrite: (URL) throws -> Void) throws -> ContinuityExportRecord {
+        let missing = bundle.requiredPartsNotRead
+        guard missing.isEmpty else { throw Failure.requiredPartsNotRead(missing) }
         let plaintext = try bundle.encoded()
         let forbidden = ContinuityBundle.forbiddenKinds(in: plaintext)
         guard forbidden.isEmpty else { throw Failure.forbiddenContent(forbidden) }
@@ -398,6 +472,7 @@ public enum ContinuityExporter {
         }
         do {
             try write(ciphertext, target)
+            try flushToDevice(target)
         } catch {
             // A file that was already there (made between the check above and the write) is someone else's and stays.
             // Anything else (a full or pulled USB stick, a cloud folder's error) may have left part of this file.
@@ -420,6 +495,16 @@ public enum ContinuityExporter {
                                       fileSHA256: hex(SHA256.hash(data: ciphertext)), plaintextBytes: plaintext.count,
                                       plaintextSHA256: hex(SHA256.hash(data: plaintext)), workFactor: workFactor,
                                       formatVersion: bundle.formatVersion, counts: bundle.counts)
+    }
+
+    /// Forces what was written onto the device before it is read back: F_FULLFSYNC, or fsync where the volume does not
+    /// support it. Without it the read back can come from memory, and a USB stick pulled without ejecting could hold a
+    /// short file that was recorded as verified. (That the device still holds it later is shown only by "Check again"
+    /// or by opening it outside this Mac.)
+    static func flushToDevice(_ url: URL) throws {
+        let handle = try FileHandle(forWritingTo: url)
+        defer { try? handle.close() }
+        if fcntl(handle.fileDescriptor, F_FULLFSYNC) == -1 { try handle.synchronize() }
     }
 
     /// The write failed because the file already existed (`.withoutOverwriting`): it is not ours to remove.

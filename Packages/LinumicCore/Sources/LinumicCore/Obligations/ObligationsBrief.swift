@@ -30,10 +30,11 @@ public enum ObligationsBriefRules {
             guard let due = o.due else { return true }
             return today.days(until: due) > DailyBriefBuilder.expiryWindowDays
         case .keys:
-            // Keys & Backups already says "no restore test", "restore test due" and "no second copy"; only a future
-            // restore-test day is new here.
+            // Keys & Backups already says "no restore test", "restore test due" (from the day after it is due) and "no
+            // second copy"; a restore-test day still to come, or today, is new here. The two windows meet: the due day
+            // itself is this section's ("due today"), the next day is Keys & Backups'.
             guard let due = o.due else { return false }
-            return today < due
+            return today <= due
         case .seed, .owner, .account, .continuity:
             return true
         }
@@ -47,9 +48,11 @@ public enum ObligationsBriefRules {
     }
 
     /// The title with where it stands: "… (in 12 days)", "… (due today)", "… (overdue by 3 days)", "… (date unknown)".
+    /// The encrypted copy off this Mac that was never made has no date, but it is not unknown: it is to do now.
     public static func text(_ o: Obligation, today: KeyDay) -> String {
         switch ObligationRules.timing(o, today: today) {
         case .closed: return LF("%@ (done)", o.displayTitle)
+        case .dateUnknown where o.origin == .continuity: return LF("%@ (to do now)", o.displayTitle)
         case .dateUnknown: return LF("%@ (date unknown)", o.displayTitle)
         case .overdue(let days): return LF("%1$@ (overdue by %2$d days)", o.displayTitle, days)
         case .due(0, _): return LF("%@ (due today)", o.displayTitle)
@@ -92,7 +95,8 @@ extension DailyBriefBuilder {
                                    severity: ObligationsBriefRules.severity(row, today: today),
                                    text: ObligationsBriefRules.text(row, today: today), detail: detail,
                                    source: row.source, readAt: ObligationsBriefRules.readAt(row, builtAt: o.register.builtAt, calendar: calendar),
-                                   destination: row.destination, product: row.product, due: row.due, obligationID: row.id))
+                                   destination: row.destination, product: row.product, due: row.due, obligationID: row.id,
+                                   closesAtSource: !row.origin.takesDoneHere))
         }
         var gaps: [BriefGap] = []
         if let error = o.loadError {

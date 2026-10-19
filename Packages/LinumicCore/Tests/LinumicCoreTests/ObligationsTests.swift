@@ -96,6 +96,20 @@ struct ObligationSeedTests {
         #expect(build(once).obligation("account.elevenlabs.renewal") == nil)
     }
 
+    @Test func linumicComsConsequenceIsWhatItsSourceSays() throws {
+        // docs/integrations.md:548-551 names linumic.com's subdomains and Google's hosts, and no mailbox.
+        let seed = try #require(ObligationSeed.obligations.first { $0.id == "domain.linumic.com" })
+        #expect(seed.consequence == ObligationSeed.linumicComConsequence)
+        #expect(!ObligationSeed.linumicComConsequence.contains("contact@"))
+        #expect(ObligationSeed.linumicComConsequence.contains("web.app") && ObligationSeed.linumicComConsequence.contains("cloudfunctions.net"))
+        var snapshot = MonitorSnapshot()
+        snapshot.domains["linumic.com"] = DomainReading(name: "linumic.com", expiresAt: utc.date(from: DateComponents(year: 2029, month: 8, day: 15)),
+                                                        registeredAt: nil, registrar: nil, rdapUpdatedAt: nil,
+                                                        sourceURL: "https://rdap.verisign.com/com/v1/domain/linumic.com", fetchedAt: now)
+        #expect(build(live: ObligationLiveInput(monitor: snapshot)).obligation("domain.linumic.com")?.consequence
+                == ObligationSeed.linumicComConsequence)
+    }
+
     @Test func theSupabaseCitationPointsAtTheLineThatHoldsIt() throws {
         // docs/backend-plan.md is in this repository: the cited line must still hold the organization.
         let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
@@ -232,6 +246,77 @@ struct ObligationValidationTests {
         let moved = try #require(build(file, seed: [row("a", due: nil, origin: .seed)], accounts: []).obligation("a"))
         #expect(moved.due == day("2026-12-01"))
         #expect(moved.dueSource == "renewal email 2026-10-19")
+    }
+
+    @Test func anAccountsRenewalDayIsEnteredOnTheAccountOnly() throws {
+        // The yearly renew-and-record flow: one place for the day (the account's card), so the next renewal always
+        // reaches the obligation, the Desk and the alerts.
+        let d1 = now
+        let d2 = now.addingTimeInterval(10 * 86_400)        // 2026-10-29
+        let d3 = now.addingTimeInterval(380 * 86_400)       // 2027-11-03
+        var file = ObligationsFile()
+        try file.editAccount("apple-developer", renewal: nil, renewalSource: nil, holder: nil, holderSource: nil,
+                             cost: AccountCost(amount: 99, currency: "USD", cycle: .yearly, source: "Apple receipt"), now: d1)
+        let id = "account.apple-developer.renewal"
+        // Its row is recorded the day the bill was entered, not the day the account was.
+        #expect(build(file).obligation(id)?.recordedOn == today)
+        // A date set on the row itself is not applied: it would compete with the account's own renewal.
+        try file.setDate(id, due: day("2026-11-01"), source: "renewal email", now: d1)
+        var register = build(file)
+        #expect(register.obligation(id)?.due == nil)
+        #expect(register.issues == [.dateNotApplied(id)])
+        // The day is recorded on the account (which supersedes that date), then the renewal is done with evidence.
+        try file.editAccount("apple-developer", renewal: day("2026-11-01"), renewalSource: "Apple membership page", holder: nil,
+                             holderSource: nil, now: d2)
+        #expect(file.dates.isEmpty)
+        register = build(file)
+        let first = try #require(register.obligation(id))
+        #expect(first.due == day("2026-11-01") && first.source == "Apple membership page")
+        #expect(first.recordedOn == day("2026-10-29"))   // the day the renewal was entered
+        try file.complete(id, due: first.due, on: day("2026-10-29"), evidence: "Apple receipt 2026-10-29", now: d2, calendar: utc)
+        #expect(build(file).obligation(id)?.isClosed == true)
+        // A year on, the next renewal is recorded on the card: the obligation follows it and is open again.
+        try file.editAccount("apple-developer", renewal: day("2027-11-01"), renewalSource: "Apple membership page", holder: nil,
+                             holderSource: nil, now: d3)
+        register = build(file)
+        let next = try #require(register.obligation(id))
+        #expect(next.due == day("2027-11-01") && !next.isClosed)
+        #expect(register.accounts.first { $0.id == "apple-developer" }?.renewal == day("2027-11-01"))
+        #expect(register.issues.isEmpty)
+        #expect(ObligationAlerts.due(register, today: day("2027-10-25"), sent: []).contains { $0.key == "obligation:\(id):2027-11-01:7" })
+    }
+
+    @Test func handWrittenValuesAreCheckedAsTheFormsCheckThem() throws {
+        var file = ObligationsFile()
+        // (1) A cost the sheet would refuse: not applied, so no billing term and no renewal row.
+        file.accountEdits.append(VendorAccountEdit(accountID: "hetzner",
+                                                   cost: AccountCost(amount: -5, currency: "dollars!", cycle: .monthly, source: "a note"),
+                                                   enteredAt: now))
+        // (2) A row with no lead days at all: it would never be brought forward.
+        file.added.append(Obligation(id: "owner.tomorrow", title: "Pay the host", area: .accounts, due: day("2026-10-20"),
+                                     source: "invoice", recordedOn: today, leadDays: [], origin: .owner))
+        // (4) Facts for an account that is not in the register.
+        file.accountEdits.append(VendorAccountEdit(accountID: "no-such-account", holder: .company, holderSource: "a page", enteredAt: now))
+        // An account that is refused already has its own line; its facts are not reported twice.
+        file.accounts.append(VendorAccount(id: "owner.nosource", name: "N", purpose: "", source: " ", recordedOn: today, origin: .owner))
+        file.accountEdits.append(VendorAccountEdit(accountID: "owner.nosource", holder: .company, holderSource: "a page", enteredAt: now))
+        let register = build(file)
+        #expect(register.accounts.first { $0.id == "hetzner" }?.cost == nil)
+        #expect(register.obligation("account.hetzner.renewal") == nil)
+        let tomorrow = try #require(register.obligation("owner.tomorrow"))
+        #expect(tomorrow.leadDays == Obligation.defaultLeadDays)
+        #expect(ObligationRules.severity(tomorrow, today: today) == .high)
+        #expect(ObligationAlerts.due(register, today: today, sent: []).contains { $0.key == "obligation:owner.tomorrow:2026-10-20:1" })
+        #expect(Set(register.issues) == [.badValue("hetzner"), .unknownAccount("no-such-account"), .noSource("owner.nosource")])
+        #expect(ObligationsBuilder.validate(obligations: [], accounts: [], file: file).contains(.badValue("hetzner")))
+        // A seed or owner account whose own cost is malformed loses it too.
+        let odd = VendorAccount(id: "x", name: "X", purpose: "", cost: AccountCost(amount: 0, currency: "USD", cycle: .yearly, source: "bill"),
+                                source: "s", recordedOn: today, origin: .seed)
+        let kept = build(seed: [], accounts: [odd])
+        #expect(kept.accounts.first?.cost == nil && kept.issues == [.badValue("x")])
+        // Lead days are the defaults only when unusable.
+        #expect(Obligation.usableLeadDays([60, 10]) == [60, 10])
+        #expect(Obligation.usableLeadDays([0]) == Obligation.defaultLeadDays)
     }
 
     @Test func anAccountsRenewalAndHolderComeWithTheirSources() throws {
@@ -390,6 +475,28 @@ struct ObligationDeskTests {
         #expect(profile.item.domain == .linumicOS)
     }
 
+    @Test func aRestoreTestsDueDayIsInOneSectionOrTheOther() throws {
+        // Last test 2026-07-21: due 2026-10-19, 90 days on. The Obligations section has it up to and on its day ("due
+        // today", high); Keys & Backups from the day after. No day is in neither.
+        var reg = KeysRegistry.seed
+        let backup = reg.backups[0]
+        reg.backups[0].restoreTests = [RestoreTest(on: day("2026-07-21"), by: "Owner", source: "test")]
+        let register = build(live: ObligationLiveInput(keys: reg))
+        let o = try #require(register.obligation("keys.restore.\(backup.id)"))
+        #expect(o.due == day("2026-10-19"))
+        func keysFlags(_ d: String) -> Bool {
+            let input = KeysCheckInput(registry: reg, now: day(d).start(calendar: utc).addingTimeInterval(12 * 3600), calendar: utc)
+            return KeysRules.reminders(input).contains { $0.kind == .restoreTestDue && $0.backupID == backup.id }
+        }
+        for d in ["2026-10-18", "2026-10-19", "2026-10-20"] {
+            let shown = ObligationsBriefRules.showsInBrief(o, today: day(d))
+            #expect(shown != keysFlags(d), "\(d): exactly one section says it")
+        }
+        #expect(ObligationsBriefRules.showsInBrief(o, today: day("2026-10-19")))
+        #expect(ObligationsBriefRules.severity(o, today: day("2026-10-19")) == .high)
+        #expect(ObligationsBriefRules.text(o, today: day("2026-10-19")).hasSuffix("(due today)"))
+    }
+
     @Test func otherSectionsWindowsAreNotRepeated() {
         let soon = row("domain.example.com", due: "2026-11-01", origin: .domain)
         let far = row("domain.linumic.com", due: "2029-08-15", origin: .domain)
@@ -411,13 +518,49 @@ struct ObligationDeskTests {
         let line = try #require(section.lines.first { $0.id == "obligation.continuity.export" })
         #expect(line.severity == .normal)
         #expect(line.destination == .continuity)
-        // Its Done goes to the evidence sheet, whatever screen its Open goes to.
+        // Its date is not unknown: P0 makes it due now.
+        #expect(line.text == "No encrypted copy of Linumic OS data off this Mac yet (to do now)")
+        // It closes only through its source: its Done goes to the Continuity screen, never to the evidence sheet.
         #expect(line.obligationID == "continuity.export")
+        #expect(line.closesAtSource)
+        // An obligation the owner closes with evidence does not.
+        #expect(section.lines.first { $0.id == "obligation.marketing.worktrack-queue-end" }?.closesAtSource == false)
+    }
+
+    @Test func aTypedDoneNeverClosesTheContinuityRow() throws {
+        // "I think I copied it", with no export in the log: the row stays open, on the Desk and in the Brief, and the
+        // Done is reported as not applied.
+        var file = ObligationsFile()
+        try file.complete("continuity.export", due: nil, on: today, evidence: "I think I copied it", now: now, calendar: utc)
+        let register = build(file, live: ObligationLiveInput(continuity: ContinuityLog()))
+        let export = try #require(register.obligation("continuity.export"))
+        #expect(!export.isClosed)
+        #expect(ObligationRules.lane(export, today: today) == .dateUnknown)
+        #expect(register.issues.contains(.doneNotApplied("continuity.export")))
+        let section = DailyBriefBuilder.obligations(briefInput(register))
+        #expect(section.lines.contains { $0.id == "obligation.continuity.export" })
+        // Once dated, a Done for its due day does not silence the 30-day reminder either.
+        var log = ContinuityLog()
+        log.add(ContinuityExportRecord(fileName: "linumic-os-continuity-2026-10-19-1200.json.age", folder: "USB", folderKind: .external,
+                                       createdAt: now, verifiedAt: now, fileBytes: 1, fileSHA256: "a", plaintextBytes: 1,
+                                       plaintextSHA256: "b", workFactor: 18, formatVersion: 1, counts: [:]))
+        var dated = ObligationsFile()
+        try dated.complete("continuity.export", due: day("2026-11-18"), on: today, evidence: "done", now: now, calendar: utc)
+        let next = try #require(build(dated, live: ObligationLiveInput(continuity: log)).obligation("continuity.export"))
+        #expect(next.due == day("2026-11-18") && !next.isClosed)
+        // The same holds for every live row: a licence closes when the ledger records its renewal.
+        let licence = row("licence.KY-1", due: "2026-11-01", origin: .licence)
+        var licenceDone = ObligationsFile()
+        try licenceDone.complete("licence.KY-1", due: day("2026-11-01"), on: today, evidence: "renewed", now: now, calendar: utc)
+        let r = build(licenceDone, seed: [licence], accounts: [])
+        #expect(r.obligation("licence.KY-1")?.isClosed == false)
+        #expect(r.issues == [.doneNotApplied("licence.KY-1")])
     }
 
     @Test func anExportOnThisMacIsNotACopyOffIt() throws {
-        // One verified export to ~/Documents (this Mac's own disk), one to a folder whose place is not known.
-        for kind in [ContinuityFolderKind.thisMac, .unknown] {
+        // One verified export to ~/Documents (this Mac's own disk), one to a folder whose place is not known, one to a
+        // cloud folder that was never opened outside this Mac (its local copy reads back whether or not it was uploaded).
+        for kind in [ContinuityFolderKind.thisMac, .unknown, .cloud] {
             var log = ContinuityLog()
             log.add(ContinuityExportRecord(fileName: "linumic-os-continuity-2026-10-19-1200.json.age", folder: "~/Documents", folderKind: kind,
                                            createdAt: now, verifiedAt: now, fileBytes: 1, fileSHA256: "a", plaintextBytes: 1,
@@ -431,7 +574,27 @@ struct ObligationDeskTests {
             #expect(export.source.contains("linumic-os-continuity-2026-10-19-1200.json.age"))   // the copy on this Mac is named
             let line = try #require(DailyBriefBuilder.obligations(briefInput(register)).lines.first { $0.id == "obligation.continuity.export" })
             #expect(line.severity == .normal)   // still This week on the Desk
+            #expect(export.source.contains("cloud folder") == (kind == .cloud))
         }
+    }
+
+    @Test func aCloudExportCountsOnceItWasOpenedOutsideThisMac() throws {
+        var log = ContinuityLog()
+        let record = ContinuityExportRecord(fileName: "linumic-os-continuity-2026-10-19-1200.json.age", folder: "~/Library/CloudStorage/GoogleDrive-x/Mohem",
+                                            folderKind: .cloud, createdAt: now, verifiedAt: now, fileBytes: 1, fileSHA256: "a",
+                                            plaintextBytes: 1, plaintextSHA256: "b", workFactor: 18, formatVersion: 1, counts: [:])
+        log.add(record)
+        #expect(log.exports[0].uploadNotChecked && log.lastVerifiedOffMac == nil)
+        try log.recordOutsideCheck(record.id, on: day("2026-10-20"), evidence: "age -d on the office PC; SHA-256 matched",
+                                   now: now.addingTimeInterval(86_400), calendar: utc)
+        #expect(!log.exports[0].uploadNotChecked && log.lastVerifiedOffMac?.id == record.id)
+        // Due 30 days after the export itself.
+        #expect(build(live: ObligationLiveInput(continuity: log)).obligation("continuity.export")?.due == day("2026-11-18"))
+        // An external drive needs no outside check.
+        var usb = record
+        usb.folderKind = .external
+        usb.outsideChecks = []
+        #expect(usb.isKnownOffThisMac)
     }
 
     @Test func aDeskDoneOnTheContinuityRowDoesNotHideItForGood() throws {
@@ -449,6 +612,7 @@ struct ObligationDeskTests {
         let first = desk(at: now, state: DeskState())
         let row = try #require(first.open.first { $0.item.subjectKey == "obligation.continuity.export" })
         #expect(row.item.obligationID == "continuity.export")
+        #expect(row.item.closesAtSource)   // the Desk's Done opens Continuity
         // Should a plain Done reach it anyway, it hides only until the next Brief, which reads the log again.
         var state = DeskState()
         state.markDone(row.item, now: now)
