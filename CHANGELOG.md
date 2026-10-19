@@ -5,6 +5,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed: Keys & Backups, the registry matches the keys on this Mac (2026-10-18)
+- VELRO: the Play upload key is the file in iCloud Drive > importand (`velro-play-upload`). The copy in `~/Keys/velro`
+  has the same name and size and is in the Android bundle; the key in `~/.velro-keys` is recorded as not the Play key.
+- Added the KhayatYar, Talar (`Untitled.jks`) and Namazia keys, all in no backup yet, and three gaps: the NerkhTimes
+  upload key is not on this Mac, DukanPro's upload key is no longer on this Mac, and the iCloud disk image
+  `Signing-Keys-Backup-2026-09-22.dmg` has not been opened. The "new keys" gap no longer says the Talar key is not
+  created yet.
+- Facts from `~/Keys/README.md` (corrected the same day) and file names, sizes and dates only; no key was opened.
+- `seedRevision`: a registry saved from the first seed gets the additions once and the corrections only where it still
+  holds the first seed's text. Dari for the new titles and gap texts. 2 new tests.
+
 ### Added: Website messages (linumic.com contact form)
 - New sidebar screen **Website messages** («پیام‌های سایت»): the newest 20 contact-form entries from linumic.com
   (SureForms), with name, date, email, full text, Open in wp-admin, Reply by email and Mark seen (this device only).

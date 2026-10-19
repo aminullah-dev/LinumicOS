@@ -739,6 +739,17 @@ No service and no credential: a registry on this device and, on the Mac, file at
   (id 13YZuIKfJrlgZFH98_DeqqBUb_ZXhrd5b, made 2026-10-08, verified 2026-10-08/09, test decryption 2026-10-08, no owner
   restore recorded). AES-256-CBC, PBKDF2 600000 iterations. Open gaps: no second off-Mac copy; ASC keys and the
   notarytool profile not backed up; new keys (Talar) must be added.
+- **Seed corrections (2026-10-18, seed revision 2):** sources `~/Keys/README.md` (corrected 2026-10-18), the session
+  record of 2026-10-17 on VELRO's Play key, the audit of 2026-10-18 (`Projects/Multiplatform/NEXT-ACTIONS-2026-10-19.md`)
+  and a check of file names, sizes and dates on this Mac (no key opened, hashed or copied; no keytool). VELRO's Play
+  upload key is `iCloud Drive > importand/velro-release.jks` (`velro-play-upload`); the copy in `~/Keys/velro` has the
+  same name and size (the same file according to the audit) and is in the bundle; the key in `~/.velro-keys` is not the
+  Play key. Added, in no backup yet: KhayatYar (`~/Documents/Khayatyar.jks`), Talar (`importand/Untitled.jks`, alias
+  talar2000 according to the audit, not re-checked) and Namazia (`importand/Namazia.jks`). New gaps: the NerkhTimes
+  upload key is not on this Mac; DukanPro's `~/dukanpro-upload.jks` is no longer on this Mac; the iCloud disk image
+  `Signing-Keys-Backup-2026-09-22.dmg` has not been opened. A registry saved from the first seed (no `seedRevision`)
+  gets these once on load: added keys and gaps are appended (one the owner removes later stays removed), and the two
+  VELRO entries and the "new keys" gap are corrected only while they still hold the first seed's text.
 - **Rules:** a key is "changed after backup" when its file's modification day is later than the day its newest backup
   was made (facts are known to the day, so a change later on the backup's own day isn't flagged). A key file found by
   name that no registry path or pattern covers is "not covered by any backup". Reminders: restore test older than 90

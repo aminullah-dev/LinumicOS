@@ -2858,6 +2858,16 @@
         }
       }
     },
+    "Disk image backup not verified": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبان dmg وارسی نشده است"
+          }
+        }
+      }
+    },
     "Documentation": {
       "localizations": {
         "fa-AF": {
@@ -2977,6 +2987,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "کنارگذاشته‌شده"
+          }
+        }
+      }
+    },
+    "DukanPro upload key is no longer on this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید آپلود DukanPro دیگر روی این مک نیست"
           }
         }
       }
@@ -4333,6 +4353,16 @@
         }
       }
     },
+    "KhayatYar signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای خیاط‌یار"
+          }
+        }
+      }
+    },
     "Kind": {
       "localizations": {
         "fa-AF": {
@@ -5298,6 +5328,16 @@
         }
       }
     },
+    "Namazia signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای Namazia"
+          }
+        }
+      }
+    },
     "Name": {
       "localizations": {
         "fa-AF": {
@@ -5344,6 +5384,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نیاز به تأیید شما"
+          }
+        }
+      }
+    },
+    "NerkhTimes upload key is not on this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید آپلود NerkhTimes روی این مک نیست"
           }
         }
       }
@@ -5789,6 +5839,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نوع سؤال شناخته نشد"
+          }
+        }
+      }
+    },
+    "No NerkhTimes .jks or .keystore file was found by name. A keystore.jks seen in Downloads on 2026-09-07 is gone; it may be in Signing-Keys-Backup-2026-09-22.dmg (not verified).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ فایل .jks یا .keystore برای NerkhTimes با جستجوی نام پیدا نشد. فایل keystore.jks که 2026-09-07 در Downloads دیده شده بود دیگر نیست؛ شاید در Signing-Keys-Backup-2026-09-22.dmg باشد (تأیید نشده)."
           }
         }
       }
@@ -6683,6 +6743,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "دیگر"
+          }
+        }
+      }
+    },
+    "Other VELRO key (not the Play key)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید دیگر VELRO (کلید Play نیست)"
           }
         }
       }
@@ -8925,6 +8995,16 @@
         }
       }
     },
+    "Signing-Keys-Backup-2026-09-22.dmg in iCloud Drive (52,551,168 bytes, made 2026-09-22) has not been opened: what it holds and whether it has a password are unknown. Open it once and record its contents.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل Signing-Keys-Backup-2026-09-22.dmg در iCloud Drive (52,551,168 بایت، ساخته‌شده 2026-09-22) باز نشده است: معلوم نیست چه دارد و رمز دارد یا نه. یک بار بازش کنید و محتوایش را ثبت کنید."
+          }
+        }
+      }
+    },
     "Slow": {
       "localizations": {
         "fa-AF": {
@@ -9420,6 +9500,16 @@
         }
       }
     },
+    "Talar signing key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای تالار"
+          }
+        }
+      }
+    },
     "Target": {
       "localizations": {
         "fa-AF": {
@@ -9719,6 +9809,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "کلید ثبت نشده است (issued.csv آن را ندارد). برای ضمیمه کردن، فایل .lnmlic همین لایسنس را از ~/.linumic/licenses وارد کنید."
+          }
+        }
+      }
+    },
+    "The KhayatYar, Talar and Namazia keys and VELRO's keystore.properties of 2026-10-17 are not in the encrypted bundle. Rebuild it with them.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهای خیاط‌یار، تالار و Namazia و keystore.properties تازهٔ VELRO (2026-10-17) در بستهٔ رمزگذاری‌شده نیستند. بسته را با آن‌ها از نو بسازید."
           }
         }
       }
@@ -10509,6 +10609,26 @@
         }
       }
     },
+    "VELRO Play upload key (copy from Downloads)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید آپلود VELRO در Play (کاپی از Downloads)"
+          }
+        }
+      }
+    },
+    "VELRO Play upload key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید آپلود VELRO در Play"
+          }
+        }
+      }
+    },
     "Vendor console": {
       "localizations": {
         "fa-AF": {
@@ -11170,6 +11290,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "watchOS"
+          }
+        }
+      }
+    },
+    "~/dukanpro-upload.jks, named in DukanPro's release guide, is not on this Mac. Release APKs dated 2026-09-18 exist, and release builds never fall back to the debug key.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~/dukanpro-upload.jks که در راهنمای انتشار DukanPro آمده، روی این مک نیست. APK های release با تاریخ 2026-09-18 هست، و build های release هرگز با کلید debug ساخته نمی‌شوند."
           }
         }
       }
