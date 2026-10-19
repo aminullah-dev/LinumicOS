@@ -24,9 +24,16 @@ struct DeskView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     header(desk, now: now)
-                    if let error = model.loadError ?? model.errorMessage {
+                    if let error = model.loadError {
                         Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange) }
                             .font(.callout)
+                    } else if let error = model.errorMessage {
+                        HStack(alignment: .firstTextBaseline) {
+                            Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange) }
+                            Spacer()
+                            Button("OK") { model.errorMessage = nil }.buttonStyle(.borderless)
+                        }
+                        .font(.callout)
                     }
                     bucket(.today, desk.today)
                     bucket(.thisWeek, desk.thisWeek)
@@ -222,7 +229,7 @@ struct DeskRowView: View {
                 .foregroundStyle(item.severity.color)
                 .accessibilityLabel(Text(verbatim: item.severity.title))
             VStack(alignment: .leading, spacing: 4) {
-                Text(DeskText.markdown(item.title)).fixedSize(horizontal: false, vertical: true)
+                Text(DeskText.text(item.title, of: item)).fixedSize(horizontal: false, vertical: true)
                 FitRow(spacing: 6) {
                     ReleaseBadge(text: item.domain.displayTitle, symbol: "shippingbox", color: .accentColor)
                     if let due = item.due {
@@ -238,7 +245,7 @@ struct DeskRowView: View {
                 }
                 status
                 if let detail = item.detail, !detail.isEmpty {
-                    Text(DeskText.markdown(detail))
+                    Text(DeskText.text(detail, of: item))
                         .font(.caption).foregroundStyle(.secondary)
                         .lineLimit(expanded ? nil : 2)
                         .fixedSize(horizontal: false, vertical: true)
@@ -379,7 +386,7 @@ struct DeskDismissSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Dismiss").font(.title3.weight(.semibold))
-            Text(DeskText.markdown(item.title)).font(.callout)
+            Text(DeskText.text(item.title, of: item)).font(.callout)
             Text("Why? The reason is kept with the mark. The item comes back by itself if its fact changes.")
                 .font(.caption).foregroundStyle(.secondary)
             TextField("Reason", text: $reason, axis: .vertical)
@@ -404,9 +411,11 @@ struct DeskDismissSheet: View {
 // MARK: - Text helpers
 
 enum DeskText {
-    /// Ledger text is Markdown written by people and agents (**bold**, `code`, ~~struck~~); show it as such.
-    static func markdown(_ s: String) -> AttributedString {
-        (try? AttributedString(markdown: s, options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace))) ?? AttributedString(s)
+    /// Ledger lines are Markdown written by people and agents (**bold**, `code`, ~~struck~~) and are shown as such.
+    /// Everything else (Brief lines, file paths) is shown exactly as read, so an underscore or a # stays itself.
+    static func text(_ s: String, of item: DeskItem) -> AttributedString {
+        guard item.kind == .task else { return AttributedString(s) }
+        return (try? AttributedString(markdown: s, options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace))) ?? AttributedString(s)
     }
 
     static func hiddenReason(_ m: DeskMark) -> String {
