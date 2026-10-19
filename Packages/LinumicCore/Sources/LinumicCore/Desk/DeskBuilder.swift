@@ -111,7 +111,7 @@ public enum DeskBuilder {
     public static let reviewStaleDays = 7
 
     public static func build(brief: DailyBrief?, ledgers: DeskLedgerInput, state: DeskState, now: Date,
-                             calendar: Calendar = .current) -> Desk {
+                             calendar: Calendar = KeyDay.calendar) -> Desk {
         let today = KeyDay(now, calendar: calendar)
         var items = brief.map(briefItems) ?? []
         items += ledgerItems(ledgers, today: today)
