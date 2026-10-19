@@ -36,6 +36,10 @@ struct IntegrationsSettingsView: View {
 
     var body: some View {
         Form {
+            #if os(macOS)
+            // First: the one-time grant the Desk needs (Phase 1).
+            LedgerAccessSettingsSection()
+            #endif
             Section {
                 LabeledContent {
                     StatusBadge(text: hasToken ? "Token saved" : "Public repositories only", color: hasToken ? .green : .orange)

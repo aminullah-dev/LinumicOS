@@ -33,7 +33,7 @@ struct ContentView: View {
                 }
             }
         } detail: {
-            detail(for: router.sidebar ?? .dashboard)
+            detail(for: router.sidebar ?? .desk)
         }
         .sheet(isPresented: $router.isPalettePresented) { CommandPaletteView() }
         .sheet(isPresented: $router.isNewProductPresented) {
@@ -69,6 +69,7 @@ struct ContentView: View {
     @ViewBuilder
     private func detail(for item: SidebarItem) -> some View {
         switch item {
+        case .desk: DeskView()
         case .dashboard: DashboardView()
         case .brief: DailyBriefView()
         case .monitor: MonitorView()

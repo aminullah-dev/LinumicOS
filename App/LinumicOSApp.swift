@@ -13,6 +13,7 @@ struct LinumicOSApp: App {
     @State private var vault: VaultModel
     @State private var monitor: MonitorModel
     @State private var brief: BriefModel
+    @State private var desk: DeskModel
     @State private var keys: KeysModel
     @State private var siteMessages: SiteMessagesModel
     @State private var sentinel: SentinelModel
@@ -57,12 +58,14 @@ struct LinumicOSApp: App {
         let brief = BriefModel(inventory: inventory, licences: licences, worktrack: worktrack, operations: operations,
                                releases: releases, monitor: monitor, keys: keys, siteMessages: siteMessages)
         _brief = State(initialValue: brief)
+        let desk = DeskModel(brief: brief)
+        _desk = State(initialValue: desk)
         let sentinel = SentinelModel(inventory: inventory)
         _sentinel = State(initialValue: sentinel)
         // Started here, not from a window, so it runs whether or not a window is open (menu bar, login item).
         let automation = AutomationEngine(inventory: inventory, licences: licences, platforms: platforms, worktrack: worktrack,
                                           operations: operations, releases: releases, monitor: monitor, brief: brief,
-                                          keys: keys, siteMessages: siteMessages, sentinel: sentinel)
+                                          keys: keys, siteMessages: siteMessages, sentinel: sentinel, desk: desk)
         _automation = State(initialValue: automation)
         let vault = VaultModel()
         vault.load()
@@ -141,6 +144,7 @@ struct LinumicOSApp: App {
             .environment(vault)
             .environment(monitor)
             .environment(brief)
+            .environment(desk)
             .environment(keys)
             .environment(siteMessages)
             .environment(automation)
@@ -156,6 +160,7 @@ struct LinumicOSApp: App {
     }()
 
     private var goShortcuts: [SidebarItem] {
-        [.dashboard, .brief, .allProducts, .verification, .releases, .roadmap, .issues, .repositories, .aiAssistant]
+        // ⌘1 to ⌘9: the Desk first (the home screen); AI Assistant moved out to keep nine.
+        [.desk, .dashboard, .brief, .allProducts, .verification, .releases, .roadmap, .issues, .repositories]
     }
 }

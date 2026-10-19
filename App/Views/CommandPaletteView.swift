@@ -18,6 +18,7 @@ enum PaletteAction {
     case runAutomation
     case pauseAutomation
     case resumeAutomation
+    case readLedgers
 }
 
 /// Fuzzy search over every screen, the records the app already holds (titles only, never a secret) and the actions
@@ -33,6 +34,7 @@ struct CommandPaletteView: View {
     @Environment(AutomationEngine.self) private var automation
     @Environment(KeysModel.self) private var keys
     @Environment(SiteMessagesModel.self) private var siteMessages
+    @Environment(DeskModel.self) private var desk
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
 
@@ -179,6 +181,9 @@ struct CommandPaletteView: View {
             automation.runAll()
         case .pauseAutomation: automation.pause(for: 3600)
         case .resumeAutomation: automation.resume()
+        case .readLedgers:
+            router.go(.desk)
+            Task { await desk.refreshLedgers() }
         }
     }
 
@@ -208,6 +213,14 @@ struct CommandPaletteView: View {
         }
 
         // Actions that already exist in the app.
+        if DeskModel.supportsLedgers {
+            add(PaletteCandidate(id: "action.desk.readledgers", title: String(localized: "Read ledgers now"), subtitle: SidebarItem.desk.title,
+                                 keywords: ["desk", "ledgers", "priorities", "next actions", "refresh", "read"], group: .action,
+                                 symbol: "arrow.clockwise"), .readLedgers)
+            add(PaletteCandidate(id: "action.desk.access", title: String(localized: "Ledger access…"), subtitle: SidebarItem.integrations.title,
+                                 keywords: ["desk", "ledgers", "grant", "folder", "access", "priorities"], group: .action,
+                                 symbol: "books.vertical"), .go(.integrations, nil))
+        }
         add(PaletteCandidate(id: "action.automation.runall", title: String(localized: "Run all automation now"),
                              subtitle: SidebarItem.automation.title,
                              keywords: ["automation", "run", "refresh", "all", "sync"], group: .action, symbol: "play.circle"), .runAutomation)
@@ -265,6 +278,14 @@ struct CommandPaletteView: View {
         }
 
         // Records the app already holds.
+        // Desk items that are open: title, product and list; choosing one shows it on the Desk.
+        let deskNow = desk.desk()
+        for row in deskNow.open {
+            add(PaletteCandidate(id: "desk.\(row.id)", title: row.item.title,
+                                 subtitle: "\(SidebarItem.desk.title) · \(row.item.domain.displayTitle) · \(row.bucket.title)",
+                                 keywords: ["desk", row.item.domain.name, row.item.subject, row.item.evidence.location], group: .entity,
+                                 symbol: row.item.severity.symbol), .go(.desk, .deskItem(row.id)))
+        }
         for p in model.products.sorted(by: { $0.name < $1.name }) {
             add(PaletteCandidate(id: "product.\(p.id)", title: p.name, subtitle: String(localized: "Product"),
                                  keywords: [p.id], group: .entity, symbol: "shippingbox"), .product(p.id))

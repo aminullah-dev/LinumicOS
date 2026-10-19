@@ -657,7 +657,7 @@ struct MenuBarPanel: View {
                     Button { engine.pause(for: 3600) } label: { Label("Pause 1 h", systemImage: "pause") }
                 }
                 Spacer()
-                Button { open(.dashboard) } label: { Text("Open Linumic OS") }
+                Button { open(.desk) } label: { Text("Open Linumic OS") }
                     .buttonStyle(.borderedProminent)
             }
             .controlSize(.small)
