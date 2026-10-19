@@ -1,0 +1,30 @@
+# LinumicCore tests and the Dari catalog check on every pull request and every push to main.
+# The app target itself is built locally (it needs the signing team); the core package holds the logic.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  core:
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+      - name: LinumicCore tests
+        run: swift test --package-path Packages/LinumicCore
+      - name: Dari translations
+        run: python3 tools/l10n/check_catalog.py
