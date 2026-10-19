@@ -8,6 +8,7 @@ import SwiftUI
 /// the Daily Brief and the ledgers; nothing here writes anywhere except the owner's marks in desk-state.json.
 struct DeskView: View {
     @Environment(DeskModel.self) private var model
+    @Environment(DeskSyncModel.self) private var sync
     @Environment(Router.self) private var router
     @Environment(MonitorModel.self) private var monitor
     @State private var showLater = false
@@ -35,6 +36,7 @@ struct DeskView: View {
                         }
                         .font(.callout)
                     }
+                    DeskSyncConflictsCard()
                     bucket(.today, desk.today)
                     bucket(.thisWeek, desk.thisWeek)
                     DisclosureGroup(isExpanded: $showLater) {
@@ -61,7 +63,7 @@ struct DeskView: View {
                             sectionTitle(String(localized: "Snoozed, waiting, dismissed or done"), count: desk.hidden.count)
                         }
                     }
-                    Text("The Desk is built on this device from the Daily Brief and the ledgers (the PRIORITIES.md files and the newest NEXT-ACTIONS), read-only. A source that was not read is shown as an item, never as zero. Only your marks are saved, in desk-state.json on this device.")
+                    Text("The Desk is built on this device from the Daily Brief and the ledgers (the PRIORITIES.md files and the newest NEXT-ACTIONS), read-only. A source that was not read is shown as an item, never as zero. Only your marks are saved, in desk-state.json on this device; when you are signed in to the cloud they sync with your other devices, without titles.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
                 .padding(20)
@@ -115,13 +117,14 @@ struct DeskView: View {
                     ReleaseBadge(text: String(localized: "\(unknown) sources to check"), symbol: "questionmark.circle", color: .gray)
                 }
             }
-            ledgerLine(desk)
+            ledgerLine(desk, now: now)
+            DeskSyncStatusLine()
             DeskBackupCard()
         }
     }
 
     @ViewBuilder
-    private func ledgerLine(_ desk: Desk) -> some View {
+    private func ledgerLine(_ desk: Desk, now: Date) -> some View {
         if DeskModel.supportsLedgers {
             let read = desk.sources.filter(\.isRead)
             HStack(spacing: 8) {
@@ -139,8 +142,27 @@ struct DeskView: View {
                 }
             }
             .font(.caption).foregroundStyle(.secondary)
+        } else if let snapshot = sync.cloudLedger {
+            // The Mac's reading, from the cloud: always with its date, and said plainly when it is old.
+            let read = desk.sources.filter(\.isRead)
+            VStack(alignment: .leading, spacing: 2) {
+                if snapshot.sources.isEmpty {
+                    Text("The Mac does not send its ledger lines (turned off in its Settings), so they are not shown here.")
+                } else {
+                    Label {
+                        Text("Ledgers: the Mac's reading of \(snapshot.readAt.formatted(date: .abbreviated, time: .shortened)), \(read.count) of \(desk.sources.count) read.")
+                    } icon: {
+                        Image(systemName: "laptopcomputer").accessibilityHidden(true)
+                    }
+                    if now.timeIntervalSince(snapshot.readAt) > 2 * AutomationCatalog.spec(.ledgers).cadence {
+                        Text("The Mac has not sent a newer reading since then (it reads every 30 minutes while it runs). What the ledgers say now may differ.")
+                            .foregroundStyle(.orange)
+                    }
+                }
+            }
+            .font(.caption).foregroundStyle(.secondary)
         } else {
-            Text("Ledgers are read on the Mac. On this device the Desk shows the Daily Brief's items only.")
+            Text("Ledgers are read on the Mac. Its reading reaches this device through the cloud once the Mac has synced; until then the Desk shows the Daily Brief's items only.")
                 .font(.caption).foregroundStyle(.secondary)
         }
     }
@@ -252,6 +274,9 @@ struct DeskRowView: View {
                     }
                     if item.ownerAction {
                         ReleaseBadge(text: String(localized: "Yours"), symbol: "person", color: .purple)
+                    }
+                    if item.readOn == .macOS, !DeskModel.supportsLedgers {
+                        ReleaseBadge(text: String(localized: "The Mac's reading"), symbol: "laptopcomputer", color: .gray)
                     }
                     // The report scheduled it for this week; the Desk puts the owner's work in a focus product in Today.
                     // Say so, so the Desk and the report don't seem to disagree.
@@ -472,6 +497,89 @@ struct DeskRowView: View {
             try? await Task.sleep(for: .seconds(2))
             withAnimation { copied = false }
         }
+    }
+}
+
+// MARK: - Desk sync
+
+/// Where the cloud sync stands, in one line under the header (nothing when the cloud is not configured in this build).
+struct DeskSyncStatusLine: View {
+    @Environment(DeskSyncModel.self) private var sync
+    @Environment(InventoryModel.self) private var inventory
+    @Environment(Router.self) private var router
+
+    var body: some View {
+        if inventory.isCloudAvailable {
+            HStack(spacing: 8) {
+                if sync.isSyncing { ProgressView().controlSize(.small) }
+                Text(verbatim: text).fixedSize(horizontal: false, vertical: true)
+                if !sync.isConnected || sync.lastError != nil || sync.loadError != nil {
+                    Button("Account…") { router.go(.account) }
+                        .buttonStyle(.borderless)
+                }
+            }
+            .font(.caption).foregroundStyle(color)
+        }
+    }
+
+    private var text: String {
+        if let error = sync.loadError { return error }
+        if !sync.isConnected { return String(localized: "Cloud sync: not signed in. Your marks and obligations stay on this device.") }
+        if !sync.isDeployed { return String(localized: "Cloud sync: the server side is not deployed yet (docs/desk-sync.md).") }
+        if let error = sync.lastError { return String(localized: "Cloud sync failed: \(error)") }
+        guard let at = sync.state.lastSyncedAt else { return String(localized: "Cloud sync: not synced yet.") }
+        let refused = sync.state.refusedCount
+        let when = at.formatted(date: .abbreviated, time: .shortened)
+        return refused == 0 ? String(localized: "Cloud sync: in step with your other devices, \(when).")
+                            : String(localized: "Cloud sync: \(when); \(refused) not accepted by the server (Settings → Account).")
+    }
+
+    private var color: Color {
+        sync.loadError != nil || sync.lastError != nil || sync.state.refusedCount > 0 ? .orange : .secondary
+    }
+}
+
+/// Rows both devices changed differently: both versions, side by side, until the owner keeps one. Nothing is written
+/// over before that.
+struct DeskSyncConflictsCard: View {
+    @Environment(DeskSyncModel.self) private var sync
+
+    var body: some View {
+        let conflicts = sync.conflicts
+        if !conflicts.isEmpty {
+            StripeCard(tint: .orange) {
+                Label {
+                    Text("Changed on two devices (\(conflicts.count))").font(.headline)
+                } icon: {
+                    Image(systemName: "arrow.triangle.branch").foregroundStyle(.orange)
+                }
+                .accessibilityAddTraits(.isHeader)
+                Text("Both your devices changed these while they were apart. Nothing was written over: each keeps its own version until you choose which one stays.")
+                    .font(.caption).foregroundStyle(.secondary)
+                ForEach(conflicts) { conflict in
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(verbatim: conflict.title).font(.callout.weight(.medium)).fixedSize(horizontal: false, vertical: true)
+                        Text("On this device: \(conflict.mine)").font(.caption).fixedSize(horizontal: false, vertical: true)
+                        Text(verbatim: otherLine(conflict)).font(.caption).fixedSize(horizontal: false, vertical: true)
+                        FitRow(spacing: 8) {
+                            Button("Keep this device's") { sync.resolve(conflict, keepThisDevice: true) }
+                            Button("Keep the other's") { sync.resolve(conflict, keepThisDevice: false) }
+                        }
+                        .controlSize(.small)
+                    }
+                    .accessibilityElement(children: .contain)
+                    if conflict.id != conflicts.last?.id { Divider() }
+                }
+            }
+        }
+    }
+
+    private func otherLine(_ c: DeskSyncModel.Conflict) -> String {
+        let device = c.theirsOn?.title ?? String(localized: "the other device")
+        if let at = c.theirsAt {
+            return String(localized: "On \(device), \(at.formatted(date: .abbreviated, time: .shortened)): \(c.theirs)")
+        }
+        return String(localized: "On \(device): \(c.theirs)")
     }
 }
 

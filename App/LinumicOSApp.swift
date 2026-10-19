@@ -18,6 +18,7 @@ struct LinumicOSApp: App {
     @State private var siteMessages: SiteMessagesModel
     @State private var sentinel: SentinelModel
     @State private var obligations: ObligationsModel
+    @State private var deskSync: DeskSyncModel
     @State private var continuity: ContinuityModel
     @State private var automation: AutomationEngine
     @Environment(\.scenePhase) private var scenePhase
@@ -68,11 +69,13 @@ struct LinumicOSApp: App {
         _desk = State(initialValue: desk)
         let sentinel = SentinelModel(inventory: inventory)
         _sentinel = State(initialValue: sentinel)
+        let deskSync = DeskSyncModel(inventory: inventory, desk: desk, obligations: obligations)
+        _deskSync = State(initialValue: deskSync)
         // Started here, not from a window, so it runs whether or not a window is open (menu bar, login item).
         let automation = AutomationEngine(inventory: inventory, licences: licences, platforms: platforms, worktrack: worktrack,
                                           operations: operations, releases: releases, monitor: monitor, brief: brief,
                                           keys: keys, siteMessages: siteMessages, sentinel: sentinel, desk: desk,
-                                          obligations: obligations)
+                                          obligations: obligations, deskSync: deskSync)
         _automation = State(initialValue: automation)
         let vault = VaultModel()
         vault.load()
@@ -157,6 +160,7 @@ struct LinumicOSApp: App {
             .environment(automation)
             .environment(sentinel)
             .environment(obligations)
+            .environment(deskSync)
             .environment(continuity)
             .environment(router)
     }

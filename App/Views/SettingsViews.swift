@@ -510,8 +510,10 @@ enum AppLanguage: String, CaseIterable, Identifiable {
 /// that must be added to `app_admins` once.
 private struct CloudAccountSection: View {
     @Environment(InventoryModel.self) private var model
+    @Environment(DeskSyncModel.self) private var deskSync
     @Environment(\.colorScheme) private var colorScheme
     @State private var rawNonce = ""
+    @State private var sendsLedgers = DeskSyncModel.sendsLedgers
 
     var body: some View {
         Section {
@@ -523,13 +525,17 @@ private struct CloudAccountSection: View {
                     Text(verbatim: user.userID).font(.caption.monospaced()).textSelection(.enabled)
                 }
                 statusRow
+                deskSyncRows
                 HStack {
                     Button {
-                        Task { await model.syncNow() }
+                        Task {
+                            await model.syncNow()
+                            await deskSync.sync()
+                        }
                     } label: {
-                        if model.isSyncing { ProgressView().controlSize(.small) } else { Text("Sync Now") }
+                        if model.isSyncing || deskSync.isSyncing { ProgressView().controlSize(.small) } else { Text("Sync Now") }
                     }
-                    .disabled(model.isSyncing)
+                    .disabled(model.isSyncing || deskSync.isSyncing)
                     Spacer()
                     Button("Sign Out", role: .destructive) { Task { await model.signOut() } }
                 }
@@ -549,7 +555,10 @@ private struct CloudAccountSection: View {
                             return
                         }
                         let nonce = rawNonce
-                        Task { await model.signInWithApple(idToken: token, rawNonce: nonce) }
+                        Task {
+                            await model.signInWithApple(idToken: token, rawNonce: nonce)
+                            await deskSync.sync()
+                        }
                     case .failure(let error):
                         if (error as? ASAuthorizationError)?.code != .canceled {
                             model.errorMessage = String(localized: "Sign in failed: \(error.localizedDescription)")
@@ -564,6 +573,53 @@ private struct CloudAccountSection: View {
         } footer: {
             Text("Only accounts added as admins on the server can read or change data. Everything is also kept on this device, so it works offline.")
         }
+    }
+
+    /// The Desk's marks, the obligations and accounts: where their sync stands, and (Mac) whether ledger lines go up.
+    @ViewBuilder
+    private var deskSyncRows: some View {
+        LabeledContent("Desk and obligations") {
+            Text(verbatim: deskSyncText).multilineTextAlignment(.trailing)
+        }
+        let state = deskSync.state
+        ForEach(Array(state.marks.refused.merging(state.obligations.refused) { a, _ in a }
+            .merging(state.vendors.refused) { a, _ in a }.merging(state.seedRefused) { a, _ in a }
+            .sorted { $0.key < $1.key }.prefix(6)), id: \.key) { id, why in
+            Label { Text("Not accepted by the server: \(id): \(why)") } icon: {
+                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+            }
+            .font(.caption)
+        }
+        if let why = state.ledgerRefused {
+            Label { Text("The ledger reading was not accepted: \(why)") } icon: {
+                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+            }
+            .font(.caption)
+        }
+        if state.unreadableRows > 0 {
+            Text("\(state.unreadableRows) synced rows were written by a newer version of the app; this one leaves them alone.")
+                .font(.caption).foregroundStyle(.secondary)
+        }
+        #if os(macOS)
+        Toggle(isOn: $sendsLedgers) {
+            Text("Send the ledgers' lines for iPhone and iPad")
+            Text("Each PRIORITIES.md and NEXT-ACTIONS line as the Desk shows it (title, product, file:line, severity), never the lines under it. A line that holds an email address, a phone number or a key is sent without its text. Turned off, the copy in the cloud is emptied.")
+        }
+        .onChange(of: sendsLedgers) { _, on in
+            DeskSyncModel.setSendsLedgers(on)
+            deskSync.syncSoon()
+        }
+        #endif
+    }
+
+    private var deskSyncText: String {
+        if let error = deskSync.loadError { return error }
+        if !deskSync.isDeployed { return String(localized: "Not deployed on the server yet") }
+        if let error = deskSync.lastError { return String(localized: "Failed: \(error)") }
+        guard let at = deskSync.state.lastSyncedAt else { return String(localized: "Not synced yet") }
+        let conflicts = deskSync.state.conflictCount
+        let when = at.formatted(date: .omitted, time: .shortened)
+        return conflicts == 0 ? String(localized: "Synced \(when)") : String(localized: "Synced \(when); \(conflicts) to choose on the Desk")
     }
 
     @ViewBuilder

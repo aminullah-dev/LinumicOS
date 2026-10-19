@@ -103,7 +103,16 @@ final class SentinelModel {
         // Only ids the server still returns can come back, so that is all that needs keeping.
         UserDefaults.standard.set(Array(ids).sorted(), forKey: Self.seenKey)
         guard let previous else { return }   // first read: record only, no flood of old events
-        let fresh = events.filter { !previous.contains($0.id) && !$0.isAcknowledged }
+        // An obligation's window this device already alerted about (its own key, obligation:<id>:<due>:<lead>) is not
+        // alerted again; one it did not is, and is recorded so the device's own alert does not repeat it.
+        // Obligation alerts follow their own switch on the Obligations screen, as the device's own alerts do.
+        let fresh = events.filter { e in
+            !previous.contains(e.id) && !e.isAcknowledged
+                && !(e.kind == .obligationDue && (e.detail?.key.map(ObligationsModel.wasAlerted) == true || !ObligationsModel.isNotifyOn))
+        }
+        ObligationsModel.recordAlerted(events.compactMap { e in
+            !previous.contains(e.id) && e.kind == .obligationDue ? e.detail?.key : nil
+        })
         guard !fresh.isEmpty, UserDefaults.standard.object(forKey: Self.notifyKey) as? Bool ?? true else { return }
         let center = UNUserNotificationCenter.current()
         guard (try? await center.requestAuthorization(options: [.alert, .sound])) == true else { return }
@@ -130,6 +139,24 @@ final class SentinelModel {
             return String(localized: "Licence for \(who) expires in \(event.detail?.daysLeft ?? 0) days")
         case .licenceExpired:
             return String(localized: "Licence for \(event.detail?.customer ?? event.subject) has expired")
+        case .obligationDue:
+            return obligationLine(event)
         }
+    }
+
+    /// "<title> (in 7 days)", worded as the app words its own obligation alerts: the owner's title as written, the seed's
+    /// in the app's language, an account's renewal as "<name>: renewal".
+    static func obligationLine(_ event: SentinelEvent) -> String {
+        let id = event.detail?.obligationID ?? event.subject
+        let raw = event.detail?.title ?? event.subject
+        let name: String = if event.detail?.renewal == true {
+            String(localized: "\(raw): renewal")
+        } else {
+            id.hasPrefix("owner.") ? raw : L(raw)
+        }
+        guard let days = event.detail?.daysLeft else { return name }
+        if days < 0 { return LF("%1$@ (overdue by %2$d days)", name, -days) }
+        if days == 0 { return LF("%@ (due today)", name) }
+        return LF("%1$@ (in %2$d days)", name, days)
     }
 }
