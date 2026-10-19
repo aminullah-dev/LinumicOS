@@ -20623,6 +20623,1066 @@
           }
         }
       }
+    },
+    "Desk": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "میز کار"
+          }
+        }
+      }
+    },
+    "Ledgers": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفترها"
+          }
+        }
+      }
+    },
+    "The PRIORITIES.md files and the newest NEXT-ACTIONS, read-only, for the Desk. No network.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل‌های PRIORITIES.md و تازه‌ترین NEXT-ACTIONS، فقط خواندن، برای میز کار. بدون شبکه."
+          }
+        }
+      }
+    },
+    "%@ has no (TODAY) or (THIS WEEK) section": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ بخش (TODAY) یا (THIS WEEK) ندارد"
+          }
+        }
+      }
+    },
+    "%@ has no «آخرین بازبینی» date": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ تاریخ «آخرین بازبینی» ندارد"
+          }
+        }
+      }
+    },
+    "%@ was last reviewed %d days ago (%@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ آخرین بار %2$d روز پیش بازبینی شده است (%3$@)"
+          }
+        }
+      }
+    },
+    "%@: could not be read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: خوانده نشد"
+          }
+        }
+      }
+    },
+    "%@: not read yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: هنوز خوانده نشده"
+          }
+        }
+      }
+    },
+    "%d lines of %@ could not be understood": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d سطر از %2$@ فهمیده نشد"
+          }
+        }
+      }
+    },
+    "Ask an agent to review it against the live state before trusting its items.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیش از اعتماد به موردهایش، از یک ایجنت بخواهید آن را با وضع زنده بازبینی کند."
+          }
+        }
+      }
+    },
+    "Grant read access to ~/%@ once in Settings → Integrations → Ledger access.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک بار در تنظیمات ← اتصال‌ها ← دسترسی دفترها اجازهٔ خواندن ~/%@ را بدهید."
+          }
+        }
+      }
+    },
+    "It is a symbolic link; only regular files are read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این یک پیوند نمادین (symbolic link) است؛ فقط فایل‌های عادی خوانده می‌شوند."
+          }
+        }
+      }
+    },
+    "It is not a regular file.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این فایل عادی نیست."
+          }
+        }
+      }
+    },
+    "Its TODAY and THIS WEEK items may no longer hold.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "موردهای TODAY و THIS WEEK آن شاید دیگر درست نباشند."
+          }
+        }
+      }
+    },
+    "Larger than %d KB, so not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بزرگ‌تر از %d کیلوبایت است، پس خوانده نشد."
+          }
+        }
+      }
+    },
+    "Ledger could not be read: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر خوانده نشد: %@"
+          }
+        }
+      }
+    },
+    "Ledger not found: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر پیدا نشد: %@"
+          }
+        }
+      }
+    },
+    "Ledger not granted: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازهٔ خواندن دفتر داده نشده: %@"
+          }
+        }
+      }
+    },
+    "Ledger not read yet: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر هنوز خوانده نشده: %@"
+          }
+        }
+      }
+    },
+    "Ledgers are read when the app opens and every 30 minutes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفترها هنگام باز شدن برنامه و هر ۳۰ دقیقه خوانده می‌شوند."
+          }
+        }
+      }
+    },
+    "No owner tasks could be read from it, which is not the same as none.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ کار صاحب پروژه از آن خوانده نشد، و این با «هیچ کاری نیست» یکی نیست."
+          }
+        }
+      }
+    },
+    "Not on the ledger allow-list, so not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در فهرست مجاز دفترها نیست، پس خوانده نشد."
+          }
+        }
+      }
+    },
+    "Set aside, not guessed: lines %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنار گذاشته شد، حدس زده نشد: سطرهای %@."
+          }
+        }
+      }
+    },
+    "Still open according to %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز باز طبق %@"
+          }
+        }
+      }
+    },
+    "The folder is granted and the file is not there. Not “0 open”: unknown until it is found.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به پوشه اجازه داده شده و فایل در آن نیست. «۰ باز» نیست: تا پیدا شدن، نامعلوم است."
+          }
+        }
+      }
+    },
+    "The newest NEXT-ACTIONS is from %@ (%d days ago)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه‌ترین NEXT-ACTIONS از %1$@ است (%2$d روز پیش)"
+          }
+        }
+      }
+    },
+    "When it was last reviewed is unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زمان آخرین بازبینی آن نامعلوم است."
+          }
+        }
+      }
+    },
+    "%lld today": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld امروز"
+          }
+        }
+      }
+    },
+    "%lld this week": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld این هفته"
+          }
+        }
+      }
+    },
+    "%lld later": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld بعداً"
+          }
+        }
+      }
+    },
+    "%lld ledgers read, %lld open items": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld دفتر خوانده شد، %2$lld مورد باز"
+          }
+        }
+      }
+    },
+    "%lld of %lld ledgers read, %lld open items": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld از %2$lld دفتر خوانده شد، %3$lld مورد باز"
+          }
+        }
+      }
+    },
+    "No ledger could be read: %lld not granted, not found or unreadable.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ دفتری خوانده نشد: %lld دفتر اجازه داده نشده، پیدا نشده یا ناخوانا است."
+          }
+        }
+      }
+    },
+    "The ledgers were not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفترها خوانده نشدند."
+          }
+        }
+      }
+    },
+    "%lld open, %lld ticked, reviewed %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld باز، %2$lld تیک‌خورده، بازبینی %3$@"
+          }
+        }
+      }
+    },
+    "%lld open, %lld ticked, reviewed %@, %lld lines set aside": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld باز، %2$lld تیک‌خورده، بازبینی %3$@، %4$lld سطر کنار گذاشته شد"
+          }
+        }
+      }
+    },
+    "Choose a folder that holds your ledgers. Linumic OS reads only the PRIORITIES.md files and the newest NEXT-ACTIONS in it, never anything else, and never writes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشه‌ای را که دفترهای شما در آن است انتخاب کنید. Linumic OS در آن فقط فایل‌های PRIORITIES.md و تازه‌ترین NEXT-ACTIONS را می‌خواند، هیچ چیز دیگری را نه، و هرگز چیزی نمی‌نویسد."
+          }
+        }
+      }
+    },
+    "Copy agent brief": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کاپی دستور برای ایجنت"
+          }
+        }
+      }
+    },
+    "Could not open %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ باز نشد."
+          }
+        }
+      }
+    },
+    "Could not read: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوانده نشد: %@"
+          }
+        }
+      }
+    },
+    "Dismiss": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنار گذاشتن"
+          }
+        }
+      }
+    },
+    "Dismissed %@: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در %1$@ کنار گذاشته شد: %2$@"
+          }
+        }
+      }
+    },
+    "Dismiss…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنار گذاشتن…"
+          }
+        }
+      }
+    },
+    "Done %@; back if the next reading still shows it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شما در %@ «انجام شد» زدید؛ اگر خواندن بعدی هنوز آن را نشان دهد، برمی‌گردد."
+          }
+        }
+      }
+    },
+    "Done here. It stays listed until the ledger line is ticked.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این‌جا انجام شد. تا وقتی سطر دفتر تیک نخورده، در فهرست می‌ماند."
+          }
+        }
+      }
+    },
+    "Done. It comes back if the next reading still shows it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انجام شد. اگر خواندن بعدی هنوز آن را نشان دهد، برمی‌گردد."
+          }
+        }
+      }
+    },
+    "Due %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سررسید %@"
+          }
+        }
+      }
+    },
+    "Focus product": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصول تمرکز"
+          }
+        }
+      }
+    },
+    "For 3 days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای ۳ روز"
+          }
+        }
+      }
+    },
+    "For a week": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای یک هفته"
+          }
+        }
+      }
+    },
+    "Granted": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازه داده شده"
+          }
+        }
+      }
+    },
+    "Grant…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازه دادن…"
+          }
+        }
+      }
+    },
+    "Read-only access": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دسترسی فقط‌خواندنی"
+          }
+        }
+      }
+    },
+    "Ledger access": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دسترسی دفترها"
+          }
+        }
+      }
+    },
+    "Ledger access…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دسترسی دفترها…"
+          }
+        }
+      }
+    },
+    "Ledgers are read on the Mac. On this device the Desk shows the Daily Brief's items only.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفترها روی مک خوانده می‌شوند. روی این دستگاه، میز کار فقط موردهای «گزارش روز» را نشان می‌دهد."
+          }
+        }
+      }
+    },
+    "Ledgers: %lld of %lld read, %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفترها: %1$lld از %2$lld خوانده شد، %3$@."
+          }
+        }
+      }
+    },
+    "Ledgers: not read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفترها: هنوز خوانده نشده."
+          }
+        }
+      }
+    },
+    "Less": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کمتر"
+          }
+        }
+      }
+    },
+    "Mac only": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط مک"
+          }
+        }
+      }
+    },
+    "More actions": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کارهای بیشتر"
+          }
+        }
+      }
+    },
+    "Nothing here in what was read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در آنچه خوانده شد، این‌جا چیزی نیست."
+          }
+        }
+      }
+    },
+    "Open Settings → Integrations → Ledger access": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن تنظیمات ← اتصال‌ها ← دسترسی دفترها"
+          }
+        }
+      }
+    },
+    "Open the ledger file": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن فایل دفتر"
+          }
+        }
+      }
+    },
+    "Open the screen this item comes from": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن صفحه‌ای که این مورد از آن آمده"
+          }
+        }
+      }
+    },
+    "Read %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوانده شد: %@."
+          }
+        }
+      }
+    },
+    "Read ledgers now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اکنون دفترها را بخوان"
+          }
+        }
+      }
+    },
+    "Read the PRIORITIES.md files and the newest NEXT-ACTIONS again": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل‌های PRIORITIES.md و تازه‌ترین NEXT-ACTIONS را دوباره بخوان"
+          }
+        }
+      }
+    },
+    "Reading the ledgers…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال خواندن دفترها…"
+          }
+        }
+      }
+    },
+    "Reason": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دلیل"
+          }
+        }
+      }
+    },
+    "Restore": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برگرداندن"
+          }
+        }
+      }
+    },
+    "Snooze": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعویق"
+          }
+        }
+      }
+    },
+    "Snooze, waiting on others, dismiss, or copy a brief for an agent": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعویق، منتظر دیگران، کنار گذاشتن، یا کاپی دستور برای ایجنت"
+          }
+        }
+      }
+    },
+    "Snoozed until %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تا %@ به تعویق افتاد."
+          }
+        }
+      }
+    },
+    "Snoozed, waiting, dismissed or done": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به تعویق‌افتاده، منتظر، کنار گذاشته یا انجام‌شده"
+          }
+        }
+      }
+    },
+    "Stale": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کهنه"
+          }
+        }
+      }
+    },
+    "The Desk is built on this device from the Daily Brief and the ledgers (the PRIORITIES.md files and the newest NEXT-ACTIONS), read-only. A source that was not read is shown as an item, never as zero. Only your marks are saved, in desk-state.json on this device.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "میز کار روی همین دستگاه از «گزارش روز» و دفترها (فایل‌های PRIORITIES.md و تازه‌ترین NEXT-ACTIONS) ساخته می‌شود، فقط با خواندن. منبعی که خوانده نشده، خودش یک مورد است، هرگز صفر. فقط علامت‌های شما ذخیره می‌شود، در desk-state.json روی همین دستگاه."
+          }
+        }
+      }
+    },
+    "The Desk reads the PRIORITIES.md files and the newest NEXT-ACTIONS in these folders, nothing else, and never writes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "میز کار در این پوشه‌ها فقط فایل‌های PRIORITIES.md و تازه‌ترین NEXT-ACTIONS را می‌خواند، نه چیز دیگری، و هرگز نمی‌نویسد."
+          }
+        }
+      }
+    },
+    "The folder of %@ is not granted. Grant it in Settings → Integrations → Ledger access.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به پوشهٔ %@ اجازه داده نشده. در تنظیمات ← اتصال‌ها ← دسترسی دفترها اجازه دهید."
+          }
+        }
+      }
+    },
+    "Undo the mark and show it with the others again": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "علامت را بردار و آن را دوباره با بقیه نشان بده"
+          }
+        }
+      }
+    },
+    "Until tomorrow": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تا فردا"
+          }
+        }
+      }
+    },
+    "Waiting on others": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منتظر دیگران"
+          }
+        }
+      }
+    },
+    "Waiting on others since %@; back when the fact changes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از %@ منتظر دیگران؛ وقتی واقعیت عوض شود برمی‌گردد."
+          }
+        }
+      }
+    },
+    "Why? The reason is kept with the mark. The item comes back by itself if its fact changes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چرا؟ دلیل همراه علامت نگه داشته می‌شود. اگر واقعیت این مورد عوض شود، خودش برمی‌گردد."
+          }
+        }
+      }
+    },
+    "You marked it done %@; the ledger still lists it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شما در %@ آن را انجام‌شده زدید؛ دفتر هنوز آن را دارد."
+          }
+        }
+      }
+    },
+    "You marked it, the ledger isn't ticked yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شما زدید، دفتر هنوز تیک نخورده"
+          }
+        }
+      }
+    },
+    "Yours": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کار شما"
+          }
+        }
+      }
+    },
+    "desk-state.json could not be read (%@). Nothing is saved until the file is fixed or removed.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "desk-state.json خوانده نشد (%@). تا وقتی فایل درست یا برداشته نشود، چیزی ذخیره نمی‌شود."
+          }
+        }
+      }
+    },
+    "%@ is not a ledger folder, so it was not granted. Choose exactly one of: %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ پوشهٔ دفترها نیست، پس اجازه داده نشد. دقیقاً یکی از این‌ها را انتخاب کنید: %2$@."
+          }
+        }
+      }
+    },
+    "%@ is not a ledger on the allow-list, so it is not opened.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ دفتری در فهرست مجاز نیست، پس باز نمی‌شود."
+          }
+        }
+      }
+    },
+    "%lld TODAY + %lld THIS WEEK, report of %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld امروز (TODAY) + %2$lld این هفته (THIS WEEK)، گزارش %3$@"
+          }
+        }
+      }
+    },
+    "%lld TODAY + %lld THIS WEEK, report of %@, %lld lines set aside": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld امروز (TODAY) + %2$lld این هفته (THIS WEEK)، گزارش %3$@، %4$lld سطر کنار گذاشته شد"
+          }
+        }
+      }
+    },
+    "%lld ledgers read, %lld open items, %lld lines set aside": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld دفتر خوانده شد، %2$lld مورد باز، %3$lld سطر کنار گذاشته شد"
+          }
+        }
+      }
+    },
+    "%lld sources to check": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld منبع برای بررسی"
+          }
+        }
+      }
+    },
+    "Correction in the ledger: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اصلاح در دفتر: %@"
+          }
+        }
+      }
+    },
+    "Done here. It stays listed until its title changes or it leaves the newest NEXT-ACTIONS.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این‌جا انجام شد. تا وقتی عنوانش عوض نشود یا از تازه‌ترین NEXT-ACTIONS بیرون نرود، در فهرست می‌ماند."
+          }
+        }
+      }
+    },
+    "Done. Hidden until this fact changes; its source gives no read time.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انجام شد. تا وقتی این واقعیت عوض نشود پنهان می‌ماند؛ منبعش زمان خواندن نمی‌دهد."
+          }
+        }
+      }
+    },
+    "It is not UTF-8 text, so it was not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متن UTF-8 نیست، پس خوانده نشد."
+          }
+        }
+      }
+    },
+    "Its real location is outside the granted folder, so it was not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جای واقعی آن بیرون از پوشهٔ اجازه‌داده‌شده است، پس خوانده نشد."
+          }
+        }
+      }
+    },
+    "Source: %@, checked %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع: %1$@، بررسی‌شده %2$@"
+          }
+        }
+      }
+    },
+    "This part was not read, so it is unknown here, not zero.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این بخش خوانده نشده؛ پس این‌جا نامعلوم است، نه صفر."
+          }
+        }
+      }
+    },
+    "Under this line in the ledger:": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زیر این سطر در دفتر:"
+          }
+        }
+      }
+    },
+    "You marked it done %@; hidden until this fact changes, since its source gives no read time.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شما در %@ «انجام شد» زدید؛ چون منبعش زمان خواندن نمی‌دهد، تا وقتی این واقعیت عوض نشود پنهان می‌ماند."
+          }
+        }
+      }
+    },
+    "You marked it done %@; the newest NEXT-ACTIONS still lists it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شما در %@ آن را انجام‌شده زدید؛ تازه‌ترین NEXT-ACTIONS هنوز آن را دارد."
+          }
+        }
+      }
+    },
+    "You marked these done on the Desk. A PRIORITIES.md line stays here until it is ticked or changed in the ledger, so the ledger stays the record. A NEXT-ACTIONS item has no checkbox: it stays until its title changes or it is no longer in the newest report.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این‌ها را در میز کار انجام‌شده زدید. سطر PRIORITIES.md تا وقتی در دفتر تیک نخورد یا عوض نشود این‌جا می‌ماند، تا دفتر سند اصلی بماند. مورد NEXT-ACTIONS چک‌باکس ندارد: تا وقتی عنوانش عوض نشده و در تازه‌ترین گزارش هست، این‌جا می‌ماند."
+          }
+        }
+      }
+    },
+    "~/Projects/Multiplatform is readable through the app's read-only sandbox exception (granted by the owner on 2026-10-19), so no grant is needed. A bookmark grant here still works if that exception is removed. Files outside the allow-list are never opened. Ledgers are read when the app opens and every 30 minutes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~/Projects/Multiplatform از راه استثنای فقط‌خواندنی sandbox برنامه خوانده می‌شود (اجازهٔ صاحب پروژه، ۲۰۲۶-۱۰-۱۹)، پس اجازهٔ جدا لازم نیست. اگر آن استثنا برداشته شود، اجازه دادن از همین‌جا هنوز کار می‌کند. فایل‌های بیرون از فهرست مجاز هرگز باز نمی‌شوند. دفترها هنگام باز شدن برنامه و هر ۳۰ دقیقه خوانده می‌شوند."
+          }
+        }
+      }
     }
   },
   "version": "1.1"

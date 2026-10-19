@@ -3,6 +3,7 @@ import LinumicCore
 import Observation
 
 enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
+    case desk
     case dashboard
     case brief
     case monitor
@@ -27,6 +28,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
+        case .desk: L("Desk")
         case .dashboard: L("Dashboard")
         case .brief: L("Brief")
         case .monitor: L("Monitor")
@@ -62,6 +64,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
 
     var symbol: String {
         switch self {
+        case .desk: "checklist"
         case .dashboard: "square.grid.2x2"
         case .brief: "sun.horizon"
         case .monitor: "waveform.path.ecg"
@@ -102,7 +105,7 @@ struct SidebarSection: Identifiable {
     var id: String { title ?? "root" }
 
     static let all: [SidebarSection] = [
-        SidebarSection(title: nil, items: [.dashboard, .brief, .monitor, .automation, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys]),
+        SidebarSection(title: nil, items: [.desk, .dashboard, .brief, .monitor, .automation, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys]),
         SidebarSection(title: "Products", items: [.allProducts, .verification, .releases, .roadmap, .issues]),
         SidebarSection(title: "Development", items: [.repositories, .builds, .deployments]),
         SidebarSection(title: "Stores", items: [.appStore, .googlePlay]),
@@ -122,13 +125,16 @@ enum RouterRequest: Equatable {
     case vaultSearch(String)
     /// Opens the "Mark restore test done" sheet in Keys & Backups (the sheet saves, never the palette).
     case markRestoreTest
+    /// Shows one Desk item (scrolled to and highlighted).
+    case deskItem(String)
 }
 
 /// Navigation state shared by the sidebar, the menu commands, the Command Palette and the Daily Brief.
 @MainActor
 @Observable
 final class Router {
-    var sidebar: SidebarItem? = .dashboard
+    /// The Desk is the home screen.
+    var sidebar: SidebarItem? = .desk
     var productPath: [String] = []
     var isPalettePresented = false
     var request: RouterRequest?
@@ -180,6 +186,16 @@ final class Router {
         case .keys: go(.keys)
         case .siteMessages: go(.siteMessages)
         case .automation: go(.automation)
+        }
+    }
+
+    /// Where a Desk row's Open button goes: a screen through the Brief's routing, or Settings for ledger access.
+    /// Files are opened by `DeskModel` (they need the granted folder's scope).
+    func open(_ destination: DeskDestination) {
+        switch destination {
+        case .screen(let d): open(d)
+        case .ledgerAccess: go(.integrations)
+        case .file: break
         }
     }
 }

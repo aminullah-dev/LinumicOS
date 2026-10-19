@@ -17,6 +17,7 @@ post as Linumic, so it is treated as a production system.
 | Release Center (store and repository state) | An accidental App Store release, a Play edit committed by mistake, a credential copied into a cache | One write only (`appStoreVersionReleaseRequests`), offered only for PENDING_DEVELOPER_RELEASE, behind a confirmation naming app, version and build, state re-checked first, sent once, read back and logged; Play edits are opened to read tracks and deleted, never committed (no commit call exists); GitHub GET only; credentials read from the existing Keychain items when needed, never copied; the cache holds observations only |
 | Daily Brief and Command Palette | A summary or search result exposing a secret, a palette shortcut making a write | No requests and no credentials of their own; the daily snapshot (`brief-snapshots.json`, this device) holds states, counts and PR titles only; the palette indexes Vault titles and products, never logins or passwords, keeps only chosen ids as recents, and its actions only navigate or read (writes stay behind each screen's own confirmation) |
 | Keys & Backups (registry and checks) | The app reading, copying or leaking a signing key, keystore password or backup passphrase; broad file access; a stale backup trusted | No key content is ever read: only FileManager attributes (exists, size, modification date) and directory listings, inside read-only security-scoped bookmarks the owner chose (plus the Oversight workspace); the passphrase item is looked up with `kSecReturnAttributes` only, never `kSecReturnData`; the registry (`keys-registry.json`, this device) holds paths, titles, days, sizes and Drive file ids, nothing secret; restore commands make openssl prompt for the passphrase, never pass it; no network |
+| Desk and Ledgers | The app reading more of the owner's folders than its ledgers (code, keys, `.env`), writing to a ledger, a guessed status shown as fact | Read-only security-scoped bookmarks of their own (`LCCLedgerBookmarks`, created with `.securityScopeAllowOnlyReadAccess`), separate from the Keys grant; only the two ledger folders themselves can be granted (a wider folder such as `~` is refused before any bookmark is made); inside them only the exact allow-listed paths are opened (`LedgerAllowList`: eight PRIORITIES.md files and NEXT-ACTIONS-<day>.md directly in ~/Projects/Multiplatform; no `..`; the file is opened with `O_NOFOLLOW`, so a file that is a link is refused; the open file's real path (`F_GETPATH`) must be inside the granted folder, so a folder link on the way that leads out of it is refused; type and the 1 MB cap are checked on the open file and at most 1 MB is read); "Open" hands only allow-listed files to their app; links in ledger lines open only if they are http or https; nothing is written to a ledger; `desk-state.json` (this device) holds item ids, mark kinds, times, fact hashes and dismiss reasons, no titles or details (so no customer name or address from a Brief line); no network |
 | Website messages (linumic.com contact form) | The WordPress application password leaking or reaching another host; customers' names, addresses and messages on disk; an accidental change to entries | Keychain item `wordpress.linumic.apppassword` only (redacted description, never logged), sent only as HTTPS Basic auth to https://linumic.com on an ephemeral session that refuses redirects; GET only to the two read-only SureForms abilities (no call marks, edits or deletes); messages in memory only, `site-messages.json` holds ids and times; reply links only for plain addresses (no injected headers); notifications show names, never addresses |
 | Assistant | Invented status, prompt injection from ingested content | Grounded answers with verified/derived/unknown labels. Ingested text is treated as data, and actions are only proposals. |
 
@@ -131,6 +132,28 @@ post as Linumic, so it is treated as a production system.
   - **Restore guide:** shown, never run. `openssl enc -d … | tar -x(z)` prompts for the passphrase; the guide restores
     into an empty `0700` folder and deletes it after.
   - On iPhone and iPad the checks don't exist; the registry is shown with its facts only.
+- **Desk and Ledgers (since 2026-10-19):** `~/Projects/Multiplatform` is readable through a read-only sandbox exception
+  (`com.apple.security.temporary-exception.files.home-relative-path.read-only`, project.yml), which the owner granted on
+  2026-10-19 so no folder picker is needed. It is read-only and covers that one folder; the Mac App Store would not accept
+  it, which does not apply to this privately signed app. A grant in Settings → Integrations → Ledger access (an open
+  panel; read-only bookmarks in UserDefaults `LCCLedgerBookmarks`) still works if the exception is removed. BE-PAYA (the
+  game) is not a ledger, on the owner's word (2026-10-19).
+  This is a separate grant on purpose: the Keys & Backups grant promises that no file is ever opened, and the Desk
+  must open its ledgers. Inside the granted folders the app opens only the paths in `LedgerAllowList` (the seven
+  PRIORITIES.md files, and the newest `NEXT-ACTIONS-YYYY-MM-DD.md` found by listing ~/Projects/Multiplatform), reads
+  them as UTF-8 text and parses them in memory. A file that is itself a symbolic link is refused (`O_NOFOLLOW`); a
+  folder on the way may be a link, but the open file's real path must still be inside the granted folder, or it is
+  refused; files over 1 MB are refused, and at most 1 MB is read. Only `~/Projects/Multiplatform` itself can be
+  granted; choosing any other folder (the home folder, `~/Projects`) is refused before a bookmark is
+  made, and a stored grant of another folder is dropped. It never writes to them ("Open" hands an allow-listed file to
+  its default app, and nothing else). Links written in a ledger line are clickable only when they are http or https,
+  so a `file://` or custom-scheme link can't open a local file or app. The Desk's own file `desk-state.json` holds
+  only the owner's marks: item ids, kinds, times, fact hashes and dismiss reasons. It keeps no titles, so a Brief
+  line's customer name or email address (a website message, a WorkTrack company, a licence holder) is not written to
+  disk. "Copy agent brief" puts Dari text on the clipboard: for ledger and NEXT-ACTIONS items the line, the lines under
+  it, file:line and read time (ledgers hold no secret); for website messages, WorkTrack customers and licences only
+  the Brief entry id, never the customer's name, address or message; for other Brief items the line as shown.
+  "Remove access" forgets the ledger grants. iPhone and iPad have no ledger access.
 - **Website messages (since 2026-10-09):** the owner's WordPress application password (an Administrator's, so it could
   also change the site through the REST API; revoke it in wp-admin → Users → Profile → Application Passwords) is kept in
   the Keychain item `wordpress.linumic.apppassword` (`kSecAttrAccessibleWhenUnlockedThisDeviceOnly`, not synchronizable).

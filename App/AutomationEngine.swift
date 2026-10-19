@@ -45,6 +45,7 @@ final class AutomationEngine {
     private let keys: KeysModel
     private let siteMessages: SiteMessagesModel
     private let sentinel: SentinelModel
+    private let desk: DeskModel
 
     private var bootstrap: Task<Void, Never>?
     private var loop: Task<Void, Never>?
@@ -57,7 +58,7 @@ final class AutomationEngine {
 
     init(inventory: InventoryModel, licences: LicenceModel, platforms: PlatformHubModel, worktrack: WorkTrackModel,
          operations: OperationsModel, releases: ReleaseCenterModel, monitor: MonitorModel, brief: BriefModel,
-         keys: KeysModel, siteMessages: SiteMessagesModel, sentinel: SentinelModel) {
+         keys: KeysModel, siteMessages: SiteMessagesModel, sentinel: SentinelModel, desk: DeskModel) {
         self.inventory = inventory
         self.licences = licences
         self.platforms = platforms
@@ -69,10 +70,12 @@ final class AutomationEngine {
         self.keys = keys
         self.siteMessages = siteMessages
         self.sentinel = sentinel
+        self.desk = desk
         #if os(macOS)
         specs = AutomationCatalog.jobs
         #else
-        specs = AutomationCatalog.jobs.filter { $0.id != .keys }
+        // Keys & Backups and the ledgers read folders on the Mac.
+        specs = AutomationCatalog.jobs.filter { $0.id != .keys && $0.id != .ledgers }
         #endif
         store = (try? AutomationStore.defaultFileURL()).map(AutomationStore.init(fileURL:))
         ledger = store?.load() ?? AutomationLedger()
@@ -114,6 +117,8 @@ final class AutomationEngine {
             await worktrack.load()
             await operations.load()
             await releases.load()
+            // Local files only: the Desk shows the ledgers (or "not granted") from the first moment.
+            await desk.refreshLedgers()
             // Asked once, up front, so the first real alert isn't lost to a prompt nobody saw.
             await StoreNotifier.requestPermission()
             isReady = true
@@ -410,8 +415,40 @@ final class AutomationEngine {
                 return .failed(error.localizedDescription)
             }
 
+        case .ledgers:
+            #if os(macOS)
+            guard !desk.isReading else { return .skipped(.alreadyRunning) }
+            // Read even without a grant: each ledger is then recorded as "not granted" for the Desk.
+            await desk.refreshLedgers()
+            guard let reading = desk.reading else { return .failed(String(localized: "The ledgers were not read.")) }
+            if LedgerAccessStore.grantedPaths().isEmpty { return .skipped(.notConnected) }
+            let read = reading.files.filter(\.isRead)
+            let open = desk.desk().open.count { $0.item.kind == .task }
+            if read.isEmpty {
+                return .failed(String(localized: "No ledger could be read: \(reading.files.count) not granted, not found or unreadable."))
+            }
+            if read.count < reading.files.count {
+                return .partial(String(localized: "\(read.count) of \(reading.files.count) ledgers read, \(open) open items"))
+            }
+            // Lines set aside are owner items that could not be read: not a clean success.
+            let skipped = read.reduce(0) { sum, file in
+                switch file.status {
+                case .read(.priorities(let p)): sum + p.skippedLines.count
+                case .read(.nextActions(let n)): sum + n.skippedLines.count
+                default: sum
+                }
+            }
+            if skipped > 0 {
+                return .partial(String(localized: "\(read.count) ledgers read, \(open) open items, \(skipped) lines set aside"))
+            }
+            return .succeeded(String(localized: "\(read.count) ledgers read, \(open) open items"))
+            #else
+            return .skipped(.notConnected)
+            #endif
+
         case .brief:
             await brief.record()
+            desk.pruneObsoleteMarks()
             return .succeeded(nil)
         }
     }

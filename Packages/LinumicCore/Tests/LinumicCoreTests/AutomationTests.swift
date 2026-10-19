@@ -24,7 +24,14 @@ struct AutomationCatalogTests {
 
     @Test func localJobsDontNeedTheNetwork() {
         let local = AutomationCatalog.jobs.filter { !$0.needsNetwork }.map(\.id)
-        #expect(Set(local) == [.keys, .backup, .brief])
+        #expect(Set(local) == [.keys, .backup, .ledgers, .brief])
+    }
+
+    @Test func ledgersRunJustBeforeTheBrief() {
+        let ids = AutomationCatalog.jobs.map(\.id)
+        #expect(ids.firstIndex(of: .ledgers)! + 1 == ids.firstIndex(of: .brief)!)
+        let spec = AutomationCatalog.spec(.ledgers)
+        #expect(spec.cadence == 30 * 60 && !spec.needsNetwork && !spec.runsInBackground)
     }
 
     @Test func retriesAreNeverSlowerThanTheCadence() {
@@ -98,7 +105,7 @@ struct AutomationSchedulerTests {
     @Test func offlineHoldsBackNetworkJobsOnly() {
         let due = AutomationScheduler.dueJobs(AutomationCatalog.jobs, states: [:], disabled: [],
                                               conditions: AutomationConditions(online: false), now: t0)
-        #expect(due == [.keys, .backup, .brief])
+        #expect(due == [.keys, .backup, .ledgers, .brief])
     }
 
     @Test func pauseHoldsEverythingUntilItEnds() {
