@@ -251,6 +251,11 @@ struct DeskRowView: View {
                     if item.ownerAction {
                         ReleaseBadge(text: String(localized: "Yours"), symbol: "person", color: .purple)
                     }
+                    // The report scheduled it for this week; the Desk puts the owner's work in a focus product in Today.
+                    // Say so, so the Desk and the report don't seem to disagree.
+                    if item.horizon == .thisWeek, row.bucket == .today {
+                        ReleaseBadge(text: String(localized: "This week in the report"), symbol: "calendar", color: .gray)
+                    }
                 }
                 status
                 if let detail = item.detail, !detail.isEmpty {
@@ -258,6 +263,13 @@ struct DeskRowView: View {
                         .font(.caption).foregroundStyle(.secondary)
                         .lineLimit(expanded ? nil : 2)
                         .fixedSize(horizontal: false, vertical: true)
+                }
+                // The report's own «منبع» line can say what is not known («… ندیده‌ام»), so it is shown as written.
+                if let reference = item.reference, !reference.isEmpty {
+                    Text("Source in the report: \(reference)")
+                        .font(.caption).foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .textSelection(.enabled)
                 }
                 // The ledger's own dated corrections under the line are always shown: the line above may be wrong.
                 ForEach(Array(item.corrections.enumerated()), id: \.offset) { _, note in
@@ -307,7 +319,7 @@ struct DeskRowView: View {
                     .font(.caption2).foregroundStyle(.tertiary).lineLimit(3).textSelection(.enabled)
             }
         } else {
-            Text("Source: \(item.evidence.location)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
+            Text("Source: \(item.evidence.location), read time unknown").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
         }
     }
 
@@ -396,13 +408,14 @@ struct DeskRowView: View {
         .labelStyle(.iconOnly)
     }
 
+    /// What pressing Done will do, worded as the action (nothing is done until it is pressed).
     private var doneHelp: Text {
         switch (item.kind, item.origin) {
-        case (.task, .nextActions): Text("Done here. It stays listed until its title changes or it leaves the newest NEXT-ACTIONS.")
-        case (.task, _): Text("Done here. It stays listed until the ledger line is ticked.")
+        case (.task, .nextActions): Text("Mark it done here: it stays listed until its title changes or it leaves the newest NEXT-ACTIONS.")
+        case (.task, _): Text("Mark it done here: it stays listed until the ledger line is ticked.")
         default:
-            item.evidence.readAt == nil ? Text("Done. Hidden until this fact changes; its source gives no read time.")
-                                        : Text("Done. It comes back if the next reading still shows it.")
+            item.evidence.readAt == nil ? Text("Mark it done: hidden until this fact changes, since its source gives no read time.")
+                                        : Text("Mark it done: it comes back if the next reading still shows it.")
         }
     }
 
@@ -469,10 +482,11 @@ struct DeskDismissSheet: View {
 // MARK: - Text helpers
 
 enum DeskText {
-    /// Ledger lines are Markdown written by people and agents (**bold**, `code`, ~~struck~~) and are shown as such.
-    /// Everything else (Brief lines, file paths) is shown exactly as read, so an underscore or a # stays itself.
+    /// PRIORITIES.md lines are Markdown written by people and agents (**bold**, `code`, ~~struck~~) and are shown as
+    /// such. Everything else (NEXT-ACTIONS, which is plain text; Brief lines; file paths) is shown exactly as read, so
+    /// an underscore, a tilde or an asterisk stays itself.
     static func text(_ s: String, of item: DeskItem) -> AttributedString {
-        guard item.kind == .task,
+        guard item.kind == .task, case .ledger = item.origin,
               let text = try? AttributedString(markdown: s, options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)) else {
             return AttributedString(s)
         }
