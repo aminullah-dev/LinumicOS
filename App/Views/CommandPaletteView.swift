@@ -15,6 +15,9 @@ enum PaletteAction {
     case refreshReleases
     case refreshSiteMessages
     case lockVault
+    case runAutomation
+    case pauseAutomation
+    case resumeAutomation
 }
 
 /// Fuzzy search over every screen, the records the app already holds (titles only, never a secret) and the actions
@@ -27,6 +30,7 @@ struct CommandPaletteView: View {
     @Environment(ReleaseCenterModel.self) private var releases
     @Environment(VaultModel.self) private var vault
     @Environment(MonitorModel.self) private var monitor
+    @Environment(AutomationEngine.self) private var automation
     @Environment(KeysModel.self) private var keys
     @Environment(SiteMessagesModel.self) private var siteMessages
     @Environment(\.dismiss) private var dismiss
@@ -170,6 +174,11 @@ struct CommandPaletteView: View {
             router.go(.siteMessages)
             Task { await siteMessages.refresh() }
         case .lockVault: vault.lock()
+        case .runAutomation:
+            router.go(.automation)
+            automation.runAll()
+        case .pauseAutomation: automation.pause(for: 3600)
+        case .resumeAutomation: automation.resume()
         }
     }
 
@@ -199,6 +208,17 @@ struct CommandPaletteView: View {
         }
 
         // Actions that already exist in the app.
+        add(PaletteCandidate(id: "action.automation.runall", title: String(localized: "Run all automation now"),
+                             subtitle: SidebarItem.automation.title,
+                             keywords: ["automation", "run", "refresh", "all", "sync"], group: .action, symbol: "play.circle"), .runAutomation)
+        if automation.isPaused {
+            add(PaletteCandidate(id: "action.automation.resume", title: String(localized: "Resume automation"), subtitle: SidebarItem.automation.title,
+                                 keywords: ["automation", "resume", "unpause"], group: .action, symbol: "play"), .resumeAutomation)
+        } else {
+            add(PaletteCandidate(id: "action.automation.pause", title: String(localized: "Pause automation for 1 hour"),
+                                 subtitle: SidebarItem.automation.title,
+                                 keywords: ["automation", "pause", "stop", "quiet"], group: .action, symbol: "pause"), .pauseAutomation)
+        }
         add(PaletteCandidate(id: "action.monitor.check", title: String(localized: "Check now"), subtitle: SidebarItem.monitor.title,
                              keywords: ["monitor", "check", "health", "refresh"], group: .action, symbol: "arrow.clockwise"), .checkMonitor)
         add(PaletteCandidate(id: "action.releases.refresh", title: String(localized: "Refresh releases"), subtitle: SidebarItem.releaseCenter.title,

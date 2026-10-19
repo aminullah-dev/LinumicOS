@@ -21,8 +21,6 @@ final class WorkTrackModel {
     var errorMessage: String?
 
     static let notifyKey = "LCCNotifyWorkTrackExpiry"
-    /// The full company list costs WorkTrack several reads per company, so it is not polled often.
-    static let autoRefreshInterval: TimeInterval = 6 * 3600
 
     /// Debug builds also offer the local Firebase emulator.
     static var offeredEnvironments: [WorkTrackEnvironment] {
@@ -141,12 +139,6 @@ final class WorkTrackModel {
             clearData()
             loadError = handle(error)
         }
-    }
-
-    func autoRefreshIfDue() async {
-        guard isSignedIn, !isRefreshing else { return }
-        if let lastRead, Date.now.timeIntervalSince(lastRead) < Self.autoRefreshInterval { return }
-        await refresh()
     }
 
     struct CompanyRecord {

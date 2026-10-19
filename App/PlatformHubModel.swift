@@ -15,7 +15,6 @@ final class PlatformHubModel {
     var errorMessage: String?
 
     static let autoRefreshKey = "LCCAutoRefreshPlatforms"
-    private static let lastAutoRefreshKey = "LCCLastPlatformsAutoRefresh"
 
     private let inventory: InventoryModel
     private let store: PlatformHubStore?
@@ -56,17 +55,6 @@ final class PlatformHubModel {
         lastReport = report
         lastRefresh = .now
         await persist()
-    }
-
-    /// Same cadence as the store and oversight refresh (launch, then every 30 minutes), and only with a token:
-    /// an anonymous sweep would use most of GitHub's 60 requests an hour.
-    func autoRefreshIfDue() async {
-        let defaults = UserDefaults.standard
-        guard defaults.object(forKey: Self.autoRefreshKey) as? Bool ?? true, inventory.isLoaded, inventory.hasGitHubToken else { return }
-        let last = defaults.object(forKey: Self.lastAutoRefreshKey) as? Date ?? .distantPast
-        guard Date.now.timeIntervalSince(last) >= InventoryModel.autoRefreshInterval - 60 else { return }
-        defaults.set(Date.now, forKey: Self.lastAutoRefreshKey)
-        await refresh()
     }
 
     private func persist() async {

@@ -9,7 +9,7 @@ import Foundation
 
 /// Where a line or section comes from. The order is the order of the sections on screen.
 public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiable {
-    case monitor, siteMessages, releases, licences, worktrack, operations, oversight, keys, changes
+    case monitor, siteMessages, releases, licences, worktrack, operations, oversight, keys, automation, changes
 
     public var id: String { rawValue }
 
@@ -23,6 +23,7 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .operations: L("Operations")
         case .oversight: L("Oversight")
         case .keys: L("Keys & Backups")
+        case .automation: L("Automation")
         case .changes: L("What changed since yesterday")
         }
     }
@@ -37,6 +38,7 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .operations: "tray.full"
         case .oversight: "scope"
         case .keys: "externaldrive.badge.checkmark"
+        case .automation: "gearshape.2"
         case .changes: "clock.arrow.circlepath"
         }
     }
@@ -54,6 +56,7 @@ public enum BriefDestination: Hashable, Sendable {
     case oversight
     case keys
     case siteMessages
+    case automation
 }
 
 public enum BriefSeverity: Int, Codable, Sendable, Comparable {
@@ -271,11 +274,13 @@ public struct BriefInput: Sendable {
     public var keys: BriefKeysInput?
     /// Nil when the App has no Website messages model.
     public var siteMessages: BriefSiteMessagesInput?
+    /// The automation engine's run ledger; nil before the engine has loaded it.
+    public var automation: AutomationLedger?
 
     public init(now: Date, monitor: MonitorSnapshot, monitorTargets: [MonitorTarget] = MonitorCatalog.targets,
                 releases: ReleaseCenterSnapshot, licences: BriefLicenceInput, worktrack: BriefWorkTrackInput,
                 operations: [BriefOperationsInput], oversight: BriefOversightInput, keys: BriefKeysInput? = nil,
-                siteMessages: BriefSiteMessagesInput? = nil) {
+                siteMessages: BriefSiteMessagesInput? = nil, automation: AutomationLedger? = nil) {
         self.now = now
         self.monitor = monitor
         self.monitorTargets = monitorTargets
@@ -286,6 +291,7 @@ public struct BriefInput: Sendable {
         self.oversight = oversight
         self.keys = keys
         self.siteMessages = siteMessages
+        self.automation = automation
     }
 }
 
@@ -308,6 +314,7 @@ public enum DailyBriefBuilder {
             operations(input),
             oversight(input),
             keys(input),
+            automation(input),
         ]
         sections.append(changesSection(changes, now: input.now))
         return DailyBrief(sections: sections, generatedAt: input.now)
@@ -316,6 +323,36 @@ public enum DailyBriefBuilder {
     static func finish(_ kind: BriefSourceKind, lines: [BriefLine], readAt: Date?, source: String, notes: [String] = []) -> BriefSection {
         let sorted = lines.sorted { ($0.severity, $0.text) < ($1.severity, $1.text) }
         return BriefSection(kind: kind, state: sorted.isEmpty ? .allClear : .items, lines: sorted, readAt: readAt, source: source, notes: notes)
+    }
+
+    // MARK: Automation
+
+    /// Jobs whose last run failed (high after three in a row) and, as notes, jobs this device can't run.
+    static func automation(_ input: BriefInput) -> BriefSection {
+        let source = L("Automation run log on this device (automation.json)")
+        let now = input.now
+        guard let ledger = input.automation, let last = AutomationHealth(ledger: ledger).lastRunAt else {
+            return BriefSection(kind: .automation, state: .neverRead(L("No automatic run yet.")), readAt: nil, source: source)
+        }
+        let health = AutomationHealth(ledger: ledger)
+        let lines = health.failing.map { f in
+            let spec = AutomationCatalog.spec(f.job)
+            return BriefLine(id: "automation.\(f.job.rawValue)", kind: .automation,
+                             severity: f.count >= AutomationHealth.failingAfter ? .high : .normal,
+                             text: LF("%@ failed %d times in a row", L(spec.title), f.count), detail: f.message,
+                             source: source, readAt: ledger.states[f.job]?.lastRun?.finishedAt, destination: .automation)
+        }
+        var notes: [String] = []
+        if !health.notConnected.isEmpty {
+            notes.append(LF("Not connected on this device: %@.", health.notConnected.map { L(AutomationCatalog.spec($0).title) }.joined(separator: ", ")))
+        }
+        if ledger.disabled.count > 0 {
+            notes.append(LF("Turned off: %@.", AutomationCatalog.jobs.filter { ledger.disabled.contains($0.id) }.map { L($0.title) }.joined(separator: ", ")))
+        }
+        if ledger.pausedUntil.map({ $0 > now }) == true {
+            notes.append(LF("Paused until %@.", ledger.pausedUntil!.formatted(date: .omitted, time: .shortened)))
+        }
+        return finish(.automation, lines: lines, readAt: last, source: source, notes: notes)
     }
 
     // MARK: Monitor

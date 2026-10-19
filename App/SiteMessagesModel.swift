@@ -153,6 +153,7 @@ enum SiteMessagesNotifier {
         content.body = text.body
         content.sound = .default
         let id = "site-messages-\(new.map(\.id).max() ?? 0)"
+        NotificationGate.apply(content)
         try? await center.add(UNNotificationRequest(identifier: id, content: content, trigger: nil))
     }
 }

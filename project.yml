@@ -44,6 +44,9 @@ targets:
         NSHumanReadableCopyright: © Linumic
         # The Vault asks for Face ID before it shows, copies or fills a saved password (iPhone and iPad).
         NSFaceIDUsageDescription: Linumic OS asks for Face ID before it shows, copies or fills a password saved in the Vault.
+        # Automation on iPhone and iPad: a light background refresh (Monitor round, Daily Brief) when iOS allows one.
+        UIBackgroundModes: [fetch]
+        BGTaskSchedulerPermittedIdentifiers: [com.linumic.commandcenter.refresh]
     entitlements:
       path: App/Support/LinumicOS.entitlements
       properties:

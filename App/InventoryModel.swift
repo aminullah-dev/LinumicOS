@@ -37,7 +37,6 @@ final class InventoryModel {
     // Oversight automatic sweep + change feed.
     static let autoRefreshOversightKey = "LCCAutoRefreshOversight"
     static let notifyOversightKey = "LCCNotifyOversightChanges"
-    private static let lastOversightAutoRefreshKey = "LCCLastOversightAutoRefresh"
     private static let recentOversightChangesKey = "LCCRecentOversightChanges"
 
     /// Oversight changes noticed on this device, newest first. A per-device convenience in
@@ -158,9 +157,7 @@ final class InventoryModel {
 
     static let autoRefreshKey = "LCCAutoRefreshStores"
     static let notifyKey = "LCCNotifyStoreChanges"
-    static let autoRefreshInterval: TimeInterval = 30 * 60
     private static let recentChangesKey = "LCCRecentStoreChanges"
-    private static let lastAutoRefreshKey = "LCCLastStoreAutoRefresh"
 
     /// Changes noticed by console refreshes on this device, newest first. A per-device convenience,
     /// kept in UserDefaults; the store data itself lives in the inventory.
@@ -174,21 +171,6 @@ final class InventoryModel {
         recentStoreChanges = Array((changes + recentStoreChanges).prefix(50))
         if let data = try? JSONEncoder().encode(recentStoreChanges) { UserDefaults.standard.set(data, forKey: Self.recentChangesKey) }
         if UserDefaults.standard.object(forKey: Self.notifyKey) as? Bool ?? true { await StoreNotifier.post(changes) }
-    }
-
-    /// Refreshes every connected console if automatic refresh is on and the last run is old enough.
-    func autoRefreshStoresIfDue() async {
-        let defaults = UserDefaults.standard
-        guard defaults.object(forKey: Self.autoRefreshKey) as? Bool ?? true, isLoaded else { return }
-        let last = defaults.object(forKey: Self.lastAutoRefreshKey) as? Date ?? .distantPast
-        guard Date.now.timeIntervalSince(last) >= Self.autoRefreshInterval - 60 else { return }
-        defaults.set(Date.now, forKey: Self.lastAutoRefreshKey)
-        // Public App Store data (ratings) needs no key.
-        await refreshAppStore()
-        let connected = AppStore.allCases.filter(hasConsoleCredentials)
-        guard !connected.isEmpty else { return }
-        if defaults.object(forKey: Self.notifyKey) as? Bool ?? true { await StoreNotifier.requestPermission() }
-        for store in connected { await refreshFromConsole(store) }
     }
 
     private(set) var syncingConsoles: Set<AppStore> = []
@@ -325,19 +307,6 @@ final class InventoryModel {
         oversight = bySlug.values.sorted { ($0.pushedAt ?? .distantPast) > ($1.pushedAt ?? .distantPast) }
         persist()
         await recordOversight(OversightChangeDetector.changes(before: before, after: oversight))
-    }
-
-    /// Runs an oversight sweep (GitHub, plus local if a workspace is set) if the automatic sweep is
-    /// on, a token exists, and the last run is old enough. Shares the 30-minute cadence with stores.
-    func autoRefreshOversightIfDue() async {
-        let defaults = UserDefaults.standard
-        guard defaults.object(forKey: Self.autoRefreshOversightKey) as? Bool ?? true, isLoaded, hasGitHubToken else { return }
-        let last = defaults.object(forKey: Self.lastOversightAutoRefreshKey) as? Date ?? .distantPast
-        guard Date.now.timeIntervalSince(last) >= Self.autoRefreshInterval - 60 else { return }
-        defaults.set(Date.now, forKey: Self.lastOversightAutoRefreshKey)
-        if defaults.object(forKey: Self.notifyOversightKey) as? Bool ?? true { await OversightNotifier.requestPermission() }
-        await refreshOversight()
-        if hasWorkspace { await refreshLocal() }
     }
 
     var summary: DashboardSummary { DashboardSummary(products: products) }

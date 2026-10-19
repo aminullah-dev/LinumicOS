@@ -13,10 +13,6 @@ final class OperationsModel {
     let velro: VelroModel
 
     static let notifyKey = "LCCNotifyOperationsQueues"
-    /// The queues are read on launch and then every 30 minutes (the app's refresh loop), never faster:
-    /// VELRO's dashboard runs many COUNT queries and SafeBeauty's counts are billed per query.
-    static let autoRefreshInterval: TimeInterval = 30 * 60
-
     init(inventory: InventoryModel) {
         let counts = OperationsCountStore()
         talar = TalarModel(secrets: inventory.secrets, counts: counts)
@@ -28,12 +24,6 @@ final class OperationsModel {
         await talar.load()
         await safeBeauty.load()
         await velro.load()
-    }
-
-    func autoRefreshIfDue() async {
-        await talar.autoRefreshIfDue()
-        await safeBeauty.autoRefreshIfDue()
-        await velro.autoRefreshIfDue()
     }
 
     /// The dashboard card's lines: every dashboard queue with its latest count, or nil when its product isn't read.
@@ -212,12 +202,6 @@ final class TalarModel {
         await track(counts, in: countStore)
     }
 
-    func autoRefreshIfDue() async {
-        guard isSignedIn, !isRefreshing else { return }
-        if let lastRead, Date.now.timeIntervalSince(lastRead) < OperationsModel.autoRefreshInterval - 60 { return }
-        await refresh()
-    }
-
     /// Approve or reject one hall: sent once (never retried), then the queue is read again to check it left.
     /// Recorded in the local action log whatever happens. Talar writes its own audit entry.
     func review(_ hall: TalarHall, write: TalarHallReviewWrite) async throws -> OperationsActionRecord {
@@ -336,11 +320,6 @@ final class SafeBeautyModel {
         }
     }
 
-    func autoRefreshIfDue() async {
-        guard isSignedIn, !isRefreshing else { return }
-        if let lastRead, Date.now.timeIntervalSince(lastRead) < OperationsModel.autoRefreshInterval - 60 { return }
-        await refresh()
-    }
 }
 
 // MARK: - VELRO
@@ -497,12 +476,6 @@ final class VelroModel {
         }
         await syncSession()
         await track(counts, in: countStore)
-    }
-
-    func autoRefreshIfDue() async {
-        guard isSignedIn, !isRefreshing else { return }
-        if let lastRead, Date.now.timeIntervalSince(lastRead) < OperationsModel.autoRefreshInterval - 60 { return }
-        await refresh()
     }
 
     func documents(driverID: String) async throws -> VelroDocumentChecklist {

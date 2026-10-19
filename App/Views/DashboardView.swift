@@ -40,6 +40,7 @@ struct DashboardView: View {
                 }
 
                 MonitorStatusStrip()
+                AutomationStatusStrip()
 
                 WaitingOnYouCard()
 

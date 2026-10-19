@@ -72,6 +72,7 @@ struct ContentView: View {
         case .dashboard: DashboardView()
         case .brief: DailyBriefView()
         case .monitor: MonitorView()
+        case .automation: AutomationView()
         case .releaseCenter: ReleaseCenterView()
         case .platforms: PlatformsView()
         case .oversight: OversightView()

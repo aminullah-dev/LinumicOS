@@ -6,6 +6,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case dashboard
     case brief
     case monitor
+    case automation
     case releaseCenter
     case platforms
     case oversight
@@ -29,6 +30,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .dashboard: L("Dashboard")
         case .brief: L("Brief")
         case .monitor: L("Monitor")
+        case .automation: L("Automation")
         case .releaseCenter: L("Releases")
         case .platforms: L("Platforms")
         case .oversight: L("Oversight")
@@ -63,6 +65,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .dashboard: "square.grid.2x2"
         case .brief: "sun.horizon"
         case .monitor: "waveform.path.ecg"
+        case .automation: "gearshape.2"
         case .releaseCenter: "shippingbox.and.arrow.backward"
         case .platforms: "square.stack.3d.up"
         case .oversight: "scope"
@@ -99,7 +102,7 @@ struct SidebarSection: Identifiable {
     var id: String { title ?? "root" }
 
     static let all: [SidebarSection] = [
-        SidebarSection(title: nil, items: [.dashboard, .brief, .monitor, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys]),
+        SidebarSection(title: nil, items: [.dashboard, .brief, .monitor, .automation, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys]),
         SidebarSection(title: "Products", items: [.allProducts, .verification, .releases, .roadmap, .issues]),
         SidebarSection(title: "Development", items: [.repositories, .builds, .deployments]),
         SidebarSection(title: "Stores", items: [.appStore, .googlePlay]),
@@ -176,6 +179,7 @@ final class Router {
         case .oversight: go(.oversight)
         case .keys: go(.keys)
         case .siteMessages: go(.siteMessages)
+        case .automation: go(.automation)
         }
     }
 }
