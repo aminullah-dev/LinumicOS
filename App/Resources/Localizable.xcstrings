@@ -18973,6 +18973,1286 @@
           }
         }
       }
+    },
+    "%@ failed %d times in a row": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$d بار پشت سر هم ناکام شد"
+          }
+        }
+      }
+    },
+    "%@ keeps failing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ پشت سر هم ناکام می‌شود"
+          }
+        }
+      }
+    },
+    "%@ works again": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ دوباره کار می‌کند"
+          }
+        }
+      }
+    },
+    "%@ · %@ s": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ ثانیه"
+          }
+        }
+      }
+    },
+    "%lld addresses checked, %lld down": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld نشانی بررسی شد، %2$lld از کار افتاده"
+          }
+        }
+      }
+    },
+    "%lld addresses up": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld نشانی سالم"
+          }
+        }
+      }
+    },
+    "%lld companies read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld شرکت خوانده شد"
+          }
+        }
+      }
+    },
+    "%lld items waiting on you": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مورد منتظر شما"
+          }
+        }
+      }
+    },
+    "%lld jobs need a look": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld کار به بررسی نیاز دارد"
+          }
+        }
+      }
+    },
+    "%lld jobs on schedule": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld کار طبق برنامه"
+          }
+        }
+      }
+    },
+    "%lld key files checked": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld فایل کلید بررسی شد"
+          }
+        }
+      }
+    },
+    "%lld licences in step with the cloud": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld لایسنس با ابر هماهنگ است"
+          }
+        }
+      }
+    },
+    "%lld listings could not be read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld لیست خوانده نشد."
+          }
+        }
+      }
+    },
+    "%lld listings read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld لیست خوانده شد"
+          }
+        }
+      }
+    },
+    "%lld listings read, %lld failed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld لیست خوانده شد، %2$lld ناکام"
+          }
+        }
+      }
+    },
+    "%lld recent messages read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld پیام تازه خوانده شد"
+          }
+        }
+      }
+    },
+    "%lld repositories read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مخزن خوانده شد"
+          }
+        }
+      }
+    },
+    "%lld repositories read, %lld failed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld مخزن خوانده شد، %2$lld ناکام"
+          }
+        }
+      }
+    },
+    "%lld times in a row: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld بار پشت سر هم: %2$@"
+          }
+        }
+      }
+    },
+    "%lld waiting": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld در نوبت"
+          }
+        }
+      }
+    },
+    "%lld× in a row": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld بار پشت سر هم"
+          }
+        }
+      }
+    },
+    "1 hour": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "۱ ساعت"
+          }
+        }
+      }
+    },
+    "3 hours": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "۳ ساعت"
+          }
+        }
+      }
+    },
+    "A job keeps failing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک کار پشت سر هم ناکام می‌شود"
+          }
+        }
+      }
+    },
+    "After %lld failures in a row, and once more when it works again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پس از %lld ناکامی پشت سر هم، و یک بار دیگر وقتی دوباره کار کرد."
+          }
+        }
+      }
+    },
+    "After wake": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پس از بیدار شدن"
+          }
+        }
+      }
+    },
+    "Alerts still arrive in Notification Center, silently: no banner, no sound. Checks keep running.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعلان‌ها همچنان در مرکز اعلان‌ها می‌آیند، اما بی‌صدا: بدون بنر و بدون صدا. بررسی‌ها ادامه دارند."
+          }
+        }
+      }
+    },
+    "All jobs": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همهٔ کارها"
+          }
+        }
+      }
+    },
+    "Already running": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال اجرا"
+          }
+        }
+      }
+    },
+    "At launch": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنگام باز شدن"
+          }
+        }
+      }
+    },
+    "At launch, open no window. Takes effect from the next launch.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنگام باز شدن هیچ پنجره‌ای باز نشود. از باز شدن بعدی اثر می‌کند."
+          }
+        }
+      }
+    },
+    "Automation": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خودکارسازی"
+          }
+        }
+      }
+    },
+    "Automation is paused": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خودکارسازی متوقف است"
+          }
+        }
+      }
+    },
+    "Automation run log on this device (automation.json)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر اجرای خودکارسازی روی همین دستگاه (automation.json)"
+          }
+        }
+      }
+    },
+    "Automation…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خودکارسازی…"
+          }
+        }
+      }
+    },
+    "Background": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پس‌زمینه"
+          }
+        }
+      }
+    },
+    "Copy saved and read back: %lld products": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخه ذخیره و دوباره خوانده شد: %lld محصول"
+          }
+        }
+      }
+    },
+    "Every %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر %@"
+          }
+        }
+      }
+    },
+    "Every job only reads, exactly as its own screen does, with the keys already saved on this device. The run log stays on this device (automation.json, the last 14 days).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر کار فقط می‌خواند، درست مانند صفحهٔ خودش، با کلیدهایی که از قبل روی همین دستگاه ذخیره شده‌اند. دفتر اجرا روی همین دستگاه می‌ماند (automation.json، ۱۴ روز اخیر)."
+          }
+        }
+      }
+    },
+    "Everything runs on its own": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همه چیز خودکار اجرا می‌شود"
+          }
+        }
+      }
+    },
+    "Failures only": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط ناکامی‌ها"
+          }
+        }
+      }
+    },
+    "From": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از"
+          }
+        }
+      }
+    },
+    "Hide the Dock icon when no window is open": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنهان کردن نماد Dock وقتی پنجره‌ای باز نیست"
+          }
+        }
+      }
+    },
+    "Its automatic refresh is off in Settings → Integrations.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه کردن خودکار آن در تنظیمات ← اتصال‌ها خاموش است."
+          }
+        }
+      }
+    },
+    "Job": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کار"
+          }
+        }
+      }
+    },
+    "Jobs": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کارها"
+          }
+        }
+      }
+    },
+    "Last run %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین اجرا %@"
+          }
+        }
+      }
+    },
+    "Licence sync": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همگام‌سازی لایسنس‌ها"
+          }
+        }
+      }
+    },
+    "Local inventory backup": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پشتیبان محلی فهرست"
+          }
+        }
+      }
+    },
+    "Low Power Mode: half speed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حالت کم‌مصرف: نیم‌سرعت"
+          }
+        }
+      }
+    },
+    "Monitor: not checked yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پایش: هنوز بررسی نشده"
+          }
+        }
+      }
+    },
+    "Needs a key, token, sign-in or folder this device doesn't have yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به کلید، توکن، ورود یا پوشه‌ای نیاز دارد که این دستگاه هنوز ندارد."
+          }
+        }
+      }
+    },
+    "Needs a look": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نیاز به بررسی"
+          }
+        }
+      }
+    },
+    "Network back": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برگشت شبکه"
+          }
+        }
+      }
+    },
+    "No automatic run yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز هیچ اجرای خودکاری نشده."
+          }
+        }
+      }
+    },
+    "No network. It runs as soon as the connection returns.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شبکه نیست. همین که اتصال برگردد اجرا می‌شود."
+          }
+        }
+      }
+    },
+    "No public address answered. The network may be down.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ نشانی عمومی پاسخ نداد. شاید شبکه قطع باشد."
+          }
+        }
+      }
+    },
+    "No runs to show.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجرایی برای نشان دادن نیست."
+          }
+        }
+      }
+    },
+    "Not connected on this device: %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روی این دستگاه وصل نیست: %@."
+          }
+        }
+      }
+    },
+    "Not ready": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آماده نیست"
+          }
+        }
+      }
+    },
+    "Not run yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز اجرا نشده"
+          }
+        }
+      }
+    },
+    "Nothing changed since the last run.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از اجرای قبلی چیزی تغییر نکرده."
+          }
+        }
+      }
+    },
+    "Nothing could be read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ چیز خوانده نشد."
+          }
+        }
+      }
+    },
+    "Notify when a job keeps failing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اعلان وقتی یک کار پشت سر هم ناکام می‌شود"
+          }
+        }
+      }
+    },
+    "Off in Settings": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در تنظیمات خاموش"
+          }
+        }
+      }
+    },
+    "Offline": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بی‌شبکه"
+          }
+        }
+      }
+    },
+    "Online": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وصل"
+          }
+        }
+      }
+    },
+    "Open Linumic OS": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن Linumic OS"
+          }
+        }
+      }
+    },
+    "Open Login Items": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن Login Items"
+          }
+        }
+      }
+    },
+    "Open at login": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز شدن هنگام ورود به مک"
+          }
+        }
+      }
+    },
+    "Oversight sweep": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی نظارت"
+          }
+        }
+      }
+    },
+    "Partly done": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بخشی انجام شد"
+          }
+        }
+      }
+    },
+    "Pause": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توقف"
+          }
+        }
+      }
+    },
+    "Pause 1 h": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توقف ۱ ساعت"
+          }
+        }
+      }
+    },
+    "Pause automation for 1 hour": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توقف خودکارسازی برای ۱ ساعت"
+          }
+        }
+      }
+    },
+    "Paused until %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متوقف تا %@"
+          }
+        }
+      }
+    },
+    "Paused until %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متوقف تا %@."
+          }
+        }
+      }
+    },
+    "Preferences": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ترجیحات"
+          }
+        }
+      }
+    },
+    "Quiet hours": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ساعت‌های آرام"
+          }
+        }
+      }
+    },
+    "Quit": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خروج"
+          }
+        }
+      }
+    },
+    "Release Center": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرکز انتشار"
+          }
+        }
+      }
+    },
+    "Resume": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ادامه"
+          }
+        }
+      }
+    },
+    "Resume automation": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ادامهٔ خودکارسازی"
+          }
+        }
+      }
+    },
+    "Run all": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجرای همه"
+          }
+        }
+      }
+    },
+    "Run all automation now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجرای همهٔ خودکارسازی‌ها همین حالا"
+          }
+        }
+      }
+    },
+    "Run all now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجرای همه همین حالا"
+          }
+        }
+      }
+    },
+    "Run by you": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجرا به دست شما"
+          }
+        }
+      }
+    },
+    "Run every enabled job now, one after another": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر کار روشن را همین حالا، یکی پس از دیگری اجرا کن"
+          }
+        }
+      }
+    },
+    "Run history": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخچهٔ اجرا"
+          }
+        }
+      }
+    },
+    "Run now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجرا همین حالا"
+          }
+        }
+      }
+    },
+    "Running: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال اجرا: %@"
+          }
+        }
+      }
+    },
+    "Show in the menu bar": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نمایش در نوار منو"
+          }
+        }
+      }
+    },
+    "So the automation runs from the moment the Mac starts, with no window needed.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تا خودکارسازی از لحظهٔ روشن شدن مک اجرا شود، بی‌آنکه پنجره‌ای لازم باشد."
+          }
+        }
+      }
+    },
+    "Start in the menu bar": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شروع در نوار منو"
+          }
+        }
+      }
+    },
+    "Starting…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال شروع…"
+          }
+        }
+      }
+    },
+    "Status, what's waiting on you and Run now, without opening the window.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت، کارهای منتظر شما و «اجرا همین حالا»، بی‌آنکه پنجره را باز کنید."
+          }
+        }
+      }
+    },
+    "The app keeps running in the menu bar. Open it again from there.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برنامه در نوار منو به کار ادامه می‌دهد. از همان‌جا دوباره بازش کنید."
+          }
+        }
+      }
+    },
+    "The data it works on hadn't loaded yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "داده‌ای که با آن کار می‌کند هنوز بار نشده بود."
+          }
+        }
+      }
+    },
+    "The last automatic run succeeded.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین اجرای خودکار موفق بود."
+          }
+        }
+      }
+    },
+    "The platforms were not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پلتفرم‌ها خوانده نشدند."
+          }
+        }
+      }
+    },
+    "The same refresh was already running from its screen.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همین تازه کردن از صفحهٔ خودش در حال اجرا بود."
+          }
+        }
+      }
+    },
+    "The sweep did not finish.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی تمام نشد."
+          }
+        }
+      }
+    },
+    "To": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تا"
+          }
+        }
+      }
+    },
+    "Turned off: %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خاموش: %@."
+          }
+        }
+      }
+    },
+    "Unchanged": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون تغییر"
+          }
+        }
+      }
+    },
+    "Unchanged since the last copy; it still restores (%lld products)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از نسخهٔ قبلی تغییری نکرده؛ هنوز بازیابی می‌شود (%lld محصول)"
+          }
+        }
+      }
+    },
+    "Until %@. Run now still works.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تا %@. «اجرا همین حالا» هنوز کار می‌کند."
+          }
+        }
+      }
+    },
+    "Until tomorrow morning": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تا فردا صبح"
+          }
+        }
+      }
+    },
+    "WorkTrack was not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WorkTrack خوانده نشد."
+          }
+        }
+      }
+    },
+    "macOS needs your approval in Login Items.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS در Login Items به تأیید شما نیاز دارد."
+          }
+        }
+      }
+    },
+    "next %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بعدی %@"
+          }
+        }
+      }
+    },
+    "next: due now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بعدی: همین حالا"
+          }
+        }
+      }
+    },
+    "now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همین حالا"
+          }
+        }
+      }
+    },
+    "paused": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متوقف"
+          }
+        }
+      }
+    },
+    "running since %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال کار از %@"
+          }
+        }
+      }
+    },
+    "when online": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی وصل شد"
+          }
+        }
+      }
+    },
+    "Public health, TLS and domain checks of every platform.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی عمومی سلامت، گواهی TLS و دامنهٔ هر پلتفرم."
+          }
+        }
+      }
+    },
+    "Public App Store data, then App Store Connect and Google Play when their keys are saved.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "داده‌های عمومی App Store، و بعد App Store Connect و Google Play وقتی کلیدهایشان ذخیره شده باشد."
+          }
+        }
+      }
+    },
+    "Every repository on GitHub, plus the local working copies when a folder is chosen.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همهٔ مخزن‌ها در GitHub، و نسخه‌های محلی وقتی پوشه‌ای انتخاب شده باشد."
+          }
+        }
+      }
+    },
+    "Versions on main, releases, CI and open pull requests per product.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخه‌های main، انتشارها، CI و PR های باز هر محصول."
+          }
+        }
+      }
+    },
+    "App Store versions and builds, Play tracks, pull requests and CI.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخه‌ها و بیلدهای App Store، مسیرهای Play، PR ها و CI."
+          }
+        }
+      }
+    },
+    "The licence ledger with the cloud, and expiry reminders.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر لایسنس‌ها با ابر، و یادآوری‌های پایان اعتبار."
+          }
+        }
+      }
+    },
+    "Companies, plans and renewals from the WorkTrack vendor API.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شرکت‌ها، پلان‌ها و تمدیدها از API فروشندهٔ WorkTrack."
+          }
+        }
+      }
+    },
+    "Talar, SafeBeauty and VELRO queues and counts.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صف‌ها و شمارش‌های تالار، SafeBeauty و VELRO."
+          }
+        }
+      }
+    },
+    "New linumic.com contact form entries.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام‌های تازهٔ فورم تماس linumic.com."
+          }
+        }
+      }
+    },
+    "Dates and sizes of key files in the granted folders. No network.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ و اندازهٔ فایل‌های کلید در پوشه‌های اجازه‌داده‌شده. بدون شبکه."
+          }
+        }
+      }
+    },
+    "A daily copy of the inventory on this device, read back to prove it restores.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک نسخهٔ روزانه از فهرست روی همین دستگاه، که دوباره خوانده می‌شود تا ثابت شود بازیابی می‌شود."
+          }
+        }
+      }
+    },
+    "Today's snapshot and the morning notification, from what the jobs above read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عکس امروز و اعلان صبح، از آنچه کارهای بالا خوانده‌اند."
+          }
+        }
+      }
     }
   },
   "version": "1.1"
