@@ -29,7 +29,8 @@ as $$
          and not exists (select 1 from jsonb_array_elements(j) x
                          where jsonb_typeof(x) <> 'number' or (x::text)::numeric not between 1 and 366
                             or (x::text)::numeric <> trunc((x::text)::numeric))
-    then array(select (x::text)::int from jsonb_array_elements(j) x)
+    -- Through numeric: a whole number written with a point (7.0) is a number here but not an int's text.
+    then array(select (x::text)::numeric::int from jsonb_array_elements(j) x)
     else array[30, 14, 7, 1] end
 $$;
 

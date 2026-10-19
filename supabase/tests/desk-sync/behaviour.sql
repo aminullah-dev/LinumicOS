@@ -211,6 +211,10 @@ select pg_temp.check(pg_temp.status(public.push_obligations(pg_temp.ob('date:acc
   '{"obligationID":"account.sample.renewal","due":"2026-12-02","source":"x","enteredAt":"2026-10-19T10:00:00Z"}'), 'macOS')) = 'invalid',
   'an account''s renewal day is set on its card, never as a date');
 reset role;
+select pg_temp.check(private.usable_lead_days('[7.0, 14]') = array[7, 14], 'lead days 7.0 and 14 read as 7 and 14');
+select pg_temp.check(private.usable_lead_days('["7"]') = array[30, 14, 7, 1] and private.usable_lead_days('[7.5]') = array[30, 14, 7, 1]
+  and private.usable_lead_days('[0]') = array[30, 14, 7, 1] and private.usable_lead_days('null') = array[30, 14, 7, 1],
+  'lead days that are not whole days 1-366 fall back to 30, 14, 7, 1');
 select pg_temp.check(not private.is_iso_day('2026-2-01') and not private.is_iso_day('2026-02-01T00:00:00Z') and not private.is_iso_day(null)
   and private.is_iso_day('2028-02-29') and not private.is_iso_day('2027-02-29'), 'is_iso_day: YYYY-MM-DD and a real day only');
 set role authenticated;
@@ -356,6 +360,17 @@ select pg_temp.check((select schedule from cron.job where jobname = 'sentinel-ob
 select pg_temp.check((select count(*) from cron.job where jobname like 'sentinel-%') = 5
   and (select count(distinct username) from cron.job where jobname like 'sentinel-%') = 1, 'five jobs, one owner');
 
+set role authenticated;
+set request.jwt.claim.sub = '00000000-0000-0000-0000-00000000000a';
+-- Lead days written by another client as 7.0 (JSON keeps the point): a whole number, so the sweep uses it.
+select pg_temp.check(pg_temp.status(public.push_obligations(pg_temp.ob('row:owner.float', 'row', 'owner.float', 0,
+  jsonb_build_object('id', 'owner.float', 'title', 'Sample float', 'area', 'other', 'source', 's', 'recordedOn', '2026-10-19',
+                     'due', to_char((now() at time zone 'utc')::date + 7, 'YYYY-MM-DD'), 'leadDays', '[7.0]'::jsonb,
+                     'origin', 'owner')), 'macOS')) = 'applied',
+  'an owner row with lead days written as 7.0 is taken');
+reset role;
+reset request.jwt.claim.sub;
+
 -- One bad row (written before the checks above, or by hand around them) and a licence 5 days from its end: each job
 -- runs as pg_cron runs it, alone, and the licence event is still written.
 do $$
@@ -379,4 +394,7 @@ select pg_temp.check(exists (select 1 from public.sentinel_events where subject 
   'with a bad row present, the licence job still writes its event');
 select pg_temp.check(not exists (select 1 from private.obligation_schedule() where obligation_id in ('account.test-mail.renewal', 'account.owner.bad.renewal')),
   'and the obligation job skips the days that are not days');
+select pg_temp.check(exists (select 1 from public.sentinel_events
+                             where dedup_key = format('obligation:owner.float:%s:7', to_char((now() at time zone 'utc')::date + 7, 'YYYY-MM-DD'))),
+  'and the row with lead days 7.0 gets its 7-day reminder');
 \echo ALL DESK SYNC SQL CHECKS PASSED

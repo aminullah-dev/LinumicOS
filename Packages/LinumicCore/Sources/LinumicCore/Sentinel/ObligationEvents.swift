@@ -25,11 +25,13 @@ public enum ObligationEvents {
 
     /// "<title> (in 4 days)", worded as the app words its own obligation alerts (the owner's title as written, the
     /// seed's in the app's language, an account's renewal as "<name>: renewal"), and counted from the event's due day
-    /// to `today`, never from the days left when the server wrote it.
-    public static func line(_ event: SentinelEvent, today: KeyDay) -> String {
+    /// to `today`, never from the days left when the server wrote it. One re-dated on this device (`standing` is
+    /// `.moved`) says so instead of counting toward a day the obligation no longer has.
+    public static func line(_ event: SentinelEvent, today: KeyDay, standing: ObligationEventStanding = .applies) -> String {
         let id = event.detail?.obligationID ?? event.subject
         let raw = event.detail?.title ?? event.subject
         let name = event.detail?.renewal == true ? LF("%@: renewal", raw) : (id.hasPrefix("owner.") ? raw : L(raw))
+        if case .moved = standing { return LF("%@ (date changed)", name) }
         guard let due = event.detail?.due.flatMap(KeyDay.init) else { return name }
         let days = today.days(until: due)
         if days < 0 { return LF("%1$@ (overdue by %2$d days)", name, -days) }

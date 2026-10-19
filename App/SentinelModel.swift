@@ -128,8 +128,10 @@ final class SentinelModel {
             return ObligationsModel.isNotifyOn && ObligationEvents.standing(e, in: register) == .applies
                 && e.detail?.key.map(ObligationsModel.wasAlerted) != true
         }
+        // Not for a row this device does not have yet: once Desk sync brings it, the device's own alert still fires.
         ObligationsModel.recordAlerted(events.compactMap { e in
-            !previous.contains(e.id) && e.kind == .obligationDue ? e.detail?.key : nil
+            !previous.contains(e.id) && e.kind == .obligationDue && ObligationEvents.standing(e, in: register) != .unknown
+                ? e.detail?.key : nil
         })
         guard !fresh.isEmpty, UserDefaults.standard.object(forKey: Self.notifyKey) as? Bool ?? true else { return }
         let center = UNUserNotificationCenter.current()
@@ -157,8 +159,14 @@ final class SentinelModel {
         return any
     }
 
+    /// The event as the "Not acknowledged" list shows it: an obligation event read against this device's register.
+    func line(for event: SentinelEvent) -> String {
+        guard event.kind == .obligationDue else { return Self.line(for: event) }
+        return Self.line(for: event, standing: ObligationEvents.standing(event, in: obligations.register()))
+    }
+
     /// The event in the app's language, built from its kind and facts (the server's English title is a fallback).
-    static func line(for event: SentinelEvent) -> String {
+    static func line(for event: SentinelEvent, standing: ObligationEventStanding = .applies) -> String {
         let name = MonitorCatalog.targets.first { $0.id == event.subject }.map { "\($0.product.title) \(L($0.name))" } ?? event.subject
         switch event.kind {
         case .targetDown:
@@ -172,7 +180,7 @@ final class SentinelModel {
             return String(localized: "Licence for \(event.detail?.customer ?? event.subject) has expired")
         case .obligationDue:
             // Counted from the event's day to today, not from the days left when the sweep wrote it.
-            return ObligationEvents.line(event, today: KeyDay(.now))
+            return ObligationEvents.line(event, today: KeyDay(.now), standing: standing)
         }
     }
 }

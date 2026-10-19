@@ -1157,7 +1157,10 @@ struct DeskSyncReminderTests {
                              source: "sample bill 7", now: t0, calendar: utc)
         let e = try event(o.id, due: "2026-10-26", daysLeft: 7, lead: 7)
         try file.setDate(o.id, due: KeyDay("2026-11-30")!, source: "sample letter", now: at(1))
-        #expect(ObligationEvents.standing(e, in: register(file, at: at(2))) == .moved(KeyDay("2026-11-30")))
+        let standing = ObligationEvents.standing(e, in: register(file, at: at(2)))
+        #expect(standing == .moved(KeyDay("2026-11-30")))
+        #expect(ObligationEvents.line(e, today: KeyDay("2026-10-22")!, standing: standing) == "Pay the sample host (date changed)",
+                "the list does not count toward a day the row no longer has")
         #expect(ObligationEvents.standing(try event("owner.gone", due: "2026-10-26", daysLeft: 7, lead: 7), in: register(file, at: at(2)))
                 == .unknown)
     }

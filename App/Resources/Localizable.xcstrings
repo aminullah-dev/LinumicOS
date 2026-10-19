@@ -170,6 +170,16 @@
         }
       }
     },
+    "%@ (date changed)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ (تاریخ عوض شده)"
+          }
+        }
+      }
+    },
     "%@ (read on the Mac)": {
       "localizations": {
         "fa-AF": {
