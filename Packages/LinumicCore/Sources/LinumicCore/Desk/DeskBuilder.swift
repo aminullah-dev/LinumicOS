@@ -284,7 +284,7 @@ public enum DeskBuilder {
         case .notFound:
             return [sourceItem(source, path: path, kindKey: "not-found", severity: .normal, owner: false,
                                title: LF("Ledger not found: %@", path),
-                               detail: L("The folder is granted and the file is not there. Not \"0 open\": unknown until it is found."),
+                               detail: L("The folder is granted and the file is not there. Not “0 open”: unknown until it is found."),
                                readAt: readAt, destination: .ledgerAccess)]
         case .unreadable(let why):
             return [sourceItem(source, path: path, kindKey: "unreadable", severity: .normal, owner: false,
