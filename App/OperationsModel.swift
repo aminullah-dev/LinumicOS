@@ -391,9 +391,10 @@ final class VelroModel {
     }
 
     /// Step 1: VELRO sends a code (only to a number that holds a staff role). The phone number is not kept.
-    func requestCode(environment: VelroEnvironment, phone: String) async throws -> VelroOtpSent {
+    /// `channel` is "sms" or "email"; VELRO falls back to SMS when the account has no address and says which it used.
+    func requestCode(environment: VelroEnvironment, phone: String, channel: String = "sms") async throws -> VelroOtpSent {
         let c = pendingClient(environment)
-        return try await c.requestCode(phone: phone, locale: Self.locale)
+        return try await c.requestCode(phone: phone, locale: Self.locale, channel: channel)
     }
 
     /// Step 2: the code becomes a session; the client stores the refresh token in the Keychain.
