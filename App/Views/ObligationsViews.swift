@@ -68,18 +68,18 @@ struct ObligationsView: View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
-                    header(lanes, partial: !register.unread.isEmpty)
+                    header(lanes, unread: register.unread, fileUnread: model.loadError != nil)
                     banners(register)
                     ForEach([ObligationLane.overdue, .week, .month], id: \.self) { lane in
-                        laneSection(lane, rows: lanes[lane] ?? [], today: today, hideWhenEmpty: lane == .overdue)
+                        laneSection(lane, rows: lanes[lane] ?? [], today: today, hideWhenEmpty: lane == .overdue, accounts: register.accounts)
                     }
                     DisclosureGroup(isExpanded: $showLater) {
-                        laneRows(lanes[.later] ?? [], lane: .later, today: today).padding(.top, 8)
+                        laneRows(lanes[.later] ?? [], lane: .later, today: today, accounts: register.accounts).padding(.top, 8)
                     } label: { laneTitle(.later, count: lanes[.later]?.count ?? 0) }
-                    laneSection(.dateUnknown, rows: lanes[.dateUnknown] ?? [], today: today, hideWhenEmpty: false)
+                    laneSection(.dateUnknown, rows: lanes[.dateUnknown] ?? [], today: today, hideWhenEmpty: false, accounts: register.accounts)
                     if let done = lanes[.closed], !done.isEmpty {
                         DisclosureGroup(isExpanded: $showDone) {
-                            laneRows(done, lane: .closed, today: today).padding(.top, 8)
+                            laneRows(done, lane: .closed, today: today, accounts: register.accounts).padding(.top, 8)
                         } label: { laneTitle(.closed, count: done.count) }
                     }
                     accountsSection(register.accounts)
@@ -94,7 +94,14 @@ struct ObligationsView: View {
                 case .obligation(let id)?:
                     reveal(id, register: register, today: today, proxy: proxy)
                 case .completeObligation(let id)?:
-                    if let o = register.obligation(id), !o.isClosed { completing = o } else { reveal(id, register: register, today: today, proxy: proxy) }
+                    // A live row closes only through its source; its Done goes there.
+                    if let o = register.obligation(id), !o.isClosed, o.origin.takesDoneHere {
+                        completing = o
+                    } else if let o = register.obligation(id), !o.origin.takesDoneHere {
+                        router.closeAtSource(o.id, destination: o.destination)
+                    } else {
+                        reveal(id, register: register, today: today, proxy: proxy)
+                    }
                 default: break
                 }
             }
@@ -120,17 +127,23 @@ struct ObligationsView: View {
 
     // MARK: Parts
 
-    /// The counts by lane. While a live source is unread its rows are missing, so the counts are marked partial: a
-    /// zero then means "none among what was read", not none.
-    private func header(_ lanes: [ObligationLane: [Obligation]], partial: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+    /// The counts by lane. While a live source is unread its rows are missing, and while obligations.json can't be read
+    /// your own rows, dates and Done marks are: the counts are then marked partial, so a zero means "none among what
+    /// was read", not none.
+    private func header(_ lanes: [ObligationLane: [Obligation]], unread: [ObligationLiveSource], fileUnread: Bool) -> some View {
+        let partial = !unread.isEmpty || fileUnread
+        return VStack(alignment: .leading, spacing: 10) {
             FitRow(spacing: 8) {
                 ForEach([ObligationLane.overdue, .week, .month, .dateUnknown], id: \.self) { lane in
                     let count = lanes[lane]?.count ?? 0
                     ReleaseBadge(text: partial ? String(localized: "\(lane.title): \(count) (partial)") : "\(lane.title): \(count)",
                                  symbol: lane.symbol, color: count == 0 ? .gray : lane.color)
                 }
-                if partial {
+                if fileUnread {
+                    ReleaseBadge(text: String(localized: "Partial: obligations.json could not be read"), symbol: "exclamationmark.triangle", color: .orange)
+                        .help("Your own rows, dates and Done marks are in obligations.json, which could not be read, so they are not counted here.")
+                }
+                if !unread.isEmpty {
                     ReleaseBadge(text: String(localized: "Partial: some live dates are not read yet"), symbol: "questionmark.circle", color: .orange)
                         .help("The counts leave out the rows of the sources listed below, which have not been read.")
                 }
@@ -183,25 +196,36 @@ struct ObligationsView: View {
     }
 
     @ViewBuilder
-    private func laneSection(_ lane: ObligationLane, rows: [Obligation], today: KeyDay, hideWhenEmpty: Bool) -> some View {
+    private func laneSection(_ lane: ObligationLane, rows: [Obligation], today: KeyDay, hideWhenEmpty: Bool,
+                             accounts: [VendorAccount]) -> some View {
         if !(hideWhenEmpty && rows.isEmpty) {
             VStack(alignment: .leading, spacing: 10) {
                 laneTitle(lane, count: rows.count)
                 if rows.isEmpty {
                     Text("Nothing here.").font(.callout).foregroundStyle(.secondary)
                 } else {
-                    laneRows(rows, lane: lane, today: today)
+                    laneRows(rows, lane: lane, today: today, accounts: accounts)
                 }
             }
         }
     }
 
-    private func laneRows(_ rows: [Obligation], lane: ObligationLane, today: KeyDay) -> some View {
+    private func laneRows(_ rows: [Obligation], lane: ObligationLane, today: KeyDay, accounts: [VendorAccount]) -> some View {
         StripeCard(tint: lane.color) {
             ForEach(rows) { o in
                 ObligationRowView(obligation: o, today: today, highlighted: highlighted == o.id,
-                                  done: { completing = o }, setDate: { dating = o },
-                                  open: { router.open(o.destination) }, reopen: { model.reopen(o) })
+                                  done: { completing = o },
+                                  setDate: {
+                                      // An account's renewal day is recorded on the account, its one place.
+                                      if o.origin == .account {
+                                          editingAccount = accounts.first { $0.id == o.subject }
+                                      } else {
+                                          dating = o
+                                      }
+                                  },
+                                  open: { router.open(o.destination) },
+                                  closeAtSource: { router.closeAtSource(o.id, destination: o.destination) },
+                                  reopen: { model.reopen(o) })
                     .id(o.id)
                 if o.id != rows.last?.id { Divider() }
             }
@@ -256,6 +280,7 @@ struct ObligationRowView: View {
     let done: () -> Void
     let setDate: () -> Void
     let open: () -> Void
+    let closeAtSource: () -> Void
     let reopen: () -> Void
 
     private var o: Obligation { obligation }
@@ -311,6 +336,9 @@ struct ObligationRowView: View {
     @ViewBuilder
     private var timingBadge: some View {
         switch ObligationRules.timing(o, today: today) {
+        case .dateUnknown where o.origin == .continuity:
+            // No copy off this Mac yet: undated, but due now (P0), not unknown.
+            ReleaseBadge(text: String(localized: "To do now"), symbol: "exclamationmark.circle", color: .orange)
         case .dateUnknown:
             ReleaseBadge(text: String(localized: "Date unknown"), symbol: "questionmark.circle", color: .gray)
         case .overdue(let days):
@@ -330,25 +358,48 @@ struct ObligationRowView: View {
     @ViewBuilder
     private var actions: some View {
         HStack(spacing: 6) {
-            if o.isClosed {
+            if !o.origin.takesDoneHere {
+                // A live row closes only when its source records it (an export, a restore test, a renewal the next
+                // reading shows): its action is there, never a typed Done.
+                sourceAction
+            } else if o.isClosed {
                 Button(action: reopen) { Label("Reopen", systemImage: "arrow.uturn.backward") }
                     .help("Take the Done back (pressed by mistake)")
             } else {
                 Button(action: done) { Label("Done…", systemImage: "checkmark") }
                     .help("Record it done with what proves it")
-                if o.origin.isLive {
-                    Button(action: open) { Label("Open", systemImage: "chevron.forward") }
-                        .help("Open the screen this date is read from")
-                } else {
-                    Button(action: setDate) { Label(o.due == nil ? "Set date…" : "Change date…", systemImage: "calendar.badge.plus") }
-                        .help("Set the due date, with where it comes from")
-                }
+                // An account's renewal opens the account's card: its one place for the day.
+                Button(action: setDate) { Label(o.due == nil ? "Set date…" : "Change date…", systemImage: "calendar.badge.plus") }
+                    .help(o.origin == .account ? Text("Record the renewal date on the account, with where it comes from")
+                                               : Text("Set the due date, with where it comes from"))
             }
         }
         .buttonStyle(.borderless)
         .labelStyle(.titleAndIcon)
         .font(.callout)
         .minTapTarget()
+    }
+
+    /// Where a live row is closed: the action of its source.
+    @ViewBuilder
+    private var sourceAction: some View {
+        switch o.origin {
+        case .continuity:
+            Button(action: closeAtSource) { Label("Export…", systemImage: "lock.doc") }
+                .help("It closes when a verified export off this Mac is recorded: this opens Continuity")
+        case .keys where o.id.hasPrefix("keys.restore."):
+            Button(action: closeAtSource) { Label("Record restore test…", systemImage: "checkmark.shield") }
+                .help("It closes when a restore test is recorded in Keys & Backups: this opens it")
+        case .keys:
+            Button(action: open) { Label("Open", systemImage: "chevron.forward") }
+                .help("It closes when Keys & Backups records it: this opens it")
+        case .licence:
+            Button(action: open) { Label("Open", systemImage: "chevron.forward") }
+                .help("It moves when the licence ledger records a renewal: this opens the licence")
+        default:
+            Button(action: open) { Label("Open", systemImage: "chevron.forward") }
+                .help("It moves when the Monitor's next reading shows the new end date: this opens the Monitor")
+        }
     }
 }
 
@@ -424,14 +475,18 @@ struct ObligationAddSheet: View {
     @State private var product = ""
     @State private var area = ObligationArea.other
     @State private var due: Date?
+    /// A day was picked: switching "The due date is known" on starts at today, which is never saved as the due day.
+    @State private var duePicked = false
     @State private var consequence = ""
     @State private var source = ""
 
+    private var canSave: Bool { !clean(title).isEmpty && !clean(source).isEmpty && (due == nil || duePicked) }
+
     var body: some View {
-        EditorSheet(title: "Add obligation", canSave: !clean(title).isEmpty && !clean(source).isEmpty,
+        EditorSheet(title: "Add obligation", canSave: canSave,
                     onCancel: { dismiss() },
                     onSave: {
-                        if model.add(title: title, product: product, area: area, due: due.map { KeyDay($0) },
+                        if model.add(title: title, product: product, area: area, due: duePicked ? due.map { KeyDay($0) } : nil,
                                      consequence: consequence, source: source) { dismiss() }
                     }) {
             TextField("What is due", text: $title, axis: .vertical)
@@ -439,7 +494,15 @@ struct ObligationAddSheet: View {
             Picker("Area", selection: $area) {
                 ForEach(ObligationArea.allCases) { Text(verbatim: $0.title).tag($0) }
             }
-            OptionalDatePicker(title: String(localized: "The due date is known"), date: $due)
+            OptionalDatePicker(title: String(localized: "The due date is known"), date: Binding(get: { due }, set: { new in
+                // Switched on (nil to today) is not a pick; a change of the day is.
+                if due != nil, new != nil { duePicked = true }
+                if new == nil { duePicked = false }
+                due = new
+            }))
+            if due != nil, !duePicked {
+                Text("Pick the day the source states.").font(.caption).foregroundStyle(.orange)
+            }
             TextField("If it is missed (optional)", text: $consequence, axis: .vertical)
             TextField("Source", text: $source, axis: .vertical)
             Text("Required: where this comes from (a file and line, a page, an email, a receipt). Nothing is saved without a source. Leave the date off when it is not known: it then has its own lane.")

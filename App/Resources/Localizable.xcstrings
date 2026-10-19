@@ -170,6 +170,16 @@
         }
       }
     },
+    "%@ (to do now)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ (همین حالا انجام شود)"
+          }
+        }
+      }
+    },
     "%@ / %@": {
       "localizations": {
         "fa-AF": {
@@ -1219,6 +1229,36 @@
         }
       }
     },
+    "A cost of %@ is not applied: the amount must be above zero and the currency a three-letter code.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هزینهٔ %@ به کار نمی‌رود: مبلغ باید بیشتر از صفر باشد و واحد پول یک کد سه‌حرفی."
+          }
+        }
+      }
+    },
+    "a Google OAuth client secret": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک رمز کلاینت Google OAuth"
+          }
+        }
+      }
+    },
+    "a Google OAuth token": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک توکن Google OAuth"
+          }
+        }
+      }
+    },
     "a JSON Web Token": {
       "localizations": {
         "fa-AF": {
@@ -1235,6 +1275,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "یک اعلان محلی با نام فرستنده، وقتی بازخوانی پیامی پیدا کند که هنوز ندیده‌اید. هنگام باز شدن برنامه و هر ۳۰ دقیقه خوانده می‌شود."
+          }
+        }
+      }
+    },
+    "a Meta access token": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک توکن دسترسی Meta"
           }
         }
       }
@@ -1259,6 +1309,16 @@
         }
       }
     },
+    "A newer export, %@, is in the cloud folder %@. From this Mac it can't be seen whether it was uploaded, so it counts once you open it on another computer and record it (“Opened outside this Mac…”).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خروجی تازه‌تر، %1$@، در پوشهٔ ابری %2$@ است. از این مک دیده نمی‌شود که آپلود شده یا نه، پس وقتی حساب می‌شود که آن را روی کمپیوتر دیگری باز کنید و ثبتش کنید («بیرون از این مک باز شد…»)."
+          }
+        }
+      }
+    },
     "A newer verified inventory is bundled with this version. Your edits were kept, so it wasn't applied automatically.": {
       "localizations": {
         "fa-AF": {
@@ -1275,6 +1335,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "وقتی نسخه‌ای فعال یا رد شود، یا نسخهٔ تازه‌ای منتظر باشد، اعلان می‌آید."
+          }
+        }
+      }
+    },
+    "a Notion token": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک توکن Notion"
           }
         }
       }
@@ -1305,6 +1375,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "سطر بدون منبع، یا «انجام‌شده» بدون مدرک، رد می‌شود: معلوم یا انجام‌شده شمرده نمی‌شود."
+          }
+        }
+      }
+    },
+    "a Slack token": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک توکن Slack"
           }
         }
       }
@@ -1773,12 +1853,32 @@
         }
       }
     },
+    "an ElevenLabs API key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک کلید API از ElevenLabs"
+          }
+        }
+      }
+    },
     "An obligation with the id %@ already exists.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "تعهدی با شناسهٔ %@ از قبل هست."
+          }
+        }
+      }
+    },
+    "an OpenAI API key": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک کلید API از OpenAI"
           }
         }
       }
@@ -2570,6 +2670,16 @@
         }
       }
     },
+    "Don't start or end it with a space, or put two spaces together: they can't be seen on paper, and age reads the passphrase exactly as typed, so a copy typed from the paper would not open the export.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آن را با فاصله شروع یا تمام نکنید و دو فاصله را پشت هم نگذارید: فاصله روی کاغذ دیده نمی‌شود و age عبارت رمز را دقیقاً همان‌طور که تایپ شده می‌خواند، پس نسخه‌ای که از روی کاغذ تایپ شود خروجی را باز نمی‌کند."
+          }
+        }
+      }
+    },
     "Done %@: %@": {
       "localizations": {
         "fa-AF": {
@@ -2640,16 +2750,6 @@
         }
       }
     },
-    "Every Linumic address depends on it: the website, contact@linumic.com and the subdomains such as console.linumic.com.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "همهٔ نشانی‌های لینومیک به آن بسته‌اند: وب‌سایت، contact@linumic.com و زیردامنه‌هایی مثل console.linumic.com."
-          }
-        }
-      }
-    },
     "Every product's repositories.": {
       "localizations": {
         "fa-AF": {
@@ -2686,6 +2786,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "خروجی روی مک ساخته می‌شود، جایی که پوشه انتخاب و نگه داشته می‌شود. دفتر پایین مال همین دستگاه است."
+          }
+        }
+      }
+    },
+    "Export…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خروجی…"
           }
         }
       }
@@ -2820,6 +2930,46 @@
         }
       }
     },
+    "It closes when a restore test is recorded in Keys & Backups: this opens it": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی بسته می‌شود که یک بازیابی آزمایشی در «کلیدها و پشتیبان‌ها» ثبت شود: این دکمه آن را باز می‌کند"
+          }
+        }
+      }
+    },
+    "It closes when a verified export off this Mac is recorded: this opens Continuity": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی بسته می‌شود که یک خروجی بررسی‌شده بیرون از این مک ثبت شود: این دکمه «تداوم» را باز می‌کند"
+          }
+        }
+      }
+    },
+    "It closes when its source records it (an export off this Mac, a restore test, a renewal): this opens that place": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی بسته می‌شود که منبعش ثبتش کند (خروجی بیرون از این مک، بازیابی آزمایشی، تمدید): این دکمه همان‌جا را باز می‌کند"
+          }
+        }
+      }
+    },
+    "It closes when Keys & Backups records it: this opens it": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی بسته می‌شود که «کلیدها و پشتیبان‌ها» ثبتش کند: این دکمه آن را باز می‌کند"
+          }
+        }
+      }
+    },
     "It ends too early; part of the file is missing.": {
       "localizations": {
         "fa-AF": {
@@ -2846,6 +2996,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "با عبارت رمز رمزگذاری نشده است."
+          }
+        }
+      }
+    },
+    "It moves when the licence ledger records a renewal: this opens the licence": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی جابه‌جا می‌شود که دفتر لایسنس‌ها تمدیدی ثبت کند: این دکمه لایسنس را باز می‌کند"
+          }
+        }
+      }
+    },
+    "It moves when the Monitor's next reading shows the new end date: this opens the Monitor": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی جابه‌جا می‌شود که خواندن بعدی «پایش» تاریخ پایان تازه را نشان دهد: این دکمه «پایش» را باز می‌کند"
           }
         }
       }
@@ -2976,6 +3146,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "پشت‌صحنهٔ Linumic OS: همگام‌سازی فهرست، دفتر لایسنس‌ها و Sentinel. پلن رایگان."
+          }
+        }
+      }
+    },
+    "linumic.com and its subdomains (such as console.linumic.com) depend on this registration; the hosts on Google's web.app and cloudfunctions.net do not.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "linumic.com و زیردامنه‌هایش (مانند console.linumic.com) به این ثبت وابسته‌اند؛ میزبان‌های Google روی web.app و cloudfunctions.net وابسته نیستند."
           }
         }
       }
@@ -3150,6 +3330,16 @@
         }
       }
     },
+    "No export until %@ is read: an export without it would count as the copy off this Mac while it does not hold it. Wait until it has loaded, or fix what its screen reports.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تا %@ خوانده نشود خروجی گرفته نمی‌شود: خروجی بدون آن، نسخهٔ بیرون از این مک حساب می‌شد در حالی که آن را ندارد. صبر کنید تا بارگذاری شود، یا مشکلی را که صفحه‌اش می‌گوید درست کنید."
+          }
+        }
+      }
+    },
     "No folder chosen.": {
       "localizations": {
         "fa-AF": {
@@ -3216,6 +3406,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "این‌جا چیزی نیست."
+          }
+        }
+      }
+    },
+    "Nothing was written: %@ could not be read, or has not loaded yet. An export without it would count as the copy off this Mac while it does not hold it. Wait until it has loaded, or fix what its screen reports, then export again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چیزی نوشته نشد: %@ خوانده نشد یا هنوز بارگذاری نشده است. خروجی بدون آن، نسخهٔ بیرون از این مک حساب می‌شد در حالی که آن را ندارد. صبر کنید تا بارگذاری شود، یا مشکلی را که صفحه‌اش می‌گوید درست کنید، بعد دوباره خروجی بگیرید."
           }
         }
       }
@@ -3300,16 +3500,6 @@
         }
       }
     },
-    "Open the screen this date is read from": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "باز کردن صفحه‌ای که این تاریخ از آن خوانده می‌شود"
-          }
-        }
-      }
-    },
     "Opened on": {
       "localizations": {
         "fa-AF": {
@@ -3366,6 +3556,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "سررسید گذشته"
+          }
+        }
+      }
+    },
+    "Partial: obligations.json could not be read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ناقص: obligations.json خوانده نشد"
           }
         }
       }
@@ -3470,6 +3670,16 @@
         }
       }
     },
+    "Read back from this Mac's copy of the cloud folder. It counts as off this Mac once it is opened on another computer.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از نسخهٔ همین مک از پوشهٔ ابری دوباره خوانده شد. وقتی بیرون از این مک حساب می‌شود که روی کمپیوتر دیگری باز شود."
+          }
+        }
+      }
+    },
     "Record it done with what proves it": {
       "localizations": {
         "fa-AF": {
@@ -3506,6 +3716,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "تاریخ تمدید، اینکه به نام کیست یا هزینه‌اش را با منبعش ثبت کنید"
+          }
+        }
+      }
+    },
+    "Record restore test…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت بازیابی آزمایشی…"
+          }
+        }
+      }
+    },
+    "Record the renewal date on the account, with where it comes from": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت تاریخ تمدید روی خود حساب، با منبعش"
           }
         }
       }
@@ -3810,12 +4040,22 @@
         }
       }
     },
-    "The date set for %@ is not applied: that row takes its date from its own source, or it is not in the register.": {
+    "The date set for %@ is not applied: that row takes its date from its own source (a reading, or the account's card), or it is not in the register.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "تاریخی که برای %@ ثبت شده به کار نمی‌رود: آن سطر تاریخش را از منبع خودش می‌گیرد، یا در فهرست تعهدات نیست."
+            "value": "تاریخی که برای %@ ثبت شده به کار نمی‌رود: آن سطر تاریخش را از منبع خودش می‌گیرد (یک خواندن، یا کارت حساب)، یا در فهرست تعهدات نیست."
+          }
+        }
+      }
+    },
+    "The Done recorded for %@ is not applied: that row closes only when its own source says so (an export, a restore test, a new reading).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«انجام‌شده»ای که برای %@ ثبت شده به کار نمی‌رود: آن سطر فقط وقتی بسته می‌شود که منبع خودش بگوید (یک خروجی، یک بازیابی آزمایشی، یک خواندن تازه)."
           }
         }
       }
@@ -3846,6 +4086,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "فایلی که آن اجرا نوشته بود دیگر آن‌جا نیست. کار پشتیبان در سرکشی بعدی خودکارسازی، تا ۵ دقیقه، دوباره اجرا می‌شود؛ تا وقتی نسخه‌ای از Backups/ دوباره خوانده نشود، پشتیبان محلی وجود ندارد."
+          }
+        }
+      }
+    },
+    "the inventory": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست محصولات"
+          }
+        }
+      }
+    },
+    "The inventory has changed since this copy.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست محصولات بعد از این نسخه تغییر کرده است."
           }
         }
       }
@@ -3890,12 +4150,52 @@
         }
       }
     },
+    "the newest verified export, %@, is in a cloud folder and has not been opened outside this Mac, so whether it was uploaded is not known": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه‌ترین خروجی بررسی‌شده، %@، در پوشهٔ ابری است و بیرون از این مک باز نشده، پس معلوم نیست آپلود شده یا نه"
+          }
+        }
+      }
+    },
     "The stored grant could not be resolved at the last read. It is kept and tried again at the next read; grant the folder again if this stays.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "اجازهٔ ذخیره‌شده در خواندن گذشته باز نشد. نگه داشته می‌شود و در خواندن بعدی دوباره امتحان می‌شود؛ اگر همین‌طور ماند، دوباره به پوشه اجازه بدهید."
+          }
+        }
+      }
+    },
+    "This Mac holds a copy of a cloud folder and uploads it when it can (not while sync is paused, the account is signed out or the storage is full). An export here counts as off this Mac once you open it on another computer and record it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این مک نسخه‌ای از پوشهٔ ابری را نگه می‌دارد و هر وقت بتواند آپلودش می‌کند (نه وقتی همگام‌سازی متوقف است، از حساب خارج شده‌اید یا فضا پر است). خروجی این‌جا وقتی بیرون از این مک حساب می‌شود که آن را روی کمپیوتر دیگری باز کنید و ثبتش کنید."
+          }
+        }
+      }
+    },
+    "This row closes only when its own source records it (an export, a restore test, a new reading).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این سطر فقط وقتی بسته می‌شود که منبع خودش ثبتش کند (یک خروجی، یک بازیابی آزمایشی، یک خواندن تازه)."
+          }
+        }
+      }
+    },
+    "This row takes its date from its own source (a reading, or the account's card), so it is not set here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این سطر تاریخش را از منبع خودش می‌گیرد (یک خواندن، یا کارت حساب)، پس این‌جا تعیین نمی‌شود."
           }
         }
       }
@@ -4090,16 +4390,6 @@
         }
       }
     },
-    "The inventory has changed since; the next run copies it.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "فهرست از آن وقت تغییر کرده؛ اجرای بعدی از آن نسخه می‌گیرد."
-          }
-        }
-      }
-    },
     "The keys registry: which keys and backups exist, where, since when": {
       "localizations": {
         "fa-AF": {
@@ -4240,6 +4530,16 @@
         }
       }
     },
+    "To do now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همین حالا"
+          }
+        }
+      }
+    },
     "tools/release/build-release.sh exports Linumic OS releases with the developer-id method, and this is the only Developer ID Application certificate on this Mac. What happens after it ends, to copies already signed or to new releases, is not recorded in a source.": {
       "localizations": {
         "fa-AF": {
@@ -4286,6 +4586,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "تا وقتی یکی نباشد، فهرست و دفتر لایسنس‌ها روی این مک و در Supabase هستند، که در پلن رایگان پشتیبان لحظه‌به‌لحظه (PITR) ندارد؛ تعهدات و فهرست کلیدها فقط روی این مک هستند."
+          }
+        }
+      }
+    },
+    "Upload not checked": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آپلود بررسی نشده"
           }
         }
       }
@@ -4376,6 +4686,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "آنچه در خروجی است"
+          }
+        }
+      }
+    },
+    "What was recorded for the account %@ is not applied: no account with that id is in the register.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آنچه برای حساب %@ ثبت شده به کار نمی‌رود: هیچ حسابی با این شناسه در فهرست نیست."
           }
         }
       }
@@ -14138,6 +14458,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "بلی"
+          }
+        }
+      }
+    },
+    "your obligations file (obligations.json)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل تعهدات شما (obligations.json)"
+          }
+        }
+      }
+    },
+    "Your own rows, dates and Done marks are in obligations.json, which could not be read, so they are not counted here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سطرها، تاریخ‌ها و «انجام‌شده»های خود شما در obligations.json است که خوانده نشد، پس این‌جا شمرده نمی‌شوند."
           }
         }
       }

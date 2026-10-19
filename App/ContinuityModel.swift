@@ -56,7 +56,7 @@ final class ContinuityModel {
         }
         folderPath = Self.display(url.path, home: home)
         let values = try? url.resourceValues(forKeys: [.volumeIsInternalKey, .volumeIsLocalKey])
-        folderKind = ContinuityFolderKind.classify(path: url.path, volumeIsInternal: values?.volumeIsInternal,
+        folderKind = ContinuityFolderKind.classify(path: url.path, home: home, volumeIsInternal: values?.volumeIsInternal,
                                                    volumeIsLocal: values?.volumeIsLocal)
     }
 
@@ -91,18 +91,29 @@ final class ContinuityModel {
     // MARK: Export and checks
 
     /// Builds the bundle from what the app holds now: the inventory, the obligations and accounts, the licence ledger
-    /// (without key text) and the keys registry. A ledger or registry that was not loaded is left out (absent, "not
-    /// read"), never written as an empty list.
+    /// (without key text) and the keys registry. A part that was not read is left out (absent, "not read"), never
+    /// written as empty: the inventory before its load ends or after it failed, obligations.json when it can't be read
+    /// (the export then refuses to run), a ledger or registry that was not loaded.
     func bundle(inventory: InventoryModel, obligations: ObligationsModel, licences: LicenceModel, keys: KeysModel,
                 now: Date = .now) -> ContinuityBundle {
         let register = obligations.register(now: now)
         let info = Bundle.main.infoDictionary
         let version = "Linumic OS \(info?["CFBundleShortVersionString"] as? String ?? "?") (\(info?["CFBundleVersion"] as? String ?? "?"))"
-        return ContinuityBundle(createdAt: now, app: version, inventory: inventory.current, obligationEntries: obligations.file,
+        return ContinuityBundle(createdAt: now, app: version, inventory: inventory.isRead ? inventory.current : nil,
+                                obligationEntries: obligations.loadError == nil ? obligations.file : nil,
                                 obligations: register.obligations, accounts: register.accounts,
                                 licences: licences.isLoaded ? licences.records : nil,
                                 licencesSyncedAt: licences.isLoaded ? licences.lastSyncedAt : nil,
                                 keysRegistry: keys.loadError == nil ? keys.registry : nil)
+    }
+
+    /// The parts an export can't be made without that are not read now, so the screen says why before Export is
+    /// pressed (the exporter refuses the same).
+    static func requiredNotRead(inventory: InventoryModel, obligations: ObligationsModel) -> [ContinuityBundle.Part] {
+        var parts: [ContinuityBundle.Part] = []
+        if !inventory.isRead { parts.append(.inventory) }
+        if obligations.loadError != nil { parts.append(.obligationEntries) }
+        return parts
     }
 
     /// Why an export to the chosen folder is refused, or nil when it can be made: only a folder off this Mac counts,

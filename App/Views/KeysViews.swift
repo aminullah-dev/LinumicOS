@@ -146,7 +146,9 @@ struct KeysView: View {
             }
         }
         .onChange(of: router.request, initial: true) {
-            if router.take({ $0 == .markRestoreTest }) != nil { restoreSheet = RestoreSheetRequest(backupID: nil) }
+            if case .markRestoreTest(let id)? = router.take({ if case .markRestoreTest = $0 { true } else { false } }) {
+                restoreSheet = RestoreSheetRequest(backupID: id)
+            }
         }
         .sheet(item: $restoreSheet) { req in
             RestoreTestSheet(backups: keys.registry.backups, backupID: req.backupID ?? keys.registry.backups.first?.id ?? "") { id, day, by, note in

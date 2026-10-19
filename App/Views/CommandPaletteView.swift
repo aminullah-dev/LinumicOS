@@ -260,7 +260,7 @@ struct CommandPaletteView: View {
         // Opens the sheet in Keys & Backups; the sheet saves only after Save.
         add(PaletteCandidate(id: "action.keys.restoretest", title: String(localized: "Mark restore test done…"), subtitle: SidebarItem.keys.title,
                              keywords: ["keys", "backup", "restore", "test", "keystore"], group: .action, symbol: "checkmark.circle"),
-            .go(.keys, .markRestoreTest))
+            .go(.keys, .markRestoreTest(backupID: nil)))
         add(PaletteCandidate(id: "action.continuity.export", title: String(localized: "Encrypted export off this Mac…"),
                              subtitle: SidebarItem.continuity.title,
                              keywords: ["continuity", "export", "backup", "encrypted", "age", "usb", "drive"], group: .action,
@@ -294,7 +294,7 @@ struct CommandPaletteView: View {
         // Obligations that are open: title and product; choosing one shows it on its screen.
         for o in obligations.register().obligations where !o.isClosed {
             add(PaletteCandidate(id: "obligation.\(o.id)", title: o.displayTitle,
-                                 subtitle: "\(SidebarItem.obligations.title) · \(o.due?.description ?? String(localized: "Date unknown"))",
+                                 subtitle: "\(SidebarItem.obligations.title) · \(o.due?.description ?? (o.origin == .continuity ? String(localized: "To do now") : String(localized: "Date unknown")))",
                                  keywords: ["obligation", "due", o.product ?? "", o.area.rawValue], group: .entity,
                                  symbol: "calendar.badge.exclamationmark"), .go(.obligations, .obligation(o.id)))
         }

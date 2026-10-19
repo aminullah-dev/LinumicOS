@@ -54,11 +54,12 @@ struct ContinuityView: View {
 
     // MARK: Status
 
-    /// What counts is the newest verified export off this Mac; one on this Mac's own disk is named, but it does not
-    /// make the copy that is missing, and it does not move the next due date.
+    /// What counts is the newest verified export known to be off this Mac; a newer one on this Mac's own disk, or in a
+    /// cloud folder not yet opened elsewhere, is named, but it does not make the copy that is missing, and it does not
+    /// move the next due date.
     private var statusCard: some View {
         let offMac = model.log.lastVerifiedOffMac
-        let onMac = model.log.lastVerified.flatMap { $0.folderKind.isOffThisMac ? nil : $0 }
+        let onMac = model.log.lastVerified.flatMap { $0.isKnownOffThisMac ? nil : $0 }
         let tint: Color = offMac != nil ? .green : .red
         return StripeCard(tint: tint) {
             HStack(alignment: .firstTextBaseline, spacing: 10) {
@@ -80,8 +81,13 @@ struct ContinuityView: View {
                             .font(.callout).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                     }
                     if let onMac, onMac.createdAt > (offMac?.createdAt ?? .distantPast) {
-                        Text("A newer export, \(onMac.fileName), is in \(onMac.folder) (\(onMac.folderKind.title)): not off this Mac, so it does not count here.")
-                            .font(.callout).foregroundStyle(.orange).fixedSize(horizontal: false, vertical: true)
+                        if onMac.uploadNotChecked {
+                            Text("A newer export, \(onMac.fileName), is in the cloud folder \(onMac.folder). From this Mac it can't be seen whether it was uploaded, so it counts once you open it on another computer and record it (“Opened outside this Mac…”).")
+                                .font(.callout).foregroundStyle(.orange).fixedSize(horizontal: false, vertical: true)
+                        } else {
+                            Text("A newer export, \(onMac.fileName), is in \(onMac.folder) (\(onMac.folderKind.title)): not off this Mac, so it does not count here.")
+                                .font(.callout).foregroundStyle(.orange).fixedSize(horizontal: false, vertical: true)
+                        }
                     }
                 }
             }
@@ -112,6 +118,10 @@ struct ContinuityView: View {
             if model.folderPath != nil, let problem = model.folderProblem {
                 Text(verbatim: problem)
                     .font(.caption).foregroundStyle(.orange).fixedSize(horizontal: false, vertical: true)
+            }
+            if model.folderPath != nil, model.folderKind == .cloud {
+                Text("This Mac holds a copy of a cloud folder and uploads it when it can (not while sync is paused, the account is signed out or the storage is full). An export here counts as off this Mac once you open it on another computer and record it.")
+                    .font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
             }
             Text("Linumic OS writes only its export files into this folder, never over an existing file, and reads each one back to check it.")
                 .font(.caption).foregroundStyle(.secondary)
@@ -155,9 +165,18 @@ struct ContinuityView: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
             Divider()
+            // Without the inventory or obligations.json there is no export: it would count as the copy off this Mac
+            // while it does not hold them.
+            let required = ContinuityModel.requiredNotRead(inventory: inventory, obligations: obligations)
+            if !required.isEmpty {
+                Label { Text("No export until \(required.map(\.title).joined(separator: ", ")) is read: an export without it would count as the copy off this Mac while it does not hold it. Wait until it has loaded, or fix what its screen reports.") } icon: {
+                    Image(systemName: "xmark.octagon").foregroundStyle(.red)
+                }
+                .font(.caption)
+            }
             // A part that was not loaded is left out of the export and marked as not read, never written as empty.
-            let notRead = [licences.isLoaded ? nil : String(localized: "the licence ledger"),
-                           keys.loadError == nil ? nil : String(localized: "the keys registry")].compactMap { $0 }
+            let notRead = [licences.isLoaded ? nil : ContinuityBundle.Part.licences.title,
+                           keys.loadError == nil ? nil : ContinuityBundle.Part.keysRegistry.title].compactMap { $0 }
             if !notRead.isEmpty {
                 Label { Text("Not loaded, so left out of this export and marked as not read: \(notRead.joined(separator: ", ")).") } icon: {
                     Image(systemName: "exclamationmark.triangle").foregroundStyle(.orange)
@@ -184,7 +203,7 @@ struct ContinuityView: View {
                     }
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(model.isWorking || problem != nil || model.folderProblem != nil)
+                .disabled(model.isWorking || problem != nil || model.folderProblem != nil || !required.isEmpty)
                 if model.folderPath == nil { Text("Choose a folder first.").font(.caption).foregroundStyle(.secondary) }
             }
             if let r = model.lastResult, r.isVerified {
@@ -235,11 +254,15 @@ struct ContinuityView: View {
                 Text("None yet.").foregroundStyle(.secondary)
             }
             ForEach(model.log.exports) { r in
-                StripeCard(tint: r.isVerified ? (r.folderKind.isOffThisMac ? .green : .orange) : .red) {
+                StripeCard(tint: r.isVerified ? (r.isKnownOffThisMac ? .green : .orange) : .red) {
                     HStack(alignment: .firstTextBaseline) {
                         Text(verbatim: r.fileName).font(.callout.monospaced()).textSelection(.enabled)
                         Spacer(minLength: 6)
-                        ReleaseBadge(text: r.folderKind.title, symbol: "folder", color: r.folderKind.isOffThisMac ? .green : .orange)
+                        ReleaseBadge(text: r.folderKind.title, symbol: "folder", color: r.isKnownOffThisMac ? .green : .orange)
+                        if r.uploadNotChecked {
+                            ReleaseBadge(text: String(localized: "Upload not checked"), symbol: "icloud.slash", color: .orange)
+                                .help("Read back from this Mac's copy of the cloud folder. It counts as off this Mac once it is opened on another computer.")
+                        }
                     }
                     Text("\(r.createdAt.formatted(date: .abbreviated, time: .shortened)) · \(r.folder) · \(ByteCountFormatter.string(fromByteCount: Int64(r.fileBytes), countStyle: .file))")
                         .font(.caption).foregroundStyle(.secondary)

@@ -367,9 +367,17 @@ struct DeskRowView: View {
             .disabled(!canOpen)
             switch row.resolution {
             case .open, .reopened:
-                if let id = obligationID {
-                    // An obligation is done only with what proves it: the Obligations screen asks for it. That holds
-                    // for the live rows too (the continuity export, a restore test), whose Open goes to their own screen.
+                if item.closesAtSource, let id = obligationID, case .screen(let destination) = item.destination {
+                    // A live obligation (the continuity export, a restore test, a licence) closes only when its source
+                    // records it: Done goes there, never to a typed sentence or a Desk mark.
+                    Button { router.closeAtSource(id, destination: destination) } label: {
+                        Label("Done…", systemImage: "checkmark").labelStyle(.titleAndIcon)
+                    }
+                    .buttonStyle(.borderless)
+                    .help("It closes when its source records it (an export off this Mac, a restore test, a renewal): this opens that place")
+                    .minTapTarget()
+                } else if let id = obligationID {
+                    // An obligation is done only with what proves it: the Obligations screen asks for it.
                     Button { router.go(.obligations, request: .completeObligation(id)) } label: {
                         Label("Done…", systemImage: "checkmark").labelStyle(.titleAndIcon)
                     }
@@ -528,7 +536,8 @@ struct DeskBackupCard: View {
         }
         var parts = [String(localized: "\(newest.name), \(s.files) in the folder, checked \(s.checkedAt.formatted(date: .omitted, time: .shortened))")]
         if case .fails(let why)? = s.newestCheck { parts.append(why) }
-        if s.matchesInventory == false { parts.append(String(localized: "The inventory has changed since; the next run copies it.")) }
+        // Nothing is promised about the next run: it copies the change only while the job is on and automation runs.
+        if s.matchesInventory == false { parts.append(String(localized: "The inventory has changed since this copy.")) }
         return parts.joined(separator: " · ")
     }
 }

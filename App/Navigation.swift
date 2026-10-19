@@ -129,8 +129,9 @@ enum RouterRequest: Equatable {
     case worktrackCompany(String)
     case newVaultEntry
     case vaultSearch(String)
-    /// Opens the "Mark restore test done" sheet in Keys & Backups (the sheet saves, never the palette).
-    case markRestoreTest
+    /// Opens the "Mark restore test done" sheet in Keys & Backups, for one backup or the first (the sheet saves, never
+    /// the palette).
+    case markRestoreTest(backupID: String?)
     /// Shows one Desk item (scrolled to and highlighted).
     case deskItem(String)
     /// Shows one obligation (scrolled to and highlighted).
@@ -199,6 +200,17 @@ final class Router {
         case .obligations: go(.obligations)
         case .obligation(let id): go(.obligations, request: .obligation(id))
         case .continuity: go(.continuity)
+        }
+    }
+
+    /// Where a live obligation is closed: at its source, never by a typed Done. A restore test opens its sheet for that
+    /// backup; the rest open the screen they are read from (Continuity for the export, the licence, the Monitor).
+    func closeAtSource(_ obligationID: String, destination: BriefDestination) {
+        let restore = "keys.restore."
+        if obligationID.hasPrefix(restore) {
+            go(.keys, request: .markRestoreTest(backupID: String(obligationID.dropFirst(restore.count))))
+        } else {
+            open(destination)
         }
     }
 

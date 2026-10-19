@@ -68,14 +68,25 @@ final class ObligationsModel {
         mutate { try $0.add(title: title, product: product, area: area, due: due, consequence: consequence, source: source, now: .now) }
     }
 
+    /// Only for a seed row or one of yours: a live row takes its day from its source, an account's renewal from the
+    /// account (`editAccount`), so each day is entered in one place.
     @discardableResult
     func setDate(_ id: String, due: KeyDay, source: String) -> Bool {
-        mutate { try $0.setDate(id, due: due, source: source, now: .now) }
+        guard register().obligation(id)?.origin.takesDateHere == true else {
+            errorMessage = String(localized: "This row takes its date from its own source (a reading, or the account's card), so it is not set here.")
+            return false
+        }
+        return mutate { try $0.setDate(id, due: due, source: source, now: .now) }
     }
 
+    /// Never for a live row: it closes only when its source records it.
     @discardableResult
     func complete(_ o: Obligation, on day: KeyDay, evidence: String) -> Bool {
-        mutate { try $0.complete(o.id, due: o.due, on: day, evidence: evidence, now: .now) }
+        guard o.origin.takesDoneHere else {
+            errorMessage = String(localized: "This row closes only when its own source records it (an export, a restore test, a new reading).")
+            return false
+        }
+        return mutate { try $0.complete(o.id, due: o.due, on: day, evidence: evidence, now: .now) }
     }
 
     func reopen(_ o: Obligation) {
