@@ -28,6 +28,7 @@ credentials already in this device's Keychain.
 | Website messages | 30 min | WordPress application password | |
 | Keys & Backups | 1 h | a granted folder (Mac only) | attributes only, never contents |
 | Local inventory backup | 24 h | nothing | see below |
+| Ledgers | 30 min | a granted ledger folder (Mac only) | the PRIORITIES.md files and the newest NEXT-ACTIONS for the Desk, read-only; runs just before the Brief; without a grant it still records each ledger as "not granted" for the Desk |
 | Daily Brief | 30 min | nothing | runs last: summarises what the others read |
 
 ## Scheduling (`AutomationScheduler`, pure and tested)

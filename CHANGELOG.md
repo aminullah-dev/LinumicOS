@@ -5,6 +5,26 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Desk and Ledgers, Phase 1 of the company OS roadmap (2026-10-19)
+- New home screen **Desk** («میز کار»), first in the sidebar and the launch screen: Today, This week and Later
+  (collapsed), grouped by product with WorkTrack and SafeBeauty first. Every row has its title, product pill, source
+  (file:line for ledgers), read time and a "Stale" badge after twice the source's usual interval. Actions: Open, Done,
+  Snooze, Waiting on others, Dismiss with a reason, Copy agent brief (Dari, file:line, "read PRIORITIES.md first").
+- Items come from every Daily Brief line (through the existing Brief routing) and from the owner's ledgers: the eight
+  PRIORITIES.md files (open checkboxes at any indentation, the numbered list under «اولویت»; P0 high, P1 normal) and
+  the TODAY and THIS WEEK items of the newest NEXT-ACTIONS. A ledger that is not granted, not found or unreadable, a
+  Brief section not read, a «آخرین بازبینی» older than 7 days and lines that could not be understood are items of
+  their own, never "0 open".
+- Done on a Brief line lasts until the next reading ("still open according to …" if it is still there); Done on a
+  ledger line waits under "You marked it, the ledger isn't ticked yet" until the line changes; Waiting on others and
+  Dismiss hide until the fact changes. Kept in `desk-state.json` on this device, so they survive a relaunch.
+- Read-only access to `~/Projects/Multiplatform` and `~/Games/BE-PAYA` through a bookmark of its own
+  (`LCCLedgerBookmarks`, Settings → Integrations → Ledger access); only the allow-listed files are opened.
+- Automation job **Ledgers** every 30 minutes, no network, before the Daily Brief (Mac only). Command Palette: "Read
+  ledgers now", "Ledger access…" and every open Desk item. ⌘1 opens the Desk; AI Assistant left the Go menu.
+- No network host, Supabase table or entitlement added. 32 new tests (459 run, 1 opt-in live check that reads the
+  real ledgers: 49 open checkboxes, 5 BE-PAYA items, 5 TODAY + 7 THIS WEEK items on 2026-10-19). Dari for 90 strings.
+
 ### Fixed: Keys & Backups, the registry matches the keys on this Mac (2026-10-18)
 - VELRO: the Play upload key is the file in iCloud Drive > importand (`velro-play-upload`). The copy in `~/Keys/velro`
   has the same name and size and is in the Android bundle; the key in `~/.velro-keys` is recorded as not the Play key.

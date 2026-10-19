@@ -9,7 +9,10 @@ repositories, platforms, versions, releases, roadmap, issues, deployments,
 store status, social media and (later) AI-assisted market intelligence for
 Afghanistan.
 
-**Status:** MVP. Connected, read-only: GitHub (repositories, oversight, platforms hub), the public App Store
+**Status:** MVP. **Desk** (home screen, since 2026-10-19): one list of what needs the owner today, this week and
+later, grouped by product (WorkTrack first, then SafeBeauty), built on this device from the Daily Brief and the owner's
+ledgers (the eight PRIORITIES.md files and the newest NEXT-ACTIONS, read-only, inside two folders granted once in
+Settings → Integrations → Ledger access); a source that was not read is an item, never zero. Connected, read-only: GitHub (repositories, oversight, platforms hub), the public App Store
 lookup, App Store Connect and Google Play (with the owner's keys), and Supabase for the shared inventory and licence
 ledger. WorkTrack customers: the vendor API, read plus licence renewals confirmed per action. Operations: Talar,
 SafeBeauty and VELRO admin overviews, read-only except Talar's audited hall approve/reject. Vault: the owner's own
@@ -85,6 +88,7 @@ find strings with no Dari translation.
 - [ARCHITECTURE.md](ARCHITECTURE.md): system design and module boundaries
 - [PRODUCTS.md](PRODUCTS.md): product data model
 - [ROADMAP.md](ROADMAP.md): Linumic OS roadmap
+- [docs/company-os-roadmap.md](docs/company-os-roadmap.md): running the whole company from Linumic OS (Dari); Phase 1 is the Desk and Ledgers
 - [CHANGELOG.md](CHANGELOG.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md): working rules
 - [docs/product-inventory.md](docs/product-inventory.md): current inventory with sources
