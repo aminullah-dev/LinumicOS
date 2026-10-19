@@ -271,6 +271,8 @@ struct ObligationDeskTests {
         let keysDue = row("keys.restore.drive", due: "2026-10-01", origin: .keys)
         let keysNext = row("keys.restore.usb", due: "2026-12-01", origin: .keys)
         let keysUnknown = row("keys.second-copy", due: nil, origin: .keys)
+        let tls = row("tls.api.velro.af", due: "2027-01-01", origin: .certificate)
+        #expect(!ObligationsBriefRules.showsInBrief(tls, today: today))    // renews by itself; the Monitor warns at 30 days
         #expect(!ObligationsBriefRules.showsInBrief(soon, today: today))   // the Monitor section says it
         #expect(ObligationsBriefRules.showsInBrief(far, today: today))
         #expect(!ObligationsBriefRules.showsInBrief(keysDue, today: today))

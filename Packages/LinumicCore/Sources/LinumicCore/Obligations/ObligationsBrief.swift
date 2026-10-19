@@ -16,12 +16,16 @@ public struct BriefObligationsInput: Sendable {
 
 /// Which open obligations become Brief lines, and how each is worded. Every open obligation is a line (a far one is
 /// for information, so the Desk keeps it under Later), except where another section of the Brief already says the
-/// same thing: a certificate, domain or licence inside that section's 30-day window, and the Keys & Backups reminders.
+/// same thing: a domain or licence inside that section's 30-day window, and the Keys & Backups reminders. TLS
+/// certificates renew on their own (each host's provider does it); the Monitor's section brings one forward from 30
+/// days before it ends, so they stay on the Obligations screen and out of the Desk.
 public enum ObligationsBriefRules {
     public static func showsInBrief(_ o: Obligation, today: KeyDay) -> Bool {
         guard o.completion == nil else { return false }
         switch o.origin {
-        case .domain, .certificate, .licence:
+        case .certificate:
+            return false
+        case .domain, .licence:
             // The Monitor and Licences sections list these from 30 days before the end (and after it).
             guard let due = o.due else { return true }
             return today.days(until: due) > DailyBriefBuilder.expiryWindowDays
