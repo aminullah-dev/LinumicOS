@@ -380,7 +380,7 @@ final class AutomationEngine {
         case .siteMessages:
             guard !siteMessages.isRefreshing else { return .skipped(.alreadyRunning) }
             await siteMessages.refresh()
-            guard siteMessages.isConfigured else { return .skipped(.notConnected) }
+            guard siteMessages.isConfigured, !siteMessages.needsSiteSetup else { return .skipped(.notConnected) }
             if let error = siteMessages.loadError { return .failed(error) }
             return .succeeded(String(localized: "\(siteMessages.reading?.messages.count ?? 0) recent messages read"))
 

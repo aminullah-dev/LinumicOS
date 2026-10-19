@@ -18,6 +18,9 @@ final class SiteMessagesModel {
     /// The WordPress username (not secret), for Settings.
     private(set) var username: String?
     private(set) var loadError: String?
+    /// The site itself isn't set up for reading (SureForms abilities off, or WordPress without the Abilities API).
+    /// A setting on the site, not an outage: the automation records it as not connected rather than failing.
+    private(set) var needsSiteSetup = false
     private(set) var isRefreshing = false
 
     private let secrets: SecretStore
@@ -88,12 +91,14 @@ final class SiteMessagesModel {
             let r = try await client.fetchRecent()
             reading = r
             loadError = nil
+            needsSiteSetup = false
             let toNotify = state.record(r)
             save()
             await SiteMessagesNotifier.post(toNotify)
         } catch {
             // The last good reading stays, with the error beside it; it is never shown as fresh.
             loadError = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+            needsSiteSetup = [.abilitiesOff, .noAbilitiesAPI].contains(error as? SiteMessagesError)
         }
     }
 
