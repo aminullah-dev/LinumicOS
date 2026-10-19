@@ -97,9 +97,12 @@ public struct BriefLine: Identifiable, Hashable, Sendable {
     public var destination: BriefDestination
     /// Links shown beside the Open button.
     public var links: [BriefLink]
+    /// The product the line is about, as its source names it ("WorkTrack", an app name, a repository), when it is known.
+    /// The Desk groups by it; nil when the line is about several products or none.
+    public var product: String?
 
     public init(id: String, kind: BriefSourceKind, severity: BriefSeverity, text: String, detail: String? = nil,
-                source: String, readAt: Date?, destination: BriefDestination, links: [BriefLink] = []) {
+                source: String, readAt: Date?, destination: BriefDestination, links: [BriefLink] = [], product: String? = nil) {
         self.id = id
         self.kind = kind
         self.severity = severity
@@ -109,6 +112,7 @@ public struct BriefLine: Identifiable, Hashable, Sendable {
         self.readAt = readAt
         self.destination = destination
         self.links = links
+        self.product = product
     }
 }
 
@@ -340,7 +344,8 @@ public enum DailyBriefBuilder {
             return BriefLine(id: "automation.\(f.job.rawValue)", kind: .automation,
                              severity: f.count >= AutomationHealth.failingAfter ? .high : .normal,
                              text: LF("%@ failed %d times in a row", L(spec.title), f.count), detail: f.message,
-                             source: source, readAt: ledger.states[f.job]?.lastRun?.finishedAt, destination: .automation)
+                             source: source, readAt: ledger.states[f.job]?.lastRun?.finishedAt, destination: .automation,
+                             product: "Linumic OS")
         }
         var notes: [String] = []
         if !health.notConnected.isEmpty {
@@ -373,11 +378,13 @@ public enum DailyBriefBuilder {
                 case .down:
                     lines.append(BriefLine(id: "monitor.down.\(t.id)", kind: .monitor, severity: .high,
                                            text: LF("%@ is down", name), detail: r.failure ?? r.statusCode.map { LF("HTTP %d", $0) },
-                                           source: "GET \(t.url.absoluteString)", readAt: r.checkedAt, destination: .monitor))
+                                           source: "GET \(t.url.absoluteString)", readAt: r.checkedAt, destination: .monitor,
+                                           product: t.product.title))
                 case .degraded:
                     lines.append(BriefLine(id: "monitor.slow.\(t.id)", kind: .monitor, severity: .normal,
                                            text: LF("%@ is slow or degraded", name), detail: r.latencyMS.map { LF("%d ms", $0) },
-                                           source: "GET \(t.url.absoluteString)", readAt: r.checkedAt, destination: .monitor))
+                                           source: "GET \(t.url.absoluteString)", readAt: r.checkedAt, destination: .monitor,
+                                           product: t.product.title))
                 default: break
                 }
             }
@@ -389,7 +396,7 @@ public enum DailyBriefBuilder {
                                        text: LF("%@ was down in %d of %d checks in the last 24 hours", name, downs.count, recent.count),
                                        detail: downs.last.map { LF("Last failure %@", $0.at.formatted(date: .omitted, time: .shortened)) },
                                        source: L("Monitor history, last 24 hours (monitor.json)"),
-                                       readAt: recent.last?.at, destination: .monitor))
+                                       readAt: recent.last?.at, destination: .monitor, product: t.product.title))
             }
         }
         let hosts = Set(input.monitorTargets.map(\.host))
@@ -399,14 +406,16 @@ public enum DailyBriefBuilder {
             lines.append(BriefLine(id: "monitor.cert.\(reading.host)", kind: .monitor, severity: days < 7 ? .high : .normal,
                                    text: days < 0 ? LF("The TLS certificate of %@ has expired", reading.host)
                                                   : LF("The TLS certificate of %@ ends in %d days", reading.host, days),
-                                   source: LF("TLS handshake with %@", reading.host), readAt: reading.readAt, destination: .monitor))
+                                   source: LF("TLS handshake with %@", reading.host), readAt: reading.readAt, destination: .monitor,
+                                   product: input.monitorTargets.first { $0.host == reading.host }?.product.title))
         }
         for (name, d) in s.domains.sorted(by: { $0.key < $1.key }) {
             guard let days = d.daysLeft(now: now), days < expiryWindowDays else { continue }
             lines.append(BriefLine(id: "monitor.domain.\(name)", kind: .monitor, severity: days < 7 ? .high : .normal,
                                    text: days < 0 ? LF("The registration of %@ has expired", name)
                                                   : LF("The registration of %@ ends in %d days", name, days),
-                                   source: d.sourceURL, readAt: d.fetchedAt, destination: .monitor))
+                                   source: d.sourceURL, readAt: d.fetchedAt, destination: .monitor,
+                                   product: input.monitorTargets.first { $0.host == name }?.product.title))
         }
         let unchecked = input.monitorTargets.count { s.latest[$0.id] == nil }
         let notes = unchecked > 0 ? [LF("%d of %d endpoints have not been checked yet.", unchecked, input.monitorTargets.count)] : []
@@ -435,7 +444,7 @@ public enum DailyBriefBuilder {
                              text: LF("Message from %@, %@", msg.sender, when),
                              detail: msg.excerpt.isEmpty ? nil : msg.excerpt,
                              source: LF("%@, entry %d", source, msg.id), readAt: reading.readAt,
-                             destination: .siteMessages, links: links)
+                             destination: .siteMessages, links: links, product: MonitorProduct.website.title)
         }
         var notes: [String] = []
         if let error = m.loadError { notes.append(LF("The last refresh failed: %@", error)) }
@@ -460,7 +469,7 @@ public enum DailyBriefBuilder {
         let lines = s.waiting.map { item in
             BriefLine(id: "releases.\(item.id)", kind: .releases, severity: severity(item.severity),
                       text: "\(item.subject): \(item.title)", detail: item.detail, source: item.source,
-                      readAt: item.observedAt, destination: .releaseCenter)
+                      readAt: item.observedAt, destination: .releaseCenter, product: item.subject)
         }
         var notes: [String] = []
         if s.appStoreReadAt == nil { notes.append(s.appStoreNote ?? L("App Store Connect not read yet.")) }
@@ -491,16 +500,19 @@ public enum DailyBriefBuilder {
             if r.isExpired(today: now) {
                 lines.append(BriefLine(id: "licence.expired.\(r.licenceID)", kind: .licences, severity: .high,
                                        text: LF("%@ licence %@ for %@ has expired (%@)", r.product.displayName, r.licenceID, r.customer, r.expires ?? "?"),
-                                       source: source, readAt: l.lastSyncedAt, destination: .licence(r.licenceID)))
+                                       source: source, readAt: l.lastSyncedAt, destination: .licence(r.licenceID),
+                                       product: r.product.displayName))
             } else if r.isExpiring(within: expiryWindowDays, today: now), let days = r.daysUntilExpiry(today: now) {
                 lines.append(BriefLine(id: "licence.expiring.\(r.licenceID)", kind: .licences, severity: days <= 7 ? .high : .normal,
                                        text: LF("%@ licence %@ for %@ ends in %d days (%@)", r.product.displayName, r.licenceID, r.customer, days, r.expires ?? "?"),
-                                       source: source, readAt: l.lastSyncedAt, destination: .licence(r.licenceID)))
+                                       source: source, readAt: l.lastSyncedAt, destination: .licence(r.licenceID),
+                                       product: r.product.displayName))
             }
             if r.status == .active, now.timeIntervalSince(r.createdAt) < Double(recentDays) * day, r.createdAt <= now {
                 lines.append(BriefLine(id: "licence.issued.\(r.licenceID)", kind: .licences, severity: .info,
                                        text: LF("%@ licence %@ issued to %@ on %@", r.product.displayName, r.licenceID, r.customer, r.issued),
-                                       detail: r.createdBy, source: source, readAt: r.createdAt, destination: .licence(r.licenceID)))
+                                       detail: r.createdBy, source: source, readAt: r.createdAt, destination: .licence(r.licenceID),
+                                       product: r.product.displayName))
             }
         }
         let notes = l.records.isEmpty ? [L("The ledger is empty on this device.")] : []
@@ -529,14 +541,16 @@ public enum DailyBriefBuilder {
         for c in summary.expired {
             lines.append(BriefLine(id: "worktrack.expired.\(c.companyId)", kind: .worktrack, severity: .high,
                                    text: LF("%@: WorkTrack licence expired (%@)", c.name, c.license.expiresAt ?? "?"),
-                                   source: source, readAt: readAt, destination: .worktrackCompany(c.companyId)))
+                                   source: source, readAt: readAt, destination: .worktrackCompany(c.companyId),
+                                   product: MonitorProduct.workTrack.title))
         }
         for c in summary.expiringSoon {
             let days = c.daysUntilExpiry ?? 0
             lines.append(BriefLine(id: "worktrack.expiring.\(c.companyId)", kind: .worktrack, severity: days <= 7 ? .high : .normal,
                                    text: LF("%@: WorkTrack renewal due in %d days (%@)", c.name, days, c.license.expiresAt ?? "?"),
                                    detail: L("Days as counted by WorkTrack at the time of reading."),
-                                   source: source, readAt: readAt, destination: .worktrackCompany(c.companyId)))
+                                   source: source, readAt: readAt, destination: .worktrackCompany(c.companyId),
+                                   product: MonitorProduct.workTrack.title))
         }
         let notes = env == "production" ? [] : [LF("Read from the %@ environment, not production.", env)]
         return finish(.worktrack, lines: lines, readAt: readAt, source: source, notes: notes)
@@ -573,7 +587,7 @@ public enum DailyBriefBuilder {
                 let where_ = c.isProduction ? p.product.title : "\(p.product.title) (\(c.environment))"
                 lines.append(BriefLine(id: "ops.\(c.queue.rawValue)", kind: .operations, severity: c.isProduction ? .normal : .info,
                                        text: c.queue.sentence(c.count), source: LF("%@ admin, %@", where_, c.queue.title),
-                                       readAt: c.readAt, destination: .operations(p.product)))
+                                       readAt: c.readAt, destination: .operations(p.product), product: p.product.title))
             }
         }
         return finish(.operations, lines: lines, readAt: newest, source: source, notes: notes)
@@ -623,7 +637,8 @@ public enum DailyBriefBuilder {
         }
         let lines = KeysRules.reminders(k.check).map { r in
             BriefLine(id: r.id, kind: .keys, severity: r.severity, text: r.text, detail: r.detail, source: r.source,
-                      readAt: r.readAt, destination: .keys)
+                      readAt: r.readAt, destination: .keys,
+                      product: r.keyID.flatMap { id in k.check.registry.keys.first { $0.id == id }?.product })
         }
         var notes: [String] = []
         if k.check.checkedAt == nil {

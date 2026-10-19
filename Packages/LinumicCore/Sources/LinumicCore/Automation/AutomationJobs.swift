@@ -17,6 +17,8 @@ public enum AutomationJobID: String, Codable, CaseIterable, Sendable, Identifiab
     case siteMessages
     case keys
     case backup
+    /// The owner's ledgers for the Desk; before the Brief, so the Desk and the Brief see the same round.
+    case ledgers
     case brief
 
     public var id: String { rawValue }
@@ -92,6 +94,11 @@ public enum AutomationCatalog {
         AutomationJobSpec(id: .backup, title: "Local inventory backup",
                           detail: "A daily copy of the inventory on this device, read back to prove it restores.",
                           cadence: 24 * 60 * 60, retryAfter: 30 * 60, needsNetwork: false),
+        // Local files only (the PRIORITIES.md files and the newest NEXT-ACTIONS), read-only, inside the folders the
+        // owner granted; Mac only, like Keys & Backups.
+        AutomationJobSpec(id: .ledgers, title: "Ledgers",
+                          detail: "The PRIORITIES.md files and the newest NEXT-ACTIONS, read-only, for the Desk. No network.",
+                          cadence: 30 * 60, retryAfter: 5 * 60, needsNetwork: false),
         AutomationJobSpec(id: .brief, title: "Daily Brief",
                           detail: "Today's snapshot and the morning notification, from what the jobs above read.",
                           cadence: 30 * 60, needsNetwork: false, runsInBackground: true),
