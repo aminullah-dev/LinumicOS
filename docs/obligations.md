@@ -85,7 +85,8 @@ comes from: the renewal date as entered (its source, the day it was entered), el
 after each Daily Brief round (every 30 minutes while the app runs), once per window. The key is
 `obligation:<id>:<due>:<lead>`, the same key the Phase 3 server sweep uses (an event the device already alerted about
 is not alerted again, and an alert the server's event brought first is not repeated by the device). Live rows alert
-through their own screens (Monitor, Licences) and are left out. Settings: the switch on the Obligations screen
+through their own screens (Monitor, Licences) and are left out, and so is the seed's `domain.linumic.com` while it
+stands in for the Monitor's reading (the server's sweep leaves it out too). Settings: the switch on the Obligations screen
 (`LCCNotifyObligations`).
 
 ## Where the rows come from
@@ -100,7 +101,11 @@ through their own screens (Monitor, Licences) and are left out. Settings: the sw
 | Keys & Backups registry | `keys.restore.<backup>`: next restore test (90 days after the last), or "no restore test recorded"; `keys.second-copy` while that gap is open |
 | Continuity log (`continuity.json`) | `continuity.export`: 30 days after the last verified export **known to be off this Mac** (an external drive, a network volume, or a cloud folder once the export was opened outside this Mac), or "no encrypted copy off this Mac yet". An export to this Mac's own disk, or to a folder whose place is not known, does not count (and the app refuses to make one); one in a cloud folder that was not opened elsewhere does not count yet, since its local copy reads back whether or not it was uploaded |
 
-### Seed (`ObligationSeed`, revision 3)
+### Seed (`ObligationSeed`, revision 4)
+
+Revision 4 changes no row: it stops Desk sync sending `domain.linumic.com` for the server's sweep (the Monitor's RDAP
+reading replaces it on the devices), and makes the copy revision 3 would have sent a tombstone. A test pins what is
+sent of the seed to the revision, so a corrected row needs a new one.
 
 Only facts already recorded with a source. NA = `~/Projects/Multiplatform/NEXT-ACTIONS-2026-10-19.md`,
 M = `~/.claude/projects/-Users-aminullahhashemi/memory/`.

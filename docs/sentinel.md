@@ -2,8 +2,9 @@
 
 **Status, 2026-10-19:** **deployed** to the live Supabase project (`mczuclgfqxffcbiwvecf`) on 2026-10-19 at 00:57 UTC,
 after the owner's approval; the evidence is under "Deployed" below. The deploy steps are kept for a redeploy.
-Phase 3 of the roadmap adds an obligation sweep to the daily job (`20261019090100_obligation_sweep.sql`, below and in
-[desk-sync.md](desk-sync.md)); it is **not applied yet** and waits for the owner's approval.
+Phase 3 of the roadmap adds an obligation sweep as a daily job of its own (`20261019090100_obligation_sweep.sql`,
+below and in [desk-sync.md](desk-sync.md)); it is **not applied yet** and waits for the owner's approval. It does not
+change the licence job.
 
 The Monitor in the app only checks while the app is open. The Sentinel runs the same checks on Supabase, so they keep
 running while the Mac is off or asleep:
@@ -11,9 +12,12 @@ running while the Mac is off or asleep:
 - **Every 10 minutes:** one plain, unauthenticated GET to each of the Monitor's 15 public URLs, judged exactly as the
   app judges them (`MonitorEvaluator`).
 - **Daily, 06:15 UTC (10:45 Kabul):** licences in the `licences` ledger that expire within 30, 7 or 1 days, or expired
-  in the last 30 days. Once `20261019090100_obligation_sweep.sql` is applied, the same job then sweeps the obligations
-  synced from the devices: one `obligationDue` event per obligation entering a 30, 14, 7 or 1-day window or reaching
-  its day, keyed `obligation:<id>:<due>:<lead>` like the app's own notification ([desk-sync.md](desk-sync.md)).
+  in the last 30 days.
+- **Daily, 06:16 UTC (10:46 Kabul), once `20261019090100_obligation_sweep.sql` is applied:** a job of its own,
+  `sentinel-obligations`, sweeps the obligations synced from the devices: one `obligationDue` event per obligation
+  entering a 30, 14, 7 or 1-day window or reaching its day, keyed `obligation:<id>:<due>:<lead>` like the app's own
+  notification ([desk-sync.md](desk-sync.md)). pg_cron runs each job in its own transaction, so neither sweep can roll
+  back the other's events.
 - **Weekly, Sundays 02:30 UTC:** a copy of `export_inventory()` in `inventory_snapshots`, newest 12 kept. Supabase Free
   has no point-in-time recovery, so this is the only server-side history of the inventory.
 - **Daily, 03:45 UTC:** rounds and checks older than 14 days are pruned. Events and snapshots are kept.
@@ -45,7 +49,7 @@ Files:
 |---|---|
 | Tables, RLS, recording, licence sweep, snapshot, pruning, reading RPCs | `supabase/migrations/20261018090000_sentinel.sql` |
 | pg_cron jobs, pg_net call, Vault secret, "Check now" RPC | `supabase/migrations/20261018090100_sentinel_schedule.sql` |
-| Obligation sweep, the `obligationDue` kind, `sentinel_recent_events` with obligations, the 06:15 job running both sweeps (Phase 3, not applied yet) | `supabase/migrations/20261019090100_obligation_sweep.sql` |
+| Obligation sweep and its 06:16 job, the `obligationDue` kind, `sentinel_recent_events` with obligations, the overview counting them apart (Phase 3, not applied yet) | `supabase/migrations/20261019090100_obligation_sweep.sql` |
 | Edge Function (targets copied from `MonitorCatalog`) | `supabase/functions/sentinel/` |
 | Swift models, client, summary | `Packages/LinumicCore/Sources/LinumicCore/Sentinel/` |
 | Tests | `SentinelTests.swift` (Swift), `supabase/functions/sentinel/evaluate_test.ts` (Deno), `supabase/tests/sentinel/` (SQL) |
@@ -57,15 +61,15 @@ Files:
 | `sentinel_rounds`, `sentinel_checks`, `sentinel_target_state`, `sentinel_events`, `inventory_snapshots` | tables, RLS on | admins read (`private.is_admin()`); nobody writes through the API |
 | `sentinel_record_round(round jsonb)` | security definer | `service_role` only (the Edge Function) |
 | `sentinel_secret_ok(candidate text)` | security definer | `service_role` only |
-| `sentinel_overview(hours int = 24)` | security invoker + `assert_admin()` | admins |
+| `sentinel_overview(hours int = 24)` | security invoker + `assert_admin()` | admins; after `20261019090100` its `unacknowledged` leaves obligation events out and `unacknowledgedObligations` counts them, so the app of 2026-10-18 never shows a count it can't clear |
 | `sentinel_recent_events(max_rows int = 50, include_acknowledged bool = true)` | security invoker + `assert_admin()` | admins; after `20261019090100` it takes a third argument, `include_obligations bool = false`, so the app of 2026-10-18 (two arguments) gets no event of a kind it can't read |
-| `private.sentinel_obligation_sweep(today)`, `private.obligation_schedule()` (after `20261019090100`) | security definer / invoker | pg_cron (postgres) only |
+| `private.sentinel_obligation_sweep(today)`, `private.obligation_schedule()`, `private.is_live_obligation_id(text)` (after `20261019090100`) | security definer / invoker | pg_cron (postgres) only |
 | `ack_sentinel_event(event_id bigint)` | security definer, checks `private.is_admin()` | admins; audited in `audit_events` |
 | `request_sentinel_round()` | security definer, checks `private.is_admin()` | admins; at most once every 2 minutes |
 | `private.sentinel_invoke`, `private.sentinel_licence_sweep`, `private.take_inventory_snapshot`, `private.sentinel_prune` | security definer | pg_cron (postgres) only |
 | `private.sentinel_manual_requests` | table | nobody through the API |
 | Vault secrets `sentinel_secret`, `sentinel_function_url` | Vault | the functions above |
-| cron jobs `sentinel-round`, `sentinel-licences`, `sentinel-snapshot`, `sentinel-prune` | pg_cron | |
+| cron jobs `sentinel-round`, `sentinel-licences`, `sentinel-snapshot`, `sentinel-prune` (and `sentinel-obligations` after `20261019090100`) | pg_cron | |
 
 The two security-definer RPCs that admins call check `private.is_admin()` directly: inside a security-definer function
 `current_user` is the owner, which `assert_admin()` would wave through.
@@ -97,8 +101,10 @@ Suggested display (the app layer decides):
   `lastFailure`. `flapping` targets failed the latest check once but are not down yet.
 - **Events:** localize from `kind` + `detail`; `title` is English and written by the server. "Seen" calls
   `acknowledge`. Unacknowledged critical events are the ones to notify about. An `obligationDue` event carries the
-  obligation's own title (or the account's name with `renewal`), its day, days left, window and key; the app skips the
-  notification when it already alerted that key itself, and records it otherwise.
+  obligation's own title (or the account's name with `renewal`), its day, days left, window and key. The app reads it
+  against its own register first: it notifies only while the obligation is open there and due on the event's day,
+  acknowledges one Done there for that day, words the days from today (not the days left when it was written), and
+  skips one whose key it already alerted itself, recording it otherwise.
 - **Backups:** `lastSnapshotAt`, plus `snapshotOverdue` when rounds run but the weekly copy is missing or older than
   8 days.
 - **Drift:** `missingFromServer` and `unknownToApp` should both be empty. A non-empty list means `MonitorCatalog` and
@@ -181,7 +187,8 @@ rows). It is not verified whether this scheduled traffic keeps a Free project fr
 ## Rollback
 
 If `20261019090100_obligation_sweep.sql` (Phase 3) is applied, roll it back first with the SQL in
-[desk-sync.md](desk-sync.md#rollback): it puts `sentinel_recent_events` and the 06:15 job back as they were here.
+[desk-sync.md](desk-sync.md#rollback): it removes the 06:16 job and puts `sentinel_recent_events` and
+`sentinel_overview` back as they were here.
 
 Run in the SQL editor. It removes everything the two migrations added; the `licences` ledger and the inventory are not
 touched. Snapshots are deleted with their table, so export the last one first if it's needed.

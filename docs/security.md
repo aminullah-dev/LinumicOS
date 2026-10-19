@@ -215,9 +215,14 @@ post as Linumic, so it is treated as a production system.
     conflict with both versions, never an overwrite. A BEFORE trigger bumps the version on every write; the owner's
     tables are audited in `audit_events` (who, before and after); the ledger tables are not (a copy of files read every
     30 minutes). Nothing is deleted: an undo is a tombstone.
-  - Reading: `desk_sync_pull()` (invoker, `assert_admin()`, RLS). The obligation sweep writes `sentinel_events` of kind
-    `obligationDue` (owner's titles or account names, days, the key); `sentinel_recent_events` returns them only when
-    asked, so the app of 2026-10-18 keeps working.
+  - Reading: `desk_sync_pull()` (invoker, `assert_admin()`, RLS). The obligation sweep (its own pg_cron job, apart
+    from the licence sweep) writes `sentinel_events` of kind `obligationDue` (owner's titles or account names, days,
+    the key); `sentinel_recent_events` returns them only when asked, and `sentinel_overview` counts them apart, so the
+    app of 2026-10-18 keeps working and never shows a count it can't clear. Every day the sweep reads is checked to be
+    a real `YYYY-MM-DD` day when written and read through `private.iso_day`, so one bad row can't stop it.
+  - History: the owner's tables are audited, so `audit_events` keeps every version of their rows, after an undo and
+    after the rollback too (docs/desk-sync.md says how to remove it). Free text (ledger lines, dismiss reasons, the
+    owner's titles, sources and evidence) can name people; only the Daily Brief's customer ids are hashed.
   - On this device: `desk-sync.json` next to the inventory holds what was last agreed with the server, the conflicts and
     (iPhone, iPad) the Mac's ledger reading, so ledger titles are on the iPhone's disk too; no token or key.
 - **Continuity export (since Phase 2):** the export folder is a read-write security-scoped bookmark
