@@ -18,4 +18,28 @@ struct KeyDayTests {
         #expect(Calendar(identifier: .gregorian).component(.year, from: due.start()) == 2026)
         #expect(KeyDay(due.start()) == due)
     }
+
+    // A test host whose own calendar is Gregorian can't tell a default of `Calendar.current` from `KeyDay.calendar`.
+    // tools/test/persian-calendar.sh (and CI) runs this suite with the Persian calendar as the device's, where these
+    // fail if a default slips back to the device's calendar.
+    @Test func theDefaultsAreGregorianWhereverADayIsMade() {
+        // 2026-10-19 is 1405-07-27 in the Persian calendar: every component differs.
+        let date = Date(timeIntervalSince1970: 1_792_411_200)
+        var persian = Calendar(identifier: .persian)
+        persian.timeZone = .current
+        #expect(KeyDay(date, calendar: persian) != KeyDay(date, calendar: KeyDay.calendar))
+        #expect(KeyDay(date) == KeyDay(date, calendar: KeyDay.calendar))
+        #expect(KeyDay(date) != KeyDay(date, calendar: persian))
+        #expect(KeyDay.calendar.identifier == .gregorian)
+        // Keys & Backups checks and the Desk take the same default.
+        #expect(KeysCheckInput(registry: KeysRegistry.seed, now: date).calendar.identifier == .gregorian)
+        #expect(InventoryBackup.gregorian.identifier == .gregorian)
+        // A normal item due on today's Gregorian day is Today's on a Desk built with the default calendar.
+        let line = BriefLine(id: "x", kind: .obligations, severity: .normal, text: "x", source: "s", readAt: date,
+                             destination: .obligations, due: KeyDay(date, calendar: KeyDay.calendar))
+        let brief = DailyBrief(sections: [BriefSection(kind: .obligations, state: .items, lines: [line], readAt: date, source: "s")],
+                               generatedAt: date)
+        let desk = DeskBuilder.build(brief: brief, ledgers: .unsupported, state: DeskState(), now: date)
+        #expect(desk.today.map(\.item.subjectKey) == ["x"])
+    }
 }

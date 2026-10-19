@@ -197,11 +197,16 @@ public extension InventoryBackup {
     }
 
     /// Whether the file the last successful run vouched for is gone, so the job must run again now. A ledger written
-    /// before artifacts were recorded has none: then an empty folder after a success counts as gone.
-    static func artifactMissing(_ state: AutomationJobState?, fileNames: [String]) -> Bool {
-        guard let state, state.lastRunDidTheWork else { return false }
+    /// before artifacts were recorded has none: then it counts as gone when no file in the folder is named for the day
+    /// that run ran (local Gregorian, its start or its end). A run that found the inventory unchanged confirmed an older
+    /// file; that costs one extra run, which records the file it vouches for.
+    static func artifactMissing(_ state: AutomationJobState?, fileNames: [String],
+                                calendar: Calendar = InventoryBackup.gregorian) -> Bool {
+        guard let state, state.lastRunDidTheWork, let run = state.lastRun else { return false }
         if let artifact = state.artifact { return !fileNames.contains(artifact) }
-        return fileNames.isEmpty
+        let names = Set(fileNames)
+        return !names.contains(fileName(for: run.startedAt, calendar: calendar))
+            && !names.contains(fileName(for: run.finishedAt, calendar: calendar))
     }
 }
 
@@ -215,8 +220,11 @@ public enum BackupRules {
 
     public static var sourceText: String { L("Backups/ on this device (inventory-YYYY-MM-DD.json), read back") }
 
+    /// `jobOff`: the backup job is turned off. `pausedUntil`: automation is paused until then. Both change what can be
+    /// promised about the next run.
     public static func lines(_ status: BackupFolderStatus?, state: AutomationJobState?, now: Date,
-                             calendar: Calendar = InventoryBackup.gregorian) -> [BriefLine] {
+                             calendar: Calendar = InventoryBackup.gregorian, jobOff: Bool = false,
+                             pausedUntil: Date? = nil) -> [BriefLine] {
         guard let status else { return [] }
         let source = sourceText
         func line(_ kind: String, _ severity: BriefSeverity, _ text: String, _ detail: String?) -> BriefLine {
@@ -229,10 +237,19 @@ public enum BackupRules {
         let vouched = state?.lastRunDidTheWork == true ? state?.lastRun?.finishedAt : nil
         guard let newest = status.newest else {
             if let vouched {
+                let next: String
+                if jobOff {
+                    next = L("The file that run wrote is no longer there, and the backup job is turned off, so it does not run again until you turn it on. Until a copy is read back from Backups/, there is no local backup.")
+                } else if let until = pausedUntil, until > now {
+                    next = LF("The file that run wrote is no longer there. Automation is paused until %@; the backup job runs again after that. Until a copy is read back from Backups/, there is no local backup.",
+                              until.formatted(date: .abbreviated, time: .shortened))
+                } else {
+                    next = L("The file that run wrote is no longer there. The backup job runs again at automation's next look, within 5 minutes; until a copy is read back from Backups/, there is no local backup.")
+                }
                 return [line("empty", .high,
                              LF("Backups/ is empty, although the run log says the backup of %@ succeeded",
                                 vouched.formatted(date: .abbreviated, time: .shortened)),
-                             L("The file that run wrote is no longer there. The backup job runs again within a minute; until a copy is read back from Backups/, there is no local backup."))]
+                             next)]
             }
             return [line("none", .normal, L("No daily backup in Backups/ yet"),
                          L("The backup job writes one when the inventory has loaded, and reads it back."))]
@@ -242,10 +259,20 @@ public enum BackupRules {
             out.append(line("restore", .high, LF("The newest backup, %@, does not restore", newest.name), why))
         }
         if let day = newest.day {
-            let age = day.days(until: KeyDay(now, calendar: calendar))
+            let today = KeyDay(now, calendar: calendar)
+            // A run that found the inventory unchanged writes no new file: it confirms the newest one. Its day counts,
+            // when it vouched for this very file and the file still holds the inventory as it is now.
+            let confirmed = vouched.flatMap { at -> KeyDay? in
+                guard state?.artifact == newest.name, status.matchesInventory == true else { return nil }
+                return KeyDay(at, calendar: calendar)
+            }
+            let since = max(day, confirmed ?? day)
+            let age = since.days(until: today)
             if age > staleDays {
-                out.append(line("old", .normal, LF("The newest backup is from %@ (%d days ago)", day.description, age),
-                                L("The backup job has not written or confirmed a copy since then.")))
+                let text = since == day
+                    ? LF("The newest backup is from %@ (%d days ago)", day.description, age)
+                    : LF("The newest backup, %1$@, was last confirmed on %2$@ (%3$d days ago)", newest.name, since.description, age)
+                out.append(line("old", .normal, text, L("The backup job has not written or confirmed a copy since then.")))
             }
         }
         if let artifact = state?.artifact, state?.lastRunDidTheWork == true, !status.names.contains(artifact) {

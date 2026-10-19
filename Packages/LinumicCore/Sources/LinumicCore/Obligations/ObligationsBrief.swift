@@ -57,9 +57,15 @@ public enum ObligationsBriefRules {
         }
     }
 
-    /// When the fact behind a line was read: a live row's reading, else the day it was recorded in its source.
-    static func readAt(_ o: Obligation, calendar: Calendar) -> Date? {
-        o.readAt ?? o.recordedOn?.start(calendar: calendar)
+    /// When the fact behind a line was read: a live row's reading, else the day it was recorded in its source. A row
+    /// built from a file the app keeps itself (the continuity log, the Keys & Backups registry) is read again each time
+    /// the register is built, so its time is the build's: a Desk mark made before it then comes back at the next Brief
+    /// while the row is still there, instead of hiding it until the due day changes.
+    static func readAt(_ o: Obligation, builtAt: Date, calendar: Calendar) -> Date? {
+        switch o.origin {
+        case .continuity, .keys: builtAt
+        default: o.readAt ?? o.recordedOn?.start(calendar: calendar)
+        }
     }
 }
 
@@ -85,8 +91,8 @@ extension DailyBriefBuilder {
             lines.append(BriefLine(id: "obligation.\(row.id)", kind: .obligations,
                                    severity: ObligationsBriefRules.severity(row, today: today),
                                    text: ObligationsBriefRules.text(row, today: today), detail: detail,
-                                   source: row.source, readAt: ObligationsBriefRules.readAt(row, calendar: calendar),
-                                   destination: row.destination, product: row.product, due: row.due))
+                                   source: row.source, readAt: ObligationsBriefRules.readAt(row, builtAt: o.register.builtAt, calendar: calendar),
+                                   destination: row.destination, product: row.product, due: row.due, obligationID: row.id))
         }
         var gaps: [BriefGap] = []
         if let error = o.loadError {

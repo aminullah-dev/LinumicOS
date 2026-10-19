@@ -242,6 +242,13 @@ public struct VendorAccount: Codable, Identifiable, Hashable, Sendable {
 
     /// The obligation for its renewal (dated, or "date unknown").
     public var renewalObligationID: String { "account.\(id).renewal" }
+
+    /// A renewal is known to exist: its day is recorded, or a bill says the account is paid monthly or yearly. Only
+    /// then is its renewal an obligation; otherwise the account card says "renewal: not recorded" and nothing presumes
+    /// that the account renews at all (a free plan, an ad account).
+    public var hasRecordedTerm: Bool {
+        renewal != nil || (cost.map { $0.cycle != .once } ?? false)
+    }
 }
 
 // MARK: - Problems
@@ -258,6 +265,12 @@ public enum ObligationIssue: Hashable, Sendable, Identifiable {
     case valueWithoutSource(String)
     /// An obligation without a title.
     case noTitle(String)
+    /// A row or account in obligations.json that the app's own forms would not have written (its origin is not the
+    /// owner's, or its id does not start with "owner."): it could stand in for a seed or live row, so it is left out.
+    case notOwners(String)
+    /// A date in obligations.json for a row that takes its date from its own source (a live row), or for a row that is
+    /// not in the register: it is not applied.
+    case dateNotApplied(String)
 
     public var id: String {
         switch self {
@@ -266,6 +279,8 @@ public enum ObligationIssue: Hashable, Sendable, Identifiable {
         case .duplicateID(let i): "duplicate.\(i)"
         case .valueWithoutSource(let i): "value.\(i)"
         case .noTitle(let i): "title.\(i)"
+        case .notOwners(let i): "notOwners.\(i)"
+        case .dateNotApplied(let i): "dateNotApplied.\(i)"
         }
     }
 
@@ -276,6 +291,8 @@ public enum ObligationIssue: Hashable, Sendable, Identifiable {
         case .duplicateID(let i): LF("Two rows have the id %@.", i)
         case .valueWithoutSource(let i): LF("A value of %@ was set without a source.", i)
         case .noTitle(let i): LF("%@ has no title.", i)
+        case .notOwners(let i): LF("%@ in obligations.json is not a row you added in the app, so it is left out.", i)
+        case .dateNotApplied(let i): LF("The date set for %@ is not applied: that row takes its date from its own source, or it is not in the register.", i)
         }
     }
 }

@@ -66,15 +66,18 @@ struct BackupTruthTests {
         #expect(!InventoryBackup.artifactMissing(state, fileNames: ["inventory-2026-10-18.json"]))
         #expect(InventoryBackup.artifactMissing(state, fileNames: ["inventory-2026-10-17.json"]))
         #expect(InventoryBackup.artifactMissing(state, fileNames: []))
-        // A ledger written before artifacts were recorded (the owner's, 2026-10-19): an empty folder after a success.
+        // A ledger written before artifacts were recorded (the owner's, 2026-10-19): gone when no file is named for the
+        // day that run ran, an empty folder among them.
         var old = AutomationLedger()
         old.record(run(.succeeded("Copy saved and read back: 12 products"), at: t0))
         #expect(old.states[.backup]?.artifact == nil)
-        #expect(InventoryBackup.artifactMissing(old.states[.backup], fileNames: []))
-        #expect(!InventoryBackup.artifactMissing(old.states[.backup], fileNames: ["inventory-2026-10-18.json"]))
+        #expect(InventoryBackup.artifactMissing(old.states[.backup], fileNames: [], calendar: utc))
+        #expect(!InventoryBackup.artifactMissing(old.states[.backup], fileNames: ["inventory-2026-10-18.json"], calendar: utc))
+        // The newest file deleted, an older copy left: also gone, not a full day's wait.
+        #expect(InventoryBackup.artifactMissing(old.states[.backup], fileNames: ["inventory-2026-10-10.json"], calendar: utc))
         // After a failed or skipped run nothing is vouched for.
         old.record(run(.skipped(.notReady), at: t0.addingTimeInterval(60)))
-        #expect(!InventoryBackup.artifactMissing(old.states[.backup], fileNames: []))
+        #expect(!InventoryBackup.artifactMissing(old.states[.backup], fileNames: [], calendar: utc))
     }
 
     @Test func theFolderIsReadNotTheLog() throws {
@@ -131,6 +134,48 @@ struct BackupTruthTests {
         #expect(!InventoryBackup.artifactMissing(ledger.states[.backup], fileNames: after))
         #expect(BackupRules.lines(backup.status(now: t0.addingTimeInterval(80)), state: ledger.states[.backup],
                                   now: t0.addingTimeInterval(80), calendar: utc).isEmpty)
+    }
+
+    @Test func aCopyConfirmedByTheJobIsNotOld() throws {
+        let (backup, dir) = try setUp()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        var ledger = AutomationLedger()
+        let first = try backup.run(now: t0, calendar: utc)
+        ledger.record(run(.succeeded("saved"), at: t0), artifact: first.file.lastPathComponent)
+        // Three days on, the inventory has not changed: the job confirms the copy instead of writing a new one.
+        let later = t0.addingTimeInterval(3 * 86_400)
+        let second = try backup.run(now: later, calendar: utc)
+        #expect(second.kind == .unchanged && second.file.lastPathComponent == first.file.lastPathComponent)
+        ledger.record(run(.succeeded("unchanged"), at: later), artifact: second.file.lastPathComponent)
+        let status = backup.status(now: later.addingTimeInterval(5))
+        #expect(status.matchesInventory == true && status.newest?.day == KeyDay("2026-10-18"))
+        #expect(BackupRules.lines(status, state: ledger.states[.backup], now: later.addingTimeInterval(5), calendar: utc).isEmpty)
+        // Without a run that vouched for it since, the same copy is old.
+        var stale = AutomationLedger()
+        stale.record(run(.succeeded("saved"), at: t0), artifact: first.file.lastPathComponent)
+        let lines = BackupRules.lines(status, state: stale.states[.backup], now: later.addingTimeInterval(5), calendar: utc)
+        #expect(lines.map(\.id) == ["automation.backup.old"])
+        // Confirmed, but long ago: old, counted from the confirmation.
+        let muchLater = later.addingTimeInterval(4 * 86_400)
+        let confirmedLongAgo = BackupRules.lines(backup.status(now: muchLater), state: ledger.states[.backup], now: muchLater, calendar: utc)
+        #expect(confirmedLongAgo.map(\.id) == ["automation.backup.old"])
+        #expect(confirmedLongAgo.first?.text.contains("2026-10-21") == true)
+    }
+
+    @Test func whatTheEmptyLineSaysAboutTheNextRun() {
+        var ledger = AutomationLedger()
+        ledger.record(run(.succeeded("saved"), at: t0), artifact: "inventory-2026-10-18.json")
+        let empty = BackupFolderStatus(checkedAt: t0.addingTimeInterval(65), files: 0)
+        func detail(jobOff: Bool = false, paused: Date? = nil) -> String {
+            BackupRules.lines(empty, state: ledger.states[.backup], now: t0.addingTimeInterval(65), calendar: utc, jobOff: jobOff,
+                              pausedUntil: paused).first?.detail ?? ""
+        }
+        #expect(detail().contains("within 5 minutes"))
+        #expect(!detail().contains("within a minute"))
+        #expect(detail(jobOff: true).contains("turned off"))
+        #expect(detail(paused: t0.addingTimeInterval(3600)).contains("paused"))
+        // A pause that has ended changes nothing.
+        #expect(detail(paused: t0).contains("within 5 minutes"))
     }
 
     @Test func linesForEachState() {

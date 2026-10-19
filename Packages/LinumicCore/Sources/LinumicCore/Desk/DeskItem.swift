@@ -224,6 +224,9 @@ public struct DeskItem: Identifiable, Hashable, Sendable {
     public var related: [DeskDomain]
     /// The source's own reference line, as written (the NEXT-ACTIONS «منبع: …» text).
     public var reference: String?
+    /// The obligation an item of the Obligations section is about. Its Done opens the evidence sheet: an obligation is
+    /// never done on the Desk's word alone.
+    public var obligationID: String?
 
     public var id: String { "\(origin.key)|\(subjectKey)|\(kindKey)" }
 
@@ -239,7 +242,8 @@ public struct DeskItem: Identifiable, Hashable, Sendable {
     public init(origin: DeskOrigin, subjectKey: String, kindKey: String, kind: DeskItemKind, domain: DeskDomain,
                 severity: BriefSeverity, title: String, detail: String? = nil, subject: String, due: KeyDay? = nil,
                 horizon: DeskHorizon? = nil, ownerAction: Bool, evidence: DeskEvidence, factHash: String,
-                destination: DeskDestination, notes: [String] = [], related: [DeskDomain] = [], reference: String? = nil) {
+                destination: DeskDestination, notes: [String] = [], related: [DeskDomain] = [], reference: String? = nil,
+                obligationID: String? = nil) {
         self.origin = origin
         self.subjectKey = subjectKey
         self.kindKey = kindKey
@@ -258,6 +262,7 @@ public struct DeskItem: Identifiable, Hashable, Sendable {
         self.notes = notes
         self.related = related
         self.reference = reference
+        self.obligationID = obligationID
     }
 
     /// The origin part of an item id ("ledger.worktrack|…" → "ledger.worktrack").

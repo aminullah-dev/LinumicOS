@@ -113,10 +113,13 @@ public struct BriefLine: Identifiable, Hashable, Sendable {
     public var factKey: String?
     /// The day it is due, when the source gives one (an obligation). The Desk puts it in Today, This week or Later by it.
     public var due: KeyDay?
+    /// The obligation the line is about, when it is one: its Done is recorded on the Obligations screen, with evidence,
+    /// whatever screen its Open goes to.
+    public var obligationID: String?
 
     public init(id: String, kind: BriefSourceKind, severity: BriefSeverity, text: String, detail: String? = nil,
                 source: String, readAt: Date?, destination: BriefDestination, links: [BriefLink] = [], product: String? = nil,
-                factKey: String? = nil, due: KeyDay? = nil) {
+                factKey: String? = nil, due: KeyDay? = nil, obligationID: String? = nil) {
         self.id = id
         self.kind = kind
         self.severity = severity
@@ -129,6 +132,7 @@ public struct BriefLine: Identifiable, Hashable, Sendable {
         self.product = product
         self.factKey = factKey
         self.due = due
+        self.obligationID = obligationID
     }
 
     /// A count's power-of-two bucket ("1", "2-3", "4-7", "8-15", …): a queue that grows from 3 to 4 or to 30 is a new
@@ -403,7 +407,8 @@ public enum DailyBriefBuilder {
                              source: source, readAt: ledger.states[f.job]?.lastRun?.finishedAt, destination: .automation,
                              product: "Linumic OS")
         }
-        lines += BackupRules.lines(input.backup, state: ledger.states[.backup], now: now)
+        lines += BackupRules.lines(input.backup, state: ledger.states[.backup], now: now, jobOff: ledger.disabled.contains(.backup),
+                                   pausedUntil: ledger.pausedUntil)
         var gaps: [BriefGap] = []
         // The log says the backup ran, but the folder was not looked at: the log alone never stands for a copy.
         if input.backup == nil, ledger.states[.backup]?.lastRun != nil {

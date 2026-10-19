@@ -216,7 +216,8 @@ public enum DeskBuilder {
                                           title: line.text, detail: line.detail, subject: line.product ?? line.kind.title,
                                           due: line.due, ownerAction: line.severity <= .normal,
                                           evidence: DeskEvidence(source: line.source, readAt: line.readAt, cadence: cadence),
-                                          factHash: factHash(line), destination: .screen(line.destination)))
+                                          factHash: factHash(line), destination: .screen(line.destination),
+                                          obligationID: line.obligationID))
                 }
                 // "All clear" is only about what was read: a part that was not read is an item, never a zero.
                 for gap in section.gaps {

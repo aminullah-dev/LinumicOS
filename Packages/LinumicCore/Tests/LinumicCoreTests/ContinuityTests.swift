@@ -57,8 +57,8 @@ struct ContinuityExportTests {
         #expect(back.inventory.products.map(\.id) == ["worktrack"])
         #expect(back.obligations.contains { $0.id == "signing.linumicos-mac-profile" })
         // No licence key text, ever; the rest of the ledger is there.
-        #expect(back.licences.first?.keyText == nil)
-        #expect(back.licences.first?.licenceID == "KY-2026-0001")
+        #expect(back.licences?.first?.keyText == nil)
+        #expect(back.licences?.first?.licenceID == "KY-2026-0001")
         #expect(!String(decoding: plain, as: UTF8.self).contains("LNM1."))
         #expect(!back.excluded.isEmpty)
     }
@@ -75,6 +75,90 @@ struct ContinuityExportTests {
         #expect(try FileManager.default.contentsOfDirectory(atPath: dir.path(percentEncoded: false)).isEmpty)
         #expect(ContinuityBundle.forbiddenKinds(in: Data("token ghp_\(String(repeating: "x", count: 36))".utf8)) == ["a GitHub token"])
         #expect(ContinuityBundle.forbiddenKinds(in: Data("LNM1 licences for MediFlow".utf8)).isEmpty)
+    }
+
+    @Test func moreSecretFormatsAreCaught() throws {
+        // Each built from parts, so no file in the repository looks like a key to a secret scanner.
+        let age = ["AGE", "SECRET", "KEY", "1" + String(repeating: "Q", count: 58)].joined(separator: "-")
+        #expect(ContinuityBundle.forbiddenKinds(in: Data("note: \(age)".utf8)) == ["an age secret key"])
+        let jwt = ["ey" + "J" + String(repeating: "h", count: 20), "ey" + "J" + String(repeating: "p", count: 40),
+                   String(repeating: "s", count: 43)].joined(separator: ".")
+        #expect(ContinuityBundle.forbiddenKinds(in: Data("service_role \(jwt)".utf8)) == ["a JSON Web Token"])
+        let stripe = "sk" + "_live_" + String(repeating: "4", count: 24)
+        let restricted = "rk" + "_live_" + String(repeating: "5", count: 24)
+        #expect(ContinuityBundle.forbiddenKinds(in: Data(stripe.utf8)) == ["a Stripe live key"])
+        #expect(ContinuityBundle.forbiddenKinds(in: Data(restricted.utf8)) == ["a Stripe live key"])
+        let aws = "AK" + "IA" + String(repeating: "Z", count: 16)
+        #expect(ContinuityBundle.forbiddenKinds(in: Data("key \(aws)".utf8)) == ["an AWS access key"])
+        // Ordinary text near those shapes is not a secret.
+        #expect(ContinuityBundle.forbiddenKinds(in: Data("eyJ only once; sk_test_ is not live; AKIA short".utf8)).isEmpty)
+        // A bundle with a JWT in a note is refused before anything is written.
+        let dir = try folder()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        #expect(throws: ContinuityExporter.Failure.forbiddenContent(["a JSON Web Token"])) {
+            try ContinuityExporter.export(bundle(note: jwt), passphrase: passphrase, to: dir, folderName: "USB", folderKind: .external,
+                                          now: now, workFactor: 10, calendar: utc)
+        }
+        #expect(try FileManager.default.contentsOfDirectory(atPath: dir.path(percentEncoded: false)).isEmpty)
+    }
+
+    @Test func aFileThatFailsItsCheckIsRemoved() throws {
+        let dir = try folder()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        // The bytes change between writing and reading back (a folder that hands back something else).
+        #expect(throws: ContinuityExporter.Failure.readBackDiffers) {
+            try ContinuityExporter.export(bundle(), passphrase: passphrase, to: dir, folderName: "USB", folderKind: .external, now: now,
+                                          workFactor: 10, calendar: utc,
+                                          write: { try $0.write(to: $1, options: [.withoutOverwriting]) },
+                                          afterWrite: { url in
+                                              var data = try Data(contentsOf: url)
+                                              data[data.count - 1] ^= 0xFF
+                                              try data.write(to: url)
+                                          })
+        }
+        #expect(try FileManager.default.contentsOfDirectory(atPath: dir.path(percentEncoded: false)).isEmpty)
+    }
+
+    @Test func aWriteThatStopsHalfwayLeavesNothingAndAnotherFileIsKept() throws {
+        let dir = try folder()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        struct Pulled: Error {}
+        // The USB stick is pulled halfway through the write.
+        #expect(throws: Pulled.self) {
+            try ContinuityExporter.export(bundle(), passphrase: passphrase, to: dir, folderName: "USB", folderKind: .external, now: now,
+                                          workFactor: 10, calendar: utc,
+                                          write: { data, url in
+                                              try data.prefix(data.count / 2).write(to: url, options: [.withoutOverwriting])
+                                              throw Pulled()
+                                          }, afterWrite: { _ in })
+        }
+        #expect(try FileManager.default.contentsOfDirectory(atPath: dir.path(percentEncoded: false)).isEmpty)
+        // A file of the same name that appeared just before the write is someone else's: it stays.
+        #expect(throws: CocoaError.self) {
+            try ContinuityExporter.export(bundle(), passphrase: passphrase, to: dir, folderName: "USB", folderKind: .external, now: now,
+                                          workFactor: 10, calendar: utc,
+                                          write: { data, url in
+                                              try Data("theirs".utf8).write(to: url)
+                                              try data.write(to: url, options: [.withoutOverwriting])
+                                          }, afterWrite: { _ in })
+        }
+        let left = try FileManager.default.contentsOfDirectory(atPath: dir.path(percentEncoded: false))
+        #expect(left == ["linumic-os-continuity-2026-10-19-1200.json.age"])
+        #expect(try Data(contentsOf: dir.appending(path: left[0])) == Data("theirs".utf8))
+    }
+
+    @Test func aPartThatWasNotReadIsAbsentNotZero() throws {
+        let register = ObligationsBuilder.build(file: ObligationsFile(), live: ObligationLiveInput(), now: now, calendar: utc)
+        let b = ContinuityBundle(createdAt: now, app: "Linumic OS 0.2.0 (2)", inventory: Inventory(seedRevision: 7, products: []),
+                                 obligationEntries: ObligationsFile(), obligations: register.obligations, accounts: register.accounts,
+                                 licences: nil, licencesSyncedAt: nil, keysRegistry: nil)
+        #expect(b.counts["licences"] == nil && b.counts["keys"] == nil && b.counts["keyBackups"] == nil)
+        #expect(b.counts["products"] == 0)
+        #expect(b.partsNotRead.count == 2)
+        let json = String(decoding: try b.encoded(), as: UTF8.self)
+        #expect(!json.contains("\"licences\"") && !json.contains("\"keysRegistry\""))
+        #expect(try ContinuityBundle.decode(b.encoded()) == b)
+        #expect(bundle().partsNotRead.isEmpty)
     }
 
     @Test func aFileThatIsNotTheOneWrittenFailsTheCheck() throws {
@@ -140,6 +224,13 @@ struct ContinuityExportTests {
     }
 
     @Test func passphraseRulesAndSuggestions() {
+        // Typable anywhere: a Dari passphrase can hold letters that look the same but are other characters elsewhere.
+        let dari = "این یک عبارت رمز طولانی است"
+        #expect(ContinuityPassphrase.problem(dari, confirmation: dari) != nil)
+        let halfSpace = "write this on\u{200C}paper 2026"
+        #expect(ContinuityPassphrase.problem(halfSpace, confirmation: halfSpace) != nil)
+        #expect(!ContinuityPassphrase.isTypableAnywhere("tab\there"))
+        #expect(ContinuityPassphrase.isTypableAnywhere("Write this, on paper: 2026!"))
         #expect(ContinuityPassphrase.problem("short", confirmation: "short") != nil)
         #expect(ContinuityPassphrase.problem("aaaaaaaaaaaaaaaaaaaa", confirmation: "aaaaaaaaaaaaaaaaaaaa") != nil)
         #expect(ContinuityPassphrase.problem("write this on paper 2026", confirmation: "write this on paper 2025") != nil)
@@ -155,6 +246,9 @@ struct ContinuityExportTests {
         #expect(ContinuityFolderKind.classify(path: "/Volumes/LINUMIC", volumeIsInternal: false) == .external)
         #expect(ContinuityFolderKind.classify(path: "/Users/a/Documents", volumeIsInternal: true) == .thisMac)
         #expect(ContinuityFolderKind.classify(path: "/x", volumeIsInternal: nil) == .unknown)
-        #expect(ContinuityFolderKind.external.isOffThisMac && !ContinuityFolderKind.thisMac.isOffThisMac)
+        #expect(ContinuityFolderKind.classify(path: "/Volumes/share", volumeIsInternal: nil, volumeIsLocal: false) == .network)
+        #expect(ContinuityFolderKind.classify(path: "/Users/a/Documents", volumeIsInternal: true, volumeIsLocal: true) == .thisMac)
+        #expect(ContinuityFolderKind.external.isOffThisMac && ContinuityFolderKind.network.isOffThisMac)
+        #expect(!ContinuityFolderKind.thisMac.isOffThisMac && !ContinuityFolderKind.unknown.isOffThisMac)
     }
 }
