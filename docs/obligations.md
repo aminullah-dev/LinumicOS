@@ -1,8 +1,9 @@
 # Obligations and accounts (تعهدات و حساب‌ها)
 
 Module 3 of [company-os-roadmap.md](company-os-roadmap.md), Phase 2. The dated things no system reminds the company of,
-and the accounts it depends on. Local only (`obligations.json` on this device); no network, no Supabase table until
-Phase 3.
+and the accounts it depends on. Kept in `obligations.json` on this device; since Phase 3, when signed in to the cloud,
+what the owner entered syncs with his other devices and the server reminds while the Mac is off
+([desk-sync.md](desk-sync.md); the migrations wait for the owner's approval).
 
 ## What a row is
 
@@ -82,8 +83,9 @@ comes from: the renewal date as entered (its source, the day it was entered), el
 
 **Alerts:** one notification when an obligation enters a window (30, 14, 7, 1 days) and on or after its day, posted
 after each Daily Brief round (every 30 minutes while the app runs), once per window. The key is
-`obligation:<id>:<due>:<lead>`, the same key a Phase 3 server sweep would use. Live rows alert through their own
-screens (Monitor, Licences) and are left out. Settings: the switch on the Obligations screen
+`obligation:<id>:<due>:<lead>`, the same key the Phase 3 server sweep uses (an event the device already alerted about
+is not alerted again, and an alert the server's event brought first is not repeated by the device). Live rows alert
+through their own screens (Monitor, Licences) and are left out. Settings: the switch on the Obligations screen
 (`LCCNotifyObligations`).
 
 ## Where the rows come from
@@ -169,9 +171,10 @@ Vault. After the company is registered, the holder column is the list of what to
 ## Files
 
 `obligations.json` next to the inventory: the owner's rows, the dates he set (with sources), Done with evidence (per
-due day), his accounts and the facts he recorded about accounts (renewal, holder, cost, each with a source). The seed
-and the live rows are never stored there: a corrected seed never overwrites what he entered. A file that can't be
-read is reported and never overwritten.
+due day), his accounts and the facts he recorded about accounts (renewal, holder, cost, each with a source), and a Done
+he took back that the cloud has not heard of yet (`reopened`, emptied by the next sync). The seed and the live rows are
+never stored there: a corrected seed never overwrites what he entered. A file that can't be read is reported and never
+overwritten, and is not synced.
 
 ## For the owner (دری)
 

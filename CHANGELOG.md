@@ -5,6 +5,32 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Desk sync and reminders while the Mac is off; Phase 3 of the company OS roadmap (2026-10-19)
+- **Supabase migrations, as files only (not applied; the owner approves them):** `20261019090000_desk_sync.sql` adds
+  `desk_state` (the owner's marks: ids, kinds, times, fact hashes, dismiss reasons; no titles, and a customer
+  section's id only as a hash), `obligations` and `vendors` (what `obligations.json` holds, plus the seed rows the sweep
+  needs), and `desk_ledger_reading` / `desk_items` (the Mac's ledger lines for the iPhone). Every owner row has
+  `version bigint`; the push RPCs refuse a stale version and answer the current row. Admin-only RLS, no anon access,
+  no direct writes, audited, nothing deleted (an undo is a tombstone). `20261019090100_obligation_sweep.sql` adds the
+  `obligationDue` event kind, `private.sentinel_obligation_sweep()` in the existing 06:15 UTC job with the key
+  `obligation:<id>:<due>:<lead>`, and `sentinel_recent_events(…, include_obligations)` so the installed app is not
+  sent a kind it can't read. Rollback SQL in docs/desk-sync.md, tested.
+- **LinumicCore `DeskSync/`:** the rows and payloads, `SupabaseDeskCloud`, and a per-row three-way merge
+  (`DeskCloudMerge`) that never picks the last writer: one side changed, that side is kept; both changed differently,
+  a conflict keeps both; a row missing on either side is never read as deleted; only the owner's Restore and Reopen are
+  sent as deletions (`DeskState.restored`, `ObligationsFile.reopened`); a mark dropped here as no longer applying stays
+  in the cloud; account facts from two devices are kept together unless they contradict; a change made during a sync
+  is never overwritten by it. The Mac's ledger reading travels without detail, and without the text of a line that
+  holds an address, a phone number or a key. Nothing that reads as a key leaves the device.
+- **App:** `DeskSyncModel` and the automation job **Desk sync** (every 30 minutes, network, 2-minute limit, also in iOS
+  background refresh). The Desk shows "Changed on two devices" with both versions and "Keep this device's" / "Keep the
+  other's", a cloud sync line, and on iPhone and iPad the Mac's ledger lines with their reading time and a "The Mac's
+  reading" badge. Settings → Account shows the sync and, on the Mac, a switch for sending ledger lines. Server watch
+  shows obligation events and does not alert a window the device already alerted.
+- Tests: 36 Swift tests (two devices against an in-memory server with the SQL's rules, the client against answers
+  recorded from the SQL, the app's alerts and the server's sweep on one fixture); `supabase/tests/desk-sync/run.sh`
+  with 79 behaviour checks and 9 rollback checks on a scratch Postgres. Dari for 58 new strings.
+
 ### Added: Obligations & accounts, Continuity, and the daily backup counted from the folder; Phase 2 of the company OS roadmap (2026-10-19)
 - **Daily backup truth.** The run log said "Copy saved and read back: 12 products" (2026-10-19 00:00:01Z) while
   `Backups/` was empty: the file was removed 65 seconds after the run and nothing looked at the folder again. Each run
