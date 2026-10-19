@@ -185,6 +185,35 @@ select pg_temp.check(pg_temp.status(public.push_vendors(pg_temp.vd('facts:sample
 select pg_temp.check(pg_temp.status(public.push_vendors(pg_temp.vd('facts:sample', 'facts', 'sample', 0,
   '{"edits":[{"accountID":"sample","renewal":"2026-12-01","renewalSource":"bill","enteredAt":"2026-10-19T10:00:00Z"}]}'), 'macOS')) = 'applied',
   'an account''s facts with their sources are taken');
+-- A renewal (or any day the sweep reads) is a real day or nothing: one bad row must never stop the daily sweeps.
+select pg_temp.check(pg_temp.status(public.push_vendors(pg_temp.vd('account:owner.b', 'account', 'owner.b', 0,
+  '{"id":"owner.b","name":"Sample","purpose":"","source":"s","recordedOn":"2026-10-19","origin":"owner","renewal":"next spring","renewalSource":"bill"}'), 'macOS')) = 'invalid',
+  'an account renewal of ''next spring'' is refused');
+select pg_temp.check(pg_temp.status(public.push_vendors(pg_temp.vd('account:owner.b', 'account', 'owner.b', 0,
+  '{"id":"owner.b","name":"Sample","purpose":"","source":"s","recordedOn":"2026-10-19","origin":"owner","renewal":"tomorrow","renewalSource":"bill"}'), 'macOS')) = 'invalid',
+  'an account renewal of ''tomorrow'' is refused');
+select pg_temp.check(pg_temp.status(public.push_vendors(pg_temp.vd('facts:sample2', 'facts', 'sample2', 0,
+  '{"edits":[{"accountID":"sample2","renewal":"2026-02-30","renewalSource":"bill","enteredAt":"2026-10-19T10:00:00Z"}]}'), 'macOS')) = 'invalid',
+  'a recorded renewal of 2026-02-30 is refused');
+select pg_temp.check(pg_temp.status(public.push_vendors(pg_temp.vd('facts:sample2', 'facts', 'sample2', 0,
+  '{"edits":[{"accountID":"sample2","renewal":"2026-12-01","renewalSource":"bill","enteredAt":"2026-10-19T10:00:00Z"},{"accountID":"sample2","renewal":"infinity","renewalSource":"bill","enteredAt":"2026-10-19T11:00:00Z"}]}'), 'macOS')) = 'invalid',
+  'a recorded renewal of ''infinity'' is refused, even after a good one');
+select pg_temp.check(pg_temp.status(public.push_vendors(pg_temp.vd('seed:sample3', 'seed', 'sample3', 0,
+  '{"id":"sample3","name":"Sample","purpose":"","source":"s","recordedOn":"2026-10-19","origin":"seed","renewal":"2026-13-01","renewalSource":"bill"}', 3), 'macOS')) = 'invalid',
+  'a seed account with a renewal that is not a day is refused');
+select pg_temp.check(pg_temp.status(public.push_obligations(pg_temp.ob('row:owner.3', 'row', 'owner.3', 0,
+  '{"id":"owner.3","title":"Sample","area":"other","due":"infinity","source":"s","recordedOn":"2026-10-19","leadDays":[30],"origin":"owner"}'), 'macOS')) = 'invalid',
+  'an owner row due ''infinity'' is refused');
+select pg_temp.check(pg_temp.status(public.push_obligations(pg_temp.ob('date:owner.1', 'date', 'owner.1', 0,
+  '{"obligationID":"owner.1","due":"tomorrow","source":"x","enteredAt":"2026-10-19T10:00:00Z"}'), 'macOS')) = 'invalid',
+  'a date of ''tomorrow'' is refused');
+select pg_temp.check(pg_temp.status(public.push_obligations(pg_temp.ob('date:account.sample.renewal', 'date', 'account.sample.renewal', 0,
+  '{"obligationID":"account.sample.renewal","due":"2026-12-02","source":"x","enteredAt":"2026-10-19T10:00:00Z"}'), 'macOS')) = 'invalid',
+  'an account''s renewal day is set on its card, never as a date');
+reset role;
+select pg_temp.check(not private.is_iso_day('2026-2-01') and not private.is_iso_day('2026-02-01T00:00:00Z') and not private.is_iso_day(null)
+  and private.is_iso_day('2028-02-29') and not private.is_iso_day('2027-02-29'), 'is_iso_day: YYYY-MM-DD and a real day only');
+set role authenticated;
 select pg_temp.check((select count(*) from public.audit_events where table_name in ('desk_state', 'obligations', 'vendors')) > 0
   and (select bool_and(actor = '00000000-0000-0000-0000-00000000000a') from public.audit_events where table_name in ('desk_state', 'obligations', 'vendors')),
   'every write is audited with the admin who made it');
@@ -204,17 +233,32 @@ select pg_temp.check(public.replace_desk_items(1, pg_temp.reading('2026-10-19T10
 select pg_temp.check((select version = 2 and read_at = '2026-10-19T10:30:00Z' from public.desk_ledger_reading), 'and only move the time');
 select pg_temp.check(public.replace_desk_items(1, pg_temp.reading('2026-10-19T11:00:00Z', 'Changed'))->>'status' = 'stale',
   'a reading based on an old version is stale');
-select pg_temp.check(public.replace_desk_items(2, pg_temp.reading('2026-10-19T09:00:00Z', 'Changed'))->>'status' = 'older',
-  'an older reading never replaces a newer one');
 select pg_temp.check(public.replace_desk_items(2, jsonb_set(pg_temp.reading('2026-10-19T11:00:00Z', 'Changed'), '{items,0,id}',
   '"brief.licences|licence.expired.L-1|fact"'))->>'status' = 'invalid', 'a Brief line is never a ledger item');
+select pg_temp.check(public.replace_desk_items(2, jsonb_set(pg_temp.reading('2026-10-19T11:00:00Z', 'Changed'), '{items,0,subject}',
+  to_jsonb('see ghp_' || repeat('a', 36))))->>'status' = 'invalid', 'a line whose subject holds a token is refused');
 select pg_temp.check((select title from public.desk_items) = 'Sign the sample contract', 'and the refused reading left the last one');
 select pg_temp.check(public.replace_desk_items(2, pg_temp.reading('2026-10-19T11:00:00Z', 'Changed'))->>'status' = 'applied', 'new lines are applied');
 select pg_temp.check((public.desk_sync_pull()->'ledger'->'items'->0->>'title') = 'Changed'
   and (public.desk_sync_pull()->'ledger'->>'version')::int = 3
   and jsonb_array_length(public.desk_sync_pull()->'ledger'->'items') = 1, 'and replace the old ones');
+-- A Mac whose clock runs ahead: its reading is stored at the server's time, and the next one (earlier by the Mac's
+-- clock, once corrected) still replaces it. The version orders the writes, not the clock.
+select pg_temp.check(public.replace_desk_items(3, pg_temp.reading(public.iso8601(now() + interval '2 days'), 'From the future'))->>'status' = 'applied',
+  'a reading dated ahead of the server is taken');
+select pg_temp.check((select read_at <= now() from public.desk_ledger_reading), 'at the server''s time, never in the future');
+select pg_temp.check(public.replace_desk_items(4, pg_temp.reading('2026-10-19T12:00:00Z', 'After the clock was fixed'))->>'status' = 'applied',
+  'and a later reading with an earlier time is not refused for its time');
+select pg_temp.check((select title from public.desk_items) = 'After the clock was fixed', 'it replaced the lines');
+select pg_temp.check(public.replace_desk_items(5, jsonb_build_object('readAt', '2026-10-19T12:30:00Z', 'linesOff', true, 'sources', '[]'::jsonb,
+  'items', '[]'::jsonb, 'digest', encode(sha256(convert_to('[]', 'UTF8')), 'hex')))->>'status' = 'applied', 'lines turned off on the Mac');
+select pg_temp.check((public.desk_sync_pull()->'ledger'->>'linesOff')::boolean
+  and jsonb_array_length(public.desk_sync_pull()->'ledger'->'items') = 0, 'the reading says so, with no lines');
+select pg_temp.check(length(public.desk_sync_pull()->>'epoch') = 36 and public.desk_sync_pull()->>'epoch' = public.desk_sync_pull()->>'epoch',
+  'the pull names this set of tables (its epoch)');
 
--- MARK: the sweep, on the fixture's rows (the same rows the Swift parity test reads)
+-- MARK: the sweep, on the fixture's rows (the same rows the Swift parity test reads; all of its seed rows, including
+-- the domain one the app no longer sends, as an older app would have sent them)
 reset role;
 reset request.jwt.claim.sub;
 truncate public.obligations, public.vendors;
@@ -228,7 +272,8 @@ select pg_temp.check((select bool_and(r->>'status' = 'applied') from jsonb_array
       from jsonb_array_elements(:'fixture'::jsonb->'file'->'added') o)
   || (select jsonb_agg(jsonb_build_object('id', 'date:' || (d->>'obligationID'), 'entry', 'date', 'key', d->>'obligationID',
                                           'expectedVersion', 0, 'data', d))
-      from jsonb_array_elements(:'fixture'::jsonb->'file'->'dates') d)
+      -- As the app sends them (DeskCloudMapping.localObligations): never a date on an account's renewal row.
+      from jsonb_array_elements(:'fixture'::jsonb->'file'->'dates') d where d->>'obligationID' !~ '^account\..+\.renewal$')
   || (select jsonb_agg(jsonb_build_object('id', 'done:' || (c->>'obligationID') || '|' || coalesce(c->>'due', '-'), 'entry', 'done',
                                           'key', c->>'obligationID', 'expectedVersion', 0, 'data', c))
       from jsonb_array_elements(:'fixture'::jsonb->'file'->'completions') c), 'macOS')) r), 'the fixture''s obligations are taken');
@@ -270,6 +315,10 @@ select pg_temp.check((select detail->>'title' = 'Sample Host' and (detail->>'ren
   'the detail carries the title (or the account''s name) for the app to word the line');
 select pg_temp.check((select count(*) from public.sentinel_events where subject in ('test.seed-d', 'test.nowhere', 'test.seed-c', 'test.seed-b')) = 0,
   'done, undated, beyond every window and unknown rows bring nothing');
+select pg_temp.check(exists (select 1 from public.obligations where id = 'seed:domain.example.com' and not deleted)
+  and not exists (select 1 from private.obligation_schedule() where obligation_id = 'domain.example.com')
+  and not exists (select 1 from public.sentinel_events where subject = 'domain.example.com'),
+  'a seed row a live reading replaces on the devices (a domain) is never swept, even when an app sent it');
 
 -- A Done recorded for the day closes it; a tombstone (reopened) opens it again for the next window.
 select pg_temp.check((select count(*) from private.obligation_schedule() where obligation_id = 'test.seed-a' and not closed) = 1, 'test.seed-a open');
@@ -293,10 +342,41 @@ select pg_temp.check(not exists (select 1 from jsonb_array_elements(public.senti
 select pg_temp.check(exists (select 1 from jsonb_array_elements(public.sentinel_recent_events(500, true, true)) e
                              where e->>'kind' = 'obligationDue' and e->'detail'->>'key' = 'obligation:test.seed-f:2026-10-19:0'),
   'asked for, they come with the app''s key in the detail');
+select pg_temp.check((public.sentinel_overview()->>'unacknowledged')::int = 0
+  and (public.sentinel_overview()->>'unacknowledgedObligations')::int
+      = (select count(*) from public.sentinel_events where kind = 'obligationDue' and acknowledged_at is null),
+  'the overview counts obligation events on their own, so the app of 2026-10-18 never shows a count it can''t clear');
 reset role;
 reset request.jwt.claim.sub;
-select pg_temp.check((select command from cron.job where jobname = 'sentinel-licences')
-  = 'select private.sentinel_licence_sweep(), private.sentinel_obligation_sweep()', 'the 06:15 job runs both sweeps');
-select pg_temp.check((select schedule from cron.job where jobname = 'sentinel-licences') = '15 6 * * *', 'at 06:15 UTC');
-select pg_temp.check((select count(*) from cron.job where jobname like 'sentinel-%') = 4, 'still four jobs');
+select pg_temp.check((select command from cron.job where jobname = 'sentinel-licences') = 'select private.sentinel_licence_sweep()'
+  and (select schedule from cron.job where jobname = 'sentinel-licences') = '15 6 * * *', 'the 06:15 licence job is left as it was');
+select pg_temp.check((select command from cron.job where jobname = 'sentinel-obligations') = 'select private.sentinel_obligation_sweep()',
+  'the obligation sweep is a job of its own');
+select pg_temp.check((select schedule from cron.job where jobname = 'sentinel-obligations') = '16 6 * * *', 'at 06:16 UTC');
+select pg_temp.check((select count(*) from cron.job where jobname like 'sentinel-%') = 5
+  and (select count(distinct username) from cron.job where jobname like 'sentinel-%') = 1, 'five jobs, one owner');
+
+-- One bad row (written before the checks above, or by hand around them) and a licence 5 days from its end: each job
+-- runs as pg_cron runs it, alone, and the licence event is still written.
+do $$
+declare def text;
+begin
+  select pg_get_constraintdef(c.oid) into def from pg_constraint c
+  where c.conrelid = 'public.vendors'::regclass and pg_get_constraintdef(c.oid) like '%vendor_entry_ok%';
+  execute 'alter table public.vendors drop constraint ' || (select quote_ident(conname) from pg_constraint
+    where conrelid = 'public.vendors'::regclass and pg_get_constraintdef(oid) = def);
+  insert into public.vendors (id, entry, account_id, data, written_on) values
+    ('facts:test-mail', 'facts', 'test-mail',
+     '{"edits":[{"accountID":"test-mail","renewal":"2026-02-30","renewalSource":"by hand","enteredAt":"2026-10-19T10:00:00Z"}]}', 'macOS'),
+    ('account:owner.bad', 'account', 'owner.bad',
+     '{"id":"owner.bad","name":"Bad","purpose":"","source":"by hand","recordedOn":"2026-10-19","origin":"owner","renewal":"infinity","renewalSource":"by hand"}', 'macOS');
+  execute 'alter table public.vendors add constraint vendors_entry_ok ' || def || ' not valid';
+end $$;
+insert into public.licences (id, product, licence_id, customer, machine, issued, expires, status) values
+  (gen_random_uuid(), 'mediflow', 'L-DS5', 'Sample Clinic', '*', '2026-01-01', (now() at time zone 'utc')::date + 5, 'active');
+select command from cron.job where jobname in ('sentinel-licences', 'sentinel-obligations') order by jobname \gexec
+select pg_temp.check(exists (select 1 from public.sentinel_events where subject = 'L-DS5' and kind = 'licenceExpiring'),
+  'with a bad row present, the licence job still writes its event');
+select pg_temp.check(not exists (select 1 from private.obligation_schedule() where obligation_id in ('account.test-mail.renewal', 'account.owner.bad.renewal')),
+  'and the obligation job skips the days that are not days');
 \echo ALL DESK SYNC SQL CHECKS PASSED

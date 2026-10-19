@@ -13,14 +13,16 @@
 --     title, product, file:line, severity), for the iPhone, which can't read them. Never a Daily Brief line.
 --
 -- What is never here: passwords, card numbers, keys or tokens (the app's forms never ask for them, and a row that
--- holds a key pattern is refused below), customer names from the Daily Brief.
+-- holds a key pattern is refused below), the titles of Daily Brief items. Free text the owner wrote (ledger lines,
+-- dismiss reasons, his own titles, sources and evidence) is kept as written and can name people.
 --
 -- Sync rules (mirrored by DeskCloudMerge in LinumicCore):
 --   * every row of desk_state, obligations and vendors has `version bigint`; a write names the version it was based on
 --     and is refused when the row has moved on: push_* return the current row, so the app shows a conflict (both
 --     sides) instead of overwriting either;
 --   * rows are never deleted: undoing a mark or a Done writes a tombstone (deleted = true), as a new version;
---   * nothing is writable except through the push RPCs (security definer, admins only); the owner's tables are audited.
+--   * nothing is writable except through the push RPCs (security definer, admins only); the owner's tables are audited,
+--     and audit_events keeps every version of their rows (after an undo, and after the rollback too).
 
 -- MARK: Checks shared by the tables
 
@@ -47,6 +49,22 @@ create or replace function private.nonblank(t text)
 returns boolean language sql immutable set search_path = ''
 as $$ select coalesce(length(btrim(t)) > 0, false) $$;
 
+-- A real day written as the app writes a KeyDay, "YYYY-MM-DD". Not 'tomorrow', 'infinity', '2026-02-30' or a time:
+-- every day the sweep reads passes this first, so one bad row can never stop it.
+create or replace function private.is_iso_day(t text)
+returns boolean language plpgsql immutable set search_path = ''
+as $$
+begin
+  return coalesce(t ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' and to_char(t::date, 'YYYY-MM-DD') = t, false);
+exception when data_exception then
+  return false;
+end $$;
+
+-- The day `t` names, or null when it is not one (is_iso_day).
+create or replace function private.iso_day(t text)
+returns date language sql immutable set search_path = ''
+as $$ select case when private.is_iso_day(t) then t::date end $$;
+
 -- A cost as the account sheet accepts it: an amount above zero, a three-letter currency, a cycle and its bill.
 create or replace function private.cost_ok(c jsonb)
 returns boolean language sql immutable set search_path = ''
@@ -65,19 +83,25 @@ as $$
   select case entry
     when 'row' then oid like 'owner.%' and d->>'id' = oid and d->>'origin' = 'owner'
                     and private.nonblank(d->>'title') and private.nonblank(d->>'source') and d ? 'recordedOn'
+                    and (d->>'due' is null or private.is_iso_day(d->>'due'))
                     and (d->>'due') is not distinct from to_char(due, 'YYYY-MM-DD')
     when 'seed' then d->>'id' = oid and d->>'origin' = 'seed'
                     and private.nonblank(d->>'title') and private.nonblank(d->>'source') and d ? 'recordedOn'
+                    and (d->>'due' is null or private.is_iso_day(d->>'due'))
                     and (d->>'due') is not distinct from to_char(due, 'YYYY-MM-DD')
-    when 'date' then d->>'obligationID' = oid and due is not null and d->>'due' = to_char(due, 'YYYY-MM-DD')
+    -- An account's renewal day is set on the account's card (vendors), never as a date here.
+    when 'date' then d->>'obligationID' = oid and oid !~ '^account\..+\.renewal$'
+                    and private.is_iso_day(d->>'due') and d->>'due' = to_char(due, 'YYYY-MM-DD')
                     and private.nonblank(d->>'source') and d ? 'enteredAt'
-    when 'done' then d->>'obligationID' = oid and (d->>'due') is not distinct from to_char(due, 'YYYY-MM-DD')
-                    and private.nonblank(d->>'evidence') and d ? 'on' and d ? 'enteredAt'
+    when 'done' then d->>'obligationID' = oid and (d->>'due' is null or private.is_iso_day(d->>'due'))
+                    and (d->>'due') is not distinct from to_char(due, 'YYYY-MM-DD')
+                    and private.nonblank(d->>'evidence') and private.is_iso_day(d->>'on') and d ? 'enteredAt'
     else false end
 $$;
 
 -- An account entry as the app writes it: the owner's account or a seed account (a name, a source, the day recorded;
--- a holder or cost only with its source), or the facts he recorded about one account (every edit for it).
+-- a holder or cost only with its source, a renewal only as a real day with its source), or the facts he recorded about
+-- one account (every edit for it).
 create or replace function private.vendor_entry_ok(entry text, aid text, d jsonb)
 returns boolean language sql immutable set search_path = ''
 as $$
@@ -85,23 +109,37 @@ as $$
     when 'account' then aid like 'owner.%' and d->>'id' = aid and d->>'origin' = 'owner'
                         and private.nonblank(d->>'name') and private.nonblank(d->>'source') and d ? 'recordedOn'
                         and (d->>'holder' is null or private.nonblank(d->>'holderSource'))
-                        and (d->>'renewal' is null or private.nonblank(d->>'renewalSource'))
+                        and (d->>'renewal' is null or (private.nonblank(d->>'renewalSource') and private.is_iso_day(d->>'renewal')))
                         and private.cost_ok(d->'cost')
     when 'seed' then d->>'id' = aid and d->>'origin' = 'seed' and private.nonblank(d->>'name')
                      and private.nonblank(d->>'source') and d ? 'recordedOn'
+                     and (d->>'renewal' is null or (private.nonblank(d->>'renewalSource') and private.is_iso_day(d->>'renewal')))
     when 'facts' then jsonb_typeof(d->'edits') = 'array' and jsonb_array_length(d->'edits') between 1 and 500
                       and not exists (
                         select 1 from jsonb_array_elements(d->'edits') e
                         where jsonb_typeof(e) <> 'object' or e->>'accountID' is distinct from aid or not (e ? 'enteredAt')
                            or (e->>'renewal' is not null and not private.nonblank(e->>'renewalSource'))
+                           or (e->>'renewal' is not null and not private.is_iso_day(e->>'renewal'))
                            or (e->>'holder' is not null and not private.nonblank(e->>'holderSource'))
                            or not private.cost_ok(e->'cost'))
     else false end
 $$;
 
-revoke execute on function private.desk_sync_has_secret(text), private.nonblank(text), private.cost_ok(jsonb),
-  private.obligation_entry_ok(text, text, date, jsonb), private.vendor_entry_ok(text, text, jsonb)
+revoke execute on function private.desk_sync_has_secret(text), private.nonblank(text), private.is_iso_day(text),
+  private.iso_day(text), private.cost_ok(jsonb), private.obligation_entry_ok(text, text, date, jsonb),
+  private.vendor_entry_ok(text, text, jsonb)
   from public, anon, authenticated;
+
+-- A value made anew each time this file is applied. desk_sync_pull answers it, so a device that remembers row versions
+-- of an earlier set of these tables (applied, rolled back, applied again: versions start at 1 again) forgets them and
+-- merges from nothing instead of reading a new version 5 as the version 5 it knew.
+do $$
+begin
+  execute format('create or replace function private.desk_sync_epoch() returns text language sql immutable set search_path = '''' as %L',
+                 'select ' || quote_literal(gen_random_uuid()::text));
+end $$;
+revoke execute on function private.desk_sync_epoch() from public, anon;
+grant execute on function private.desk_sync_epoch() to authenticated;
 
 -- MARK: Tables
 
@@ -175,9 +213,13 @@ create table public.vendors (
 -- The Mac's last reading of the ledgers: one header row (versioned) and its lines.
 create table public.desk_ledger_reading (
   id int primary key default 1 check (id = 1),
+  -- When the Mac read the files; never later than when the server received it (a Mac clock running ahead).
   read_at timestamptz not null,
   -- Per ledger: {id, path, state, open, ticked, today, thisWeek, skipped, day} as the Mac read it.
-  sources jsonb not null check (jsonb_typeof(sources) = 'array' and jsonb_array_length(sources) <= 50),
+  sources jsonb not null check (jsonb_typeof(sources) = 'array' and jsonb_array_length(sources) <= 50
+                                and not private.desk_sync_has_secret(sources::text)),
+  -- The owner turned ledger lines off on the Mac: the reading is empty on purpose.
+  lines_off boolean not null default false,
   -- SHA-256 (hex) of the lines as sent, so an unchanged reading only moves the time.
   digest text not null check (digest ~ '^[0-9a-f]{64}$'),
   item_count int not null check (item_count >= 0),
@@ -198,7 +240,7 @@ create table public.desk_items (
   severity text not null check (severity in ('high', 'normal', 'info')),
   kind text not null check (kind in ('task', 'source')),
   kind_key text not null check (kind_key ~ '^[A-Za-z0-9._-]{1,60}$'),
-  subject text not null check (length(subject) <= 300),
+  subject text not null check (length(subject) <= 300 and not private.desk_sync_has_secret(subject)),
   file text check (file is null or (file like '~/%' and length(file) <= 300)),
   line int check (line is null or line > 0),
   due date,
@@ -281,8 +323,8 @@ revoke execute on function private.desk_mark_json(public.desk_state), private.ob
 grant execute on function private.desk_mark_json(public.desk_state), private.obligation_json(public.obligations),
   private.vendor_json(public.vendors) to authenticated;
 
--- Everything the app syncs, in one call: {"serverTime", "deskState": [...], "obligations": [...], "vendors": [...],
--- "ledger": {version, readAt, digest, writtenOn, updatedAt, sources, items: [...]} | null}.
+-- Everything the app syncs, in one call: {"serverTime", "epoch", "deskState": [...], "obligations": [...],
+-- "vendors": [...], "ledger": {version, readAt, digest, linesOff, writtenOn, updatedAt, sources, items: [...]} | null}.
 create or replace function public.desk_sync_pull()
 returns jsonb language plpgsql stable security invoker set search_path = ''
 as $$
@@ -290,11 +332,13 @@ begin
   perform public.assert_admin();
   return jsonb_build_object(
     'serverTime', public.iso8601(now()),
+    'epoch', private.desk_sync_epoch(),
     'deskState', coalesce((select jsonb_agg(private.desk_mark_json(d) order by d.id) from public.desk_state d), '[]'::jsonb),
     'obligations', coalesce((select jsonb_agg(private.obligation_json(o) order by o.id) from public.obligations o), '[]'::jsonb),
     'vendors', coalesce((select jsonb_agg(private.vendor_json(v) order by v.id) from public.vendors v), '[]'::jsonb),
     'ledger', (select jsonb_build_object(
         'version', r.version, 'readAt', public.iso8601(r.read_at), 'digest', r.digest, 'itemCount', r.item_count,
+        'linesOff', r.lines_off,
         'writtenOn', r.written_on, 'updatedAt', public.iso8601(r.updated_at), 'sources', r.sources,
         'items', coalesce((select jsonb_agg(jsonb_strip_nulls(jsonb_build_object(
             'id', i.id, 'title', i.title, 'titleWithheld', i.title_withheld, 'domain', i.domain,
@@ -312,8 +356,8 @@ grant execute on function public.desk_sync_pull() to authenticated;
 -- Each push takes {"changes": [{id, expectedVersion, data | null, …}], "device": "macOS" | "iOS"} and answers, per
 -- change, {"id", "status": "applied" | "stale" | "invalid", "row": <the row as it is now> | null, "message"}:
 --   * expectedVersion is the version the change is based on (0: a row the device has not seen on the server);
---   * stale: the row moved on (or was never there for a version > 0); nothing was written, and "row" is what the
---     server holds, so the app can show both sides;
+--   * stale: the row moved on (or was never there for a version > 0, or another device wrote it first at the same
+--     moment); nothing was written, and "row" is what the server holds, so the app can show both sides;
 --   * invalid: the row breaks a rule above (no source, no evidence, a key pattern, a bad id); nothing was written;
 --   * data null writes a tombstone (deleted = true). A tombstone for a row that was never on the server writes nothing.
 
@@ -348,11 +392,18 @@ begin
         elsif d is null then
           out := out || jsonb_build_object('id', c->>'id', 'status', 'applied', 'row', null);
         else
+          -- Another device may write the same new row at the same moment: its row wins and this one is stale.
           insert into public.desk_state (id, kind, marked_at, fact_hash, snoozed_until, reason, deleted, written_on)
           values (c->>'id', d->>'kind', (d->>'at')::timestamptz, d->>'factHash', (d->>'until')::timestamptz,
                   d->>'reason', false, device)
+          on conflict (id) do nothing
           returning * into cur;
-          out := out || jsonb_build_object('id', cur.id, 'status', 'applied', 'row', private.desk_mark_json(cur));
+          if found then
+            out := out || jsonb_build_object('id', cur.id, 'status', 'applied', 'row', private.desk_mark_json(cur));
+          else
+            select * into cur from public.desk_state where id = c->>'id';
+            out := out || jsonb_build_object('id', c->>'id', 'status', 'stale', 'row', private.desk_mark_json(cur));
+          end if;
         end if;
       elsif cur.version <> expected then
         out := out || jsonb_build_object('id', cur.id, 'status', 'stale', 'row', private.desk_mark_json(cur));
@@ -408,8 +459,14 @@ begin
         else
           insert into public.obligations (id, entry, obligation_id, due, data, seed_revision, written_on)
           values (c->>'id', c->>'entry', c->>'key', (d->>'due')::date, d, (c->>'seedRevision')::int, device)
+          on conflict (id) do nothing
           returning * into cur;
-          out := out || jsonb_build_object('id', cur.id, 'status', 'applied', 'row', private.obligation_json(cur));
+          if found then
+            out := out || jsonb_build_object('id', cur.id, 'status', 'applied', 'row', private.obligation_json(cur));
+          else
+            select * into cur from public.obligations where id = c->>'id';
+            out := out || jsonb_build_object('id', c->>'id', 'status', 'stale', 'row', private.obligation_json(cur));
+          end if;
         end if;
       elsif cur.version <> expected then
         out := out || jsonb_build_object('id', cur.id, 'status', 'stale', 'row', private.obligation_json(cur));
@@ -466,8 +523,14 @@ begin
         else
           insert into public.vendors (id, entry, account_id, data, seed_revision, written_on)
           values (c->>'id', c->>'entry', c->>'key', d, (c->>'seedRevision')::int, device)
+          on conflict (id) do nothing
           returning * into cur;
-          out := out || jsonb_build_object('id', cur.id, 'status', 'applied', 'row', private.vendor_json(cur));
+          if found then
+            out := out || jsonb_build_object('id', cur.id, 'status', 'applied', 'row', private.vendor_json(cur));
+          else
+            select * into cur from public.vendors where id = c->>'id';
+            out := out || jsonb_build_object('id', c->>'id', 'status', 'stale', 'row', private.vendor_json(cur));
+          end if;
         end if;
       elsif cur.version <> expected then
         out := out || jsonb_build_object('id', cur.id, 'status', 'stale', 'row', private.vendor_json(cur));
@@ -491,10 +554,12 @@ end $$;
 revoke execute on function public.push_vendors(jsonb, text) from public, anon;
 grant execute on function public.push_vendors(jsonb, text) to authenticated;
 
--- The Mac's ledger reading: {readAt, digest, sources: [...], items: [...]}, replacing the one of `expected_version`
--- (0 when there is none yet). Answers {"status": "applied" | "unchanged" | "stale" | "older" | "invalid", "version",
--- "readAt", "message"}. A reading older than the one held is never written ("older"); one whose lines are unchanged
--- (same digest) only moves the time and the per-ledger counts ("unchanged").
+-- The Mac's ledger reading: {readAt, digest, linesOff, sources: [...], items: [...]}, replacing the one of
+-- `expected_version` (0 when there is none yet). Answers {"status": "applied" | "unchanged" | "stale" | "invalid",
+-- "version", "readAt", "message"}. The version orders the writes (one Mac), not the Mac's clock: a reading is never
+-- refused for its time, and a time ahead of the server's is stored as the server's, so one reading from a Mac whose
+-- clock ran ahead never holds back the next ones. A reading whose lines are unchanged (same digest) only moves the
+-- time and the per-ledger counts ("unchanged").
 create or replace function public.replace_desk_items(expected_version bigint, reading jsonb)
 returns jsonb language plpgsql volatile security definer set search_path = ''
 as $$
@@ -507,7 +572,7 @@ begin
     raise exception 'Not authorised: Linumic OS admins only' using errcode = '42501';
   end if;
   begin
-    incoming := (reading->>'readAt')::timestamptz;
+    incoming := least((reading->>'readAt')::timestamptz, now());
     if incoming is null or jsonb_typeof(reading->'items') is distinct from 'array' or jsonb_array_length(reading->'items') > 2000 then
       raise exception 'reading needs readAt and at most 2000 items' using errcode = '22023';
     end if;
@@ -516,19 +581,18 @@ begin
     if found and cur.version <> expected_version or not found and expected_version <> 0 then
       return jsonb_build_object('status', 'stale', 'version', coalesce(cur.version, 0), 'readAt', public.iso8601(cur.read_at));
     end if;
-    if found and incoming < cur.read_at then
-      return jsonb_build_object('status', 'older', 'version', cur.version, 'readAt', public.iso8601(cur.read_at));
-    end if;
     if found and cur.digest = reading->>'digest' and cur.item_count = n then
-      update public.desk_ledger_reading set read_at = incoming, sources = reading->'sources', written_on = 'macOS',
+      update public.desk_ledger_reading set read_at = incoming, sources = reading->'sources',
+                                            lines_off = coalesce((reading->>'linesOff')::boolean, false), written_on = 'macOS',
                                             updated_by = (select auth.uid())
       where id = 1 returning * into cur;
       return jsonb_build_object('status', 'unchanged', 'version', cur.version, 'readAt', public.iso8601(cur.read_at));
     end if;
-    insert into public.desk_ledger_reading as r (id, read_at, sources, digest, item_count, written_on)
-    values (1, incoming, reading->'sources', reading->>'digest', n, 'macOS')
-    on conflict (id) do update set read_at = excluded.read_at, sources = excluded.sources, digest = excluded.digest,
-                                   item_count = excluded.item_count, written_on = 'macOS', updated_by = (select auth.uid())
+    insert into public.desk_ledger_reading as r (id, read_at, sources, lines_off, digest, item_count, written_on)
+    values (1, incoming, reading->'sources', coalesce((reading->>'linesOff')::boolean, false), reading->>'digest', n, 'macOS')
+    on conflict (id) do update set read_at = excluded.read_at, sources = excluded.sources, lines_off = excluded.lines_off,
+                                   digest = excluded.digest, item_count = excluded.item_count, written_on = 'macOS',
+                                   updated_by = (select auth.uid())
     returning * into cur;
     delete from public.desk_items where true;
     insert into public.desk_items (id, title, title_withheld, domain, domain_name, severity, kind, kind_key, subject, file,

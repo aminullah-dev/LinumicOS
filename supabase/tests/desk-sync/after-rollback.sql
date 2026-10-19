@@ -18,8 +18,9 @@ select pg_temp.check((select count(*) from pg_proc p join pg_namespace n on n.oi
                         and p.proname in ('desk_sync_pull', 'push_desk_state', 'push_obligations', 'push_vendors',
                                           'replace_desk_items', 'desk_mark_json', 'obligation_json', 'vendor_json',
                                           'desk_sync_bump', 'vendor_entry_ok', 'obligation_entry_ok', 'cost_ok', 'nonblank',
-                                          'desk_sync_has_secret', 'sentinel_obligation_sweep', 'obligation_schedule',
-                                          'usable_lead_days')) = 0,
+                                          'desk_sync_has_secret', 'is_iso_day', 'iso_day', 'desk_sync_epoch',
+                                          'sentinel_obligation_sweep', 'obligation_schedule', 'usable_lead_days',
+                                          'is_live_obligation_id')) = 0,
   'rollback: no Desk sync function is left');
 select pg_temp.check((select count(*) from public.sentinel_events where kind = 'obligationDue') = 0, 'rollback: no obligation event is left');
 do $$ begin
@@ -30,7 +31,11 @@ exception when check_violation then raise notice 'ok: rollback: the four kinds o
 end $$;
 select pg_temp.check((select command from cron.job where jobname = 'sentinel-licences') = 'select private.sentinel_licence_sweep()',
   'rollback: the 06:15 job runs the licence sweep only');
-select pg_temp.check((select count(*) from cron.job where jobname like 'sentinel-%') = 4, 'rollback: the four Sentinel jobs are still there');
+select pg_temp.check((select count(*) from cron.job where jobname like 'sentinel-%') = 4
+  and not exists (select 1 from cron.job where jobname = 'sentinel-obligations'), 'rollback: the four Sentinel jobs are still there, and only they');
+select pg_temp.check((select prosrc from pg_proc where proname = 'sentinel_overview') !~ 'unacknowledgedObligations'
+  and (select prosrc from pg_proc where proname = 'sentinel_overview') ~ 'where e.acknowledged_at is null\)',
+  'rollback: sentinel_overview counts every unacknowledged event again');
 select pg_temp.check((select string_agg(pg_get_function_identity_arguments(p.oid), ';') from pg_proc p
                       where p.proname = 'sentinel_recent_events') = 'max_rows integer, include_acknowledged boolean',
   'rollback: sentinel_recent_events takes two arguments again');
