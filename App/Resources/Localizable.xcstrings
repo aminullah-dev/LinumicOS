@@ -2368,6 +2368,16 @@
         }
       }
     },
+    "Level across platforms": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هم‌پایی پلتفرم‌ها"
+          }
+        }
+      }
+    },
     "Level unknown": {
       "localizations": {
         "fa-AF": {
@@ -2694,6 +2704,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "از %1$@ به این سو هیچ، طبق خواندن %2$@. هر دو روز اجرا می‌شود؛ بیش از %3$lld روز بی‌درخواست ادغام، یک مورد میز کار است."
+          }
+        }
+      }
+    },
+    "Not checked yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز بررسی نشده"
           }
         }
       }

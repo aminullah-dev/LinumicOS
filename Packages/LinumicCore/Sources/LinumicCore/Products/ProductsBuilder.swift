@@ -133,8 +133,12 @@ public struct ProductCard: Hashable, Sendable, Identifiable {
     public var slots: [SlotReading] { tracks.flatMap(\.slots) }
 
     /// What was not read on the compared platforms, whatever the level (a product not level can have parts unread too).
+    /// With the track's name when more than one app of the product is compared (VELRO Ride, Driver and Ops).
     public var unread: [String] {
-        tracks.flatMap { ProductLevelRule.evaluate($0.track.title, $0.slots.filter(\.slot.compared)).unknowns }
+        let compared = tracks.filter { $0.slots.contains(where: \.slot.compared) }
+        return compared.flatMap { t in
+            ProductLevelRule.evaluate(t.track.title, t.slots.filter(\.slot.compared)).unknowns.map { compared.count > 1 ? "\(t.track.title): \($0)" : $0 }
+        }
     }
 }
 

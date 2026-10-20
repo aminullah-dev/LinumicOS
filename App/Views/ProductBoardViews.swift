@@ -249,8 +249,12 @@ struct ProductBoardCard: View {
     private var healthPill: some View {
         switch card.health {
         case .known(let h, let source, let at):
-            BoardPill(text: h.down > 0 ? String(localized: "\(h.down) of \(h.total) down") : String(localized: "\(h.up + h.degraded) of \(h.total) up"),
-                      symbol: "waveform.path.ecg", color: h.down > 0 ? .red : (h.degraded > 0 ? .orange : .green), help: BoardText.source(source, at))
+            // Addresses not checked yet are not "up": the pill says so instead of a green zero.
+            BoardPill(text: h.unchecked == h.total ? String(localized: "Not checked yet")
+                          : (h.down > 0 ? String(localized: "\(h.down) of \(h.total) down") : String(localized: "\(h.up + h.degraded) of \(h.total) up")),
+                      symbol: "waveform.path.ecg",
+                      color: h.down > 0 ? .red : (h.degraded > 0 || h.unchecked > 0 ? (h.unchecked == h.total ? .gray : .orange) : .green),
+                      help: BoardText.source(source, at) + (h.unchecked > 0 ? " · " + String(localized: "\(h.unchecked) not checked") : ""))
         case .none(let why, _, _):
             BoardPill(text: String(localized: "Not monitored"), symbol: "waveform.path.ecg", color: .gray, help: why)
         case .unknown(let why):
@@ -288,7 +292,7 @@ struct ProductBoardDetail: View {
     }
 
     private func levelPanel(_ card: ProductCard) -> some View {
-        DashboardPanel(title: "Platforms level") {
+        DashboardPanel(title: "Level across platforms") {
             LevelBadge(state: card.level)
             switch card.level {
             case .level:
@@ -296,9 +300,11 @@ struct ProductBoardDetail: View {
             case .nothingShipped:
                 Text("No compared platform has a build or a store version yet.").foregroundStyle(.secondary)
             case .notLevel(let findings):
+                // The track's name only when the product has more than one app that is compared (VELRO Ride, Driver, Ops).
+                let named = card.product.tracks.filter { $0.slots.contains(where: \.compared) }.count > 1
                 ForEach(findings) { f in
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(verbatim: L(f.track)).font(.caption).foregroundStyle(.secondary)
+                        if named { Text(verbatim: L(f.track)).font(.caption).foregroundStyle(.secondary) }
                         Text(verbatim: f.text).monospacedDigit().textSelection(.enabled)
                     }
                 }

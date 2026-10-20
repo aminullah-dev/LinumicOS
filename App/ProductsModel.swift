@@ -38,7 +38,7 @@ final class ProductsModel {
     }
 
     /// This app's own build: Linumic OS is not in a store, so the build running here is the one that is known.
-    static var runningBuild: RunningBuild? {
+    nonisolated static var runningBuild: RunningBuild? {
         guard let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String else { return nil }
         #if os(macOS)
         let platform = Platform.macOS
@@ -56,11 +56,19 @@ final class ProductsModel {
     }
 
     /// The Products page as of now. Derived every time, never stored.
-    func report(now: Date = .now) -> ProductsReport { ProductsBuilder.build(input(now: now)) }
+    func report(now: Date = .now) -> ProductsReport {
+        #if DEBUG
+        if let sample = ProductsPreviewData.input(now: now) { return ProductsBuilder.build(sample) }
+        #endif
+        return ProductsBuilder.build(input(now: now))
+    }
 
     /// The agents as of now.
     func agents(now: Date = .now) -> AgentsReport {
-        AgentActivity.report(registry: registry, windows: file.pullWindows, now: now)
+        #if DEBUG
+        if let sample = ProductsPreviewData.windows(now: now) { return AgentActivity.report(registry: registry, windows: sample, now: now) }
+        #endif
+        return AgentActivity.report(registry: registry, windows: file.pullWindows, now: now)
     }
 
     /// Reads the commits on each default branch, Linumic OS's repository and the agents' pull requests from GitHub

@@ -180,6 +180,8 @@ final class Router {
         if let screen = defaults.string(forKey: "LCCScreen").flatMap(SidebarItem.init(rawValue:)) { sidebar = screen }
         if let tab = defaults.string(forKey: "LCCOpsTab").flatMap(OperationsProduct.init(rawValue:)) { operationsTab = tab }
         if let product = defaults.string(forKey: "LCCProduct") { open(productID: product) }
+        if let card = defaults.string(forKey: "LCCProductCard") { request = .productCard(card) }
+        if let agent = defaults.string(forKey: "LCCAgent") { request = .agent(agent) }
         #endif
     }
 

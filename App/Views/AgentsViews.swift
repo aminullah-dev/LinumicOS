@@ -142,12 +142,13 @@ private struct AgentCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
+            // The status on its own line, so a long slug never wraps letter by letter on an iPhone.
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(verbatim: agent.label).font(.headline)
                 Text(verbatim: agent.slug).font(.callout.monospaced()).foregroundStyle(.secondary).textSelection(.enabled)
-                Spacer(minLength: 4)
-                pills
+                    .lineLimit(1).truncationMode(.middle)
             }
+            pills
             Text(verbatim: L(agent.title)).font(.callout)
             FitRow(spacing: 10) {
                 Label { Text(verbatim: agent.products.joined(separator: L(", "))) } icon: { Image(systemName: "shippingbox") }

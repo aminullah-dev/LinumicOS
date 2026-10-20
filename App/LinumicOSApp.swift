@@ -88,6 +88,8 @@ struct LinumicOSApp: App {
         // Debug-only screenshot aid: with `-LCCSalesSample`, the Sales page shows made-up data and no job starts, so
         // nothing is read or sent.
         if UserDefaults.standard.string(forKey: "LCCSalesSample") != nil { return }
+        // The same for `-LCCProductsSample` (the Products and Agents pages).
+        if ProductsPreviewData.isOn { return }
         #endif
         automation.start()
     }
