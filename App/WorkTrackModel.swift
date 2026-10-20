@@ -36,6 +36,15 @@ final class WorkTrackModel {
     private let secrets: SecretStore
     private let log: WorkTrackActionLog?
     private var client: WorkTrackVendorClient?
+    /// A Sales read the owner asked for (one account's contacts, the shape check) while it runs. A refresh waits for it,
+    /// and it is refused while a refresh runs: one request at a time, so the client's token refresh is never raced.
+    private var salesRead: Task<Void, Never>?
+    /// Sales copies drafts and numbers through this one guard, which lives as long as the model: a guard made by a sheet
+    /// would be gone when the sheet closes, and the clipboard would never be cleared.
+    private let clipboard = ClipboardGuard(pasteboard: SystemPasteboard())
+
+    /// How long a copied Sales draft or phone number stays on the clipboard.
+    static let salesClipboardSeconds: TimeInterval = 120
 
     init(inventory: InventoryModel) {
         secrets = inventory.secrets
@@ -129,6 +138,7 @@ final class WorkTrackModel {
         guard let client, !isRefreshing else { return }
         isRefreshing = true
         defer { isRefreshing = false }
+        await salesRead?.value
         do {
             let list = try await client.companies()
             companies = list
@@ -152,6 +162,53 @@ final class WorkTrackModel {
         } catch {
             clearData()
             loadError = handle(error)
+        }
+    }
+
+    // MARK: Sales (read-only, on demand)
+
+    /// Whether a Sales read the owner asked for is running.
+    var isSalesReading: Bool { salesRead != nil }
+
+    struct SalesContacts {
+        let rows: [WTCrmContactRef]
+        /// Contacts WorkTrack sent that could not be read.
+        let skipped: Int
+        let readAt: Date
+    }
+
+    /// One account's contacts (`GET /vendor/crm/contacts?accountId=`). Nothing is kept here: the view holds them while it
+    /// is open.
+    func contacts(forAccount id: String) async throws -> SalesContacts {
+        try await salesCall { client in
+            let list = try await client.crmContacts(accountId: id)
+            return SalesContacts(rows: list.rows, skipped: list.skipped, readAt: .now)
+        }
+    }
+
+    /// The owner's one check of the CRM answer: one `GET /vendor/crm/accounts`, kept as names, types and counts only.
+    func checkCRMShape() async throws -> WTShapeReport {
+        try await salesCall { try await $0.crmAccountsShape() }
+    }
+
+    /// Copies a draft or a number concealed (macOS) or local only (iOS), and clears it after two minutes if it is still
+    /// there. Nothing is sent.
+    func copyConcealed(_ text: String) {
+        clipboard.copy(text, clearAfter: Self.salesClipboardSeconds)
+    }
+
+    private func salesCall<T: Sendable>(_ read: @escaping @Sendable (WorkTrackVendorClient) async throws -> T) async throws -> T {
+        guard let client else { throw WorkTrackError.notSignedIn }
+        guard !isRefreshing, salesRead == nil else { throw WorkTrackModelError.busy }
+        let call = Task { try await read(client) }
+        salesRead = Task { _ = await call.result }
+        defer { salesRead = nil }
+        do {
+            let value = try await call.value
+            await persistRotatedToken()
+            return value
+        } catch {
+            throw WorkTrackModelError.message(handle(error))
         }
     }
 
@@ -244,12 +301,16 @@ final class WorkTrackModel {
 
 enum WorkTrackModelError: LocalizedError {
     case changedSinceOpened
+    /// A WorkTrack refresh or another read is running.
+    case busy
     case message(String)
 
     var errorDescription: String? {
         switch self {
         case .changedSinceOpened:
             String(localized: "The licence changed in WorkTrack after this sheet was opened (someone else, or a payment). Nothing was sent. Close the sheet and start the renewal again from the current licence.")
+        case .busy:
+            String(localized: "WorkTrack is being read right now. Try again in a moment.")
         case .message(let m): m
         }
     }

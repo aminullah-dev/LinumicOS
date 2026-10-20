@@ -20,6 +20,7 @@ struct IntegrationsSettingsView: View {
     @Environment(LicenceModel.self) private var licences
     @Environment(WorkTrackModel.self) private var worktrack
     @AppStorage(WorkTrackModel.notifyKey) private var notifyWorkTrack = true
+    @State private var checkingCRMShape = false
     @Environment(OperationsModel.self) private var operations
     @AppStorage(OperationsModel.notifyKey) private var notifyOperations = true
     @AppStorage(MonitorModel.notifyKey) private var notifyMonitor = true
@@ -127,6 +128,14 @@ struct IntegrationsSettingsView: View {
                     Text("Local notifications 30, 14, 7 and 1 days before a production customer's last licensed day (TEST and DUPLICATE companies excluded). The list is read when the app opens and every 6 hours while it's open.")
                 }
                 .onChange(of: notifyWorkTrack) { Task { await WorkTrackNotifier.reschedule(for: worktrack.companies, environment: worktrack.environment) } }
+                LabeledContent {
+                    Button("Check the CRM answer (one GET)…") { checkingCRMShape = true }
+                        .disabled(!worktrack.isSignedIn)
+                } label: {
+                    Text("Sales")
+                    Text("Reads the CRM accounts once and shows only their keys, types and counts, never a value.")
+                }
+                .sheet(isPresented: $checkingCRMShape) { SalesShapeSheet() }
             } header: {
                 Text("WorkTrack customers")
             } footer: {

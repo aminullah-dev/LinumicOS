@@ -72,6 +72,7 @@ struct ContentView: View {
         case .desk: DeskView()
         case .obligations: ObligationsView()
         case .money: MoneyView()
+        case .sales: SalesView()
         case .dashboard: DashboardView()
         case .brief: DailyBriefView()
         case .monitor: MonitorView()
