@@ -111,9 +111,10 @@ public enum LegalAccessRules {
     public static func standardized(_ path: String) -> String { KeyPaths.trimmed(URL(fileURLWithPath: path).standardizedFileURL.path) }
 
     /// Whether a folder the owner picked is kept. The legal grant takes exactly ~/Documents/Linumic-Legal: a wider folder
-    /// (~/Documents, the home folder) would be a lasting read grant over far more than the drafts. An Asasnama folder may
-    /// be any folder below the home folder, but not the home folder or one above it, and not the legal folder (its
-    /// Asasnama files are already listed).
+    /// (~/Documents, the home folder) would be a lasting read grant over far more than the drafts. An Asasnama folder must
+    /// be at least two levels inside the home folder (~/Desktop/1, ~/Documents/<a folder>) for the same reason: never
+    /// the home folder, one above it, or a folder directly in it (~/Documents, ~/Desktop, ~/Library). Nor the legal
+    /// folder (its Asasnama files are already listed).
     public static func decide(_ chosen: String, role: LegalGrantRole, home: String) -> LegalGrantDecision {
         let path = standardized(chosen)
         let legal = standardized(legalFolder(home: home))
@@ -123,8 +124,8 @@ public enum LegalAccessRules {
             return path == legal ? .accept : .refuse(LF("Only ~/%@ is accepted for the legal grant, so nothing was saved.", LegalReader.folder))
         case .asasnama:
             if path == legal { return .refuse(L("The legal folder's Asasnama files are already listed through its own grant.")) }
-            guard KeyPaths.isInside(path, root: h), path != h else {
-                return .refuse(L("Choose a folder inside your home folder that holds the Asasnama files, not the home folder or one above it."))
+            guard KeyPaths.isInside(path, root: h), path != h, path.dropFirst(h.count + 1).split(separator: "/").count >= 2 else {
+                return .refuse(L("Choose the folder that holds the Asasnama files, at least two levels inside your home folder (such as ~/Desktop/1): not the home folder, one above it, or a folder directly in it such as ~/Documents or ~/Desktop."))
             }
             return .accept
         }

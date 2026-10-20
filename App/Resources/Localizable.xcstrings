@@ -28994,12 +28994,12 @@
         }
       }
     },
-    "Choose a folder inside your home folder that holds the Asasnama files, not the home folder or one above it.": {
+    "Choose the folder that holds the Asasnama files, at least two levels inside your home folder (such as ~/Desktop/1): not the home folder, one above it, or a folder directly in it such as ~/Documents or ~/Desktop.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "پوشه‌ای را درون پوشهٔ خانگی خود انتخاب کنید که فایل‌های اساسنامه در آن است، نه خود پوشهٔ خانگی یا پوشه‌ای بالاتر از آن."
+            "value": "پوشه‌ای را انتخاب کنید که فایل‌های اساسنامه در آن است و دست‌کم دو سطح درون پوشهٔ خانگی شماست (مانند ~/Desktop/1): نه خود پوشهٔ خانگی، نه پوشه‌ای بالاتر از آن، و نه پوشه‌ای که مستقیم درون آن است مانند ~/Documents یا ~/Desktop."
           }
         }
       }
@@ -29394,12 +29394,12 @@
         }
       }
     },
-    "Only ~/Documents/Linumic-Legal is accepted for the legal grant. An Asasnama folder can be any folder inside your home folder. The grants are read-only and kept on this Mac; Remove access forgets them.": {
+    "Only ~/Documents/Linumic-Legal is accepted for the legal grant. An Asasnama folder can be any folder at least two levels inside your home folder (such as ~/Desktop/1), never ~/Documents or ~/Desktop as a whole. The grants are read-only and kept on this Mac; Remove access forgets them.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "برای اجازهٔ حقوقی فقط ~/Documents/Linumic-Legal پذیرفته می‌شود. پوشهٔ اساسنامه می‌تواند هر پوشه‌ای درون پوشهٔ خانگی شما باشد. اجازه‌ها فقط‌خواندنی‌اند و روی همین مک نگه داشته می‌شوند؛ «برداشتن اجازه» آن‌ها را فراموش می‌کند."
+            "value": "برای اجازهٔ حقوقی فقط ~/Documents/Linumic-Legal پذیرفته می‌شود. پوشهٔ اساسنامه می‌تواند هر پوشه‌ای باشد که دست‌کم دو سطح درون پوشهٔ خانگی شماست (مانند ~/Desktop/1)، هرگز کل ~/Documents یا ~/Desktop. اجازه‌ها فقط‌خواندنی‌اند و روی همین مک نگه داشته می‌شوند؛ «برداشتن اجازه» آن‌ها را فراموش می‌کند."
           }
         }
       }

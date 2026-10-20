@@ -270,7 +270,7 @@ private struct LegalAccessCard: View {
                 }
             }
             Button("Add folder…") { model.addAsasnamaFolder() }
-            Text("Only ~/Documents/Linumic-Legal is accepted for the legal grant. An Asasnama folder can be any folder inside your home folder. The grants are read-only and kept on this Mac; Remove access forgets them.")
+            Text("Only ~/Documents/Linumic-Legal is accepted for the legal grant. An Asasnama folder can be any folder at least two levels inside your home folder (such as ~/Desktop/1), never ~/Documents or ~/Desktop as a whole. The grants are read-only and kept on this Mac; Remove access forgets them.")
                 .font(.caption).foregroundStyle(.secondary)
         }
     }

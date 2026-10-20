@@ -88,7 +88,7 @@ under its own UserDefaults key, the pattern of Keys & Backups:
 | Key | What it may hold | What the app does inside |
 |---|---|---|
 | `LCCLegalBookmarks` | exactly `~/Documents/Linumic-Legal` (anything else, `~/Documents` or the home folder included, is refused before a bookmark is made) | the reading above |
-| `LCCAsasnamaBookmarks` | folders inside the home folder, not the home folder or one above it, not the legal folder | names and dates of Asasnama files, the folder and the folders directly in it; never the legal folder's text, even when it covers it (`~/Documents`) |
+| `LCCAsasnamaBookmarks` | folders at least two levels inside the home folder (`~/Desktop/1`; never the home folder, one above it, or a folder directly in it such as `~/Documents` or `~/Desktop`), not the legal folder | names and dates of Asasnama files, the folder and the folders directly in it; never the legal folder's text, even when it covers it (an older grant of `~/Documents`, dropped when resolved) |
 
 They are separate from `LCCKeysBookmarks` (whose grant promises no file is ever opened) and `LCCLedgerBookmarks`
 (ledgers only). "Remove access" forgets both legal keys. The grants are read-only, but while the open panel is showing

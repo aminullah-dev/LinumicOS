@@ -244,12 +244,21 @@ struct LegalAccessTests {
     @Test func anAsasnamaFolderIsBelowHomeAndNotTheLegalFolder() {
         #expect(LegalAccessRules.decide("/Users/owner/Desktop/1", role: .asasnama, home: home) == .accept)
         #expect(LegalAccessRules.decide("/Users/owner/Documents/Business-Docs", role: .asasnama, home: home) == .accept)
-        for refused in [home, "/Users", "/", legalRoot, "/Volumes/Other"] {
+        #expect(LegalAccessRules.decide("/Users/owner/Desktop/1/", role: .asasnama, home: home) == .accept)
+        // A folder directly in the home folder would be a lasting read grant over all of it (docs/security.md).
+        for refused in [home, "/Users", "/", legalRoot, "/Volumes/Other", "/Users/owner/Documents", "/Users/owner/Desktop",
+                        "/Users/owner/Desktop/", "/Users/owner/Library", "/Users/owner/Desktop/1/.."] {
             guard case .refuse = LegalAccessRules.decide(refused, role: .asasnama, home: home) else {
                 Issue.record("\(refused) must be refused")
                 continue
             }
         }
+        // A stored grant of a folder that is no longer accepted (~/Documents) is dropped when resolved, never used.
+        let r = LegalAccessRules.resolve(stored: ["/Users/owner/Documents": Data("wide".utf8), "/Users/owner/Desktop/1": Data("ok".utf8)],
+                                         role: .asasnama, home: home,
+                                         resolve: { _ in ("/Users/owner/Desktop/1", false) }, rebookmark: { _ in nil })
+        #expect(r.dropped == [LegalDroppedGrant(path: "/Users/owner/Documents", reason: .notAllowed)])
+        #expect(r.resolved == ["/Users/owner/Desktop/1"] && r.store.keys.sorted() == ["/Users/owner/Desktop/1"])
     }
 
     @Test func storedGrantsResolveDropOrStay() {
