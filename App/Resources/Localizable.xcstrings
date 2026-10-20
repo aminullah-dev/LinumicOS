@@ -290,12 +290,12 @@
         }
       }
     },
-    "%@ in total, as read. Pay salons in the SafeBeauty admin console; it records the payout.": {
+    "%@ in total, as read. Pay the salons, then mark the payout paid in the SafeBeauty admin console, which records it.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "در مجموع %@، همان‌طور که خوانده شد. پول سالون‌ها را در کنسول مدیریت SafeBeauty بپردازید؛ پرداخت همان‌جا ثبت می‌شود."
+            "value": "در مجموع %@، همان‌طور که خوانده شد. پول سالون‌ها را بپردازید، سپس پرداخت را در کنسول مدیریت SafeBeauty «پرداخت‌شده» علامت بزنید؛ کنسول آن را ثبت می‌کند."
           }
         }
       }
@@ -310,12 +310,12 @@
         }
       }
     },
-    "%@ in total. Normal while cash visits are unpaid; a large or growing amount is not.": {
+    "%@ in total: commission on unpaid cash bookings, or a payout that overshot. Commission on an unpaid cash booking is normal and clears itself; a large or growing amount is not.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "در مجموع %@. تا وقتی پول دیدارهای نقدی پرداخت نشده عادی است؛ مبلغ بزرگ یا رو به افزایش عادی نیست."
+            "value": "در مجموع %@: کمیشنِ نوبت‌های نقدیِ پرداخت‌نشده، یا پرداختی به سالون که از بدهی بیشتر بوده است. کمیشنِ نوبت نقدیِ پرداخت‌نشده عادی است و خودبه‌خود تصفیه می‌شود؛ مبلغ بزرگ یا رو به افزایش عادی نیست."
           }
         }
       }
@@ -550,6 +550,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ · امروز"
+          }
+        }
+      }
+    },
+    "%@ · tried %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · تلاش برای خواندن %2$@"
           }
         }
       }
@@ -1124,6 +1134,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld از ۱۶ حرف"
+          }
+        }
+      }
+    },
+    "%lld orders": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld سفارش"
           }
         }
       }
@@ -2502,7 +2522,7 @@
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "همان‌طور که صورت‌حساب هر حساب می‌گوید: به تفکیک ارز و دورهٔ پرداخت. هرگز تبدیل نمی‌شود و به رقم سالانه برگردانده نمی‌شود."
+            "value": "همان‌طور که صورت‌حساب هر حساب می‌گوید: به تفکیک واحد پول و دورهٔ پرداخت. هرگز تبدیل نمی‌شود و به رقم سالانه برگردانده نمی‌شود."
           }
         }
       }
@@ -3440,6 +3460,16 @@
         }
       }
     },
+    "Issued %@, no due date": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صادرشده در %@، بدون سررسید"
+          }
+        }
+      }
+    },
     "It closes when a restore test is recorded in Keys & Backups: this opens it": {
       "localizations": {
         "fa-AF": {
@@ -3600,6 +3630,16 @@
         }
       }
     },
+    "last term paid": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین دورهٔ پرداخت"
+          }
+        }
+      }
+    },
     "Last verified export off this Mac: %@": {
       "localizations": {
         "fa-AF": {
@@ -3630,12 +3670,22 @@
         }
       }
     },
-    "Left out: %lld paid or sent invoices of TEST or DUPLICATE companies (%@).": {
+    "Left out: %lld paid invoices of TEST or DUPLICATE companies (%@).": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "حساب نشده: %1$lld فاکتورِ پرداخت‌شده یا فرستاده‌شدهٔ شرکت‌های آزمایشی یا تکراری (%2$@)."
+            "value": "حساب نشده: %1$lld فاکتورِ پرداخت‌شدهٔ شرکت‌های آزمایشی یا تکراری (%2$@)."
+          }
+        }
+      }
+    },
+    "Left out: %lld sent invoices of TEST or DUPLICATE companies (%@).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب نشده: %1$lld فاکتورِ فرستاده‌شدهٔ شرکت‌های آزمایشی یا تکراری (%2$@)."
           }
         }
       }
@@ -3765,7 +3815,7 @@
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "پول هنوز روی این دستگاه جمع‌آوری نشده است."
+            "value": "معلومات پول هنوز روی این دستگاه خوانده نشده است."
           }
         }
       }
@@ -3775,7 +3825,7 @@
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "پول هنوز خوانده نشده است."
+            "value": "معلومات پول هنوز خوانده نشده است."
           }
         }
       }
@@ -4180,6 +4230,16 @@
         }
       }
     },
+    "one month (never paid online)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک ماه (هرگز آنلاین نپرداخته)"
+          }
+        }
+      }
+    },
     "Open Obligations & accounts": {
       "localizations": {
         "fa-AF": {
@@ -4286,6 +4346,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "بدهی به سالون‌ها"
+          }
+        }
+      }
+    },
+    "Paid %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پرداخت‌شده در %@"
           }
         }
       }
@@ -4415,7 +4485,7 @@
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "provider_balances بالای صفر (پلتفرم به سالون بدهکار است) و refund_requests در حالت PENDING. جمع‌ها شمار و جمعی است که Firestore از همهٔ بیلانس‌ها می‌گیرد؛ سالون‌های فهرست‌شده بزرگ‌ترین‌ها از ۳۰۰ بیلانس اولِ خوانده‌شده‌اند. پرداخت را فقط در کنسول مدیریت پرداخت‌شده علامت بزنید: SafeBeauty آن کار را ثبت نمی‌کند."
+            "value": "provider_balances بالاتر از صفر (پلتفورم به سالون بدهکار است) و refund_requests در حالت PENDING. جمع‌ها شمار و جمعی است که Firestore از همهٔ بیلانس‌ها می‌گیرد؛ سالون‌های فهرست‌شده بزرگ‌ترین‌ها از ۳۰۰ بیلانس اولِ خوانده‌شده‌اند. علامت «پرداخت‌شده» را فقط در کنسول مدیریت بزنید: SafeBeauty این کار را در دفتر بازرسی ثبت نمی‌کند."
           }
         }
       }
@@ -4465,7 +4535,7 @@
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "فقط خواندنی. هر رقم می‌گوید از کجا و چه وقت خوانده شده. هر مبلغ در ارز خودش می‌ماند: هرگز تبدیل نمی‌شود و با ارز دیگر جمع نمی‌شود."
+            "value": "فقط خواندنی. هر رقم می‌گوید از کجا و چه وقت خوانده شده. هر مبلغ در واحد پول خودش می‌ماند: هرگز تبدیل نمی‌شود و با واحد پول دیگر جمع نمی‌شود."
           }
         }
       }
@@ -4710,12 +4780,12 @@
         }
       }
     },
-    "SafeBeauty: %ld salons owe the platform commission": {
+    "SafeBeauty: %ld salons owe the platform": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "SafeBeauty: %ld سالون به پلتفرم کمیشن بدهکار است"
+            "value": "SafeBeauty: %ld سالون به پلتفرم بدهکار است"
           }
         }
       }
@@ -4885,7 +4955,7 @@
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "وارد شده‌اید، ولی پول هنوز خوانده نشده است."
+            "value": "وارد شده‌اید، ولی معلومات پول هنوز خوانده نشده است."
           }
         }
       }
@@ -5186,6 +5256,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "این مک نسخه‌ای از پوشهٔ ابری را نگه می‌دارد و هر وقت بتواند آپلودش می‌کند (نه وقتی همگام‌سازی متوقف است، از حساب خارج شده‌اید یا فضا پر است). خروجی این‌جا وقتی بیرون از این مک حساب می‌شود که آن را روی کمپیوتر دیگری باز کنید و ثبتش کنید."
+          }
+        }
+      }
+    },
+    "This part was read; its figures are shown, but may not be complete or exact until this is resolved.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این بخش خوانده شده؛ رقم‌هایش نشان داده می‌شود، ولی تا این مورد حل نشود شاید کامل یا دقیق نباشد."
           }
         }
       }
@@ -5575,7 +5655,7 @@
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "به دست در CRM در WorkTrack ثبت شده. جدا از HesabPay نگه داشته می‌شود و هرگز با آن جمع نمی‌شود: یک پرداخت ممکن است در هر دو باشد."
+            "value": "به‌طور دستی در CRM WorkTrack ثبت شده. جدا از HesabPay نگه داشته می‌شود و هرگز با آن جمع نمی‌شود: یک پرداخت ممکن است در هر دو باشد."
           }
         }
       }
@@ -5825,7 +5905,7 @@
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "WorkTrack ارز را %@ گفته که کد ارز نیست."
+            "value": "WorkTrack واحد پول را %@ گفته که کد واحد پول نیست."
           }
         }
       }
@@ -5865,7 +5945,7 @@
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "WorkTrack %ld حساب CRM فرستاد که بیشترین شمار آن است؛ فاکتورهای حساب‌های بیرون از این حد بی‌صافی حساب می‌شوند."
+            "value": "WorkTrack %ld حساب CRM فرستاد که بیشترین شمار آن است؛ فاکتورهای حساب‌های بیرون از این حد بدون کنار گذاشتن شرکت‌های TEST حساب می‌شوند."
           }
         }
       }
