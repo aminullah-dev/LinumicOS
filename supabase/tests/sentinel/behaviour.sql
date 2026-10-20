@@ -137,9 +137,16 @@ select pg_temp.check((select data ? 'licences' and bytes > 0 from public.invento
 select pg_temp.check(private.sentinel_prune() = 0, 'prune: nothing within 14 days');
 select pg_temp.check(private.sentinel_prune(interval '1 hour') = 6, 'prune: the 6 test rounds are older than an hour');
 select pg_temp.check((select count(*) from public.sentinel_checks) = 0, 'checks went with their rounds');
-select pg_temp.check((select count(*) from cron.job where jobname like 'sentinel-%') = 4, '4 cron jobs');
+-- The Sentinel's four jobs (20261019090100_obligation_sweep.sql adds a fifth, 'sentinel-obligations', of its own).
+select pg_temp.check((select count(*) from cron.job
+                      where jobname in ('sentinel-round', 'sentinel-licences', 'sentinel-snapshot', 'sentinel-prune')) = 4, '4 cron jobs');
+select pg_temp.check((select command from cron.job where jobname = 'sentinel-licences') = 'select private.sentinel_licence_sweep()',
+  'the 06:15 job runs the licence sweep');
 \set QUIET 1
 \ir schedule.sql
 select pg_temp.check((select count(*) from vault.secrets where name like 'sentinel_%') = 2, 're-running the schedule keeps one copy of each secret');
-select pg_temp.check((select count(*) from cron.job where jobname like 'sentinel-%') = 4, 'and still 4 jobs');
+select pg_temp.check((select count(*) from cron.job
+                      where jobname in ('sentinel-round', 'sentinel-licences', 'sentinel-snapshot', 'sentinel-prune')) = 4
+  and (select count(*) from cron.job where jobname like 'sentinel-%')
+      = 4 + (select count(*) from cron.job where jobname = 'sentinel-obligations'), 'and still 4 jobs, none twice');
 \echo ALL SENTINEL SQL CHECKS PASSED

@@ -42,8 +42,16 @@ public struct SentinelClient: SentinelRemote {
         try InventoryCoding.decoder().decode(SentinelOverview.self, from: await rpc("sentinel_overview", body: ["hours": hours]))
     }
 
+    /// Obligation events are asked for too. A server without the obligation sweep (before 20261019090100) has no such
+    /// argument and answers 404; it is then asked as before.
     public func events(limit: Int = 50, includeAcknowledged: Bool = true) async throws -> [SentinelEvent] {
-        let data = try await rpc("sentinel_recent_events", body: ["max_rows": limit, "include_acknowledged": includeAcknowledged])
+        let data: Data
+        do {
+            data = try await rpc("sentinel_recent_events", body: ["max_rows": limit, "include_acknowledged": includeAcknowledged,
+                                                                  "include_obligations": true])
+        } catch SupabaseError.server(let status, _) where status == 404 {
+            data = try await rpc("sentinel_recent_events", body: ["max_rows": limit, "include_acknowledged": includeAcknowledged])
+        }
         return try InventoryCoding.decoder().decode([SentinelEvent].self, from: data)
     }
 

@@ -1,0 +1,62 @@
+{
+  "_comment": "TEST FIXTURE: made-up obligations, accounts and domain, never real data. The same rows go through the app's register (ObligationAlerts, DeskSyncSweepParityTests) and the server's sweep (supabase/tests/desk-sync/behaviour.sql), which must name the same alerts.",
+  "today": "2026-10-19",
+  "seedRevision": 3,
+  "seed": [
+    {"id": "test.seed-a", "title": "Sample seed row due in a week", "area": "marketing", "due": "2026-10-26", "source": "test fixture:1", "recordedOn": "2026-10-01", "leadDays": [30, 14, 7, 1], "origin": "seed"},
+    {"id": "test.seed-b", "title": "Sample seed row beyond every window", "area": "signing", "due": "2026-11-30", "source": "test fixture:2", "recordedOn": "2026-10-01", "leadDays": [30, 14, 7, 1], "origin": "seed"},
+    {"id": "test.seed-c", "title": "Sample seed row with no date", "area": "stores", "source": "test fixture:3", "recordedOn": "2026-10-01", "leadDays": [30, 14, 7, 1], "origin": "seed"},
+    {"id": "test.seed-d", "title": "Sample seed row overdue and done", "area": "company", "due": "2026-10-10", "source": "test fixture:4", "recordedOn": "2026-10-01", "leadDays": [30, 14, 7, 1], "origin": "seed"},
+    {"id": "test.seed-e", "title": "Sample seed row moved by the owner", "product": "WorkTrack", "area": "marketing", "due": "2026-11-01", "source": "test fixture:5", "recordedOn": "2026-10-01", "leadDays": [30, 14, 7, 1], "origin": "seed"},
+    {"id": "test.seed-f", "title": "Sample seed row due today", "product": "SafeBeauty", "area": "marketing", "due": "2026-10-19", "source": "test fixture:6", "recordedOn": "2026-10-01", "leadDays": [30, 14, 7, 1], "origin": "seed"},
+    {"id": "test.seed-g", "title": "Sample seed row with no lead days", "area": "other", "due": "2026-11-15", "source": "test fixture:7", "recordedOn": "2026-10-01", "leadDays": [], "origin": "seed"},
+    {"id": "domain.example.com", "title": "example.com registration ends", "product": "example.com", "area": "domains", "due": "2026-10-26", "source": "test fixture:8 (a date recorded before the domain was renewed)", "recordedOn": "2026-10-01", "leadDays": [30, 14, 7, 1], "origin": "seed", "subject": "example.com"}
+  ],
+  "_monitorComment": "The Monitor's RDAP reading of the same domain, renewed: on the devices it replaces the seed row, so neither the app nor the server alerts on the seed's date.",
+  "monitorDomains": {
+    "example.com": {"name": "example.com", "expiresAt": "2027-10-26T00:00:00Z", "sourceURL": "https://rdap.example.test/domain/example.com", "fetchedAt": "2026-10-18T06:00:00Z"}
+  },
+  "seedAccounts": [
+    {"id": "test-host", "name": "Sample Host", "purpose": "A made-up host.", "source": "test fixture:20", "recordedOn": "2026-10-01", "origin": "seed"},
+    {"id": "test-mail", "name": "Sample Mail", "purpose": "A made-up mailbox.", "source": "test fixture:21", "recordedOn": "2026-10-01", "origin": "seed"}
+  ],
+  "file": {
+    "version": 1,
+    "added": [
+      {"id": "owner.0000000000000001", "title": "Sample owner row in the 30-day window", "area": "company", "due": "2026-11-05", "source": "sample letter", "recordedOn": "2026-10-02", "leadDays": [30, 14, 7, 1], "origin": "owner"},
+      {"id": "owner.0000000000000002", "title": "Sample owner row with its own lead day", "area": "other", "due": "2026-10-21", "source": "sample note", "recordedOn": "2026-10-02", "leadDays": [3], "origin": "owner"},
+      {"id": "owner.0000000000000003", "title": "Sample owner row done for an earlier day", "area": "accounts", "due": "2026-10-25", "source": "sample bill", "recordedOn": "2026-10-02", "leadDays": [30, 14, 7, 1], "origin": "owner"}
+    ],
+    "dates": [
+      {"obligationID": "test.seed-e", "due": "2026-10-20", "source": "sample letter of 2026-10-18", "enteredAt": "2026-10-18T09:00:00Z"},
+      {"obligationID": "test.nowhere", "due": "2026-10-20", "source": "sample note", "enteredAt": "2026-10-18T09:00:00Z"},
+      {"obligationID": "account.test-host.renewal", "due": "2026-10-22", "source": "sample note", "enteredAt": "2026-10-18T09:00:00Z"}
+    ],
+    "completions": [
+      {"obligationID": "test.seed-d", "due": "2026-10-10", "on": "2026-10-09", "evidence": "sample receipt 77", "enteredAt": "2026-10-09T08:00:00Z"},
+      {"obligationID": "owner.0000000000000003", "due": "2026-10-24", "on": "2026-10-18", "evidence": "sample receipt for the old day", "enteredAt": "2026-10-18T08:00:00Z"}
+    ],
+    "accounts": [
+      {"id": "owner.00000000000000a1", "name": "Sample Store", "purpose": "A made-up store.", "source": "sample invoice 12", "recordedOn": "2026-10-01", "origin": "owner", "cost": {"amount": 5, "currency": "USD", "cycle": "monthly", "source": "sample invoice 12"}}
+    ],
+    "accountEdits": [
+      {"accountID": "test-host", "renewal": "2026-11-02", "renewalSource": "sample invoice 1", "enteredAt": "2026-10-01T10:00:00Z"},
+      {"accountID": "test-host", "renewal": "2026-11-03", "renewalSource": "sample invoice 2", "enteredAt": "2026-10-10T10:00:00Z"}
+    ]
+  },
+  "expectedKeys": [
+    "obligation:account.test-host.renewal:2026-11-03:30",
+    "obligation:owner.0000000000000001:2026-11-05:30",
+    "obligation:owner.0000000000000002:2026-10-21:3",
+    "obligation:owner.0000000000000003:2026-10-25:7",
+    "obligation:test.seed-a:2026-10-26:7",
+    "obligation:test.seed-e:2026-10-20:1",
+    "obligation:test.seed-f:2026-10-19:0",
+    "obligation:test.seed-g:2026-11-15:30"
+  ],
+  "nextDay": "2026-10-20",
+  "expectedNextDayKeys": [
+    "obligation:account.test-host.renewal:2026-11-03:14",
+    "obligation:test.seed-e:2026-10-20:0"
+  ]
+}

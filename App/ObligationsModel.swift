@@ -13,6 +13,9 @@ final class ObligationsModel {
     static let notifyKey = "LCCNotifyObligations"
     private static let sentKey = "LCCObligationAlertsSent"
 
+    /// Set by `DeskSyncModel`: told about each change, so the other device sees it soon.
+    @ObservationIgnored weak var cloud: DeskSyncModel?
+
     private(set) var file = ObligationsFile()
     /// Set when `obligations.json` exists but can't be read; the file is then never overwritten.
     private(set) var loadError: String?
@@ -122,11 +125,37 @@ final class ObligationsModel {
         do {
             try store?.save(copy)
             file = copy
+            cloud?.syncSoon()
             return true
         } catch {
             errorMessage = error.localizedDescription
             return false
         }
+    }
+
+    /// Writes obligations.json as the cloud sync left it. Not a change of the owner's, so it does not start another sync.
+    func takeFromCloud(_ new: ObligationsFile) {
+        guard loadError == nil, new != file else { return }
+        do {
+            try store?.save(new)
+            file = new
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    // MARK: One alert per window, on this device and from the server
+
+    /// Whether the alert with this key (`obligation:<id>:<due>:<lead>`) was already posted on this device.
+    static func wasAlerted(_ key: String) -> Bool {
+        (UserDefaults.standard.stringArray(forKey: sentKey) ?? []).contains(key)
+    }
+
+    /// Records alerts posted from the server's events (Server watch), so the same window is not posted again here.
+    static func recordAlerted(_ keys: [String]) {
+        guard !keys.isEmpty else { return }
+        let sent = Set(UserDefaults.standard.stringArray(forKey: sentKey) ?? []).union(keys)
+        UserDefaults.standard.set(Array(sent).sorted(), forKey: sentKey)
     }
 
     // MARK: Alerts at 30, 14, 7 and 1 days (and on the day)
@@ -138,8 +167,13 @@ final class ObligationsModel {
         var sent = Set(UserDefaults.standard.stringArray(forKey: Self.sentKey) ?? [])
         let alerts = ObligationAlerts.due(register, today: KeyDay(now), sent: sent)
         let open = Set(register.obligations.filter { !$0.isClosed }.map(\.id))
-        sent = sent.filter { key in open.contains { key.hasPrefix("obligation:\($0):") } }
-        defer { UserDefaults.standard.set(Array(sent).sorted(), forKey: Self.sentKey) }
+        let isOpen: (String) -> Bool = { key in open.contains { key.hasPrefix("obligation:\($0):") } }
+        sent = sent.filter(isOpen)
+        defer {
+            // Keys Server watch recorded while this ran (an event from the server's sweep) are kept too.
+            let meanwhile = Set(UserDefaults.standard.stringArray(forKey: Self.sentKey) ?? []).filter(isOpen)
+            UserDefaults.standard.set(Array(sent.union(meanwhile)).sorted(), forKey: Self.sentKey)
+        }
         guard !alerts.isEmpty else { return }
         guard Self.isNotifyOn else {
             // Off: nothing is posted, and nothing piles up for when it is turned on again.

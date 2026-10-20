@@ -59,12 +59,53 @@ public struct DeskState: Codable, Hashable, Sendable {
     public static let currentVersion = 1
 
     public var version: Int
-    /// By item id.
+    /// By item id. A mark that came from the cloud for an item this device has not shown yet can be kept under the
+    /// item's cloud key (`DeskCloudKey`), which `resolve` also looks up.
     public var marks: [String: DeskMark]
+    /// Items whose mark the owner undid ("Restore") and that the cloud may still hold: the undo is sent as a deletion at
+    /// the next sync, then forgotten. Nothing else removes a mark from the cloud: a mark this device drops because it no
+    /// longer applies here (`remove`) stays there, for the devices where it still does.
+    public var restored: Set<String>
 
-    public init(marks: [String: DeskMark] = [:]) {
+    public init(marks: [String: DeskMark] = [:], restored: Set<String> = []) {
         version = Self.currentVersion
         self.marks = marks
+        self.restored = restored
+    }
+
+    private enum CodingKeys: String, CodingKey { case version, marks, restored }
+
+    // A file written before the cloud sync has no "restored".
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        version = try c.decode(Int.self, forKey: .version)
+        marks = try c.decode([String: DeskMark].self, forKey: .marks)
+        restored = try c.decodeIfPresent(Set<String>.self, forKey: .restored) ?? []
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(version, forKey: .version)
+        try c.encode(marks, forKey: .marks)
+        // Sorted, so the file does not change between two saves of the same state.
+        if !restored.isEmpty { try c.encode(restored.sorted(), forKey: .restored) }
+    }
+
+    /// The mark of an item: under its own id, or under its cloud key when it came from the cloud before this device
+    /// showed the item.
+    public func mark(for id: String) -> DeskMark? {
+        if let m = marks[id] { return m }
+        let key = DeskCloudKey.cloud(id)
+        return key == id ? nil : marks[key]
+    }
+
+    /// Sets an item's mark under its own id (dropping a copy kept under its cloud key, and an undo not yet sent).
+    private mutating func set(_ id: String, _ mark: DeskMark) {
+        let key = DeskCloudKey.cloud(id)
+        if key != id { marks[key] = nil }
+        marks[id] = mark
+        restored.remove(id)
+        restored.remove(key)
     }
 
     // MARK: Marking
@@ -77,15 +118,15 @@ public struct DeskState: Codable, Hashable, Sendable {
     }
 
     public mutating func markDone(_ item: DeskItem, now: Date) {
-        marks[item.id] = DeskMark(kind: .done, at: Self.stamp(now), factHash: item.factHash)
+        set(item.id, DeskMark(kind: .done, at: Self.stamp(now), factHash: item.factHash))
     }
 
     public mutating func snooze(_ item: DeskItem, until: Date, now: Date) {
-        marks[item.id] = DeskMark(kind: .snoozed, at: Self.stamp(now), factHash: item.factHash, until: Self.stamp(until))
+        set(item.id, DeskMark(kind: .snoozed, at: Self.stamp(now), factHash: item.factHash, until: Self.stamp(until)))
     }
 
     public mutating func markWaiting(_ item: DeskItem, now: Date) {
-        marks[item.id] = DeskMark(kind: .waiting, at: Self.stamp(now), factHash: item.factHash)
+        set(item.id, DeskMark(kind: .waiting, at: Self.stamp(now), factHash: item.factHash))
     }
 
     /// Dismisses with a reason; an empty reason is refused (returns false).
@@ -93,15 +134,20 @@ public struct DeskState: Codable, Hashable, Sendable {
     public mutating func dismiss(_ item: DeskItem, reason: String, now: Date) -> Bool {
         let r = reason.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !r.isEmpty else { return false }
-        marks[item.id] = DeskMark(kind: .dismissed, at: Self.stamp(now), factHash: item.factHash, reason: r)
+        set(item.id, DeskMark(kind: .dismissed, at: Self.stamp(now), factHash: item.factHash, reason: r))
         return true
     }
 
-    /// Undoes any mark.
+    /// Undoes any mark, here and (at the next sync) in the cloud.
     public mutating func restore(_ id: String) {
+        let key = DeskCloudKey.cloud(id)
+        guard marks[id] != nil || marks[key] != nil else { return }
         marks[id] = nil
+        marks[key] = nil
+        restored.insert(id)
     }
 
+    /// Drops marks that no longer apply on this device. Unlike `restore`, this is not sent to the cloud.
     public mutating func remove(_ ids: Set<String>) {
         for id in ids { marks[id] = nil }
     }
@@ -114,7 +160,7 @@ public struct DeskState: Codable, Hashable, Sendable {
     /// - Done on anything read from a source hides it until the next reading; if it is still there, it comes back as
     ///   "still open according to <source>". When the source gives no read time, it stays hidden until the fact changes.
     public func resolve(_ item: DeskItem, now: Date) -> DeskResolution {
-        guard let m = marks[item.id] else { return .open }
+        guard let m = mark(for: item.id) else { return .open }
         switch m.kind {
         case .snoozed:
             return (m.until ?? .distantPast) > now ? .hidden(m) : .open

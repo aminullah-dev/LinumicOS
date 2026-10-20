@@ -1,0 +1,43 @@
+[
+    {
+        "id": "ledger.worktrack|1a2b3c4d5e6f7081|checkbox",
+        "row": {
+            "id": "ledger.worktrack|1a2b3c4d5e6f7081|checkbox",
+            "data": {
+                "at": "2026-10-19T09:00:00Z",
+                "kind": "waiting",
+                "factHash": "1a2b3c4d5e6f7081"
+            },
+            "entry": "mark",
+            "deleted": false,
+            "version": 2,
+            "updatedAt": "2026-10-19T18:43:56Z",
+            "writtenOn": "iOS"
+        },
+        "status": "applied"
+    },
+    {
+        "id": "next-actions|worktrack/sample-task|owner",
+        "row": {
+            "id": "next-actions|worktrack/sample-task|owner",
+            "data": {
+                "at": "2026-10-19T08:10:00Z",
+                "kind": "dismissed",
+                "reason": "Handled on the phone",
+                "factHash": "8899aabbccddeeff"
+            },
+            "entry": "mark",
+            "deleted": false,
+            "version": 1,
+            "updatedAt": "2026-10-19T18:43:56Z",
+            "writtenOn": "macOS"
+        },
+        "status": "stale"
+    },
+    {
+        "id": "brief.worktrack|worktrack.expired.sample_company|fact",
+        "row": null,
+        "status": "invalid",
+        "message": "new row for relation \"desk_state\" violates check constraint \"desk_state_id_check1\""
+    }
+]
