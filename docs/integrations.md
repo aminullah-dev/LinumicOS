@@ -264,6 +264,13 @@ only when explicit credentials and authorization are provided.
   Local notifications at 09:00, 30, 14, 7 and 1 days before a **production** customer's last day (Settings →
   Integrations → WorkTrack customers). TEST and DUPLICATE companies are listed but left out of counts and reminders,
   as WorkTrack leaves them out of revenue.
+- **Money (Phase 4, read-only):** `GET /vendor/crm/accounts` and `GET /vendor/crm/invoices` (no `accountId` filter),
+  read with `/vendor/revenue` right after the company list, one at a time (`WorkTrackMoneyReader`). Source at `origin/main`
+  0403fd0: `routes/vendor.ts:308-345` (the CRM routes, `{data: [...]}`), `services/crm.ts:36-51` (accounts; `companyId`
+  links one to a tenant), `:99-114` (invoices), `:147-155` (`shape()`), `:198-206` (`list()`: `limit(2000)`, no order, no
+  cursor). Only id, name and `companyId` of an account and id, account, number, status, amount, dates and method of an
+  invoice are decoded; an invoice that can't be decoded is set aside and counted. The client's default session keeps no
+  URL cache. See [money.md](money.md).
 - **Not in this phase:** company deletion, purge, TEST/DUPLICATE marks, plan prices, CRM writes. None of these calls
   exist in the client.
 
@@ -351,7 +358,8 @@ after a renewal from `expiresAt=2026-10-19`.
 ### SafeBeauty
 
 - **Source:** SafeBeauty repository, `origin/main` @ `efe5bdf`: `public/admin/index.html` (sign-in 382-399 and
-  1082-1107, stats 1203-1236, queues 1349-1402, money 3424-3497), `functions/domains/identity.js`
+  1082-1107, stats 1203-1236, queues 1349-1402, money 3424-3497 at that revision; at `3688474` the finance tab is
+  3396-3530 and the balance sign rule 955-966), `functions/domains/identity.js`
   (`authenticateWithPassword`, `syncUidMap`), `functions/shared.js` (`pbkdf2Hash`, `assertAdmin`),
   `functions/domains/payments.js` (`getCommissionPercent`), `firestore.rules`, `DEPLOY.md`,
   `ios/SafeBeautyCore/.../PinHasher.swift` and `PhoneUtils.swift`. Production may lag `main` (manual deploys).
@@ -366,7 +374,10 @@ after a renewal from `expiresAt=2026-10-19`.
   `users` status PENDING, `salons` and `salons` isVerified true, `appointments` with `appointmentDate` (epoch ms) in
   Kabul's day and in the week from Saturday, `refund_requests` PENDING. Queues: `users` where kycStatus or status is
   PENDING, **field mask `name, role, status, kycStatus, createdAt`** (identity fields are never requested). Payouts
-  owed: `provider_balances` above zero with the owner's name (batch get, mask `name`). Commission:
+  owed: `provider_balances` above zero with the owner's name (batch get, mask `name`); one page of at most 300, so its
+  sum is not shown as the total. Balance totals (Money, since Phase 4): two `runAggregationQuery` requests with
+  `count()` and `sum(owedAmount)`, where `owedAmount > 0` and where `< 0` (`firestore.rules:885-888`: readable by
+  `isAdmin()`); they read no documents, have no page limit, and a number Firestore did not send is an error, never 0. Commission:
   `platform_config/general` (`commissionPercent`, `maxDiscountFraction`), shown as stored and as the server applies it
   (outside 0–100 or missing = 10%).
 - **No writes.** Provider approval, salon verification and the commission are raw Firestore writes in SafeBeauty with

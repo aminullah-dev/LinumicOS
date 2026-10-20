@@ -34,7 +34,11 @@ company OS roadmap): every dated obligation with what happens if it is missed, i
 unknown"), alerts at 30, 14, 7 and 1 days, live dates from the Monitor, the licence ledger and Keys & Backups, and the
 accounts the company depends on with whose name each is in; they reach the Desk by due day. **Continuity**: an
 encrypted export (age, with a passphrase that is never stored) of the inventory, obligations, accounts, licence ledger
-and keys registry to a folder off this Mac, read back and checked, that opens without Linumic OS. See
+and keys registry to a folder off this Mac, read back and checked, that opens without Linumic OS. **Money** (پول,
+Phase 4): who paid (HesabPay and invoices paid by hand, kept apart), what is on the way (renewals forecast, invoices
+sent and past due), what we owe SafeBeauty salons and what they owe us (never netted), and what we pay (account costs
+per currency and billing cycle), read-only, each figure with its source and read time, Unknown with a reason when it
+was not read, amounts never converted or added across currencies; store proceeds are Unknown. See
 [docs/integrations.md](docs/integrations.md) and [docs/security.md](docs/security.md).
 
 ## Layout
@@ -100,11 +104,12 @@ find strings with no Dari translation.
 - [ARCHITECTURE.md](ARCHITECTURE.md): system design and module boundaries
 - [PRODUCTS.md](PRODUCTS.md): product data model
 - [ROADMAP.md](ROADMAP.md): Linumic OS roadmap
-- [docs/company-os-roadmap.md](docs/company-os-roadmap.md): running the whole company from Linumic OS (Dari); Phase 1 is the Desk and Ledgers, Phase 2 obligations and continuity
+- [docs/company-os-roadmap.md](docs/company-os-roadmap.md): running the whole company from Linumic OS (Dari); Phase 1 is the Desk and Ledgers, Phase 2 obligations and continuity, Phase 4 Money
 - [docs/automation.md](docs/automation.md): the automation engine, the daily backup and what counts as one
 - [docs/sentinel.md](docs/sentinel.md): the server-side checks on Supabase
 - [docs/obligations.md](docs/obligations.md): obligations and accounts, every seed row with its source
 - [docs/continuity.md](docs/continuity.md): the encrypted export, its format and how to open it without Linumic OS
+- [docs/money.md](docs/money.md): Money, every figure with its source, the Unknown reasons and the TEST-company rules
 - [docs/backend-plan.md](docs/backend-plan.md): Supabase
 - [CHANGELOG.md](CHANGELOG.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md): working rules

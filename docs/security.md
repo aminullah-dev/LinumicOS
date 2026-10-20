@@ -21,6 +21,7 @@ post as Linumic, so it is treated as a production system.
 | Website messages (linumic.com contact form) | The WordPress application password leaking or reaching another host; customers' names, addresses and messages on disk; an accidental change to entries | Keychain item `wordpress.linumic.apppassword` only (redacted description, never logged), sent only as HTTPS Basic auth to https://linumic.com on an ephemeral session that refuses redirects; GET only to the two read-only SureForms abilities (no call marks, edits or deletes); messages in memory only, `site-messages.json` holds ids and times; reply links only for plain addresses (no injected headers); notifications show names, never addresses |
 | Obligations and accounts | A guessed date, a Done nobody can prove, a card number or password in a register | Every row and every value needs a source and the day it was recorded, Done needs evidence (`validate()` refuses, the builder doesn't apply, the screen shows the refusal); accounts hold purpose, holder, renewal and an amount read from a bill, never a password, card number or login (the Vault holds sign-ins); `obligations.json` on this device only; no network |
 | Continuity export | A copy of the company's records readable by whoever finds the file, a secret carried off the Mac in it, a passphrase stored next to it, a "verified" export that does not open | age (scrypt, work factor 18) with a passphrase typed each time and never stored (no file, no Keychain, no log); the document holds no credential, key file or licence key text, and is searched for key and token patterns before anything is written (a match stops the export); written only into the folder the owner chose, never over a file; read back, decrypted and compared before it is recorded; `continuity.json` holds file names, sizes, hashes and dates only; no network |
+| Money (revenue, invoices, salon balances, costs) | A write to WorkTrack, SafeBeauty or Supabase, customer records or amounts on disk or in the cloud, a new finance key, a wrong number passing for a fact | Read-only clients (three WorkTrack GETs, two Firestore aggregation POSTs, the existing token refresh) behind protocols with no write; a URLProtocol test of every request the Core readers send; an ephemeral session with no URL cache for WorkTrack and SafeBeauty; CRM notes not decoded; nothing written to disk or Supabase; Desk lines with counts, amounts only in the detail, ids without customer ids; `SecretKey.allCases` pinned by a test; Unknown with a reason, never 0 |
 | Assistant | Invented status, prompt injection from ingested content | Grounded answers with verified/derived/unknown labels. Ingested text is treated as data, and actions are only proposals. |
 
 ## MVP (local app)
@@ -205,6 +206,25 @@ post as Linumic, so it is treated as a production system.
   access key, Notion, OpenAI, ElevenLabs, Slack, Google OAuth and Meta formats) stops an export before anything is
   written. It does carry customer names and machine codes of the licence ledger and the inventory's
   records: whoever has the file and the passphrase has those. See docs/continuity.md.
+- **Money (since Phase 4):** no new key (`SecretKey.allCases` is pinned by `MoneyTests.secretKeysUnchanged`); it uses the
+  WorkTrack vendor and SafeBeauty admin sessions already in the Keychain. Requests: `GET /v1/vendor/revenue`,
+  `/v1/vendor/crm/accounts` and `/v1/vendor/crm/invoices`, two `POST :runAggregationQuery` (Firestore's read-only
+  aggregation endpoint) over `provider_balances`, and the existing Firebase token refresh. No CRM write, no callable, no
+  Firestore `:commit`, `:batchWrite` or `PATCH`; the clients handed to Money (`WorkTrackMoneyReading`,
+  `SafeBeautyMoneyReading`) have no other method. The WorkTrack and SafeBeauty clients now use
+  `URLSessionTransport.uncached` (ephemeral, no URL cache, no cookies or credential storage, caches ignored), so a CRM
+  answer, which carries whole customer records (notes, cities, names), is never stored in the on-disk URL cache. Only
+  the fields Money shows are decoded (invoice id, account, number, status, amount, dates, method; account id, name,
+  company id): `notes`, `period`, `city`, `nextAction` cross the wire but are never held. Money figures live in memory
+  only and are rebuilt on each render; nothing is written to disk or sent to Supabase. Its Desk lines hold counts, not
+  amounts (the morning notification prints line texts), their ids are fixed `money.*` strings with no company, salon,
+  account or invoice id, and "Copy agent brief" carries the id only.
+  - **Scope of the read-only proof:** `MoneyReadOnlyTests` runs the Core readers (`WorkTrackMoneyReader.read` and
+    `SafeBeautyAdminClient.balanceTotals`) over a URLSession whose only protocol records every request, against the
+    emulator addresses, and fails on anything but those requests; a negative control shows it catches a PUT. The App
+    methods that call these readers (`WorkTrackModel.refresh`, `SafeBeautyModel.refreshBalances`) are **not** run
+    under the guard: their money calls are exactly the guarded readers, but the rest of `refresh` (companies, plans,
+    audit) is outside this test.
 - **No secrets in source or Git.** `.gitignore` blocks `.env*`, `*.p8`, `*.p12`,
   `*.pem`, `*.key`, keystores, provisioning profiles and service-account JSON.
   Check `git diff --cached` before each commit.
