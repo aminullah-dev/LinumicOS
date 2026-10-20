@@ -171,8 +171,8 @@ final class WorkTrackModel {
     var isSalesReading: Bool { salesRead != nil }
 
     struct SalesContacts {
-        let rows: [WTCrmContactRef]
-        /// Contacts WorkTrack sent that could not be read.
+        let rows: [WTSalesContact]
+        /// Contacts WorkTrack sent that could not be read, or that belong to another account.
         let skipped: Int
         let readAt: Date
     }
@@ -197,10 +197,13 @@ final class WorkTrackModel {
         clipboard.copy(text, clearAfter: Self.salesClipboardSeconds)
     }
 
-    private func salesCall<T: Sendable>(_ read: @escaping @Sendable (WorkTrackVendorClient) async throws -> T) async throws -> T {
+    /// The closure is handed the client as `WorkTrackSalesReading` only (two GETs), so code on the Sales path cannot reach
+    /// the licence PUT or any other request.
+    private func salesCall<T: Sendable>(_ read: @escaping @Sendable (any WorkTrackSalesReading) async throws -> T) async throws -> T {
         guard let client else { throw WorkTrackError.notSignedIn }
         guard !isRefreshing, salesRead == nil else { throw WorkTrackModelError.busy }
-        let call = Task { try await read(client) }
+        let reader: any WorkTrackSalesReading = client
+        let call = Task { try await read(reader) }
         salesRead = Task { _ = await call.result }
         defer { salesRead = nil }
         do {

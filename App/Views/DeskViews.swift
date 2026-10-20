@@ -694,6 +694,12 @@ struct DeskDismissSheet: View {
                 TextField("Reason", text: $reason, axis: .vertical)
                     .lineLimit(2...4)
                     .textFieldStyle(.roundedBorder)
+                if DeskAgentBrief.namesCustomers(item) {
+                    // The reason is synced as typed and kept in its history (docs/desk-sync.md).
+                    Label("Don't write the customer's name, number or message here: the reason is synced to your other devices and kept in its history.",
+                          systemImage: "hand.raised")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
             }
             HStack {
                 Spacer()

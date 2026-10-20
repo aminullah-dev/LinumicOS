@@ -12,8 +12,22 @@ struct SalesView: View {
     @State private var isReading = false
 
     var body: some View {
+        #if DEBUG
+        // Debug-only screenshot aid: `-LCCSalesSample skipped` (with `-LCCScreen sales`) shows made-up data; nothing is
+        // read, and the app starts no job (LinumicOSApp).
+        if let sample = SalesPreviewData.launchSample {
+            SalesPage(report: sample)
+        } else {
+            page
+        }
+        #else
+        page
+        #endif
+    }
+
+    private var page: some View {
         let input = SalesInput.collect(worktrack: worktrack, siteMessages: siteMessages, safeBeauty: operations.safeBeauty)
-        SalesPage(report: SalesBuilder.build(input, now: .now), isReading: isReading || worktrack.isRefreshing, readNow: readNow)
+        return SalesPage(report: SalesBuilder.build(input, now: .now), isReading: isReading || worktrack.isRefreshing, readNow: readNow)
     }
 
     /// WorkTrack (the company list with the CRM accounts, for the TEST marks) and the website messages. Not SafeBeauty:
@@ -34,6 +48,8 @@ struct SalesPage: View {
     var readNow: () async -> Void = {}
 
     @Environment(Router.self) private var router
+    /// Nil in a preview: then the shape check can't be opened.
+    @Environment(WorkTrackModel.self) private var worktrack: WorkTrackModel?
     @State private var highlighted: String?
     @State private var checkingShape = false
 
@@ -64,6 +80,9 @@ struct SalesPage: View {
                 .frame(maxWidth: 1000, alignment: .leading)
             }
             .refreshable { await readNow() }
+            #if DEBUG
+            .defaultScrollAnchor(SalesPreviewData.launchScrollAnchor)
+            #endif
             // From the Desk, the Brief or the Command Palette: one row, scrolled to and highlighted.
             .onChange(of: router.request, initial: true) {
                 if case .salesItem(let key) = router.take({ if case .salesItem = $0 { true } else { false } }) {
@@ -111,30 +130,34 @@ struct SalesPage: View {
     @ViewBuilder
     private func followUps(_ wt: SalesWorkTrack) -> some View {
         let source = salesSource("GET /v1/vendor/crm/accounts", environment: wt.environment, at: wt.accountsReadAt)
-        SalesCard(title: "Call today", symbol: "phone.fill", tint: .green, count: wt.callToday.count, caption: source) {
-            if wt.callToday.isEmpty { SalesEmptyText("No follow-up is due today.") }
+        // Accounts set aside, or past the 2000 limit, may be due too: every count is then "at least", and an empty list
+        // is unknown, never "none".
+        let missing = SalesBrief.accountsCaveats(wt)
+        let atLeast = !missing.isEmpty
+        SalesCard(title: "Call today", symbol: "phone.fill", tint: .green, count: wt.callToday.count, atLeast: atLeast, caption: source) {
+            SalesCompleteness(isEmpty: wt.callToday.isEmpty, empty: "No follow-up is due today.", missing: missing)
             ForEach(wt.callToday) { f in row(f.account, due: f.due, wt: wt) }
         }
-        SalesCard(title: "This week", symbol: "calendar", tint: .blue, count: wt.thisWeek.count, caption: source) {
-            if wt.thisWeek.isEmpty { SalesEmptyText("No follow-up in the next 7 days.") }
+        SalesCard(title: "This week", symbol: "calendar", tint: .blue, count: wt.thisWeek.count, atLeast: atLeast, caption: source) {
+            SalesCompleteness(isEmpty: wt.thisWeek.isEmpty, empty: "No follow-up in the next 7 days.", missing: missing)
             ForEach(wt.thisWeek) { f in row(f.account, due: f.due, wt: wt) }
         }
         if !wt.dateUnknown.isEmpty {
-            SalesCard(title: "Date could not be read", symbol: "exclamationmark.triangle", tint: .orange, count: wt.dateUnknown.count, caption: source) {
+            SalesCard(title: "Date could not be read", symbol: "exclamationmark.triangle", tint: .orange, count: wt.dateUnknown.count,
+                      atLeast: atLeast, caption: source) {
                 SalesNote(String(localized: "The next-action date is not a real day. WorkTrack's own Today tab may still list it; fix the date in the console."))
                 ForEach(wt.dateUnknown) { f in row(f.account, due: f.due, wt: wt) }
             }
         }
-        SalesCard(title: "No next step", symbol: "questionmark.circle", tint: .purple, count: wt.noNextStep.count, caption: source) {
-            if wt.noNextStep.isEmpty {
-                SalesEmptyText("Every open account has a next-action date.")
-            } else {
+        SalesCard(title: "No next step", symbol: "questionmark.circle", tint: .purple, count: wt.noNextStep.count, atLeast: atLeast, caption: source) {
+            if !wt.noNextStep.isEmpty {
                 SalesNote(String(localized: "Open accounts with no next-action date. WorkTrack's own Today tab does not show them; set the date in the console."))
             }
+            SalesCompleteness(isEmpty: wt.noNextStep.isEmpty, empty: "Every open account has a next-action date.", missing: missing)
             ForEach(wt.noNextStep) { a in row(a, due: nil, wt: wt) }
         }
         if !wt.later.isEmpty {
-            SalesCard(title: "Later", symbol: "calendar.badge.clock", tint: .secondary, count: wt.later.count, caption: source) {
+            SalesCard(title: "Later", symbol: "calendar.badge.clock", tint: .secondary, count: wt.later.count, atLeast: atLeast, caption: source) {
                 ForEach(wt.later) { f in row(f.account, due: f.due, wt: wt) }
             }
         }
@@ -151,7 +174,7 @@ struct SalesPage: View {
         let source = salesSource("GET /v1/vendor/companies, /v1/vendor/crm/accounts", environment: wt.environment,
                                  at: max(wt.accountsReadAt, wt.companiesReadAt))
         return SalesCard(title: "New signups without a CRM account", symbol: "person.badge.plus", tint: .mint,
-                         count: wt.signups.value?.rows.count, caption: source) {
+                         count: wt.signups.value?.rows.count, atLeast: wt.signups.value?.isComplete == false, caption: source) {
             switch wt.signups {
             case .unknown(let reason):
                 SalesUnknownText(reason: reason)
@@ -183,16 +206,25 @@ struct SalesPage: View {
 
     // MARK: Renewals, website messages, KYC
 
+    /// From the company list alone: its source and read time are the list's, whatever the CRM accounts' state.
     private var renewals: some View {
-        SalesCard(title: "Renewals and trials ending", symbol: "arrow.triangle.2.circlepath", tint: .orange, count: report.renewals.value?.rows.count,
-                  caption: report.worktrack.value.map { salesSource("GET /v1/vendor/companies", environment: $0.environment, at: $0.companiesReadAt) }) {
+        let read = report.renewals.value
+        return SalesCard(title: "Renewals and trials ending", symbol: "arrow.triangle.2.circlepath", tint: .orange,
+                         count: read?.list.rows.count, atLeast: read?.list.isComplete == false,
+                         caption: read.map { salesSource("GET /v1/vendor/companies", environment: $0.environment, at: $0.readAt) }) {
             switch report.renewals {
             case .unknown(let reason):
                 SalesUnknownText(reason: reason)
-            case .read(let list):
-                if list.rows.isEmpty { SalesEmptyText("No licence ends in the next 30 days, and none has ended.") }
-                SalesNote(String(localized: "Already on the Desk from WorkTrack customers; listed here so the call list is in one place."))
-                ForEach(list.rows) { r in SalesRenewalRow(renewal: r, today: report.kabulToday) }
+            case .read(let r):
+                SalesCompleteness(isEmpty: r.list.rows.isEmpty, empty: "No licence ends in the next 30 days, and none has ended.",
+                                  missing: r.list.isComplete ? [] : [String(localized: "WorkTrack reads at most \(MoneyBuilder.revenueCompanyLimit) companies; renewals past that are unknown.")])
+                if !r.list.rows.isEmpty {
+                    SalesNote(String(localized: "Already on the Desk from WorkTrack customers; listed here so the call list is in one place."))
+                }
+                if r.deletionsLeftOut > 0 {
+                    SalesNote(String(localized: "\(r.deletionsLeftOut) companies with a scheduled deletion are left out; WorkTrack customers lists them."))
+                }
+                ForEach(r.list.rows) { row in SalesRenewalRow(renewal: row, today: report.kabulToday) }
             }
         }
     }
@@ -224,7 +256,7 @@ struct SalesPage: View {
                 SalesUnknownText(reason: reason)
             case .read(let k):
                 Text(k.isExact ? String(localized: "\(k.providers) providers waiting, of \(k.pending) people waiting for KYC")
-                               : String(localized: "At least \(k.providers) providers among the first \(SafeBeautyAdminClient.queueLimit) of \(k.pending) people waiting for KYC"))
+                               : String(localized: "At least \(k.providers) providers among the first \(k.queueRead) of \(k.pending) people waiting for KYC"))
                     .font(.callout)
                 SalesNote(String(localized: "A count only; the names are on the Operations screen."))
                 Button {
@@ -260,7 +292,7 @@ struct SalesPage: View {
             }
             Button { checkingShape = true } label: { Label("Check the CRM answer (one GET)…", systemImage: "checklist") }
                 .buttonStyle(.borderless)
-                .disabled(report.worktrack.value == nil)
+                .disabled(report.worktrack.value == nil || worktrack == nil)
                 .help("Reads the CRM accounts once and shows only their keys, types and counts, never a value")
         }
     }
@@ -290,9 +322,17 @@ private struct SalesAccountRow: View {
     let console: URL?
     let isHighlighted: Bool
 
-    @Environment(WorkTrackModel.self) private var worktrack
+    /// Nil in a preview: then nothing can be read or copied.
+    @Environment(WorkTrackModel.self) private var worktrack: WorkTrackModel?
     @State private var showContacts = false
     @State private var drafting = false
+
+    private var canRead: Bool { worktrack.map { !$0.isRefreshing && !$0.isSalesReading } ?? false }
+    /// The name a draft uses: the WorkTrack company's when it is listed, otherwise the account's.
+    private var draftName: (name: String, source: SalesNameSource) {
+        if let company = account.company.company { return (company.name, .companies) }
+        return (account.name, .accounts)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -307,20 +347,26 @@ private struct SalesAccountRow: View {
             companyLine
             FitRow(spacing: 14) {
                 Button { showContacts = true } label: { Label("Contacts", systemImage: "person.crop.circle") }
-                    .disabled(worktrack.isRefreshing || worktrack.isSalesReading)
+                    .disabled(!canRead)
+                    .accessibilityLabel(Text("Contacts for \(account.name)"))
                     .minTapTarget()
                     #if os(macOS)
-                    .popover(isPresented: $showContacts) { SalesContactsView(accountID: account.accountID).frame(width: 380) }
+                    .popover(isPresented: $showContacts) {
+                        SalesContactsView(accountID: account.accountID).frame(width: 380).frame(maxHeight: 480)
+                    }
                     #else
                     .sheet(isPresented: $showContacts) {
                         NavigationStack { SalesContactsView(accountID: account.accountID) }.presentationDetents([.medium, .large])
                     }
                     #endif
                 Button { drafting = true } label: { Label("Copy reminder draft…", systemImage: "doc.on.clipboard") }
+                    .disabled(worktrack == nil)
+                    .accessibilityLabel(Text("Copy reminder draft for \(account.name)…"))
                     .minTapTarget()
                 if let console {
                     Link(destination: console) { Label("Console", systemImage: "arrow.up.forward.app") }
                         .help("Open WorkTrack console")
+                        .accessibilityLabel(Text("Open WorkTrack console for \(account.name)"))
                         .minTapTarget()
                 }
             }
@@ -331,7 +377,7 @@ private struct SalesAccountRow: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(isHighlighted ? Color.accentColor.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         .sheet(isPresented: $drafting) {
-            SalesDraftSheet(name: account.company.company?.name ?? account.name,
+            SalesDraftSheet(name: draftName.name, nameSource: draftName.source,
                             kinds: SalesDraft.kinds(followUp: account.company.company, today: today),
                             license: account.company.company?.license, accountID: account.accountID, today: today)
         }
@@ -344,7 +390,7 @@ private struct SalesAccountRow: View {
             Text("Not linked to a WorkTrack company (a prospect).").font(.caption).foregroundStyle(.secondary)
         case .listed(let c):
             let end = c.license.expiresAt.map(SalesFormat.day) ?? String(localized: "no end date")
-            Text(verbatim: String(localized: "WorkTrack company \(c.name): \(salesIsolated(c.license.plan.rawValue)) licence, last day \(end)."))
+            Text(verbatim: String(localized: "WorkTrack company \(salesIsolated(c.name)): \(salesIsolated(c.license.plan.rawValue)) licence, last day \(end)."))
                 .font(.caption).foregroundStyle(.secondary)
         case .notListed:
             Label { Text("The linked company is not in the company list (deleted, or past its limit), so whether it is a TEST company is unknown.") }
@@ -382,12 +428,15 @@ private struct SalesSignupRow: View {
     let console: URL?
     let isHighlighted: Bool
     @Environment(Router.self) private var router
+    /// Nil in a preview: then nothing can be copied.
+    @Environment(WorkTrackModel.self) private var worktrack: WorkTrackModel?
     @State private var drafting = false
 
     var body: some View {
+        let name = signup.company.name
         VStack(alignment: .leading, spacing: 6) {
             FitRow(spacing: 8) {
-                Text(verbatim: signup.company.name).fontWeight(.semibold)
+                Text(verbatim: name).fontWeight(.semibold)
                 switch signup.reason {
                 case .newSignup(let day):
                     SalesPill(text: String(localized: "Signed up \(SalesFormat.day(day))"), symbol: "sparkles", color: .mint)
@@ -401,13 +450,20 @@ private struct SalesSignupRow: View {
             Text(verbatim: String(localized: "\(salesIsolated(signup.company.license.plan.rawValue)) licence, last day \(signup.company.license.expiresAt.map(SalesFormat.day) ?? String(localized: "no end date")). No contact on file: the vendor API never shows a company's own people."))
                 .font(.caption).foregroundStyle(.secondary)
             FitRow(spacing: 14) {
-                Button { drafting = true } label: { Label("Copy reminder draft…", systemImage: "doc.on.clipboard") }.minTapTarget()
+                Button { drafting = true } label: { Label("Copy reminder draft…", systemImage: "doc.on.clipboard") }
+                    .disabled(worktrack == nil)
+                    .accessibilityLabel(Text("Copy reminder draft for \(name)…"))
+                    .minTapTarget()
                 Button { router.go(.worktrackCustomers, request: .worktrackCompany(signup.company.companyId)) } label: {
                     Label("Open in WorkTrack customers", systemImage: "person.2.badge.key")
                 }
+                .accessibilityLabel(Text("Open \(name) in WorkTrack customers"))
                 .minTapTarget()
                 if let console {
-                    Link(destination: console) { Label("Console", systemImage: "arrow.up.forward.app") }.help("Open WorkTrack console").minTapTarget()
+                    Link(destination: console) { Label("Console", systemImage: "arrow.up.forward.app") }
+                        .help("Open WorkTrack console")
+                        .accessibilityLabel(Text("Open WorkTrack console for \(name)"))
+                        .minTapTarget()
                 }
             }
             .buttonStyle(.borderless)
@@ -417,7 +473,7 @@ private struct SalesSignupRow: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(isHighlighted ? Color.accentColor.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         .sheet(isPresented: $drafting) {
-            SalesDraftSheet(name: signup.company.name, kinds: [.welcome], license: nil, accountID: nil, today: today)
+            SalesDraftSheet(name: name, nameSource: .companies, kinds: [.welcome], license: nil, accountID: nil, today: today)
         }
     }
 }
@@ -426,6 +482,8 @@ private struct SalesRenewalRow: View {
     let renewal: SalesRenewal
     let today: String
     @Environment(Router.self) private var router
+    /// Nil in a preview: then nothing can be copied.
+    @Environment(WorkTrackModel.self) private var worktrack: WorkTrackModel?
     @State private var drafting = false
 
     var body: some View {
@@ -434,20 +492,34 @@ private struct SalesRenewalRow: View {
             FitRow(spacing: 8) {
                 Text(verbatim: c.name).fontWeight(.semibold)
                 SalesPill(text: c.isTrial ? String(localized: "Trial") : salesIsolated(c.license.plan.rawValue), symbol: "key.horizontal", color: .secondary)
-                if let days = renewal.daysLeft {
-                    SalesPill(text: days < 0 ? String(localized: "Ended \(-days) days ago") : String(localized: "\(days) days left"),
-                              symbol: "clock", color: days < 0 ? .red : days <= 7 ? .orange : .blue)
+                // Days are "left" only while the licence is in force: an EXPIRED or SUSPENDED one shows its status and last day.
+                switch renewal.timing {
+                case .daysLeft(let days):
+                    SalesPill(text: String(localized: "\(days) days left"), symbol: "clock", color: days <= 7 ? .orange : .blue)
+                case .ended(let days):
+                    SalesPill(text: String(localized: "Ended \(days) days ago"), symbol: "clock", color: .red)
+                case .notInForce, .dayUnknown:
+                    EmptyView()
                 }
                 if c.license.status != .active { SalesPill(text: salesIsolated(c.license.status.rawValue), symbol: "pause.circle", color: .orange) }
             }
             if let last = c.license.expiresAt {
-                Text(verbatim: String(localized: "Last day \(SalesFormat.day(last)), counted from today in Kabul.")).font(.caption).foregroundStyle(.secondary)
+                switch renewal.timing {
+                case .daysLeft, .ended:
+                    Text(verbatim: String(localized: "Last day \(SalesFormat.day(last)); days counted from today in Kabul.")).font(.caption).foregroundStyle(.secondary)
+                case .notInForce, .dayUnknown:
+                    Text(verbatim: String(localized: "Last day \(SalesFormat.day(last)).")).font(.caption).foregroundStyle(.secondary)
+                }
             }
             FitRow(spacing: 14) {
-                Button { drafting = true } label: { Label("Copy reminder draft…", systemImage: "doc.on.clipboard") }.minTapTarget()
+                Button { drafting = true } label: { Label("Copy reminder draft…", systemImage: "doc.on.clipboard") }
+                    .disabled(worktrack == nil)
+                    .accessibilityLabel(Text("Copy reminder draft for \(c.name)…"))
+                    .minTapTarget()
                 Button { router.go(.worktrackCustomers, request: .worktrackCompany(c.companyId)) } label: {
                     Label("Open in WorkTrack customers", systemImage: "person.2.badge.key")
                 }
+                .accessibilityLabel(Text("Open \(c.name) in WorkTrack customers"))
                 .minTapTarget()
             }
             .buttonStyle(.borderless)
@@ -456,7 +528,8 @@ private struct SalesRenewalRow: View {
         .padding(10)
         .frame(maxWidth: .infinity, alignment: .leading)
         .sheet(isPresented: $drafting) {
-            SalesDraftSheet(name: c.name, kinds: SalesDraft.kinds(renewal: c, today: today), license: c.license, accountID: nil, today: today)
+            SalesDraftSheet(name: c.name, nameSource: .companies, kinds: SalesDraft.kinds(renewal: c, today: today), license: c.license,
+                            accountID: nil, today: today)
         }
     }
 }
@@ -492,20 +565,23 @@ private struct SalesMessageRow: View {
 private struct SalesContactsView: View {
     let accountID: String
     @Environment(WorkTrackModel.self) private var worktrack
+    @Environment(\.dismiss) private var close
     @State private var contacts: WorkTrackModel.SalesContacts?
     @State private var error: String?
     @State private var copied: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
+            #if os(macOS)
             Text("Contacts").font(.headline)
+            #endif
             if let contacts {
                 Text(verbatim: String(localized: "WorkTrack: GET /v1/vendor/crm/contacts · read \(contacts.readAt.formatted(date: .omitted, time: .shortened))"))
                     .font(.caption2).foregroundStyle(.tertiary)
-                if contacts.rows.isEmpty { SalesEmptyText("No contact on file") }
-                ForEach(contacts.rows) { c in contactRow(c) }
-                if contacts.skipped > 0 {
-                    SalesNote(String(localized: "\(contacts.skipped) contacts could not be read."), symbol: "exclamationmark.triangle", tint: .orange)
+                // Scrolls only when the contacts don't fit, so the confirmation below stays in view.
+                ViewThatFits(in: .vertical) {
+                    rows(contacts)
+                    ScrollView { rows(contacts) }
                 }
             } else if let error {
                 SalesUnknownText(reason: error)
@@ -515,14 +591,32 @@ private struct SalesContactsView: View {
             if let copied { SalesNote(copied, symbol: "checkmark.circle", tint: .green) }
         }
         .padding(16)
+        #if os(macOS)
         .frame(maxWidth: .infinity, alignment: .leading)
+        #else
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .navigationTitle("Contacts")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Close") { close() } } }
+        #endif
         .task {
             do { contacts = try await worktrack.contacts(forAccount: accountID) } catch { self.error = error.localizedDescription }
         }
         .onDisappear { contacts = nil }
     }
 
-    private func contactRow(_ c: WTCrmContactRef) -> some View {
+    private func rows(_ contacts: WorkTrackModel.SalesContacts) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            if contacts.rows.isEmpty { SalesEmptyText("No contact on file") }
+            ForEach(contacts.rows) { c in contactRow(c) }
+            if contacts.skipped > 0 {
+                SalesNote(String(localized: "\(contacts.skipped) contacts could not be read."), symbol: "exclamationmark.triangle", tint: .orange)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func contactRow(_ c: WTSalesContact) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             FitRow(spacing: 8) {
                 Text(verbatim: c.name).fontWeight(.semibold)
@@ -537,6 +631,7 @@ private struct SalesContactsView: View {
                         copied = String(localized: "Copied. The clipboard is cleared in 2 minutes.")
                     } label: { Label("Copy number", systemImage: "doc.on.doc") }
                         .buttonStyle(.borderless)
+                        .accessibilityLabel(Text("Copy the number of \(c.name)"))
                         .minTapTarget()
                 }
             } else {
@@ -548,8 +643,24 @@ private struct SalesContactsView: View {
 
 // MARK: - Reminder draft (copied, never sent)
 
+/// Where a draft's name was read.
+enum SalesNameSource {
+    /// A listed WorkTrack company's name.
+    case companies
+    /// The CRM account's own name (a prospect, or a company not in the list).
+    case accounts
+
+    var text: LocalizedStringKey {
+        switch self {
+        case .companies: "WorkTrack: GET /v1/vendor/companies"
+        case .accounts: "WorkTrack: GET /v1/vendor/crm/accounts"
+        }
+    }
+}
+
 private struct SalesDraftSheet: View {
     let name: String
+    let nameSource: SalesNameSource
     let kinds: [SalesDraftKind]
     let license: WTLicense?
     /// The CRM account whose contacts can be read for the greeting; nil when there is none.
@@ -594,8 +705,11 @@ private struct SalesDraftSheet: View {
                     }
                 }
                 Section("Facts used") {
-                    LabeledContent("Name") { Text(verbatim: name) }
-                    Text("WorkTrack: GET /v1/vendor/companies or /v1/vendor/crm/accounts").font(.caption2).foregroundStyle(.tertiary)
+                    // Only what this draft states: a request for a call names no one.
+                    if chosen.usesName {
+                        LabeledContent("Name") { Text(verbatim: name) }
+                        Text(nameSource.text).font(.caption2).foregroundStyle(.tertiary)
+                    }
                     if !contact.isEmpty {
                         LabeledContent("Contact") { Text(verbatim: contact) }
                         Text("WorkTrack: GET /v1/vendor/crm/contacts").font(.caption2).foregroundStyle(.tertiary)
@@ -731,10 +845,9 @@ struct SalesShapeSheet: View {
 
 // MARK: - Parts
 
-/// A code or a Latin name set apart for the bidi algorithm, so a Dari line that holds one still reads right to left.
-func salesIsolated(_ text: String) -> String {
-    text.isEmpty ? text : "\u{2068}\(text)\u{2069}"
-}
+/// A code or a Latin name set apart for the bidi algorithm, so a Dari line that holds one still reads right to left. The
+/// same isolation the drafts use.
+func salesIsolated(_ text: String) -> String { SalesDraft.isolated(text) }
 
 /// "WorkTrack (production) · GET … · read …".
 private func salesSource(_ reference: String, environment: String, at: Date) -> String {
@@ -747,22 +860,28 @@ private struct SalesCard<Content: View>: View {
     let symbol: String
     var tint: Color = .accentColor
     var count: Int?
+    /// The count is a floor: rows past a limit, or set aside, were not read.
+    var atLeast = false
     var caption: String?
     @ViewBuilder let content: Content
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
+            // Title and count are one header for VoiceOver ("Call today, 3 items").
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Label { Text(title) } icon: { Image(systemName: symbol).foregroundStyle(tint) }
                     .font(.headline)
-                    .accessibilityAddTraits(.isHeader)
                 if let count {
-                    Text(count, format: .number).font(.caption.weight(.semibold)).monospacedDigit()
+                    Text(verbatim: atLeast ? String(localized: "At least \(count.formatted())") : count.formatted())
+                        .font(.caption.weight(.semibold)).monospacedDigit()
                         .padding(.horizontal, 8).padding(.vertical, 2)
                         .background(tint.opacity(0.15), in: Capsule())
+                        .accessibilityLabel(atLeast ? Text("at least \(count) items") : Text("\(count) items"))
                 }
                 Spacer(minLength: 0)
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isHeader)
             if let caption {
                 Text(verbatim: caption).font(.caption2).foregroundStyle(.tertiary).lineLimit(2)
             }
@@ -776,11 +895,13 @@ private struct SalesCard<Content: View>: View {
     }
 }
 
-/// A soft pill: icon and text on a tinted capsule, so colour never carries meaning alone.
+/// A soft pill: icon and text on a tinted capsule, so colour never carries meaning alone. One line at ordinary text
+/// sizes; at the accessibility sizes it wraps instead of running off an iPhone's screen.
 private struct SalesPill: View {
     let text: String
     let symbol: String
     let color: Color
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         HStack(spacing: 4) {
@@ -790,8 +911,8 @@ private struct SalesPill: View {
         .font(.caption.weight(.medium))
         .padding(.horizontal, 8)
         .padding(.vertical, 3)
-        .background(color.opacity(0.13), in: Capsule())
-        .fixedSize()
+        .background(color.opacity(0.13), in: RoundedRectangle(cornerRadius: typeSize.isAccessibilitySize ? 10 : 20, style: .continuous))
+        .fixedSize(horizontal: !typeSize.isAccessibilitySize, vertical: true)
         .accessibilityElement(children: .combine)
     }
 }
@@ -813,14 +934,19 @@ private struct SalesNote: View {
     }
 }
 
-/// Unknown, with its reason: never shown as empty or zero.
+/// Unknown, with its reason: never shown as empty or zero. The reason can be selected (and copied) on the Mac; on iOS a
+/// selectable Text inside the page drew nothing at all (seen on the iOS 27.2 Simulator), so there it is plain text.
 private struct SalesUnknownText: View {
     let reason: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             SalesPill(text: String(localized: "Unknown"), symbol: "questionmark.circle", color: .gray)
+            #if os(macOS)
             Text(verbatim: reason).font(.callout).foregroundStyle(.secondary).textSelection(.enabled)
+            #else
+            Text(verbatim: reason).font(.callout).foregroundStyle(.secondary)
+            #endif
         }
     }
 }
@@ -833,3 +959,126 @@ private struct SalesEmptyText: View {
         Text(key).font(.callout).foregroundStyle(.secondary)
     }
 }
+
+/// A list's empty sentence when every row was read. When some may be missing (`missing` says why): an empty list is
+/// Unknown with the reason, and a list with rows says why it may hold more.
+private struct SalesCompleteness: View {
+    let isEmpty: Bool
+    let empty: LocalizedStringKey
+    let missing: [String]
+
+    var body: some View {
+        if missing.isEmpty {
+            if isEmpty { SalesEmptyText(empty) }
+        } else if isEmpty {
+            SalesUnknownText(reason: missing.joined(separator: " "))
+        } else {
+            ForEach(missing, id: \.self) { SalesNote($0, symbol: "exclamationmark.triangle", tint: .orange) }
+        }
+    }
+}
+
+// MARK: - Previews and the debug screenshot aid
+
+#if DEBUG
+/// Made-up data (SAMPLE, نمونه) for the previews and the debug-only `-LCCSalesSample <read|skipped|unknown|demo>` launch
+/// argument (with `-LCCScreen sales`, and `-LCCSalesScroll` to scroll). Nothing is read: no model, no request, and the
+/// app starts no job.
+enum SalesPreviewData {
+    /// 2026-10-20 12:30 in Kabul.
+    static let now = ISO8601DateFormatter().date(from: "2026-10-20T08:00:00Z")!
+
+    /// The sample named by `-LCCSalesSample`, if any.
+    static var launchSample: SalesReport? {
+        UserDefaults.standard.string(forKey: "LCCSalesSample").flatMap(report)
+    }
+
+    /// `-LCCSalesScroll 0.5` opens the page scrolled halfway (0 top, 1 bottom), so a screenshot can show any card.
+    static var launchScrollAnchor: UnitPoint? {
+        let d = UserDefaults.standard
+        return d.object(forKey: "LCCSalesScroll") == nil ? nil : UnitPoint(x: 0.5, y: d.double(forKey: "LCCSalesScroll"))
+    }
+
+    static func report(_ sample: String) -> SalesReport? {
+        input(sample).map { SalesBuilder.build($0, now: now) }
+    }
+
+    @MainActor
+    static func preview(_ sample: String) -> some View {
+        NavigationStack { SalesPage(report: report(sample)!) }
+            .environment(Router())
+    }
+
+    private static func company(_ id: String, _ name: String, tier: String = "SILVER", status: String = "ACTIVE", expiresAt: String?,
+                                createdAt: String = "2026-01-10T05:00:00.000Z", source: String = "VENDOR") -> String {
+        let end = expiresAt.map { "\"\($0)\"" } ?? "null"
+        // As the server counts it, from Kabul's today.
+        let days = expiresAt.flatMap { WorkTrackDates.daysBetween("2026-10-20", $0) }.map(String.init) ?? "null"
+        return #"{"companyId":"\#(id)","name":"\#(name)","status":"ACTIVE","license":{"plan":"\#(tier)","deviceLimit":20,"status":"\#(status)","expiresAt":\#(end),"enforceDevices":false,"enforcePlan":false,"employeeLimit":null,"extraFeatures":[],"source":"\#(source)"},"devicesInUse":0,"employeeCount":0,"employeesCounted":0,"employeeCap":20,"daysUntilExpiry":\#(days),"createdAt":"\#(createdAt)","lastActivityAt":null,"deletion":null,"flags":null,"duplicates":[],"attention":[]}"#
+    }
+
+    static let companies: [WTCompany] = {
+        let rows = [
+            company("c_kabul", "Kabul Tailors (SAMPLE)", expiresAt: "2026-11-04"),
+            company("c_herat", "خیاطی هرات (نمونه)", tier: "TRIAL", expiresAt: "2026-10-27", createdAt: "2026-10-13T06:00:00.000Z"),
+            company("c_mazar", "Mazar Stitch (SAMPLE)", tier: "GOLD", status: "EXPIRED", expiresAt: "2026-11-15"),
+            company("c_bamyan", "Bamyan Workshop (SAMPLE)", tier: "BRONZE", expiresAt: "2026-10-12"),
+            company("c_kandahar", "Kandahar Cuts (SAMPLE)", expiresAt: "2027-04-01", createdAt: "2026-04-01T06:00:00.000Z", source: "SELF_SERVE"),
+            company("c_old", "Old Shop (SAMPLE)", expiresAt: "2027-02-01"),
+        ]
+        return (try? JSONDecoder().decode([WTCompany].self, from: Data("[\(rows.joined(separator: ","))]".utf8))) ?? []
+    }()
+
+    static let accounts: [WTCrmAccount] = [
+        WTCrmAccount(id: "a_kabul", name: "Kabul Tailors (SAMPLE)", companyId: "c_kabul", stage: .lead, nextActionAt: .day("2026-10-20"),
+                     nextAction: "Call about the renewal (SAMPLE)"),
+        WTCrmAccount(id: "a_jalalabad", name: "Jalalabad Fabrics (SAMPLE)", stage: .contacted, nextActionAt: .day("2026-10-15"),
+                     nextAction: "Send the price list (SAMPLE)"),
+        WTCrmAccount(id: "a_parwan", name: "خیاطی پروان (نمونه)", stage: .demo, nextActionAt: .day("2026-10-23")),
+        WTCrmAccount(id: "a_bamyan", name: "Bamyan Workshop (SAMPLE)", companyId: "c_bamyan", stage: .won, nextActionAt: .day("2026-11-10")),
+        WTCrmAccount(id: "a_mazar", name: "Mazar Stitch (SAMPLE)", companyId: "c_mazar", stage: .quoted),
+        WTCrmAccount(id: "a_ghazni", name: "Ghazni Tailors (SAMPLE)", stage: .lead, nextActionAt: .notADay("2026-02-31")),
+    ]
+
+    static func input(_ sample: String) -> SalesInput? {
+        let kyc = SalesKYCInput(isSignedIn: true, environment: "production", pendingCount: 7,
+                                queueRoles: ["PROVIDER", "CUSTOMER", "PROVIDER", "CUSTOMER", "PROVIDER", "CUSTOMER", "CUSTOMER"], readAt: now)
+        func worktrack(_ environment: String, skipped: Int = 0) -> MoneyWorkTrackInput {
+            let unused = "not used by Sales"
+            let money = WorkTrackMoneyRead(revenue: .failed(unused, at: now, needsSignIn: false),
+                                           accounts: .read(WTLossyList(rows: accounts, skipped: skipped), at: now),
+                                           invoices: .failed(unused, at: now, needsSignIn: false))
+            return MoneyWorkTrackInput(isSignedIn: true, environment: environment, companies: companies, companiesReadAt: now, money: money)
+        }
+        switch sample {
+        case "read": return SalesInput(worktrack: worktrack("production"), kyc: kyc)
+        case "skipped": return SalesInput(worktrack: worktrack("production", skipped: 2), kyc: kyc)
+        case "demo": return SalesInput(worktrack: worktrack("demo"), kyc: kyc)
+        case "unknown":
+            return SalesInput(worktrack: MoneyWorkTrackInput(isSignedIn: false, environment: nil),
+                              kyc: SalesKYCInput(isSignedIn: false, environment: nil))
+        default: return nil
+        }
+    }
+}
+
+#Preview("Sales, read") { SalesPreviewData.preview("read") }
+
+#Preview("Sales, accounts set aside") { SalesPreviewData.preview("skipped") }
+
+#Preview("Sales, Unknown") { SalesPreviewData.preview("unknown") }
+
+#Preview("Sales, not production") { SalesPreviewData.preview("demo") }
+
+#Preview("Sales, Dari (right to left)") {
+    SalesPreviewData.preview("read")
+        .environment(\.locale, Locale(identifier: "fa_AF"))
+        .environment(\.layoutDirection, .rightToLeft)
+}
+
+#Preview("Sales, iPhone width", traits: .fixedLayout(width: 393, height: 852)) {
+    SalesPreviewData.preview("skipped")
+        .environment(\.locale, Locale(identifier: "fa_AF"))
+        .environment(\.layoutDirection, .rightToLeft)
+}
+#endif
