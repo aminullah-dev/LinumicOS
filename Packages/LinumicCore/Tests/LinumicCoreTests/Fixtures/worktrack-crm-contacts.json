@@ -1,0 +1,24 @@
+{
+ "data": [
+  {
+   "id": "con_1",
+   "accountId": "acc_lead_today",
+   "name": "Primary Person (SAMPLE)",
+   "role": "Owner",
+   "phone": "+93 700 000 001",
+   "email": "sample@example.invalid",
+   "primary": true,
+   "notes": "SENTINEL-CONTACT-NOTES",
+   "createdAt": "2026-09-01T08:00:00.000Z",
+   "updatedAt": "2026-09-01T08:00:00.000Z"
+  },
+  {
+   "id": "con_2",
+   "accountId": "acc_lead_today",
+   "name": "Second Person (SAMPLE)",
+   "role": null,
+   "phone": null,
+   "primary": false
+  }
+ ]
+}
