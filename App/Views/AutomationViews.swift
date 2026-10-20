@@ -780,7 +780,7 @@ struct SentinelCard: View {
                             Circle().fill(event.severity == .critical ? Color.red : event.severity == .warning ? .orange : .secondary)
                                 .frame(width: 7, height: 7)
                             VStack(alignment: .leading, spacing: 1) {
-                                Text(verbatim: SentinelModel.line(for: event)).font(.callout)
+                                Text(verbatim: sentinel.line(for: event)).font(.callout)
                                 Text(event.occurredAt.formatted(date: .abbreviated, time: .shortened)).font(.caption2).foregroundStyle(.tertiary)
                             }
                             Spacer(minLength: 6)

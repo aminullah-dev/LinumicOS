@@ -50,6 +50,7 @@ final class AutomationEngine {
     private let sentinel: SentinelModel
     private let desk: DeskModel
     private let obligations: ObligationsModel
+    private let deskSync: DeskSyncModel
     /// What a run that did the work left on disk (the backup's file name), recorded with the run.
     private var pendingArtifacts: [AutomationJobID: String] = [:]
 
@@ -65,7 +66,7 @@ final class AutomationEngine {
     init(inventory: InventoryModel, licences: LicenceModel, platforms: PlatformHubModel, worktrack: WorkTrackModel,
          operations: OperationsModel, releases: ReleaseCenterModel, monitor: MonitorModel, brief: BriefModel,
          keys: KeysModel, siteMessages: SiteMessagesModel, sentinel: SentinelModel, desk: DeskModel,
-         obligations: ObligationsModel) {
+         obligations: ObligationsModel, deskSync: DeskSyncModel) {
         self.inventory = inventory
         self.licences = licences
         self.platforms = platforms
@@ -79,6 +80,7 @@ final class AutomationEngine {
         self.sentinel = sentinel
         self.desk = desk
         self.obligations = obligations
+        self.deskSync = deskSync
         #if os(macOS)
         specs = AutomationCatalog.jobs
         #else
@@ -470,6 +472,21 @@ final class AutomationEngine {
                 return .skipped(.notReady)
             case .failure(let error):
                 return .failed(error.localizedDescription)
+            }
+
+        case .deskSync:
+            switch await deskSync.sync() {
+            case .notConnected: return .skipped(.notConnected)
+            case .notDeployed: return .skipped(.notDeployed)
+            case .failed(let message): return .failed(message)
+            case .synced(let report):
+                if report.conflicts > 0 {
+                    return .partial(String(localized: "\(report.conflicts) changed on two devices: choose on the Desk"))
+                }
+                if report.refused > 0 {
+                    return .partial(String(localized: "\(report.refused) not accepted by the server; see Settings → Account"))
+                }
+                return .succeeded(String(localized: "\(report.sent) sent, \(report.received) received"))
             }
 
         case .ledgers:

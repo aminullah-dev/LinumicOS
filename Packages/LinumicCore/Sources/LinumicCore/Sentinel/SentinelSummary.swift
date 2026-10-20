@@ -61,7 +61,7 @@ public struct SentinelSummary: Sendable, Equatable {
         let snapshotAt = overview.lastSnapshot?.createdAt
         let snapshotOverdue = lastRoundAt != nil && (snapshotAt.map { now.timeIntervalSince($0) > snapshotOverdueAfter } ?? true)
         return SentinelSummary(health: health, lastRoundAt: lastRoundAt, down: down, slow: slow, flapping: flapping,
-                               unacknowledged: overview.unacknowledged,
+                               unacknowledged: overview.unacknowledged + (overview.unacknowledgedObligations ?? 0),
                                missingFromServer: catalog.map(\.id).filter { !serverIDs.contains($0) },
                                unknownToApp: targets.map(\.targetID).filter { !appIDs.contains($0) },
                                lastSnapshotAt: snapshotAt, snapshotOverdue: snapshotOverdue)

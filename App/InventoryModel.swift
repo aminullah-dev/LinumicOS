@@ -137,6 +137,13 @@ final class InventoryModel {
         return SentinelClient(config: config, token: { try await sessionManager.accessToken() })
     }
 
+    /// The Desk's marks, the obligations and accounts, and the Mac's ledger reading on Supabase (admin-only RPCs), when
+    /// signed in. They sync row by row with versions, never with the whole-inventory upload (docs/desk-sync.md).
+    func deskCloud() -> SupabaseDeskCloud? {
+        guard let sessionManager, cloudUser != nil, let config = Self.supabaseConfig else { return nil }
+        return SupabaseDeskCloud(config: config, token: { try await sessionManager.accessToken() })
+    }
+
     func signOut() async {
         await sessionManager?.signOut()
         cloudUser = nil

@@ -37,6 +37,47 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   failure makes the WorkTrack or Operations run partial, not failed. When the balance totals are Unknown, Operations
   shows why under the value instead of in a tooltip. Dari for 126 strings. See docs/money.md.
 
+### Added: Desk sync and reminders while the Mac is off; Phase 3 of the company OS roadmap (2026-10-19)
+- **Supabase migrations (applied 2026-10-20 04:25 UTC with the owner present; see docs/desk-sync.md):** `20261019090000_desk_sync.sql` adds
+  `desk_state` (the owner's marks: ids, kinds, times, fact hashes, dismiss reasons; no titles, and a customer
+  section's id only as a hash), `obligations` and `vendors` (what `obligations.json` holds, plus the seed rows the sweep
+  needs), and `desk_ledger_reading` / `desk_items` (the Mac's ledger lines for the iPhone). Every owner row has
+  `version bigint`; the push RPCs refuse a stale version and answer the current row. Admin-only RLS, no anon access,
+  no direct writes, audited, nothing deleted (an undo is a tombstone). `20261019090100_obligation_sweep.sql` adds the
+  `obligationDue` event kind, `private.sentinel_obligation_sweep()` as its own job (`sentinel-obligations`, 06:16
+  UTC; the 06:15 licence job is not changed) with the key `obligation:<id>:<due>:<lead>`,
+  `sentinel_recent_events(…, include_obligations)` so the installed app is not sent a kind it can't read, and
+  `sentinel_overview` counting obligation events apart. Rollback SQL in docs/desk-sync.md, tested, also after only the
+  first migration.
+- **LinumicCore `DeskSync/`:** the rows and payloads, `SupabaseDeskCloud`, and a per-row three-way merge
+  (`DeskCloudMerge`) that never picks the last writer: one side changed, that side is kept; both changed differently,
+  a conflict keeps both; a row missing on either side is never read as deleted; only the owner's Restore and Reopen are
+  sent as deletions (`DeskState.restored`, `ObligationsFile.reopened`); a mark dropped here as no longer applying stays
+  in the cloud; account facts from two devices are kept together unless they contradict; a change made during a sync
+  is never overwritten by it. The Mac's ledger reading travels without detail, and without the text of a line that
+  holds an address, a phone number or a key. Nothing that reads as a key leaves the device.
+- **App:** `DeskSyncModel` and the automation job **Desk sync** (every 30 minutes, network, 2-minute limit, also in iOS
+  background refresh). The Desk shows "Changed on two devices" with both versions and "Keep this device's" / "Keep the
+  other's", a cloud sync line, and on iPhone and iPad the Mac's ledger lines with their reading time and a "The Mac's
+  reading" badge. Settings → Account shows the sync and, on the Mac, a switch for sending ledger lines. Server watch
+  shows obligation events and does not alert a window the device already alerted.
+- Tests: 51 Swift tests (two devices against an in-memory server with the SQL's rules, the client against answers
+  recorded from the SQL, the app's alerts and the server's sweep on one fixture); `supabase/tests/desk-sync/run.sh`
+  with the behaviour checks, a two-session race per push function, and the rollback checks on a scratch Postgres.
+  Dari for 64 new strings.
+- **Second review fixes (2026-10-20):** a row a later app wrote (an area this one does not know) no longer fails every
+  sync: the pull keeps its id and the sync leaves it alone, and push answers are read one by one. The server refuses a
+  renewal or due day that is not a real day, and the sweep skips one; the obligation sweep is its own job, so it can't
+  roll back the licence sweep. Server watch reads each obligation event against this device's register (no reminder
+  after a synced Done or for a day the row no longer has; a Done one is acknowledged) and counts the days from today.
+  The Desk's line says when this device last synced and how many conflicts wait, never that the devices match. The
+  seed's `domain.linumic.com` is no longer sent (seed revision 4, pinned by a test) and the sweep skips seed rows with
+  live ids. The Dari summary says only what is enforced about names. Minor: two first writes at the same moment answer
+  `stale`; a date on an account's renewal row is not synced; the pull's `epoch` resets a device's bases after a
+  rollback and re-apply; a clock far from the server's is reported; a Mac reading dated ahead is stored at the server's
+  time and never blocks later ones; conflict choices and drops during a sync are kept; ledger lines turned off is an
+  explicit flag; the overview counts obligation events apart.
+
 ### Added: Obligations & accounts, Continuity, and the daily backup counted from the folder; Phase 2 of the company OS roadmap (2026-10-19)
 - **Daily backup truth.** The run log said "Copy saved and read back: 12 products" (2026-10-19 00:00:01Z) while
   `Backups/` was empty: the file was removed 65 seconds after the run and nothing looked at the folder again. Each run

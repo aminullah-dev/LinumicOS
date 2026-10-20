@@ -10,10 +10,13 @@ import UIKit
 /// Desk (میز کار): one list of what needs the owner, built on this device from the Daily Brief and the owner's
 /// ledgers (the PRIORITIES.md files and the newest NEXT-ACTIONS). It reads the ledgers read-only, on the Mac, inside
 /// the folders the owner granted for them (`LCCLedgerBookmarks`, separate from Keys & Backups, whose grant promises
-/// never to read a file). It writes only the owner's marks to `desk-state.json` on this device. No network.
+/// never to read a file). It writes only the owner's marks to `desk-state.json` on this device. When signed in to the
+/// cloud, `DeskSyncModel` syncs those marks and the Mac's ledger reading (iPhone and iPad show the Mac's).
 @MainActor
 @Observable
 final class DeskModel {
+    /// Set by `DeskSyncModel`: told about each change, and the source of the Mac's ledger reading on iPhone and iPad.
+    @ObservationIgnored weak var cloud: DeskSyncModel?
     private(set) var state = DeskState()
     /// Set when `desk-state.json` exists but can't be read; the file is then never overwritten.
     private(set) var loadError: String?
@@ -55,14 +58,35 @@ final class DeskModel {
         #endif
     }
 
+    /// The Mac reads its ledgers. iPhone and iPad show the Mac's last reading from the cloud, dated, when there is one.
     var ledgerInput: DeskLedgerInput {
-        guard Self.supportsLedgers else { return .unsupported }
+        guard Self.supportsLedgers else { return cloud?.cloudLedger.map { .cloud($0) } ?? .unsupported }
         return reading.map { .read($0) } ?? .notRead
     }
 
     /// The Desk right now.
     func desk(now: Date = .now) -> Desk {
         DeskBuilder.build(brief: brief.brief(now: now), ledgers: ledgerInput, state: state, now: now)
+    }
+
+    /// Every item the Desk holds now (open, marked, hidden).
+    func allItems(now: Date = .now) -> [DeskItem] {
+        let d = desk(now: now)
+        return (d.open + d.markedNotTicked + d.hidden).map(\.item)
+    }
+
+    /// Their ids, so a mark from the cloud is kept under the id of the item it is about.
+    func itemIDs() -> Set<String> { Set(allItems().map(\.id)) }
+
+    /// Writes the marks as the cloud sync left them. Not a change of the owner's, so it does not start another sync.
+    func takeFromCloud(_ new: DeskState) {
+        guard loadError == nil, new != state else { return }
+        do {
+            try store?.save(new)
+            state = new
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 
     // MARK: Reading the ledgers
@@ -94,6 +118,8 @@ final class DeskModel {
             // A read that started before a grant changed is replaced by the next one, never shown.
             if !readAgain { reading = result }
         } while readAgain
+        // A new reading goes to the cloud soon, for iPhone and iPad.
+        cloud?.syncSoon()
         #endif
         pruneObsoleteMarks()
     }
@@ -118,14 +144,16 @@ final class DeskModel {
         return ok
     }
 
-    /// Drops marks that no longer apply (a snooze that ended, a fact that changed, an item gone from a source read).
+    /// Drops marks that no longer apply (a snooze that ended, a fact that changed, an item gone from a source read). On
+    /// this device only: the cloud keeps them for a device where they still apply.
     func pruneObsoleteMarks() {
         let obsolete = desk().obsoleteMarks
         guard !obsolete.isEmpty else { return }
-        mutate { $0.remove(obsolete) }
+        mutate(notify: false) { $0.remove(obsolete) }
+        cloud?.dropped(obsolete)
     }
 
-    private func mutate(_ change: (inout DeskState) -> Void) {
+    private func mutate(notify: Bool = true, _ change: (inout DeskState) -> Void) {
         guard loadError == nil else {
             errorMessage = loadError
             return
@@ -136,6 +164,7 @@ final class DeskModel {
         do {
             try store?.save(copy)
             state = copy
+            if notify { cloud?.syncSoon() }
         } catch {
             errorMessage = error.localizedDescription
         }

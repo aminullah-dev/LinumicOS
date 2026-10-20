@@ -9,6 +9,9 @@ public enum DeskLedgerInput: Hashable, Sendable {
     /// Not read yet in this launch: every ledger is an item "not read yet".
     case notRead
     case read(LedgerReading)
+    /// This device can't read the ledgers, and the Mac's last reading came from the cloud: its lines, dated with the
+    /// Mac's read time (docs/desk-sync.md).
+    case cloud(CloudLedgerSnapshot)
 }
 
 /// One item as the Desk shows it.
@@ -122,7 +125,11 @@ public enum DeskBuilder {
         var obsolete: Set<String> = []
         for item in items {
             let resolution = state.resolve(item, now: now)
-            if resolution == .open, state.marks[item.id] != nil { obsolete.insert(item.id) }
+            if resolution == .open {
+                if state.marks[item.id] != nil { obsolete.insert(item.id) }
+                let key = DeskCloudKey.cloud(item.id)
+                if key != item.id, state.marks[key] != nil { obsolete.insert(key) }
+            }
             let row = DeskRow(item: item, bucket: bucket(item, today: today), resolution: resolution,
                               isStale: item.evidence.isStale(now: now))
             switch resolution {
@@ -131,8 +138,9 @@ public enum DeskBuilder {
             case .open, .reopened: lists[row.bucket, default: []].append(row)
             }
         }
-        // A mark whose item is gone from a source that was read this time no longer applies.
-        let present = Set(items.map(\.id))
+        // A mark whose item is gone from a source that was read this time no longer applies. A mark kept under an item's
+        // cloud key (it came from the cloud before this device showed the item) is the item's too.
+        let present = Set(items.flatMap { [$0.id, DeskCloudKey.cloud($0.id)] })
         let readLedgers = readLedgerOrigins(ledgers)
         for (id, mark) in state.marks where !present.contains(id) {
             if readLedgers.contains(DeskItem.originKey(ofID: id)) || briefLineIsGone(id, mark: mark, brief: brief) {
@@ -313,6 +321,8 @@ public enum DeskBuilder {
             }
         case .read(let reading):
             return reading.files.flatMap { items(for: $0, readAt: reading.readAt, today: today) }
+        case .cloud(let snapshot):
+            return DeskCloudLedger.items(snapshot)
         }
     }
 
@@ -462,6 +472,8 @@ public enum DeskBuilder {
             return LedgerAllowList.all.map { DeskSourceStatus(source: $0, displayPath: $0.displayPath, state: .unsupported, readAt: nil) }
         case .notRead:
             return LedgerAllowList.all.map { DeskSourceStatus(source: $0, displayPath: $0.displayPath, state: .notRead, readAt: nil) }
+        case .cloud(let snapshot):
+            return DeskCloudLedger.sources(snapshot)
         case .read(let reading):
             return reading.files.map { file in
                 let state: DeskSourceStatus.State = switch file.status {
@@ -480,8 +492,11 @@ public enum DeskBuilder {
 
     /// Ledgers that were read this time, so a mark on a line that is gone from them can be dropped.
     static func readLedgerOrigins(_ ledgers: DeskLedgerInput) -> Set<String> {
-        guard case .read(let reading) = ledgers else { return [] }
-        return Set(reading.files.filter(\.isRead).map { origin($0.source).key })
+        switch ledgers {
+        case .read(let reading): Set(reading.files.filter(\.isRead).map { origin($0.source).key })
+        case .cloud(let snapshot): DeskCloudLedger.readOrigins(snapshot)
+        case .unsupported, .notRead: []
+        }
     }
 
     /// Whether a Brief mark's item is known to be gone, so the mark can be dropped. Only when its section was read

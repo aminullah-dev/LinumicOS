@@ -28,6 +28,7 @@ credentials already in this device's Keychain.
 | Website messages | 30 min | WordPress application password | |
 | Keys & Backups | 1 h | a granted folder (Mac only) | attributes only, never contents |
 | Local inventory backup | 24 h, or a minute after its file is gone | nothing | see below |
+| Desk sync | 30 min (and a few seconds after each mark, Done or ledger reading) | cloud sign-in | the Desk's marks, obligations and accounts, and the Mac's ledger reading, row by row with versions; conflicts shown on the Desk; 2-minute limit; also in iOS background refresh; runs before the ledgers ([desk-sync.md](desk-sync.md)) |
 | Ledgers | 30 min | a granted ledger folder (Mac only) | the PRIORITIES.md files and the newest NEXT-ACTIONS for the Desk, read-only; runs just before the Brief; without a grant it still records each ledger as "not granted" for the Desk |
 | Daily Brief | 30 min | nothing | runs last: summarises what the others read, reads `Backups/`, posts obligation alerts ([obligations.md](obligations.md)) |
 

@@ -272,6 +272,11 @@ public struct VendorAccount: Codable, Identifiable, Hashable, Sendable {
 
     public static func renewalObligationID(_ accountID: String) -> String { "account.\(accountID).renewal" }
 
+    /// Whether `id` is an account's renewal row ("account.<id>.renewal").
+    public static func isRenewalObligationID(_ id: String) -> Bool {
+        id.hasPrefix("account.") && id.hasSuffix(".renewal") && id.count > "account..renewal".count
+    }
+
     /// A renewal is known to exist: its day is recorded, or a bill says the account is paid monthly or yearly. Only
     /// then is its renewal an obligation; otherwise the account card says "renewal: not recorded" and nothing presumes
     /// that the account renews at all (a free plan, an ad account).
