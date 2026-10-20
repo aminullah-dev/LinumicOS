@@ -486,7 +486,7 @@ final class AutomationEngine {
                 if report.refused > 0 {
                     return .partial(String(localized: "\(report.refused) not accepted by the server; see Settings → Account"))
                 }
-                return .succeeded(String(localized: "\(report.sent) sent, \(report.received) received"))
+                return .succeeded(report.summary)
             }
 
         case .ledgers:

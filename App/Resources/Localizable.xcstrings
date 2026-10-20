@@ -1378,6 +1378,46 @@
         }
       }
     },
+    "%lld built-in obligation and account rows sent": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld سطر آمادهٔ تعهدات و حساب‌ها فرستاده شد"
+          }
+        }
+      }
+    },
+    "ledger reading sent": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن دفترها فرستاده شد"
+          }
+        }
+      }
+    },
+    "ledger reading unchanged, its time updated": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن دفترها همان بود؛ فقط زمانش تازه شد"
+          }
+        }
+      }
+    },
+    "ledger reading not accepted by the server": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرور خواندن دفترها را نپذیرفت"
+          }
+        }
+      }
+    },
     "%lld sent invoices have no due date.": {
       "localizations": {
         "fa-AF": {
