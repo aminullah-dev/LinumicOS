@@ -147,13 +147,18 @@ The Security Advisor will list the four push/replace functions as SECURITY DEFIN
 
 ## Owner steps (needs approval; changes the live project)
 
-Status 2026-10-20 (00:40 UTC): **not applied.** The reviews approved the PR, and `apply_migration` was tried for the
-first file, but the Supabase connector answered "Invalid or expired requestState" twice. A one-line `select 1` went
-through, so the connector works; the full file needs the owner's own confirmation in the session, which expired while
-he was away. The live project is unchanged: no table, function or job from this PR exists there. The only trace is a
-migration-history entry `20261020003945 desk_sync_probe` (`select 1`, creates nothing). Step 1 is therefore done with
-the owner present, so he can confirm when the connector asks. Do not merge the PR or install its app before step 2
-passes: the app would call `desk_sync_pull`, which does not exist yet.
+Status 2026-10-20 (04:25 UTC): **applied**, with the owner present, through the Supabase MCP's `apply_migration`
+(history: `20261020042517 desk_sync`, `20261020042617 obligation_sweep`; an earlier no-op probe left
+`20261020003945 desk_sync_probe`, `select 1`). Two earlier tries at 00:40 UTC, while the owner was away, answered
+"Invalid or expired requestState" and changed nothing. Checked right after:
+- the five tables exist with row-level security on, one read policy each, seven triggers;
+- five `sentinel-%` jobs, all `postgres` and active; `sentinel-licences` unchanged at 06:15, `sentinel-obligations`
+  at 06:16; `sentinel_recent_events(max_rows, include_acknowledged, include_obligations)`;
+- the md5 of every function body (22) and of every table constraint matches a local apply of these files
+  (PostgreSQL 16), so the live objects are byte for byte the reviewed SQL;
+- `private.sentinel_obligation_sweep()` run twice: 0 and 0 (no obligations synced yet);
+- security advisors: only the intended SECURITY DEFINER push RPCs (each checks `private.is_admin()`), the Sentinel's
+  own two, and the project-wide leaked-password setting that was there before.
 
 1. **Approve and apply the migrations**, in order, **the same way the Sentinel was applied** (the Supabase MCP's
    `apply_migration`, as on 2026-10-19; the same role then owns every Sentinel job): first
@@ -370,5 +375,5 @@ commit;
 - وقتی مک خاموش است، سرور هر روز ساعت ۱۰:۴۶ کابل، در کاری جدا از بررسی لایسنس‌ها (۱۰:۴۵)، تعهدات را بررسی می‌کند و برای هر پنجره (۳۰، ۱۴، ۷، ۱ روز و روز سررسید) فقط یک رویداد ثبت می‌کند. اگر یکی از این دو کار خطا بدهد، دیگری کارش را می‌کند. یادآوری‌ای که در این دستگاه «انجام شد» خورده باشد یا تاریخش عوض شده باشد اعلان نمی‌شود.
 - شناسهٔ مشتریان در بخش‌های «گزارش روز» به شکل hash ذخیره می‌شود و عنوان موردهای «گزارش روز» به ابر نمی‌رود. سطرهای دفترها، دلیل‌های کنار گذاشتن و عنوان‌هایی که خودتان می‌نویسید ممکن است نام اشخاص را داشته باشند و همان‌طور که نوشته‌اید ذخیره می‌شوند؛ از سطرهای دفتر فقط متنی که ایمیل، شماره تلفن یا کلید دارد پنهان می‌شود، و هر چیزی که شبیه کلید یا توکن باشد اصلاً فرستاده نمی‌شود.
 - تاریخچهٔ هر تغییر در جدول audit_events می‌ماند، حتی پس از برگرداندن (rollback)؛ پاک کردنش دستور جداگانه دارد (بخش History در بالا).
-- وضع ۲۰۲۶-۱۰-۲۰: هنوز اجرا نشده. ابزار Supabase برای فایل کامل تأیید خود شما را می‌خواهد و در نبود شما منقضی شد. پایگاه‌داده دست نخورده است؛ فقط یک سطر بی‌اثر `desk_sync_probe` در تاریخچهٔ migration ها هست. وقتی بیدار شدید، بگویید «migration فاز ۳ را اجرا کن» و وقتی ابزار پرسید، تأیید کنید.
+- وضع ۲۰۲۶-۱۰-۲۰ (۰۴:۲۵ UTC): هر دو migration با حضور شما اجرا شد. پنج جدول با RLS، پنج کار `sentinel-…` با یک کاربر، و متن همهٔ ۲۲ تابع با فایل یکی است. یک سطر بی‌اثر `desk_sync_probe` از تلاش پیشین در تاریخچه مانده است.
 - کار شما: تأیید و اجرای دو migration به همان روشی که Sentinel اجرا شد (مراحل بالا)، بررسی پنج کار `sentinel-…` با یک username، سپس «اکنون همگام کن» در هر دو دستگاه.
