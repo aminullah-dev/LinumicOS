@@ -414,6 +414,8 @@ final class AutomationEngine {
             await worktrack.refresh()
             if let error = worktrack.loadError { return .failed(error) }
             guard (worktrack.lastRead ?? .distantPast) >= started else { return .failed(String(localized: "WorkTrack was not read.")) }
+            // Money's parts are secondary: a failure there is partial, so renewal reminders keep their schedule.
+            if let money = worktrack.moneyError { return .partial(String(localized: "\(worktrack.companies.count) companies read; money: \(money)")) }
             return .succeeded(String(localized: "\(worktrack.companies.count) companies read"))
 
         case .operations:
@@ -426,6 +428,7 @@ final class AutomationEngine {
             if operations.safeBeauty.isSignedIn {
                 await operations.safeBeauty.refresh()
                 if let e = operations.safeBeauty.loadError { errors.append("SafeBeauty: \(e)") } else { read.append("SafeBeauty") }
+                if operations.safeBeauty.loadError == nil, let e = operations.safeBeauty.balancesError { errors.append("SafeBeauty money: \(e)") }
             }
             if operations.velro.isSignedIn {
                 await operations.velro.refresh()

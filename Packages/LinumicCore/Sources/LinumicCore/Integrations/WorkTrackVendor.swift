@@ -11,7 +11,13 @@ import Foundation
 //   backend/functions/src/services/vendor.ts      CompanySummary, CompanyDetail, TimelineEvent
 //   backend/functions/src/services/vendorInsights.ts  flags, attention, RevenueSummary
 //   backend/functions/src/lib/errors.ts           problem+json errors
-// Only fields the app shows are decoded; unknown fields are ignored.
+// and, for Money, at origin/main @ 0403fd0 (2026-10-19; the files above are unchanged since f2a9d2c):
+//   backend/functions/src/routes/vendor.ts:308-345  the CRM routes; GET /crm/{accounts,invoices} -> {data: [...]}
+//   backend/functions/src/services/crm.ts:36-51     accountWriteSchema (companyId links an account to a tenant)
+//   backend/functions/src/services/crm.ts:99-114    invoiceWriteSchema (status, amountAfn, issuedAt, dueAt, paidAt, method)
+//   backend/functions/src/services/crm.ts:147-155   shape(): the stored document plus id, createdAt, updatedAt
+//   backend/functions/src/services/crm.ts:198-206   list(): limit(2000), no order, no cursor
+// Only fields the app shows are decoded; unknown fields are ignored. Money never calls a CRM write.
 
 // MARK: - Environment
 
@@ -46,6 +52,15 @@ public enum WorkTrackEnvironment: String, Codable, CaseIterable, Sendable, Ident
         case .demo: URL(string: "https://worktrack-demo-af.web.app/v1")!
         // WorkTrack web/.env.emulator: VITE_API_BASE_URL
         case .localEmulator: URL(string: "http://127.0.0.1:5001/demo-worktrack/us-central1/api/v1")!
+        }
+    }
+
+    /// The vendor console, where invoices, flags and the CRM are edited (WorkTrack `web/src/console/consoleHost.ts:13`).
+    /// Production only.
+    public var console: URL? {
+        switch self {
+        case .production: URL(string: "https://console.linumic.com/")!
+        case .demo, .localEmulator: nil
         }
     }
 
@@ -298,6 +313,128 @@ public struct WTRevenue: Codable, Equatable, Sendable {
     public var excluded: Excluded
 }
 
+// MARK: - CRM (read-only, for Money)
+
+/// `INVOICE_STATUSES` (`services/crm.ts:99`). A stored value outside the list is kept, not refused.
+public struct WTInvoiceStatus: WorkTrackCode {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public static let draft = WTInvoiceStatus(rawValue: "DRAFT")
+    public static let sent = WTInvoiceStatus(rawValue: "SENT")
+    public static let paid = WTInvoiceStatus(rawValue: "PAID")
+    public static let void = WTInvoiceStatus(rawValue: "VOID")
+    public static let all: [WTInvoiceStatus] = [.draft, .sent, .paid, .void]
+    public var isKnown: Bool { Self.all.contains(self) }
+}
+
+/// A CRM invoice as `GET /vendor/crm/invoices` returns it (`invoiceWriteSchema`, `services/crm.ts:102-113`, plus
+/// `shape()`). Typed by hand in the WorkTrack console; not a HesabPay payment. `period`, `notes`, `createdBy` and
+/// `updatedBy` cross the wire (the API has no field mask) but are not decoded, so they are never held.
+public struct WTCrmInvoice: Decodable, Equatable, Sendable, Identifiable {
+    public var id: String
+    public var accountId: String
+    public var number: String
+    public var status: WTInvoiceStatus
+    /// AFN (the field's name and the server's own sum, `crm.ts:106, 248-249`). A JSON number, not required to be whole.
+    public var amountAfn: Decimal
+    /// `YYYY-MM-DD`.
+    public var issuedAt: String
+    /// `YYYY-MM-DD`, or nil when absent or null (`nullish`).
+    public var dueAt: String?
+    public var paidAt: String?
+    /// BANK, CASH, HAWALA or OTHER; nil when absent or null.
+    public var method: String?
+
+    public init(id: String, accountId: String, number: String, status: WTInvoiceStatus, amountAfn: Decimal, issuedAt: String,
+                dueAt: String? = nil, paidAt: String? = nil, method: String? = nil) {
+        self.id = id
+        self.accountId = accountId
+        self.number = number
+        self.status = status
+        self.amountAfn = amountAfn
+        self.issuedAt = issuedAt
+        self.dueAt = dueAt
+        self.paidAt = paidAt
+        self.method = method
+    }
+
+    private enum Keys: String, CodingKey { case id, accountId, number, status, amountAfn, issuedAt, dueAt, paidAt, method }
+
+    /// The id, the account, the status and the amount are required: an invoice without them can't be counted, so it is
+    /// set aside (and counted as such by `WTLossyList`), never read as 0.
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: Keys.self)
+        id = try c.decode(String.self, forKey: .id)
+        accountId = try c.decode(String.self, forKey: .accountId)
+        number = try c.decodeIfPresent(String.self, forKey: .number) ?? ""
+        status = try c.decode(WTInvoiceStatus.self, forKey: .status)
+        // Through the number's shortest decimal text, so 1500.5 stays 1500.5 (Decimal's own decoding is not exact on
+        // every Foundation).
+        amountAfn = MoneyAmount.decimal(try c.decode(Double.self, forKey: .amountAfn))
+        issuedAt = try c.decodeIfPresent(String.self, forKey: .issuedAt) ?? ""
+        dueAt = try c.decodeIfPresent(String.self, forKey: .dueAt)
+        paidAt = try c.decodeIfPresent(String.self, forKey: .paidAt)
+        method = try c.decodeIfPresent(String.self, forKey: .method)
+    }
+}
+
+/// A CRM account (`accountWriteSchema`, `services/crm.ts:36-51`): only what links an invoice to a WorkTrack company.
+/// `stage`, `city`, `industry`, `notes`, `nextAction` and the rest are not decoded.
+public struct WTCrmAccount: Decodable, Equatable, Sendable, Identifiable {
+    public var id: String
+    public var name: String
+    /// The live tenant this account became (`crm.ts:39-40`); nil for a prospect or a customer handled by hand.
+    public var companyId: String?
+
+    public init(id: String, name: String, companyId: String? = nil) {
+        self.id = id
+        self.name = name
+        self.companyId = companyId
+    }
+
+    private enum Keys: String, CodingKey { case id, name, companyId }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: Keys.self)
+        id = try c.decode(String.self, forKey: .id)
+        name = try c.decodeIfPresent(String.self, forKey: .name) ?? ""
+        let company = try c.decodeIfPresent(String.self, forKey: .companyId)?.trimmingCharacters(in: .whitespaces)
+        companyId = company?.isEmpty == false ? company : nil
+    }
+}
+
+/// A list decoded one element at a time: a malformed document is counted in `skipped` instead of failing the whole read.
+public struct WTLossyList<T: Decodable & Sendable>: Decodable, Sendable {
+    public var rows: [T]
+    public var skipped: Int
+
+    public init(rows: [T], skipped: Int = 0) {
+        self.rows = rows
+        self.skipped = skipped
+    }
+
+    /// Decodes nothing, so a failed element can be stepped over.
+    private struct Skip: Decodable { init(from decoder: Decoder) throws {} }
+
+    public init(from decoder: Decoder) throws {
+        var c = try decoder.unkeyedContainer()
+        var rows: [T] = []
+        var skipped = 0
+        while !c.isAtEnd {
+            if let row = try? c.decode(T.self) {
+                rows.append(row)
+            } else {
+                _ = try c.decode(Skip.self)
+                skipped += 1
+            }
+        }
+        self.rows = rows
+        self.skipped = skipped
+    }
+}
+
+extension WTLossyList: Equatable where T: Equatable {}
+
 /// `PlanDef` (`services/plans.ts:40-51`), code defaults with stored price/cap overrides.
 public struct WTPlanDef: Codable, Equatable, Sendable {
     public var id: WTPlan
@@ -517,7 +654,9 @@ public actor WorkTrackVendorClient {
     private var tokens: FirebaseTokens?
     private var refreshToken: String?
 
-    public init(environment: WorkTrackEnvironment, transport: HTTPTransport = URLSessionTransport(),
+    /// The default transport keeps nothing on disk: the CRM answers carry whole customer records (`notes`, names), and
+    /// the shared URL cache would otherwise be free to store them.
+    public init(environment: WorkTrackEnvironment, transport: HTTPTransport = URLSessionTransport(session: URLSessionTransport.uncached),
                 now: @escaping @Sendable () -> Date = { .now }) {
         self.environment = environment
         self.transport = transport
@@ -615,6 +754,10 @@ public actor WorkTrackVendorClient {
     public func revenue() async throws -> WTRevenue { try await get("vendor", "revenue") }
     public func plans() async throws -> [String: WTPlanDef] { try await get("vendor", "plans") }
     public func audit() async throws -> [WTAuditEntry] { try await get("vendor", "audit") }
+    /// `GET /vendor/crm/accounts`, every account (at most 2000, `crm.ts:204`), no `accountId` filter.
+    public func crmAccounts() async throws -> WTLossyList<WTCrmAccount> { try await get("vendor", "crm", "accounts") }
+    /// `GET /vendor/crm/invoices`, every invoice (at most 2000, no order, no cursor), no `accountId` filter.
+    public func crmInvoices() async throws -> WTLossyList<WTCrmInvoice> { try await get("vendor", "crm", "invoices") }
 
     // MARK: Write
 
@@ -630,5 +773,65 @@ public actor WorkTrackVendorClient {
         let allowed = CharacterSet.urlPathAllowed.subtracting(CharacterSet(charactersIn: "/"))
         let path = components.map { $0.addingPercentEncoding(withAllowedCharacters: allowed) ?? $0 }.joined(separator: "/")
         return URL(string: base.absoluteString + "/" + path)!
+    }
+}
+
+// MARK: - Money reads
+
+/// Everything Money asks WorkTrack for: three GETs. `putLicense` and every CRM write are deliberately not here, so code
+/// handed this protocol can only read.
+public protocol WorkTrackMoneyReading: Sendable {
+    func revenue() async throws -> WTRevenue
+    func crmAccounts() async throws -> WTLossyList<WTCrmAccount>
+    func crmInvoices() async throws -> WTLossyList<WTCrmInvoice>
+}
+
+extension WorkTrackVendorClient: WorkTrackMoneyReading {}
+
+/// One reading of WorkTrack's money: each part with its own time or its own failure.
+public struct WorkTrackMoneyRead: Sendable, Equatable {
+    public var revenue: MoneyRead<WTRevenue>
+    public var accounts: MoneyRead<WTLossyList<WTCrmAccount>>
+    public var invoices: MoneyRead<WTLossyList<WTCrmInvoice>>
+
+    public init(revenue: MoneyRead<WTRevenue>, accounts: MoneyRead<WTLossyList<WTCrmAccount>>, invoices: MoneyRead<WTLossyList<WTCrmInvoice>>) {
+        self.revenue = revenue
+        self.accounts = accounts
+        self.invoices = invoices
+    }
+
+    /// WorkTrack no longer accepts the session: signing in again is the fix.
+    public var needsSignIn: Bool { revenue.needsSignIn || accounts.needsSignIn || invoices.needsSignIn }
+
+    /// The failed parts, for the automation run note; nil when all three were read.
+    public var failure: String? {
+        let parts = [(L("revenue"), revenue.failure), (L("CRM accounts"), accounts.failure), (L("CRM invoices"), invoices.failure)]
+            .compactMap { name, message in message.map { "\(name): \($0)" } }
+        return parts.isEmpty ? nil : parts.joined(separator: "; ")
+    }
+}
+
+public enum WorkTrackMoneyReader {
+    /// Revenue, then the CRM accounts, then the invoices, one at a time: concurrent calls could race the client's token
+    /// refresh (actor methods interleave at `await`). Each part keeps its own failure. Once WorkTrack refuses the session,
+    /// the parts after it are not requested; they carry the same failure.
+    public static func read(_ source: some WorkTrackMoneyReading, now: () -> Date = { .now }) async -> WorkTrackMoneyRead {
+        var refused: (message: String, at: Date)?
+        func part<T: Sendable>(_ call: () async throws -> T) async -> MoneyRead<T> {
+            if let refused { return .failed(refused.message, at: refused.at, needsSignIn: true) }
+            do {
+                let value = try await call()
+                return .read(value, at: now())
+            } catch {
+                let needsSignIn = (error as? WorkTrackError)?.needsSignIn ?? false
+                let at = now()
+                if needsSignIn { refused = (error.localizedDescription, at) }
+                return .failed(error.localizedDescription, at: at, needsSignIn: needsSignIn)
+            }
+        }
+        let revenue = await part { try await source.revenue() }
+        let accounts = await part { try await source.crmAccounts() }
+        let invoices = await part { try await source.crmInvoices() }
+        return WorkTrackMoneyRead(revenue: revenue, accounts: accounts, invoices: invoices)
     }
 }

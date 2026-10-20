@@ -1,7 +1,7 @@
 import Foundation
 
 // Cloud Firestore over its REST API (no Firebase SDK), read-only: list a collection, run a structured query with a
-// field mask, count with an aggregation query, and batch-get documents with a mask. Used for the Talar organisation
+// field mask, count and sum with an aggregation query, and batch-get documents with a mask. Used for the Talar organisation
 // list and the SafeBeauty queues, exactly where those products' own admin consoles read Firestore directly.
 //
 // Every request carries the signed-in admin's Firebase ID token, so the product's own security rules decide what
@@ -143,6 +143,37 @@ public struct FirestoreFilter: Sendable, Equatable {
     }
 }
 
+/// One aggregation of `runAggregationQuery`. Firestore allows up to five per query.
+public enum FirestoreAggregation: Hashable, Sendable {
+    case count(alias: String)
+    case sum(alias: String, field: String)
+
+    var alias: String {
+        switch self {
+        case .count(let alias), .sum(let alias, _): alias
+        }
+    }
+
+    var json: [String: Any] {
+        switch self {
+        case .count(let alias): ["alias": alias, "count": [:] as [String: Any]]
+        case .sum(let alias, let field): ["alias": alias, "sum": ["field": ["fieldPath": field]]]
+        }
+    }
+}
+
+/// What an aggregation query returned: each alias's number, exactly as sent, and Firestore's own read time.
+public struct FirestoreAggregateResult: Equatable, Sendable {
+    public var values: [String: Decimal]
+    /// The time Firestore says the result was true at; nil when it sends none.
+    public var readTime: Date?
+
+    public init(values: [String: Decimal], readTime: Date?) {
+        self.values = values
+        self.readTime = readTime
+    }
+}
+
 public enum FirestoreError: Error, LocalizedError, Equatable {
     /// 401: the ID token was refused.
     case unauthenticated
@@ -242,19 +273,49 @@ public struct FirestoreREST: Sendable {
 
     /// `POST :runAggregationQuery` with `count()`: how many documents match, without reading them.
     public func count(_ collection: String, filters: [FirestoreFilter], token: String) async throws -> Int {
+        let result = try await aggregate(collection, filters: filters, [.count(alias: "n")], token: token)
+        guard let n = result.values["n"], case let count = NSDecimalNumber(decimal: n).intValue, Decimal(count) == n else {
+            throw FirestoreError.decoding("the count is not a whole number")
+        }
+        return count
+    }
+
+    /// `POST :runAggregationQuery` with up to five aggregations (`count()`, `sum(field)`) over one collection, AND of
+    /// `filters`. No document is read and there is no page limit. Each number is parsed from the text Firestore sent
+    /// (`integerValue` is a string, `doubleValue` a number): one that is missing or is not a number is a decoding error,
+    /// never 0.
+    public func aggregate(_ collection: String, filters: [FirestoreFilter], _ aggregations: [FirestoreAggregation],
+                          token: String) async throws -> FirestoreAggregateResult {
         var structured: [String: Any] = ["from": [["collectionId": collection]]]
         if let w = Self.where(filters) { structured["where"] = w }
-        let body: [String: Any] = ["structuredAggregationQuery": ["structuredQuery": structured, "aggregations": [["alias": "n", "count": [:] as [String: Any]]]]]
+        let body: [String: Any] = ["structuredAggregationQuery": ["structuredQuery": structured, "aggregations": aggregations.map(\.json)]]
         let data = try await send(request(URL(string: endpoint.documents.absoluteString + ":runAggregationQuery")!, token: token, body: body))
-        struct Row: Decodable { struct Result: Decodable { let aggregateFields: [String: FirestoreValue]? }; let result: Result? }
+        struct Number: Decodable { let integerValue: String?; let doubleValue: Double? }
+        struct Row: Decodable {
+            struct Result: Decodable { let aggregateFields: [String: Number]? }
+            let result: Result?
+            let readTime: String?
+        }
         let rows: [Row]
         do { rows = try JSONDecoder().decode([Row].self, from: data) } catch {
             throw FirestoreError.decoding(String(describing: error).prefix(300).description)
         }
-        guard let value = rows.compactMap({ $0.result?.aggregateFields?["n"] }).first, let n = value.number else {
-            throw FirestoreError.decoding("no count in the aggregation result")
+        guard let row = rows.first(where: { $0.result?.aggregateFields != nil }), let fields = row.result?.aggregateFields else {
+            throw FirestoreError.decoding("no result in the aggregation answer")
         }
-        return Int(n)
+        var values: [String: Decimal] = [:]
+        for a in aggregations {
+            guard let field = fields[a.alias] else { throw FirestoreError.decoding("no \(a.alias) in the aggregation result") }
+            if let text = field.integerValue {
+                guard let i = Int64(text) else { throw FirestoreError.decoding("\(a.alias) is not a whole number: \(text.prefix(40))") }
+                values[a.alias] = Decimal(i)
+            } else if let d = field.doubleValue, d.isFinite {
+                values[a.alias] = MoneyAmount.decimal(d)
+            } else {
+                throw FirestoreError.decoding("\(a.alias) is not a number in the aggregation result")
+            }
+        }
+        return FirestoreAggregateResult(values: values, readTime: row.readTime.flatMap(FirestoreValue.parseTimestamp))
     }
 
     /// `GET {collection}/{id}?mask.fieldPaths=…`. nil when the document doesn't exist.

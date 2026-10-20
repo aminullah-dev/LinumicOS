@@ -11,7 +11,9 @@ final class WorkTrackModel {
     private(set) var session: WorkTrackStoredSession?
     private(set) var companies: [WTCompany] = []
     private(set) var lastRead: Date?
-    private(set) var revenue: WTRevenue?
+    /// Money's reading of the same refresh (revenue, CRM accounts, CRM invoices), each part with its own time or
+    /// failure. In memory only.
+    private(set) var moneyRead: WorkTrackMoneyRead?
     private(set) var plans: [String: WTPlanDef] = [:]
     private(set) var audit: [WTAuditEntry] = []
     private(set) var actions: [WorkTrackActionRecord] = []
@@ -48,6 +50,9 @@ final class WorkTrackModel {
     var isSignedIn: Bool { session != nil }
     var environment: WorkTrackEnvironment? { session?.environment }
     var summary: WTCustomersSummary { WTCustomersSummary(companies: companies) }
+    var revenue: WTRevenue? { moneyRead?.revenue.value }
+    /// The money parts that failed in the last refresh (the automation run note); nil when all were read.
+    var moneyError: String? { moneyRead?.failure }
 
     func company(_ id: String) -> WTCompany? { companies.first { $0.companyId == id } }
     func plan(_ plan: WTPlan) -> WTPlanDef? { plans[plan.rawValue] }
@@ -105,7 +110,7 @@ final class WorkTrackModel {
     private func clearData() {
         companies = []
         lastRead = nil
-        revenue = nil
+        moneyRead = nil
         plans = [:]
         audit = []
     }
@@ -129,11 +134,20 @@ final class WorkTrackModel {
             companies = list
             lastRead = .now
             loadError = nil
-            // The rest is secondary: a failure there doesn't hide the company list.
-            revenue = try? await client.revenue()
+            // The rest is secondary: a failure there doesn't hide the company list. Money is read right after the
+            // list, so its invoices are filtered with the TEST and DUPLICATE marks of this same reading.
+            let money = await WorkTrackMoneyReader.read(client)
+            moneyRead = money
             plans = (try? await client.plans()) ?? plans
             audit = (try? await client.audit()) ?? audit
             await persistRotatedToken()
+            if money.needsSignIn {
+                // The same rule as a failed list: a session the server no longer accepts is removed.
+                let message = money.failure
+                signOut()
+                loadError = message
+                return
+            }
             await WorkTrackNotifier.reschedule(for: list, environment: session?.environment)
         } catch {
             clearData()

@@ -79,7 +79,8 @@ final class BriefModel {
             siteMessages: siteMessages.briefInput,
             automation: automation,
             backup: backup,
-            obligations: obligations.briefInput)
+            obligations: obligations.briefInput,
+            money: .collect(worktrack: worktrack, safeBeauty: operations.safeBeauty, obligations: obligations, now: now))
     }
 
     /// The brief for right now, with the changes since the last snapshot of an earlier day.

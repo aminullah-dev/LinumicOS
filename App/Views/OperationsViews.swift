@@ -700,7 +700,24 @@ struct SafeBeautyPane: View {
                 }
                 Section {
                     LabeledContent("Salons") { Text("\(s.salonCount) (\(s.verifiedSalonCount) verified)").monospacedDigit() }
-                    LabeledContent("Payouts owed to salons") { Text(verbatim: "\(s.payoutsOwed.count) · \(s.payoutsOwedTotal.formatted()) AFN").monospacedDigit() }
+                    // Firestore's own count and sum over every balance; the list below is one page, so its sum is not a total.
+                    LabeledContent("Payouts owed to salons") {
+                        if let b = sb.balances {
+                            Text(verbatim: "\(b.owedToSalonsCount) · \(MoneyFormat.text(MoneyAmount(b.owedToSalons, .afn)))").monospacedDigit()
+                        } else {
+                            Text("Unknown").foregroundStyle(.secondary)
+                        }
+                    }
+                    // Why, in plain sight: a tooltip is not seen on iPhone, nor by keyboard and VoiceOver users.
+                    if sb.balances == nil {
+                        Text(verbatim: sb.balancesError ?? String(localized: "The balance totals have not been read yet."))
+                            .font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                    }
+                    if let b = sb.balances, b.owedBySalonsCount > 0 {
+                        LabeledContent("Salons that owe the platform") {
+                            Text(verbatim: "\(b.owedBySalonsCount) · \(MoneyFormat.text(MoneyAmount(b.owedBySalons, .afn)))").monospacedDigit()
+                        }
+                    }
                     ForEach(s.payoutsOwed.prefix(20)) { b in
                         LabeledContent {
                             Text(verbatim: "\(b.owedAmount.formatted()) AFN").monospacedDigit()
@@ -712,7 +729,7 @@ struct SafeBeautyPane: View {
                 } header: {
                     Text("Salons and money")
                 } footer: {
-                    Text("provider_balances above zero (the platform owes the salon) and refund_requests PENDING. Mark payouts paid only in the admin console: SafeBeauty doesn't audit that action.")
+                    Text("provider_balances above zero (the platform owes the salon) and refund_requests PENDING. The totals are Firestore's count and sum over every balance; the salons listed are the largest of the first 300 balances read. Mark payouts paid only in the admin console: SafeBeauty doesn't audit that action.")
                 }
                 Section {
                     LabeledContent("Commission applied") { Text(verbatim: "\(s.commission.effectivePercent.formatted())%").monospacedDigit() }

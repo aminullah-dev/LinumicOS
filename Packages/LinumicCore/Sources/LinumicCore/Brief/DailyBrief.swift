@@ -3,13 +3,13 @@ import Foundation
 // MARK: - Daily Brief (گزارش روز)
 //
 // One page that summarises what the app has ALREADY read: Monitor, Release Center, the licence ledger, WorkTrack
-// customers, Operations queues and Oversight, plus what changed since yesterday. Nothing here makes a request; the
+// customers, Operations queues, Money and Oversight, plus what changed since yesterday. Nothing here makes a request; the
 // App layer collects each model's state into `BriefInput` and renders `DailyBrief`. Every line carries its source and
 // the time it was read. A source that was never read says so instead of showing zero.
 
 /// Where a line or section comes from. The order is the order of the sections on screen.
 public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiable {
-    case monitor, siteMessages, releases, licences, worktrack, operations, oversight, keys, obligations, automation, changes
+    case monitor, siteMessages, releases, licences, worktrack, operations, money, oversight, keys, obligations, automation, changes
 
     public var id: String { rawValue }
 
@@ -21,6 +21,7 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .licences: L("Licences")
         case .worktrack: L("WorkTrack customers")
         case .operations: L("Operations")
+        case .money: L("Money")
         case .oversight: L("Oversight")
         case .keys: L("Keys & Backups")
         case .obligations: L("Obligations")
@@ -37,6 +38,7 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .licences: "key.horizontal"
         case .worktrack: "person.2.badge.key"
         case .operations: "tray.full"
+        case .money: "banknote"
         case .oversight: "scope"
         case .keys: "externaldrive.badge.checkmark"
         case .obligations: "calendar.badge.exclamationmark"
@@ -65,6 +67,8 @@ public enum BriefDestination: Hashable, Sendable {
     case obligation(String)
     /// The Continuity screen (the encrypted export).
     case continuity
+    /// The Money screen.
+    case money
 }
 
 public enum BriefSeverity: Int, Codable, Sendable, Comparable {
@@ -150,7 +154,8 @@ public struct BriefLine: Identifiable, Hashable, Sendable {
 }
 
 /// A part of a section's source that was not read this time: a product not signed in, a store without a key, endpoints
-/// not checked yet. The section can still be "all clear" for what was read; for this part nothing is known.
+/// not checked yet. The section can still be "all clear" for what was read; for this part nothing is known. Or a caveat
+/// on a part that was read (not production, a limit reached, no TEST mark): its figures are shown, with this beside them.
 public struct BriefGap: Hashable, Sendable {
     /// Stable within its section ("safeBeauty", "appStore", "unchecked"), so a mark on it follows it between readings.
     public var key: String
@@ -158,11 +163,14 @@ public struct BriefGap: Hashable, Sendable {
     public var text: String
     /// The product the part belongs to, as its source names it, when it is one.
     public var product: String?
+    /// A caveat on a part that was read, not a part that was not read: its Desk item does not say "unknown, not zero".
+    public var isCaveat: Bool
 
-    public init(key: String, text: String, product: String? = nil) {
+    public init(key: String, text: String, product: String? = nil, isCaveat: Bool = false) {
         self.key = key
         self.text = text
         self.product = product
+        self.isCaveat = isCaveat
     }
 }
 
@@ -187,7 +195,8 @@ public struct BriefSection: Identifiable, Hashable, Sendable {
     public var source: String
     /// What is worth saying beside the lines: the gaps' sentences first, then information ("3 earlier messages seen").
     public var notes: [String]
-    /// Parts of the source that were not read this time (also among `notes`). Lines of those parts may be missing.
+    /// Parts of the source that were not read this time, and caveats on parts that were (also among `notes`). Lines of
+    /// the parts not read may be missing.
     public var gaps: [BriefGap]
 
     public var id: String { kind.rawValue }
@@ -339,12 +348,14 @@ public struct BriefInput: Sendable {
     public var backup: BackupFolderStatus?
     /// The obligations register; nil before it was built.
     public var obligations: BriefObligationsInput?
+    /// Money as the App collected it; nil when it was not collected.
+    public var money: MoneyInput?
 
     public init(now: Date, monitor: MonitorSnapshot, monitorTargets: [MonitorTarget] = MonitorCatalog.targets,
                 releases: ReleaseCenterSnapshot, licences: BriefLicenceInput, worktrack: BriefWorkTrackInput,
                 operations: [BriefOperationsInput], oversight: BriefOversightInput, keys: BriefKeysInput? = nil,
                 siteMessages: BriefSiteMessagesInput? = nil, automation: AutomationLedger? = nil,
-                backup: BackupFolderStatus? = nil, obligations: BriefObligationsInput? = nil) {
+                backup: BackupFolderStatus? = nil, obligations: BriefObligationsInput? = nil, money: MoneyInput? = nil) {
         self.now = now
         self.monitor = monitor
         self.monitorTargets = monitorTargets
@@ -358,6 +369,7 @@ public struct BriefInput: Sendable {
         self.automation = automation
         self.backup = backup
         self.obligations = obligations
+        self.money = money
     }
 }
 
@@ -378,6 +390,7 @@ public enum DailyBriefBuilder {
             licences(input),
             worktrack(input),
             operations(input),
+            money(input),
             oversight(input),
             keys(input),
             obligations(input),
@@ -633,7 +646,7 @@ public enum DailyBriefBuilder {
                                    product: MonitorProduct.workTrack.title))
         }
         let gaps = env == "production" ? [] : [BriefGap(key: "production", text: LF("Read from the %@ environment, not production.", env),
-                                                         product: MonitorProduct.workTrack.title)]
+                                                         product: MonitorProduct.workTrack.title, isCaveat: true)]
         return finish(.worktrack, lines: lines, readAt: readAt, source: source, gaps: gaps)
     }
 

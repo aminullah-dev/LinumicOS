@@ -1,0 +1,15 @@
+[
+ {
+  "result": {
+   "aggregateFields": {
+    "n": {
+     "integerValue": "3"
+    },
+    "s": {
+     "integerValue": "4500"
+    }
+   }
+  },
+  "readTime": "2026-10-19T05:34:02.786182Z"
+ }
+]

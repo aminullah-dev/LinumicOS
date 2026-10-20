@@ -5,8 +5,40 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Money (پول), read-only; Phase 4 of the company OS roadmap (2026-10-19)
+- **Money** (sidebar after Obligations & accounts, macOS and iOS): who paid, what is on the way, what we owe salons and
+  what we pay, in four frosted summary cards and a section per question. Ten figures, each with its source,
+  environment and read time: HesabPay payments (`/vendor/revenue` earned) and invoices paid by hand (WorkTrack CRM),
+  kept apart and never added; expected renewals (WorkTrack's forecast, labelled as one); invoices sent and not paid,
+  and those past due by Kabul's date; SafeBeauty salons the platform owes and salons that owe the platform, summed by
+  Firestore over every balance and never netted; account costs from Obligations & accounts per currency and billing
+  cycle, never converted, summed across cycles or turned yearly; App Store and Google Play proceeds, always Unknown
+  (no finance key).
+- **Unknown, never 0:** not signed in, not read, a failed read, an unreadable obligations.json and a missing dependency
+  are each Unknown with the reason and one Desk item; store proceeds and costs stay Desk items even when nothing else
+  could be read. Server limits WorkTrack does not report (5000 orders, 500 companies, 2000 CRM rows) mark a figure
+  "at least" or "incomplete" and are a Desk item.
+- **TEST and DUPLICATE:** the server leaves them out of revenue and renewals; CRM invoices are filtered here through
+  account, company and flags, and are Unknown when the company list or the CRM accounts were not read. An invoice of a
+  company not in the list is left out and said. A note and a Desk item say not to purge a test company that paid
+  (WorkTrack would count its orders again).
+- **Desk:** salons owed a payout and invoices past due (normal in production), salons owing the platform and invoices
+  not yet due (information); counts in the text, amounts only in the detail (not in the notification or the agent
+  brief). A mark on a Money line that is gone is dropped once its part was read again; a dismissed caveat (no TEST mark,
+  a limit, not production) is kept while its part is not read, and its item says the part was read.
+- **Dates and labels:** every date on the page and in the past-due item is in the device's calendar; invoice dates
+  say what they are (paid, due, issued with no due date) and never stand in for one another; months of revenue are
+  named in the Solar Hijri calendar; breakdown counts say what they count; renewals say where their term came from.
+  Left-out TEST invoices are two totals, paid and sent. A failed read's time says "tried", not "read".
+- **Reads:** `GET /vendor/crm/accounts` and `/vendor/crm/invoices` with the existing WorkTrack session, two Firestore
+  aggregation queries with the existing SafeBeauty session; no new key (`SecretKey.allCases` pinned by a test), no
+  write, nothing on disk or in Supabase; the WorkTrack and SafeBeauty clients now use a session with no URL cache.
+  Operations shows Firestore's exact count and sum of payouts owed instead of the sum of one 300-row page. A Money
+  failure makes the WorkTrack or Operations run partial, not failed. When the balance totals are Unknown, Operations
+  shows why under the value instead of in a tooltip. Dari for 126 strings. See docs/money.md.
+
 ### Added: Desk sync and reminders while the Mac is off; Phase 3 of the company OS roadmap (2026-10-19)
-- **Supabase migrations, as files only (not applied; the owner approves them):** `20261019090000_desk_sync.sql` adds
+- **Supabase migrations (applied 2026-10-20 04:25 UTC with the owner present; see docs/desk-sync.md):** `20261019090000_desk_sync.sql` adds
   `desk_state` (the owner's marks: ids, kinds, times, fact hashes, dismiss reasons; no titles, and a customer
   section's id only as a hash), `obligations` and `vendors` (what `obligations.json` holds, plus the seed rows the sweep
   needs), and `desk_ledger_reading` / `desk_items` (the Mac's ledger lines for the iPhone). Every owner row has
