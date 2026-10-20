@@ -5,6 +5,36 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Products (محصولات) and Agents (ایجنت‌ها), read-only; Phase 7 of the company OS roadmap (2026-10-20)
+- **Products** (sidebar after Platforms, macOS and iOS): one card per product (WorkTrack, SafeBeauty, VELRO, Talar,
+  KhayatYar, MediFlow, NerkhTimes, Namazia, DukanPro, Linumic OS) with each platform's live store version, newest
+  build, version on main and commits on main since the build, then pull requests (and how many are agents'), CI,
+  licences and Monitor health. Every value has its source and read time; a value not read is Unknown with its reason.
+  The catalogue reuses the inventory's platforms and store ids and `PlatformCatalog`'s version files; it adds Linumic
+  OS (this repository's `project.yml`), Namazia's two version files (main holds both apps now) and a GitHub release
+  asset per sideloaded platform, each with its source.
+- **Platforms not level:** built or live versions that differ, a platform with no build while another has one, or a
+  build behind main by version, or by commits for 7 days or more ("Android 1.9.0 (2026-10-13) behind main 1.9.1").
+  Only real version numbers are compared; a live version that is only the inventory's record is shown, never compared;
+  anything not read makes the level Unknown, never "level". One Brief line and so one **Desk item** per product not
+  level; a product whose level is unknown is an item of its own.
+- **Agents:** the 20 scheduled agents in `Resources/agents.json` (slug, area, repositories, cadence, cron and UTC time;
+  no routine id, prompt or secret), their open and recently merged or closed pull requests found by `[agent:<slug>]`
+  or `agent/<slug>/`, last activity, and **"no pull request for more than 4 days"** as a Desk item, counted to the time
+  of the reading and only as far back as the pages read reach. Brief lines for pull requests waiting for review.
+- **Command Palette:** each product not level, every product's page, the agents, "agent pull requests waiting for
+  review" and their pull requests, "Read products and agents now".
+- **Reads:** GitHub GETs only with the existing token: the newest 100 commits on each default branch (dates and the
+  newest sha kept), Linumic OS's repository through the Platforms hub's read, and the newest 50 pull requests of each
+  agent repository (only the agents' kept). A new automation job, **Products and agents**, every 30 minutes. Kept in
+  `products-agents.json` on this device; no response body, no new key, no migration. A URLProtocol test runs a whole
+  refresh and proves every request is a GET to api.github.com. Nothing calls the service that runs the agents.
+- **Seen and checked:** both pages on the iPhone Simulator in English and Dari (Debug-only `-LCCProductsSample`), and
+  one read-only run of the real reads against GitHub (KhayatYar's 1.8.0 builds 78 commits behind main 1.9.0, MediFlow
+  with no Mac build, Talar's APK 53 days behind main). Dari for every new string (215).
+- Docs: [docs/products.md](docs/products.md), [docs/agents.md](docs/agents.md), the roadmap (Phase 7),
+  docs/security.md.
+
 ### Added: Sales (فروش), read-only, WorkTrack first; Phase 5 of the company OS roadmap (2026-10-20)
 - **Sales** (sidebar after Money, macOS and iOS): who to call today. Follow-ups due today or overdue, in the next 7
   days and later, by **Kabul's day** as the WorkTrack server counts it (checked against a copy of its rule for every

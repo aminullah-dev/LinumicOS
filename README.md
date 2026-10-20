@@ -41,7 +41,11 @@ per currency and billing cycle), read-only, each figure with its source and read
 was not read, amounts never converted or added across currencies; store proceeds are Unknown. **Sales** (فروش, Phase 5):
 who to call today from the WorkTrack CRM by Kabul's day, open accounts with no next step, new and self-serve companies
 with no CRM account, renewals, website messages and the SafeBeauty KYC count, read-only, with Dari and Pashto reminder
-drafts that are only copied. See [docs/integrations.md](docs/integrations.md) and [docs/security.md](docs/security.md).
+drafts that are only copied. **Products** (محصولات, Phase 7): every product's platforms with the live store version,
+newest build, version on main and commits behind it, pull requests, CI, licences and health, each with its source and
+read time, and "platforms not level" on the Desk; **Agents** (ایجنت‌ها): the 20 scheduled agents and their pull requests
+on GitHub, with "no pull request for more than 4 days" on the Desk. See [docs/integrations.md](docs/integrations.md)
+and [docs/security.md](docs/security.md).
 
 ## Layout
 
@@ -106,13 +110,15 @@ find strings with no Dari translation.
 - [ARCHITECTURE.md](ARCHITECTURE.md): system design and module boundaries
 - [PRODUCTS.md](PRODUCTS.md): product data model
 - [ROADMAP.md](ROADMAP.md): Linumic OS roadmap
-- [docs/company-os-roadmap.md](docs/company-os-roadmap.md): running the whole company from Linumic OS (Dari); Phase 1 is the Desk and Ledgers, Phase 2 obligations and continuity, Phase 4 Money, Phase 5 Sales
+- [docs/company-os-roadmap.md](docs/company-os-roadmap.md): running the whole company from Linumic OS (Dari); Phase 1 is the Desk and Ledgers, Phase 2 obligations and continuity, Phase 4 Money, Phase 5 Sales, Phase 7 Products and Agents
 - [docs/automation.md](docs/automation.md): the automation engine, the daily backup and what counts as one
 - [docs/sentinel.md](docs/sentinel.md): the server-side checks on Supabase
 - [docs/obligations.md](docs/obligations.md): obligations and accounts, every seed row with its source
 - [docs/continuity.md](docs/continuity.md): the encrypted export, its format and how to open it without Linumic OS
 - [docs/money.md](docs/money.md): Money, every figure with its source, the Unknown reasons and the TEST-company rules
 - [docs/sales.md](docs/sales.md): Sales, what is listed and from where, Kabul's day, privacy, drafts, the owner's shape check
+- [docs/products.md](docs/products.md): Products, every product's platforms with source and read time, and when they are not level
+- [docs/agents.md](docs/agents.md): Agents, the registry of the scheduled agents and their pull requests on GitHub
 - [docs/backend-plan.md](docs/backend-plan.md): Supabase
 - [CHANGELOG.md](CHANGELOG.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md): working rules
