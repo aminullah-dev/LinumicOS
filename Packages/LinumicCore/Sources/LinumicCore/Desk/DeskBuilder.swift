@@ -219,18 +219,19 @@ public enum DeskBuilder {
                                           factHash: factHash(line), destination: .screen(line.destination),
                                           obligationID: line.obligationID, closesAtSource: line.closesAtSource))
                 }
-                // "All clear" is only about what was read: a part that was not read is an item, never a zero.
-                for gap in section.gaps {
-                    let domain = domain(section.kind, product: gap.product)
-                    items.append(DeskItem(origin: origin, subjectKey: "part.\(gap.key)", kindKey: "not-read", kind: .source,
-                                          domain: domain, severity: domain.isFocus ? .normal : .info,
-                                          title: LF("%@: %@", section.kind.title, gap.text),
-                                          detail: L("This part was not read, so it is unknown here, not zero."),
-                                          subject: section.kind.title, ownerAction: false,
-                                          evidence: DeskEvidence(source: section.source, readAt: section.readAt, cadence: cadence),
-                                          factHash: DeskHash.of(section.kind.rawValue, gap.key, gap.text),
-                                          destination: .screen(destination(section.kind))))
-                }
+            }
+            // "All clear" is only about what was read: a part that was not read is an item, never a zero. A section that
+            // could not be read can still name parts that are unknown whatever happens (Money's store proceeds).
+            for gap in section.gaps {
+                let domain = domain(section.kind, product: gap.product)
+                items.append(DeskItem(origin: origin, subjectKey: "part.\(gap.key)", kindKey: "not-read", kind: .source,
+                                      domain: domain, severity: domain.isFocus ? .normal : .info,
+                                      title: LF("%@: %@", section.kind.title, gap.text),
+                                      detail: L("This part was not read, so it is unknown here, not zero."),
+                                      subject: section.kind.title, ownerAction: false,
+                                      evidence: DeskEvidence(source: section.source, readAt: section.readAt, cadence: cadence),
+                                      factHash: DeskHash.of(section.kind.rawValue, gap.key, gap.text),
+                                      destination: .screen(destination(section.kind))))
             }
         }
         return items
@@ -269,6 +270,7 @@ public enum DeskBuilder {
         case .oversight: .oversight
         case .keys: .keys
         case .obligations: .obligations
+        case .money: .money
         case .automation, .changes: .automation
         }
     }
@@ -282,6 +284,8 @@ public enum DeskBuilder {
         case .licences: .licences
         case .worktrack: .worktrack
         case .operations: .operations
+        // Read by the WorkTrack and Operations jobs; the slower one (6 hours) sets when a row is old.
+        case .money: .worktrack
         case .oversight: .oversight
         case .keys: .keys
         // Built from what the other jobs read, every time the Brief is: never older than they are.
@@ -499,6 +503,10 @@ public enum DeskBuilder {
            let queue = OperationsQueue(rawValue: String(subject.dropFirst(4))) {
             return !section.gaps.contains { $0.key == queue.product.rawValue }
         }
+        // Money always has gaps (store proceeds): a line is gone when its own product's part was read.
+        if section.kind == .money, let keys = MoneyBrief.readGapKeys(forLineID: subject) {
+            return !section.gaps.contains { keys.contains($0.key) }
+        }
         return section.gaps.isEmpty
     }
 }
@@ -508,9 +516,10 @@ public enum DeskBuilder {
 /// The text the owner pastes to an agent: always Dari, with file:line and "read PRIORITIES.md first".
 public enum DeskAgentBrief {
     /// Brief sections whose lines name customers (a website message's sender and text, a WorkTrack company, a licence
-    /// holder), with their Dari names. Their brief carries the Brief entry id instead of the title, and no detail.
+    /// holder) or carry amounts (Money), with their Dari names. Their brief carries the Brief entry id instead of the
+    /// title, and no detail.
     static let customerSections: [BriefSourceKind: String] = [
-        .siteMessages: "پیام‌های وب‌سایت", .worktrack: "مشتریان WorkTrack", .licences: "لایسنس‌ها",
+        .siteMessages: "پیام‌های وب‌سایت", .worktrack: "مشتریان WorkTrack", .licences: "لایسنس‌ها", .money: "پول",
     ]
 
     public static func text(for item: DeskItem, now: Date) -> String {
