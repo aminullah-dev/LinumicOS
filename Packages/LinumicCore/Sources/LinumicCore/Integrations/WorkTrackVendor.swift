@@ -17,7 +17,9 @@ import Foundation
 //   backend/functions/src/services/crm.ts:99-114    invoiceWriteSchema (status, amountAfn, issuedAt, dueAt, paidAt, method)
 //   backend/functions/src/services/crm.ts:147-155   shape(): the stored document plus id, createdAt, updatedAt
 //   backend/functions/src/services/crm.ts:198-206   list(): limit(2000), no order, no cursor
-// Only fields the app shows are decoded; unknown fields are ignored. Money never calls a CRM write.
+//   backend/functions/src/services/crm.ts:25-33     ACCOUNT_STAGES; :48-49 nextActionAt (regex only) and nextAction (Sales)
+//   backend/functions/src/services/crm.ts:56-66     contactWriteSchema (Sales reads one account's contacts on demand)
+// Only fields the app shows are decoded; unknown fields are ignored. Money and Sales never call a CRM write.
 
 // MARK: - Environment
 
@@ -378,28 +380,85 @@ public struct WTCrmInvoice: Decodable, Equatable, Sendable, Identifiable {
     }
 }
 
-/// A CRM account (`accountWriteSchema`, `services/crm.ts:36-51`): only what links an invoice to a WorkTrack company.
-/// `stage`, `city`, `industry`, `notes`, `nextAction` and the rest are not decoded.
+/// `ACCOUNT_STAGES` (`services/crm.ts:25-33`). A stored value outside the list is kept, not refused.
+public struct WTAccountStage: WorkTrackCode {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public static let lead = WTAccountStage(rawValue: "LEAD")
+    public static let contacted = WTAccountStage(rawValue: "CONTACTED")
+    public static let demo = WTAccountStage(rawValue: "DEMO")
+    public static let quoted = WTAccountStage(rawValue: "QUOTED")
+    public static let won = WTAccountStage(rawValue: "WON")
+    public static let lost = WTAccountStage(rawValue: "LOST")
+    public static let dormant = WTAccountStage(rawValue: "DORMANT")
+    /// In the server's order.
+    public static let all: [WTAccountStage] = [.lead, .contacted, .demo, .quoted, .won, .lost, .dormant]
+    public var isKnown: Bool { Self.all.contains(self) }
+    /// Still being sold to: a missing next step is the owner's work.
+    public var isOpen: Bool { [.lead, .contacted, .demo, .quoted].contains(self) }
+}
+
+/// `nextActionAt` as the server stores it. Its write schema checks only `^\d{4}-\d{2}-\d{2}$` (`crm.ts:48`), so
+/// "2026-02-31" can be stored; a hand edit can store anything.
+public enum WTCrmDay: Hashable, Sendable {
+    /// Absent or null: no next step.
+    case none
+    /// A real Gregorian day, `YYYY-MM-DD` (`WorkTrackDates.parse`).
+    case day(String)
+    /// A string that is not a real day ("2026-02-31", "2026-1-5"): shown as it is, never guessed.
+    case notADay(String)
+    /// Present, but not a string.
+    case unreadable
+
+    public init(text: String) {
+        self = WorkTrackDates.isValid(text) ? .day(text) : .notADay(text)
+    }
+}
+
+/// A CRM account (`accountWriteSchema`, `services/crm.ts:36-51`): what links an invoice to a WorkTrack company (Money),
+/// and the stage and next step Sales follows up on. `notes`, `city`, `industry`, `source`, `employeesEstimate`,
+/// `createdBy`, `updatedBy`, `createdAt` and `updatedAt` cross the wire but are not decoded, so they are never held.
 public struct WTCrmAccount: Decodable, Equatable, Sendable, Identifiable {
     public var id: String
     public var name: String
     /// The live tenant this account became (`crm.ts:39-40`); nil for a prospect or a customer handled by hand.
     public var companyId: String?
+    /// Nil when absent, null or not a string ("stage unknown"); a string outside `ACCOUNT_STAGES` is kept.
+    public var stage: WTAccountStage?
+    public var nextActionAt: WTCrmDay
+    /// The owner's own note for the next step (at most 200 characters, `crm.ts:49`), trimmed; nil when empty.
+    public var nextAction: String?
 
-    public init(id: String, name: String, companyId: String? = nil) {
+    public init(id: String, name: String, companyId: String? = nil, stage: WTAccountStage? = nil, nextActionAt: WTCrmDay = .none,
+                nextAction: String? = nil) {
         self.id = id
         self.name = name
         self.companyId = companyId
+        self.stage = stage
+        self.nextActionAt = nextActionAt
+        self.nextAction = nextAction
     }
 
-    private enum Keys: String, CodingKey { case id, name, companyId }
+    private enum Keys: String, CodingKey { case id, name, companyId, stage, nextActionAt, nextAction }
 
+    /// The id is required (a row without one is set aside and counted). Sales' fields never set a row aside: a value of
+    /// the wrong type is "unknown" for that field only, so Money's count of rows set aside does not change.
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: Keys.self)
         id = try c.decode(String.self, forKey: .id)
         name = try c.decodeIfPresent(String.self, forKey: .name) ?? ""
         let company = try c.decodeIfPresent(String.self, forKey: .companyId)?.trimmingCharacters(in: .whitespaces)
         companyId = company?.isEmpty == false ? company : nil
+        stage = (try? c.decodeIfPresent(String.self, forKey: .stage)).map(WTAccountStage.init(rawValue:))
+        if !c.contains(.nextActionAt) || ((try? c.decodeNil(forKey: .nextActionAt)) ?? false) {
+            nextActionAt = .none
+        } else if let text = try? c.decode(String.self, forKey: .nextActionAt) {
+            nextActionAt = WTCrmDay(text: text)
+        } else {
+            nextActionAt = .unreadable
+        }
+        let note = (try? c.decodeIfPresent(String.self, forKey: .nextAction))?.trimmingCharacters(in: .whitespacesAndNewlines)
+        nextAction = note?.isEmpty == false ? note : nil
     }
 }
 
@@ -703,11 +762,11 @@ public actor WorkTrackVendorClient {
         } catch let e as URLError { throw WorkTrackError.network(e.localizedDescription) }
     }
 
-    private func send(_ method: String, _ path: [String], body: Data? = nil, retryOn401: Bool) async throws -> Data {
+    private func send(_ method: String, _ path: [String], query: [URLQueryItem] = [], body: Data? = nil, retryOn401: Bool) async throws -> Data {
         var token = try await idToken()
         var attempt = 0
         while true {
-            var request = URLRequest(url: Self.url(environment.apiBase, path))
+            var request = URLRequest(url: Self.url(environment.apiBase, path, query: query))
             request.httpMethod = method
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.setValue("application/json", forHTTPHeaderField: "Accept")
@@ -733,8 +792,8 @@ public actor WorkTrackVendorClient {
 
     private struct Envelope<T: Decodable>: Decodable { let data: T }
 
-    private func get<T: Decodable>(_ path: String..., as: T.Type = T.self) async throws -> T {
-        let data = try await send("GET", path, retryOn401: true)
+    private func get<T: Decodable>(_ path: String..., query: [URLQueryItem] = [], as: T.Type = T.self) async throws -> T {
+        let data = try await send("GET", path, query: query, retryOn401: true)
         return try decode(T.self, from: data)
     }
 
@@ -758,6 +817,22 @@ public actor WorkTrackVendorClient {
     public func crmAccounts() async throws -> WTLossyList<WTCrmAccount> { try await get("vendor", "crm", "accounts") }
     /// `GET /vendor/crm/invoices`, every invoice (at most 2000, no order, no cursor), no `accountId` filter.
     public func crmInvoices() async throws -> WTLossyList<WTCrmInvoice> { try await get("vendor", "crm", "invoices") }
+    /// `GET /vendor/crm/contacts?accountId=<id>`: one account's contacts (`routes/vendor.ts:339-345`, `crm.ts:198-206`).
+    /// An empty id is refused here, before any request: the server reads an empty `accountId` as no filter and would
+    /// answer every contact of every account.
+    public func crmContacts(accountId: String) async throws -> WTLossyList<WTCrmContactRef> {
+        let id = accountId.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !id.isEmpty else {
+            throw WorkTrackError.validation(detail: L("No CRM account was given, so no contacts were asked for."), fieldErrors: [:])
+        }
+        return try await get("vendor", "crm", "contacts", query: [URLQueryItem(name: "accountId", value: id)])
+    }
+    /// The same `GET /vendor/crm/accounts`, kept only as key names, JSON types and counts (`WTShapeReport`): every value
+    /// is dropped here. The owner's one check of what the server really sends.
+    public func crmAccountsShape() async throws -> WTShapeReport {
+        let rows: [WTJSON] = try await get("vendor", "crm", "accounts")
+        return WTShapeReport(rows: rows, readAt: now())
+    }
 
     // MARK: Write
 
@@ -768,11 +843,17 @@ public actor WorkTrackVendorClient {
         return try decode(WTLicense.self, from: data)
     }
 
-    /// `base` plus each component as exactly one path segment (a "/" inside a company id is escaped).
-    static func url(_ base: URL, _ components: [String]) -> URL {
+    /// `base` plus each component as exactly one path segment (a "/" inside a company id is escaped), and the query with
+    /// every value percent-encoded except ASCII letters, digits and `-._~`: a `+`, `&`, `=` or `/` in an id can't change
+    /// the query (Express would read a raw `+` as a space).
+    static func url(_ base: URL, _ components: [String], query: [URLQueryItem] = []) -> URL {
         let allowed = CharacterSet.urlPathAllowed.subtracting(CharacterSet(charactersIn: "/"))
         let path = components.map { $0.addingPercentEncoding(withAllowedCharacters: allowed) ?? $0 }.joined(separator: "/")
-        return URL(string: base.absoluteString + "/" + path)!
+        let unreserved = CharacterSet(charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~")
+        let text = query.map { item in
+            [item.name, item.value ?? ""].map { $0.addingPercentEncoding(withAllowedCharacters: unreserved) ?? "" }.joined(separator: "=")
+        }.joined(separator: "&")
+        return URL(string: base.absoluteString + "/" + path + (text.isEmpty ? "" : "?" + text))!
     }
 }
 
@@ -787,6 +868,17 @@ public protocol WorkTrackMoneyReading: Sendable {
 }
 
 extension WorkTrackVendorClient: WorkTrackMoneyReading {}
+
+// MARK: - Sales reads
+
+/// What Sales asks WorkTrack for beyond Money's reading (which it reuses): two GETs, each made only when the owner asks.
+/// No write and no other CRM route, so code handed this protocol can only read.
+public protocol WorkTrackSalesReading: Sendable {
+    func crmContacts(accountId: String) async throws -> WTLossyList<WTCrmContactRef>
+    func crmAccountsShape() async throws -> WTShapeReport
+}
+
+extension WorkTrackVendorClient: WorkTrackSalesReading {}
 
 /// One reading of WorkTrack's money: each part with its own time or its own failure.
 public struct WorkTrackMoneyRead: Sendable, Equatable {

@@ -152,9 +152,10 @@ public enum MoneyBrief {
         return lines
     }
 
-    /// Kabul's date in the app's calendar (the owner's Mac uses the Solar Hijri one), never the raw `YYYY-MM-DD`.
+    /// Kabul's date in the app's calendar (the owner's Mac uses the Solar Hijri one), never the raw `YYYY-MM-DD`, and the
+    /// same day in every device time zone.
     static func kabulToday(_ report: MoneyReport) -> String {
-        WorkTrackDates.displayDate(report.kabulToday)?.formatted(date: .abbreviated, time: .omitted) ?? report.kabulToday
+        WorkTrackDates.displayText(report.kabulToday)
     }
 
     /// "WorkTrack (production): GET /v1/vendor/crm/invoices, …".

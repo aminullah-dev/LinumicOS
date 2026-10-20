@@ -131,8 +131,9 @@ struct MoneyClientTests {
     @Test func crmAccountsDecodeOnlyTheLink() throws {
         let list = try decode(WTLossyList<WTCrmAccount>.self, "worktrack-crm-accounts")
         #expect(list.rows.count == 6 && list.skipped == 0)
+        // The link, and (since Sales) the stage and the next step; never the notes, the city or who wrote it.
         let labels = Mirror(reflecting: list.rows[0]).children.compactMap(\.label)
-        #expect(labels == ["id", "name", "companyId"])
+        #expect(labels == ["id", "name", "companyId", "stage", "nextActionAt", "nextAction"])
         #expect(list.rows.first { $0.id == "acc_prospect" }?.companyId == nil)
         #expect(list.rows.first { $0.id == "acc_blank" }?.companyId == nil, "an empty link is no link")
         #expect(list.rows.first { $0.id == "acc_test" }?.companyId == "emu_test")
