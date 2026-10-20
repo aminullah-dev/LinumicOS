@@ -125,6 +125,47 @@ struct AgentsTests {
         #expect(report.status("linumic-os")?.readAt == at("2026-10-23T06:00:00Z"))
     }
 
+    @Test func quietIsCountedToTheOldestReadingOfItsRepositories() {
+        // nerkhtimes-namazia works in two repositories, read two days apart: counted to the older reading (10-23, under
+        // four days after the agents were created), not to the newer one (10-25).
+        let report = AgentActivity.report(registry: registry, windows: registry.repositories.map { repo in
+            RepoPullWindow(repo: repo, pulls: [], pageCount: 3, oldestCreatedAt: at("2026-08-01T00:00:00Z"), isComplete: true,
+                           readAt: repo == "aminullah-dev/-Namazia" ? at("2026-10-23T00:00:00Z") : at("2026-10-25T00:00:00Z"))
+        }, now: at("2026-10-25T00:00:00Z"))
+        let status = report.status("nerkhtimes-namazia")
+        #expect(status?.quiet == .no)
+        #expect(status?.readAt == at("2026-10-23T00:00:00Z"))
+    }
+
+    @Test func anOlderPullRequestIsNotTheLastWhenAnotherPageStartsLater() {
+        // security works in five repositories. Its newest pull request on a page is from 10-22 (talar, a complete page),
+        // but WorkTrack's page is full and reaches back only to `start`: a later pull request of it may sit before that, so
+        // all that is known is "none since `start`".
+        let old = AgentPull(slug: "security", repo: "aminullah-dev/talar", number: 3, title: "[agent:security] Sample", head: "agent/security/x",
+                            state: .merged, isDraft: false, url: URL(string: "https://github.com/aminullah-dev/talar/pull/3")!,
+                            createdAt: at("2026-10-22T00:00:00Z"), mergedAt: at("2026-10-22T01:00:00Z"))
+        func report(start: String) -> AgentsReport {
+            let readAt = at("2026-11-10T00:00:00Z")
+            let talar = RepoPullWindow(repo: "aminullah-dev/talar", pulls: [old], pageCount: 9, oldestCreatedAt: at("2026-07-25T00:00:00Z"),
+                                       isComplete: true, readAt: readAt)
+            let busy = RepoPullWindow(repo: "aminullah-dev/WorkTrack", pulls: [], pageCount: 50, oldestCreatedAt: at(start),
+                                      isComplete: false, readAt: readAt)
+            return AgentActivity.report(registry: registry, windows: windows(readAt: readAt, recorded: [talar, busy]), now: readAt)
+        }
+        // The page reaches back 11 days: quiet, since then, with no "last pull request" claimed.
+        guard case .yes(let days, let since, let last, _) = report(start: "2026-10-30T00:00:00Z").status("security")?.quiet else {
+            Issue.record("security is quiet since WorkTrack's page starts")
+            return
+        }
+        #expect(days == 11 && since == at("2026-10-30T00:00:00Z") && last == nil)
+        // The page reaches back two days only: whether it opened one in the last four days is not known.
+        guard case .unknown(let why) = report(start: "2026-11-08T00:00:00Z").status("security")?.quiet else {
+            Issue.record("a short page says nothing about the days before it, whatever an older page holds")
+            return
+        }
+        #expect(why == "Only the pull requests since 2026-11-08 were read, and none of them is this agent's.")
+    }
+
     @Test func whatWasNotReadIsUnknown() {
         // Only LinumicOS read: every other agent's state is unknown, never "quiet" and never "fine".
         let report = AgentActivity.report(registry: registry, windows: [

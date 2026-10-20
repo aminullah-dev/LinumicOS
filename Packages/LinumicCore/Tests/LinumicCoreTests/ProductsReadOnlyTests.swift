@@ -117,12 +117,40 @@ struct ProductsReadOnlyTests {
 
     @Test func aFailedRepositoryKeepsItsLastReading() async throws {
         ProductsGuardProtocol.reset()
-        let old = RepoPullWindow(repo: "aminullah-dev/velro", pulls: [], pageCount: 4, oldestCreatedAt: nil, isComplete: true,
-                                 readAt: ISO8601DateFormatter().date(from: "2026-10-19T00:00:00Z")!)
-        let (file, _) = await ProductsSync.refresh(products: try SeedInventory.load().products, file: ProductsFile(pullWindows: [old]), using: client())
+        let before = ISO8601DateFormatter().date(from: "2026-10-19T00:00:00Z")!
+        let old = RepoPullWindow(repo: "aminullah-dev/velro", pulls: [], pageCount: 4, oldestCreatedAt: nil, isComplete: true, readAt: before)
+        let oldHistory = MainHistory(repo: "aminullah-dev/velro", branch: "main", commitDates: [before], newestSHA: "0000000", isComplete: true,
+                                     readAt: before)
+        let (file, _) = await ProductsSync.refresh(products: try SeedInventory.load().products,
+                                                   file: ProductsFile(history: [oldHistory], pullWindows: [old]), using: client())
         let kept = try #require(file.pullWindows.first { $0.repo == "aminullah-dev/velro" })
         #expect(kept.readAt == old.readAt && kept.error != nil)
+        // The commits on main too: the reading before is kept, with why the last one failed.
+        #expect(file.history.first { $0.repo == "aminullah-dev/velro" } == oldHistory)
+        #expect(file.historyErrors["aminullah-dev/velro"] != nil)
         #expect(ProductsReadPolicy.violations(ProductsGuardProtocol.seen) == [])
+    }
+
+    @Test func aRateLimitStopsTheRound() async throws {
+        // Every answer is GitHub's rate limit: the first request is the last one sent, and every repository says why.
+        final class Limited: HTTPTransport, @unchecked Sendable {
+            private let lock = NSLock()
+            private(set) var count = 0
+            func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+                lock.withLock { count += 1 }
+                return (Data("{}".utf8), HTTPURLResponse(url: request.url!, statusCode: 403, httpVersion: nil,
+                                                         headerFields: ["x-ratelimit-remaining": "0", "x-ratelimit-reset": "1791000000"])!)
+            }
+        }
+        let transport = Limited()
+        let products = try SeedInventory.load().products
+        let (file, report) = await ProductsSync.refresh(products: products, file: ProductsFile(),
+                                                        using: GitHubClient(token: "test-token", transport: transport))
+        #expect(transport.count == 1, "no more requests once the limit is hit")
+        #expect(report.updated.isEmpty)
+        #expect(Set(report.failed.keys) == Set(ProductsSync.historyRepos(products: products) + AgentRegistry.bundled.repositories
+                                                 + ProductsCatalog.extraVersionFiles.map(\.repo)))
+        #expect(file.history.isEmpty && file.pullWindows.isEmpty)
     }
 
     @Test func theGuardCatchesWritesAndOtherHosts() {

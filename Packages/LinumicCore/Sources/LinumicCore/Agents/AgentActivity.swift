@@ -184,13 +184,16 @@ public enum AgentActivity {
                     let missing = agent.repositories.filter { byRepo[$0.lowercased()] == nil }
                     return .unknown(LF("Pull requests of %@ have not been read yet.", missing.joined(separator: L(", "))))
                 }
+                // Every pull request created since `covered` is on all of its repositories' pages; before it, only some
+                // pages reach.
+                let covered = read.compactMap(\.coveredSince).max() ?? .distantPast
                 let newest = pulls.max { $0.createdAt < $1.createdAt }
-                if let newest {
+                if let newest, newest.createdAt >= covered {
                     let age = asOf.timeIntervalSince(newest.createdAt)
                     return age > threshold ? .yes(days: Int(age / 86_400), since: newest.createdAt, lastPull: newest, asOf: asOf) : .no
                 }
-                // None on the page: none since the page starts (or since the agents exist, if that is later).
-                let covered = read.compactMap(\.coveredSince).max() ?? .distantPast
+                // None since the pages start (an older one on a page that reaches further may have been followed by one on a
+                // page that does not reach back to it), or since the agents exist, if that is later.
                 let from = max(registry.createdAt, covered)
                 let age = asOf.timeIntervalSince(from)
                 if age > threshold { return .yes(days: Int(age / 86_400), since: from, lastPull: nil, asOf: asOf) }
