@@ -121,8 +121,6 @@ nowhere.
 With `-LCCProductsSample 1` (Debug builds only; add `-LCCScreen productBoard` and `-LCCProductCard <id>`, or
 `-LCCScreen agents` and `-LCCAgent <slug>`) both pages show made-up readings and the app starts no job. Checked on an
 iPhone 17 Pro Simulator in English and Dari (right to left) on 2026-10-20. A read-only run of the real reads against
-GitHub the same day (the owner's GitHub token, no store keys, nothing kept) gave: KhayatYar Android, macOS and Windows
-1.8.0 (2026-09-20) behind main 1.9.0 (14) by 78 commits, 30 days; MediFlow with no macOS build and Windows 0.2.0 behind
-main by 7 commits; Talar's APK 1.0.0 behind main by 19 commits, 53 days; DukanPro nothing shipped; the others Unknown
-without the store keys. The store parts are not verified against App Store Connect and Google Play here: they run on
+GitHub the same day (the owner's GitHub token, no store keys, nothing kept) ran without errors; its findings stay in
+the app, not in this public repository. The store parts are not verified against App Store Connect and Google Play here: they run on
 the owner's Mac with his keys.

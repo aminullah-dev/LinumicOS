@@ -30,8 +30,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   `products-agents.json` on this device; no response body, no new key, no migration. A URLProtocol test runs a whole
   refresh and proves every request is a GET to api.github.com. Nothing calls the service that runs the agents.
 - **Seen and checked:** both pages on the iPhone Simulator in English and Dari (Debug-only `-LCCProductsSample`), and
-  one read-only run of the real reads against GitHub (KhayatYar's 1.8.0 builds 78 commits behind main 1.9.0, MediFlow
-  with no Mac build, Talar's APK 53 days behind main). Dari for every new string (215).
+  one read-only run of the real reads against GitHub. Dari for every new string (215).
 - Docs: [docs/products.md](docs/products.md), [docs/agents.md](docs/agents.md), the roadmap (Phase 7),
   docs/security.md.
 
