@@ -2,6 +2,46 @@
   "sourceLanguage": "en",
   "strings": {
     "": {},
+    " (and %ld more)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " (و %ld مورد دیگر)"
+          }
+        }
+      }
+    },
+    "%1$@ %2$@ behind main %3$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ %1$@ %2$@ از main %3$@ عقب است"
+          }
+        }
+      }
+    },
+    "%1$@ %2$@ behind main %3$@ by %4$@, %5$ld days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ %1$@ %2$@ از main %3$@ عقب است، %4$@ و %5$ld روز"
+          }
+        }
+      }
+    },
+    "%1$@ %2$@ behind main by %3$@, %4$ld days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ %1$@ %2$@ از main عقب است، %3$@ و %4$ld روز"
+          }
+        }
+      }
+    },
     "%1$@ (in %2$d days)": {
       "localizations": {
         "fa-AF": {
@@ -22,6 +62,26 @@
         }
       }
     },
+    "%1$@ build: %2$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیلد %1$@: %2$@"
+          }
+        }
+      }
+    },
+    "%1$@ commits since the build: %2$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کامیت‌های پس از بیلد %1$@: %2$@"
+          }
+        }
+      }
+    },
     "%1$@ could not be read: %2$@": {
       "localizations": {
         "fa-AF": {
@@ -32,12 +92,92 @@
         }
       }
     },
+    "%1$@ has no build (%2$@), while %3$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پلتفرم %1$@ بیلد ندارد (%2$@)، در حالی که %3$@"
+          }
+        }
+      }
+    },
+    "%1$@ in the store: %2$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ %1$@ در فروشگاه: %2$@"
+          }
+        }
+      }
+    },
     "%1$@ in total. Past due: the due date is before today in Kabul (%2$@).": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "در مجموع %1$@. سررسید گذشته: تاریخ سررسید پیش از امروزِ کابل (%2$@) است."
+          }
+        }
+      }
+    },
+    "%1$@ on main: %2$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ %1$@ روی main: %2$@"
+          }
+        }
+      }
+    },
+    "%1$@: no pull request for %2$ld days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$ld روز است که درخواست ادغامی باز نکرده"
+          }
+        }
+      }
+    },
+    "%1$@: pull requests waiting for review: %2$ld": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: درخواست‌های ادغام در انتظار بازبینی: %2$ld"
+          }
+        }
+      }
+    },
+    "%1$@: the last read failed (%2$@); the reading before it is used.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخزن %1$@: آخرین خواندن ناکام شد (%2$@)؛ خواندن پیش از آن به کار می‌رود."
+          }
+        }
+      }
+    },
+    "%1$@: whether it opened a pull request in the last %2$ld days is unknown: %3$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: نامعلوم است که در %2$ld روز گذشته درخواست ادغامی باز کرده یا نه: %3$@"
+          }
+        }
+      }
+    },
+    "%1$@: whether its platforms are level is unknown: %2$@%3$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هم‌پایی پلتفرم‌های %1$@ نامعلوم است: %2$@%3$@"
           }
         }
       }
@@ -280,6 +420,26 @@
         }
       }
     },
+    "%@ gives no date for this build, so the commits since it are not counted.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع %@ برای این بیلد تاریخی نمی‌دهد، پس کامیت‌های پس از آن شمرده نمی‌شوند."
+          }
+        }
+      }
+    },
+    "%@ has no GitHub release.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخزن %@ ریلیز GitHub ندارد."
+          }
+        }
+      }
+    },
     "%@ has no source or no day it was recorded.": {
       "localizations": {
         "fa-AF": {
@@ -296,6 +456,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ عنوان ندارد."
+          }
+        }
+      }
+    },
+    "%@ has not been read from GitHub yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخزن %@ هنوز از GitHub خوانده نشده است."
           }
         }
       }
@@ -442,6 +612,16 @@
         }
       }
     },
+    "%@ on main after this build; the newest is %lld days later": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ روی main پس از این بیلد؛ تازه‌ترینش %2$lld روز بعد"
+          }
+        }
+      }
+    },
     "%@ refused access (403). The account lacks read permission for this app, or a permission granted in the last day hasn't taken effect yet.": {
       "localizations": {
         "fa-AF": {
@@ -500,6 +680,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ در %@ پاک شده بود ولی دوباره روی این مک است"
+          }
+        }
+      }
+    },
+    "%@ was not read in the last GitHub reading.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل %@ در آخرین خواندن GitHub خوانده نشد."
           }
         }
       }
@@ -791,6 +981,26 @@
         }
       }
     },
+    "%@: platforms not level": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پلتفرم‌های %@ هم‌پا نیستند"
+          }
+        }
+      }
+    },
+    "%@: pull requests not read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درخواست‌های ادغام %@ هنوز خوانده نشده‌اند."
+          }
+        }
+      }
+    },
     "%@: release %@ published on %@.": {
       "extractionState": "stale",
       "localizations": {
@@ -894,6 +1104,16 @@
         }
       }
     },
+    "%ld commits": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld کامیت"
+          }
+        }
+      }
+    },
     "%ld draft finding(s) haven't been reviewed and aren't reported.": {
       "extractionState": "stale",
       "localizations": {
@@ -974,6 +1194,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld فعال"
+          }
+        }
+      }
+    },
+    "%lld active, %lld ending within 30 days, %lld expired, %lld in the ledger": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld فعال، %2$lld تا ۳۰ روز دیگر تمام می‌شود، %3$lld تمام‌شده، %4$lld در دفتر"
+          }
+        }
+      }
+    },
+    "%lld agents, every 2 days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ایجنت، هر دو روز"
           }
         }
       }
@@ -1108,6 +1348,36 @@
         }
       }
     },
+    "%lld level": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld هم‌پا"
+          }
+        }
+      }
+    },
+    "%lld level unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld با هم‌پایی نامعلوم"
+          }
+        }
+      }
+    },
+    "%lld licences active": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld لایسنس فعال"
+          }
+        }
+      }
+    },
     "%lld licences are in their grace days after expiry; WorkTrack's forecast leaves them out.": {
       "localizations": {
         "fa-AF": {
@@ -1168,6 +1438,26 @@
         }
       }
     },
+    "%lld not checked": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld بررسی‌نشده"
+          }
+        }
+      }
+    },
+    "%lld not level": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ناهم‌پا"
+          }
+        }
+      }
+    },
     "%lld obligations due": {
       "localizations": {
         "fa-AF": {
@@ -1188,12 +1478,62 @@
         }
       }
     },
+    "%lld of %lld down": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld از %2$lld از کار افتاده"
+          }
+        }
+      }
+    },
+    "%lld of %lld up": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld از %2$lld سالم"
+          }
+        }
+      }
+    },
     "%lld of 16 characters": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "%lld از ۱۶ حرف"
+          }
+        }
+      }
+    },
+    "%lld open PRs, %lld by agents": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld درخواست ادغام باز، %2$lld از ایجنت‌ها"
+          }
+        }
+      }
+    },
+    "%lld open, %lld drafts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld باز، %2$lld پیش‌نویس"
+          }
+        }
+      }
+    },
+    "%lld open, %lld drafts, %lld by agents": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld باز، %2$lld پیش‌نویس، %3$lld از ایجنت‌ها"
           }
         }
       }
@@ -1338,6 +1678,26 @@
         }
       }
     },
+    "%lld pull requests waiting for review": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld درخواست ادغام در انتظار بازبینی"
+          }
+        }
+      }
+    },
+    "%lld quiet for more than %lld days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld ایجنت بیش از %2$lld روز خاموش"
+          }
+        }
+      }
+    },
     "%lld releases": {
       "localizations": {
         "fa-AF": {
@@ -1408,12 +1768,1682 @@
         }
       }
     },
+    "%lld up": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld سالم"
+          }
+        }
+      }
+    },
+    "Admin and provider consoles (Firebase Hosting)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنسول‌های مدیر و ارائه‌دهنده (Firebase Hosting)"
+          }
+        }
+      }
+    },
+    "Admin and server": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدیریت و سرور"
+          }
+        }
+      }
+    },
+    "Afghan Prayer Times": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afghan Prayer Times"
+          }
+        }
+      }
+    },
+    "Agent %02ld": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ایجنت %02ld"
+          }
+        }
+      }
+    },
+    "Agent pull requests waiting for review: %lld": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درخواست‌های ادغام ایجنت‌ها در انتظار بازبینی: %lld"
+          }
+        }
+      }
+    },
+    "Agents": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ایجنت‌ها"
+          }
+        }
+      }
+    },
+    "Agents: pull requests on GitHub by title [agent:<slug>] or branch agent/<slug>/ (read-only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ایجنت‌ها: درخواست‌های ادغام در GitHub با عنوان [agent:<slug>] یا شاخهٔ agent/<slug>/ (فقط خواندنی)"
+          }
+        }
+      }
+    },
+    "Android app": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ اندروید"
+          }
+        }
+      }
+    },
+    "App Store Connect API /v1/builds of %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیلدهای %@ از /v1/builds در App Store Connect API"
+          }
+        }
+      }
+    },
+    "App Store Connect did not list %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در App Store Connect اپی با شناسهٔ %@ فهرست نشد."
+          }
+        }
+      }
+    },
+    "App Store Connect lists no build for %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در App Store Connect برای %@ هیچ بیلدی نیست."
+          }
+        }
+      }
+    },
+    "App Store Connect returned no versions and no builds for this app.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از App Store Connect برای این اپ نه نسخه‌ای آمد و نه بیلدی."
+          }
+        }
+      }
+    },
+    "Apps Script admin/API": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدیریت و API در Apps Script"
+          }
+        }
+      }
+    },
     "At least %ld open CRM accounts have no next-action date": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
             "value": "دست‌کم %ld حساب باز CRM تاریخ اقدام بعدی ندارد"
+          }
+        }
+      }
+    },
+    "Behind main": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عقب‌تر از main"
+          }
+        }
+      }
+    },
+    "Built versions differ: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخه‌های ساخته‌شده فرق دارند: %@"
+          }
+        }
+      }
+    },
+    "CI of %@ has not been read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت CI در %@ هنوز خوانده نشده است."
+          }
+        }
+      }
+    },
+    "CI on the default branch": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت CI روی شاخهٔ اصلی"
+          }
+        }
+      }
+    },
+    "CI unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت CI نامعلوم"
+          }
+        }
+      }
+    },
+    "Closed without merging": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بی‌ادغام بسته شد"
+          }
+        }
+      }
+    },
+    "Commits and agents last read from GitHub: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین خواندن کامیت‌ها و ایجنت‌ها از GitHub: %@"
+          }
+        }
+      }
+    },
+    "Commits on each default branch for the Products page, and the agents' pull requests, from GitHub.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کامیت‌های هر شاخهٔ اصلی برای صفحهٔ محصولات، و درخواست‌های ادغام ایجنت‌ها، از GitHub."
+          }
+        }
+      }
+    },
+    "Commits on main not read from GitHub yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کامیت‌های main هنوز از GitHub خوانده نشده‌اند."
+          }
+        }
+      }
+    },
+    "Company console": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنسول شرکت"
+          }
+        }
+      }
+    },
+    "Console and server": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنسول و سرور"
+          }
+        }
+      }
+    },
+    "Consoles and server": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنسول‌ها و سرور"
+          }
+        }
+      }
+    },
+    "Could not save the products reading: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن محصولات ذخیره نشد: %@"
+          }
+        }
+      }
+    },
+    "Created less than %lld days ago, and none opened yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کمتر از %lld روز پیش ساخته شده و هنوز درخواست ادغامی باز نکرده است."
+          }
+        }
+      }
+    },
+    "Customer, provider and admin app": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ مشتری، ارائه‌دهنده و مدیر"
+          }
+        }
+      }
+    },
+    "Desktop app": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ دسکتاپ"
+          }
+        }
+      }
+    },
+    "Electron shell for the company console": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوستهٔ Electron برای کنسول شرکت"
+          }
+        }
+      }
+    },
+    "Employee app": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ کارمندان"
+          }
+        }
+      }
+    },
+    "Every 2 days at %@ UTC (even days)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر دو روز، ساعت %@ به وقت UTC (روزهای جفت ماه)"
+          }
+        }
+      }
+    },
+    "Every 2 days at %@ UTC (odd days)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر دو روز، ساعت %@ به وقت UTC (روزهای تاق ماه)"
+          }
+        }
+      }
+    },
+    "Every compared platform was read: the same versions, and no build is behind main.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همهٔ پلتفرم‌های مقایسه‌شده خوانده شدند: نسخه‌ها یکی است و هیچ بیلدی از main عقب نیست."
+          }
+        }
+      }
+    },
+    "FastAPI API": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرور API ‏(FastAPI)"
+          }
+        }
+      }
+    },
+    "Firebase Cloud Functions": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توابع ابری Firebase"
+          }
+        }
+      }
+    },
+    "Flutter app": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ Flutter"
+          }
+        }
+      }
+    },
+    "From the inventory's store listing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از سطر فروشگاه در فهرست محصولات"
+          }
+        }
+      }
+    },
+    "GitHub commits on %1$@ of %2$@ (the newest %3$ld)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کامیت‌های GitHub روی %1$@ در %2$@ (%3$ld تای تازه)"
+          }
+        }
+      }
+    },
+    "GitHub listed no commit on %1$@ of %2$@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در GitHub هیچ کامیتی روی %1$@ در %2$@ فهرست نشد."
+          }
+        }
+      }
+    },
+    "GitHub pull requests of %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درخواست‌های ادغام %@ در GitHub"
+          }
+        }
+      }
+    },
+    "GitHub release %1$@ of %2$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ریلیز %1$@ در GitHub از %2$@"
+          }
+        }
+      }
+    },
+    "GitHub releases of %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ریلیزهای GitHub در %@"
+          }
+        }
+      }
+    },
+    "Google Play did not list %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در Google Play اپی با شناسهٔ %@ فهرست نشد."
+          }
+        }
+      }
+    },
+    "Hall-management panel (Electron)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنل مدیریت تالار (Electron)"
+          }
+        }
+      }
+    },
+    "Health": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سلامت"
+          }
+        }
+      }
+    },
+    "Health unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سلامت نامعلوم"
+          }
+        }
+      }
+    },
+    "In the store": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در فروشگاه"
+          }
+        }
+      }
+    },
+    "Inventory store listing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سطر فروشگاه در فهرست محصولات"
+          }
+        }
+      }
+    },
+    "Inventory store listings": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سطرهای فروشگاه در فهرست محصولات"
+          }
+        }
+      }
+    },
+    "It runs %1$@ at %2$@ UTC.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این ایجنت %1$@، ساعت %2$@ به وقت UTC اجرا می‌شود."
+          }
+        }
+      }
+    },
+    "KhayatYar": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KhayatYar"
+          }
+        }
+      }
+    },
+    "KhayatYar Android": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ اندروید KhayatYar"
+          }
+        }
+      }
+    },
+    "KhayatYar desktop": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دسکتاپ KhayatYar"
+          }
+        }
+      }
+    },
+    "KhayatYar desktop (Mac and Windows)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دسکتاپ KhayatYar (مک و ویندوز)"
+          }
+        }
+      }
+    },
+    "KhayatYar iOS": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ iOS ‏KhayatYar"
+          }
+        }
+      }
+    },
+    "Last activity: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین فعالیت: %@"
+          }
+        }
+      }
+    },
+    "Last pull request: #%1$ld %2$@ (%3$@), opened %4$@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین درخواست ادغام: ‎#%1$ld %2$@ (%3$@)، باز شده در %4$@."
+          }
+        }
+      }
+    },
+    "Level unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هم‌پایی نامعلوم"
+          }
+        }
+      }
+    },
+    "Licences unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس‌ها نامعلوم"
+          }
+        }
+      }
+    },
+    "Live versions differ: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخه‌های زنده فرق دارند: %@"
+          }
+        }
+      }
+    },
+    "Mac app": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ مک"
+          }
+        }
+      }
+    },
+    "Merged": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ادغام شد"
+          }
+        }
+      }
+    },
+    "Monitor: GET %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پایش: GET %@"
+          }
+        }
+      }
+    },
+    "Namazia": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Namazia"
+          }
+        }
+      }
+    },
+    "NerkhTimes and Namazia": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ‌های NerkhTimes و Namazia"
+          }
+        }
+      }
+    },
+    "Newest build": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه‌ترین بیلد"
+          }
+        }
+      }
+    },
+    "Newest reading %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه‌ترین خواندن %@"
+          }
+        }
+      }
+    },
+    "No %1$@ listing for %2$@ in the inventory, so its builds are not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در فهرست محصولات برای %2$@ سطر %1$@ نیست، پس بیلدهایش خوانده نمی‌شوند."
+          }
+        }
+      }
+    },
+    "No agent matches.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ ایجنتی با این فیلتر نیست."
+          }
+        }
+      }
+    },
+    "No build to compare with the default branch.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیلدی برای مقایسه با شاخهٔ اصلی نیست."
+          }
+        }
+      }
+    },
+    "No code repository is recorded for this product.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای این محصول هیچ مخزن کدی ثبت نشده است."
+          }
+        }
+      }
+    },
+    "No commit on main after this build": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پس از این بیلد هیچ کامیتی روی main نیست"
+          }
+        }
+      }
+    },
+    "No compared platform has a build or a store version yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ پلتفرم مقایسه‌شده‌ای هنوز بیلد یا نسخهٔ فروشگاه ندارد."
+          }
+        }
+      }
+    },
+    "No product is known to be not level.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ محصولی ناهم‌پا شناخته نشده است."
+          }
+        }
+      }
+    },
+    "No product's level is unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هم‌پایی هیچ محصولی نامعلوم نیست."
+          }
+        }
+      }
+    },
+    "No public address of this part is monitored.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ نشانی عمومی این بخش پایش نمی‌شود."
+          }
+        }
+      }
+    },
+    "No public address of this product is monitored.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ نشانی عمومی این محصول پایش نمی‌شود."
+          }
+        }
+      }
+    },
+    "No pull request for %lld days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld روز بی‌درخواست ادغام"
+          }
+        }
+      }
+    },
+    "No pull request of this agent on the pages read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در صفحه‌های خوانده‌شده درخواست ادغامی از این ایجنت نیست."
+          }
+        }
+      }
+    },
+    "No pull request of this agent since %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از %@ به این سو درخواست ادغامی از این ایجنت نیست."
+          }
+        }
+      }
+    },
+    "No pull request yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز درخواست ادغامی نیست"
+          }
+        }
+      }
+    },
+    "No release on any Google Play track.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در هیچ مسیر (track) Google Play ریلیزی نیست."
+          }
+        }
+      }
+    },
+    "No repository": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخزن ندارد"
+          }
+        }
+      }
+    },
+    "No repository to compare with.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخزنی برای مقایسه نیست."
+          }
+        }
+      }
+    },
+    "No version file is catalogued for the salon desktop app (Electron), and its GitHub release is tagged salon-desktop, not a version.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای اپ دسکتاپ سالون (Electron) فایل نسخه‌ای در فهرست نیست، و ریلیز GitHub آن با salon-desktop برچسب خورده، نه با شمارهٔ نسخه."
+          }
+        }
+      }
+    },
+    "No version file is catalogued for this part, and the deployed version is not published, so neither is read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای این بخش فایل نسخه‌ای در فهرست نیست و نسخهٔ منتشرشده هم اعلام نمی‌شود، پس هیچ‌کدام خوانده نمی‌شود."
+          }
+        }
+      }
+    },
+    "No version file is catalogued for this part.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای این بخش فایل نسخه‌ای در فهرست نیست."
+          }
+        }
+      }
+    },
+    "No version is live on the App Store for %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در App Store برای %@ هیچ نسخه‌ای زنده نیست."
+          }
+        }
+      }
+    },
+    "None of the last %1$ld GitHub releases of %2$@ has a %3$@ file.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در هیچ‌یک از %1$ld ریلیز آخر GitHub در %2$@ فایل %3$@ نیست."
+          }
+        }
+      }
+    },
+    "None since %@, as read %@. It runs every 2 days; more than %lld days without one is a Desk item.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از %1$@ به این سو هیچ، طبق خواندن %2$@. هر دو روز اجرا می‌شود؛ بیش از %3$lld روز بی‌درخواست ادغام، یک مورد میز کار است."
+          }
+        }
+      }
+    },
+    "Not in a store.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در فروشگاهی نیست."
+          }
+        }
+      }
+    },
+    "Not in a store: the inventory has no %1$@ listing for %2$@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در فروشگاهی نیست: فهرست محصولات برای %2$@ سطر %1$@ ندارد."
+          }
+        }
+      }
+    },
+    "Not level": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ناهم‌پا"
+          }
+        }
+      }
+    },
+    "Not level: built or live versions differ, a platform has no build while another has one, or a build is behind main by version, or by commits for %lld days or more.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ناهم‌پا یعنی: نسخه‌های ساخته‌شده یا زنده فرق دارند، یک پلتفرم بیلد ندارد در حالی که دیگری دارد، یا یک بیلد از main عقب است، به شمارهٔ نسخه، یا به کامیت‌ها برای %lld روز یا بیشتر."
+          }
+        }
+      }
+    },
+    "Not monitored": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پایش نمی‌شود"
+          }
+        }
+      }
+    },
+    "Not read yet: the products are built from the Platforms and Release Center readings and the commits on main.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز خوانده نشده: محصولات از خوانده‌های «پلتفرم‌ها» و «انتشارها» و کامیت‌های main ساخته می‌شوند."
+          }
+        }
+      }
+    },
+    "Not read, so not known:": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوانده نشده، پس نامعلوم:"
+          }
+        }
+      }
+    },
+    "Nothing is on the production track.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روی مسیر production چیزی نیست."
+          }
+        }
+      }
+    },
+    "Nothing shipped yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز چیزی منتشر نشده"
+          }
+        }
+      }
+    },
+    "On main": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روی main"
+          }
+        }
+      }
+    },
+    "Only the build running on this device is known here: Linumic OS is not in a store and has no GitHub release.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این‌جا فقط بیلدی که روی همین دستگاه اجرا می‌شود معلوم است: Linumic OS در فروشگاه نیست و ریلیز GitHub ندارد."
+          }
+        }
+      }
+    },
+    "Only the pull requests since %@ were read, and none of them is this agent's.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط درخواست‌های ادغامِ پس از %@ خوانده شد و هیچ‌کدام از این ایجنت نیست."
+          }
+        }
+      }
+    },
+    "Open Agents": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن ایجنت‌ها"
+          }
+        }
+      }
+    },
+    "Open Licences": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن لایسنس‌ها"
+          }
+        }
+      }
+    },
+    "Open Monitor": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن پایش"
+          }
+        }
+      }
+    },
+    "Open Platforms": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن پلتفرم‌ها"
+          }
+        }
+      }
+    },
+    "Open Releases": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن انتشارها"
+          }
+        }
+      }
+    },
+    "Open the pull requests of %@ on GitHub": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن درخواست‌های ادغام %@ در GitHub"
+          }
+        }
+      }
+    },
+    "Opens every value of this product with its source": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همهٔ مقدارهای این محصول را با منبعشان باز می‌کند"
+          }
+        }
+      }
+    },
+    "PRs unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درخواست‌های ادغام نامعلوم"
+          }
+        }
+      }
+    },
+    "Planned, not built yet (inventory).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برنامه‌ریزی‌شده، هنوز ساخته نشده (فهرست محصولات)."
+          }
+        }
+      }
+    },
+    "Platforms hub, GitHub /repos/%@/pulls (count only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرکز پلتفرم‌ها، GitHub /repos/%@/pulls (فقط شمار)"
+          }
+        }
+      }
+    },
+    "Platforms hub, GitHub Actions workflows of %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرکز پلتفرم‌ها، workflowهای GitHub Actions در %@"
+          }
+        }
+      }
+    },
+    "Platforms level": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پلتفرم‌ها هم‌پا"
+          }
+        }
+      }
+    },
+    "Platforms not level": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پلتفرم‌ها ناهم‌پا"
+          }
+        }
+      }
+    },
+    "Products and agents": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصولات و ایجنت‌ها"
+          }
+        }
+      }
+    },
+    "Products: the Platforms hub, the Release Center, the licence ledger, the Monitor and the commits on each default branch (read-only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصولات: مرکز پلتفرم‌ها، مرکز انتشارها، دفتر لایسنس‌ها، پایش و کامیت‌های هر شاخهٔ اصلی (فقط خواندنی)"
+          }
+        }
+      }
+    },
+    "Pull requests last read from GitHub: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین خواندن درخواست‌های ادغام از GitHub: %@"
+          }
+        }
+      }
+    },
+    "Pull requests not read from GitHub yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درخواست‌های ادغام هنوز از GitHub خوانده نشده‌اند."
+          }
+        }
+      }
+    },
+    "Pull requests of %@ have not been read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درخواست‌های ادغام %@ هنوز خوانده نشده‌اند."
+          }
+        }
+      }
+    },
+    "Quiet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خاموش"
+          }
+        }
+      }
+    },
+    "Read products and agents now": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن محصولات و ایجنت‌ها، همین حالا"
+          }
+        }
+      }
+    },
+    "Read the agents' pull requests from GitHub again (read-only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن دوبارهٔ درخواست‌های ادغام ایجنت‌ها از GitHub (فقط خواندنی)"
+          }
+        }
+      }
+    },
+    "Read the platforms, the stores, pull requests and CI, and the commits on main again (read-only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن دوبارهٔ پلتفرم‌ها، فروشگاه‌ها، درخواست‌های ادغام و CI، و کامیت‌های main (فقط خواندنی)"
+          }
+        }
+      }
+    },
+    "Read-only. Live versions come from App Store Connect and Google Play through the Release Center (or, when they were not read, the inventory's store listing), builds from those consoles or the product's GitHub releases, versions on main from each repository's version file, and commits on main from GitHub. Only real version numbers are compared.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط خواندنی. نسخه‌های زنده از App Store Connect و Google Play از راه مرکز انتشارها می‌آیند (یا اگر خوانده نشده باشند، از سطر فروشگاه در فهرست محصولات)، بیلدها از همان کنسول‌ها یا ریلیزهای GitHub محصول، نسخهٔ main از فایل نسخهٔ هر مخزن، و کامیت‌های main از GitHub. فقط شماره‌نسخه‌های واقعی مقایسه می‌شوند."
+          }
+        }
+      }
+    },
+    "Read-only. Pull requests are matched by a title that starts with [agent:<slug>] or a branch that starts with agent/<slug>/, on the newest 50 pull requests of each repository. Agents open pull requests only; the coordinator reviews them and the owner merges.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط خواندنی. درخواست‌های ادغام از روی عنوانی که با [agent:<slug>] شروع می‌شود یا شاخه‌ای که با agent/<slug>/ شروع می‌شود، در ۵۰ درخواست تازهٔ هر مخزن پیدا می‌شوند. ایجنت‌ها فقط درخواست ادغام باز می‌کنند؛ هماهنگ‌کننده بازبینی می‌کند و صاحب پروژه ادغام می‌کند."
+          }
+        }
+      }
+    },
+    "Recently merged or closed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به‌تازگی ادغام‌شده یا بسته‌شده"
+          }
+        }
+      }
+    },
+    "Release Center, GitHub /repos/%@/pulls": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرکز انتشارها، GitHub /repos/%@/pulls"
+          }
+        }
+      }
+    },
+    "Release Center, GitHub Actions runs on %1$@ of %2$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرکز انتشارها، اجراهای GitHub Actions روی %1$@ در %2$@"
+          }
+        }
+      }
+    },
+    "Running on this device": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال اجرا روی همین دستگاه"
+          }
+        }
+      }
+    },
+    "SafeBeauty Android": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اندروید SafeBeauty"
+          }
+        }
+      }
+    },
+    "SafeBeauty iOS": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ iOS ‏SafeBeauty"
+          }
+        }
+      }
+    },
+    "SafeBeauty server": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرور SafeBeauty"
+          }
+        }
+      }
+    },
+    "Salon desktop app": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ دسکتاپ سالون"
+          }
+        }
+      }
+    },
+    "Salon desktop app (Electron)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ دسکتاپ سالون (Electron)"
+          }
+        }
+      }
+    },
+    "Security and dependencies": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امنیت و وابستگی‌ها"
+          }
+        }
+      }
+    },
+    "Server": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرور"
+          }
+        }
+      }
+    },
+    "Staff admin panel (React)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنل مدیریت کارکنان (React)"
+          }
+        }
+      }
+    },
+    "Still open": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز باز"
+          }
+        }
+      }
+    },
+    "Sync server": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرور همگام‌سازی"
+          }
+        }
+      }
+    },
+    "Talar Android": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اندروید Talar"
+          }
+        }
+      }
+    },
+    "Talar web and backend": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وب و بک‌اند Talar"
+          }
+        }
+      }
+    },
+    "The Products page has not been built on this device yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صفحهٔ محصولات هنوز روی این دستگاه ساخته نشده است."
+          }
+        }
+      }
+    },
+    "The agents' pull requests are read from GitHub with the token in Settings → Integrations.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درخواست‌های ادغام ایجنت‌ها با توکن تنظیمات ← Integrations از GitHub خوانده می‌شوند."
+          }
+        }
+      }
+    },
+    "The agents' pull requests have not been read from GitHub yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درخواست‌های ادغام ایجنت‌ها هنوز از GitHub خوانده نشده‌اند."
+          }
+        }
+      }
+    },
+    "The commits on the default branch of %@ have not been read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کامیت‌های شاخهٔ اصلی %@ هنوز خوانده نشده‌اند."
+          }
+        }
+      }
+    },
+    "The deployed version is not published, so it is not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ منتشرشده اعلام نمی‌شود، پس خوانده نمی‌شود."
+          }
+        }
+      }
+    },
+    "The products and agents were not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "محصولات و ایجنت‌ها خوانده نشدند."
+          }
+        }
+      }
+    },
+    "The pull requests of %@ have not been read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درخواست‌های ادغام %@ هنوز خوانده نشده‌اند."
+          }
+        }
+      }
+    },
+    "The releases of %@ were not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ریلیزهای %@ خوانده نشدند."
+          }
+        }
+      }
+    },
+    "This app's Info.plist (the build running now)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل Info.plist همین برنامه (بیلدی که اکنون اجرا می‌شود)"
+          }
+        }
+      }
+    },
+    "This page is built from the Platforms and Release Center readings and the commits on each default branch. None has been read on this device yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این صفحه از خوانده‌های «پلتفرم‌ها» و «انتشارها» و کامیت‌های هر شاخهٔ اصلی ساخته می‌شود. هیچ‌کدام هنوز روی این دستگاه خوانده نشده است."
+          }
+        }
+      }
+    },
+    "Unknown: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نامعلوم: %@"
+          }
+        }
+      }
+    },
+    "VELRO backend and admin": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بک‌اند و پنل مدیریت VELRO"
+          }
+        }
+      }
+    },
+    "VELRO driver apps": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ‌های رانندهٔ VELRO"
+          }
+        }
+      }
+    },
+    "VELRO passenger apps": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ‌های مسافر VELRO"
+          }
+        }
+      }
+    },
+    "Waiting for review: %lld": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در انتظار بازبینی: %lld"
+          }
+        }
+      }
+    },
+    "Web app": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ وب"
+          }
+        }
+      }
+    },
+    "Web, desktop and server": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وب، دسکتاپ و سرور"
+          }
+        }
+      }
+    },
+    "WorkTrack Android": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اندروید WorkTrack"
+          }
+        }
+      }
+    },
+    "WorkTrack backend": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بک‌اند WorkTrack"
+          }
+        }
+      }
+    },
+    "WorkTrack iOS": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ iOS ‏WorkTrack"
+          }
+        }
+      }
+    },
+    "WorkTrack web and desktop": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وب و دسکتاپ WorkTrack"
+          }
+        }
+      }
+    },
+    "and %lld more": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "و %lld مورد دیگر"
+          }
+        }
+      }
+    },
+    "at least %ld commits": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دست‌کم %ld کامیت"
           }
         }
       }
@@ -1484,6 +3514,66 @@
           "stringUnit": {
             "state": "translated",
             "value": "آخرین روز %@؛ روزها از امروزِ کابل شمرده شده‌اند."
+          }
+        }
+      }
+    },
+    "every 2 days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر دو روز"
+          }
+        }
+      }
+    },
+    "failing: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ناکام: %@"
+          }
+        }
+      }
+    },
+    "iOS app": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ iOS"
+          }
+        }
+      }
+    },
+    "iOS app and widget": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ iOS و ویجت"
+          }
+        }
+      }
+    },
+    "iPhone and iPad app": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ آیفون و آیپد"
+          }
+        }
+      }
+    },
+    "iosApp/project.yml on main sets no MARKETING_VERSION (GitHub contents API, read 2026-10-20), so there is no iOS version to read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل iosApp/project.yml روی main هیچ MARKETING_VERSION ندارد (GitHub contents API، خوانده‌شده در 2026-10-20)، پس نسخهٔ iOS برای خواندن نیست."
           }
         }
       }
@@ -4790,6 +6880,26 @@
         }
       }
     },
+    "no runs: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بی‌اجرا: %@"
+          }
+        }
+      }
+    },
+    "not compared": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مقایسه نمی‌شود"
+          }
+        }
+      }
+    },
     "obligations.json could not be read (%@), so the costs you recorded are unknown.": {
       "localizations": {
         "fa-AF": {
@@ -5076,6 +7186,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "محصول (اختیاری)"
+          }
+        }
+      }
+    },
+    "passing: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سبز: %@"
           }
         }
       }
@@ -5796,6 +7916,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "فایلی که آن اجرا نوشته بود دیگر آن‌جا نیست. کار پشتیبان در سرکشی بعدی خودکارسازی، تا ۵ دقیقه، دوباره اجرا می‌شود؛ تا وقتی نسخه‌ای از Backups/ دوباره خوانده نشود، پشتیبان محلی وجود ندارد."
+          }
+        }
+      }
+    },
+    "running: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در حال اجرا: %@"
           }
         }
       }
