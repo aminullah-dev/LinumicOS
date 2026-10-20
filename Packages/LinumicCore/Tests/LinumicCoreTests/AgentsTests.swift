@@ -114,6 +114,16 @@ struct AgentsTests {
         #expect(early.quiet.isEmpty && early.statuses.allSatisfy { $0.quiet == .no })
     }
 
+    @Test func quietIsCountedToTheReadingNotToNow() throws {
+        // Read on 10-23, looked at on 10-26: a pull request may have been opened since the reading, so the days without
+        // one are counted to the reading (2 days 15 hours), not to now.
+        let os = try window("aminullah-dev/LinumicOS", "products-pulls-linumicos", readAt: at("2026-10-23T06:00:00Z"))
+        let report = AgentActivity.report(registry: registry, windows: windows(readAt: at("2026-10-23T06:00:00Z"), recorded: [os]),
+                                          now: at("2026-10-26T06:00:00Z"))
+        #expect(report.status("linumic-os")?.quiet == .no)
+        #expect(report.status("linumic-os")?.readAt == at("2026-10-23T06:00:00Z"))
+    }
+
     @Test func whatWasNotReadIsUnknown() {
         // Only LinumicOS read: every other agent's state is unknown, never "quiet" and never "fine".
         let report = AgentActivity.report(registry: registry, windows: [

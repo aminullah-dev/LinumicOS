@@ -176,13 +176,16 @@ struct ProductsBuilderTests {
         let namazia = try #require(report.card("namazia"))
         #expect(namazia.level.unknowns.contains("Android build: Google Play did not list af.namazia.app."))
         #expect(namazia.level.unknowns.contains("Android on main: aminullah-dev/-Namazia has not been read from GitHub yet."))
-        // SafeBeauty: the consoles did not list it either, so its live versions are the inventory listings' own, with
-        // their sources; they differ (2.1.5 and 1.0.1), and an unread part never hides that.
+        // SafeBeauty: the consoles did not list it either, so its live versions are the inventory listings' own, shown with
+        // their sources and dates (2.1.5 and 1.0.1, recorded 2026-09-23); a record can lag behind the store, so it is not
+        // compared and the level is unknown, with why.
         let safeBeauty = try #require(report.card("safebeauty"))
-        #expect(safeBeauty.level.findings.map(\.text) == ["Live versions differ: Android 2.1.5, iOS 1.0.1"])
+        #expect(safeBeauty.level.unknowns.contains("Android in the store: Google Play did not list com.security.stealthapp."))
+        #expect(safeBeauty.level.findings.isEmpty)
         let sbAndroid = try #require(safeBeauty.slots.first { $0.slot.platform == .android })
-        #expect(sbAndroid.live.value?.detail == "From the inventory's store listing")
+        #expect(sbAndroid.live.value?.label == "2.1.5" && sbAndroid.live.value?.detail == "From the inventory's store listing")
         #expect(sbAndroid.live.source == "https://play.google.com/store/apps/details?id=com.security.stealthapp")
+        #expect(sbAndroid.live.readAt == at("2026-09-23T07:00:00Z"))
         // Linumic OS: the Mac build is this app; the iPhone build is not known on a Mac.
         let os = try #require(report.card("linumicos"))
         let mac = try #require(os.slots.first { $0.slot.platform == .macOS })
@@ -207,7 +210,7 @@ struct ProductsBuilderTests {
         #expect(line.detail?.contains("Android 1.8.0 (2026-09-20) behind main 1.9.0 (14)") == true)
         #expect(!section.lines.contains { $0.id == "products.notLevel.worktrack" }, "WorkTrack is level")
         #expect(section.gaps.contains { $0.key == "namazia" && $0.product == "Namazia" }, "unknown is an item, never level")
-        #expect(section.lines.contains { $0.id == "products.notLevel.safebeauty" })
+        #expect(section.gaps.contains { $0.key == "safebeauty" }, "a store record alone never makes a product not level")
         #expect(!section.gaps.contains { $0.key == "worktrack" })
 
         var brief = BriefInput(now: readAt, monitor: MonitorSnapshot(), releases: snapshot(),

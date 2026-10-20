@@ -50,12 +50,16 @@ public struct VersionStamp: Hashable, Sendable {
     public var date: Date?
     /// What it is beside the number: a track ("production"), a phase ("Waiting for review"), a file name.
     public var detail: String?
+    /// Set when the value is only the inventory's record (the store console was not read): why it was not read. It is
+    /// shown with its own source and date, but the level rule does not compare a record that may lag behind the store.
+    public var unreadReason: String?
 
-    public init(name: String?, code: String? = nil, date: Date? = nil, detail: String? = nil) {
+    public init(name: String?, code: String? = nil, date: Date? = nil, detail: String? = nil, unreadReason: String? = nil) {
         self.name = name
         self.code = code
         self.date = date
         self.detail = detail
+        self.unreadReason = unreadReason
     }
 
     /// The name as a version number, or nil when it is not one (a tag like "android-app").

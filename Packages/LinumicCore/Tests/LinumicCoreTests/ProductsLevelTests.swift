@@ -142,6 +142,22 @@ struct ProductsLevelTests {
         #expect(state.findings.map(\.text) == ["Android 1.8.0 (2026-09-20) behind main 1.9.0 (14) by at least 100 commits, 30 days"])
     }
 
+    @Test func aStoreRecordIsShownButNotCompared() {
+        // The console was not read: the live versions are the inventory's record of 2026-09-23 and may lag behind the store.
+        func record(_ name: String) -> Sourced<VersionStamp> {
+            .known(VersionStamp(name: name, detail: "From the inventory's store listing", unreadReason: "No Google Play service account."),
+                   source: "https://play.google.com/store/apps/details?id=com.security.stealthapp", readAt: day("2026-09-23"))
+        }
+        let state = ProductLevelRule.evaluate(track("SafeBeauty", [
+            reading(.android, live: record("2.1.5"), build: v("2.1.5", code: "22"), main: v("2.1.5", code: "22")),
+            reading(.iOS, live: record("1.0.1"), build: v("1.0.2", code: "9", on: "2026-10-09"), main: v("1.0.2", code: "9"), behind: behind(2, days: 1)),
+        ]))
+        #expect(!state.findings.contains { $0.kind == .liveDiffer }, "a record is not compared")
+        #expect(state.findings.map(\.text) == ["Built versions differ: Android 2.1.5 (22), iOS 1.0.2 (9) (2026-10-09)"])
+        #expect(ProductLevelRule.evaluate(track([reading(.android, live: record("1.0"), build: .unknown("No key."), main: v("1.3.0"))])).unknowns
+                == ["Android build: No key.", "Android in the store: No Google Play service account."], "never behind main on a record")
+    }
+
     @Test func partsThatAreNotComparedDontCount() {
         let state = ProductLevelRule.evaluate([
             TrackReading(track: ProductTrack(id: "app", title: "WorkTrack", slots: []), slots: [

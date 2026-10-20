@@ -12,7 +12,8 @@ import Foundation
 //      than the version file on main, or main has commits dated after the build and its newest commit is at least
 //      `behindDays` days later. "Android 1.9.0 (2026-10-13) behind main 1.9.1".
 //
-// Only real version numbers are compared (a tag like "android-app" never is). A value that was not read makes the
+// Only real version numbers are compared (a tag like "android-app" never is), and a live version that is only the
+// inventory's record (the console was not read) is shown but not compared. A value that was not read makes the
 // product's level Unknown, with the reason, unless a rule already found it not level: Unknown is never "level".
 
 public enum LevelFindingKind: String, Hashable, Sendable, CaseIterable {
@@ -85,10 +86,12 @@ public enum ProductLevelRule {
         var findings: [LevelFinding] = []
         var unknowns: [String] = []
         func name(_ s: SlotReading) -> String { s.slot.platform.title }
+        /// A value read from its source; the inventory's record of a live version is not one.
+        func read(_ v: Sourced<VersionStamp>) -> VersionStamp? { v.value.flatMap { $0.unreadReason == nil ? $0 : nil } }
 
         // 1 and 2: different version numbers across platforms.
         for (kind, pick) in [(LevelFindingKind.buildsDiffer, { (s: SlotReading) in s.build }), (.liveDiffer, { (s: SlotReading) in s.live })] {
-            let known = slots.compactMap { s in pick(s).value.flatMap { v in v.semantic.map { (s, v, $0) } } }
+            let known = slots.compactMap { s in read(pick(s)).flatMap { v in v.semantic.map { (s, v, $0) } } }
             guard Set(known.map(\.2)).count > 1 else { continue }
             let list = known.map { "\(name($0.0)) \($0.1.labelWithDay)" }.joined(separator: L(", "))
             let key = "\(kind.rawValue):\(track):" + known.map { "\($0.0.slot.platform.rawValue)=\($0.2)" }.sorted().joined(separator: ",")
@@ -111,7 +114,7 @@ public enum ProductLevelRule {
 
         // 4: behind the default branch.
         for s in slots {
-            guard let have = s.build.value ?? s.live.value else { continue }
+            guard let have = s.build.value ?? read(s.live) else { continue }
             let main = s.main.value
             let byVersion: Bool = {
                 guard let h = have.semantic, let m = main?.semantic else { return false }
@@ -138,6 +141,7 @@ public enum ProductLevelRule {
         for s in slots {
             if case .unknown(let why) = s.build { unknowns.append(LF("%1$@ build: %2$@", name(s), why)) }
             if case .unknown(let why) = s.live { unknowns.append(LF("%1$@ in the store: %2$@", name(s), why)) }
+            if let why = s.live.value?.unreadReason { unknowns.append(LF("%1$@ in the store: %2$@", name(s), why)) }
             if case .unknown(let why) = s.main { unknowns.append(LF("%1$@ on main: %2$@", name(s), why)) }
             if case .unknown(let why) = s.behind, s.build.isKnown { unknowns.append(LF("%1$@ commits since the build: %2$@", name(s), why)) }
         }

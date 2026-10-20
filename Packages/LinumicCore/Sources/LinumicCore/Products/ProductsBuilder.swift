@@ -269,7 +269,8 @@ public enum ProductsBuilder {
         guard let label = listing.productionVersion?.trimmingCharacters(in: .whitespaces), !label.isEmpty else { return .unknown(why) }
         let source = listing.verification.sources.max { $0.observedAt < $1.observedAt }
         let when = listing.verification.verifiedAt ?? source?.observedAt
-        return .known(VersionStamp(name: SemanticVersion.single(in: label)?.description ?? label, detail: L("From the inventory's store listing")),
+        return .known(VersionStamp(name: SemanticVersion.single(in: label)?.description ?? label, detail: L("From the inventory's store listing"),
+                                   unreadReason: why),
                       source: source?.reference ?? L("Inventory store listing"), readAt: when)
     }
 
