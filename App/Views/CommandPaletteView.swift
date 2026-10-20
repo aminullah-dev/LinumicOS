@@ -19,6 +19,7 @@ enum PaletteAction {
     case pauseAutomation
     case resumeAutomation
     case readLedgers
+    case refreshProducts
 }
 
 /// Fuzzy search over every screen, the records the app already holds (titles only, never a secret) and the actions
@@ -36,6 +37,7 @@ struct CommandPaletteView: View {
     @Environment(KeysModel.self) private var keys
     @Environment(SiteMessagesModel.self) private var siteMessages
     @Environment(DeskModel.self) private var desk
+    @Environment(ProductsModel.self) private var products
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
 
@@ -185,6 +187,9 @@ struct CommandPaletteView: View {
         case .readLedgers:
             router.go(.desk)
             Task { await desk.refreshLedgers() }
+        case .refreshProducts:
+            router.go(.productBoard)
+            automation.runNow(.products)
         }
     }
 
@@ -238,6 +243,10 @@ struct CommandPaletteView: View {
         add(PaletteCandidate(id: "action.releases.refresh", title: String(localized: "Refresh releases"), subtitle: SidebarItem.releaseCenter.title,
                              keywords: ["releases", "refresh", "app store", "google play", "github"], group: .action, symbol: "arrow.clockwise"),
             .refreshReleases)
+        add(PaletteCandidate(id: "action.products.refresh", title: String(localized: "Read products and agents now"),
+                             subtitle: SidebarItem.productBoard.title,
+                             keywords: ["products", "agents", "platforms", "level", "commits", "refresh", "github"], group: .action,
+                             symbol: "arrow.clockwise"), .refreshProducts)
         add(PaletteCandidate(id: "action.sitemessages.refresh", title: String(localized: "Refresh website messages"),
                              subtitle: SidebarItem.siteMessages.title,
                              keywords: ["website", "messages", "contact", "form", "linumic.com", "sureforms", "refresh"],
@@ -290,6 +299,39 @@ struct CommandPaletteView: View {
                                  subtitle: "\(SidebarItem.desk.title) · \(row.item.domain.displayTitle) · \(row.bucket.title)",
                                  keywords: ["desk", row.item.domain.name, row.item.subject, row.item.evidence.location], group: .entity,
                                  symbol: row.item.severity.symbol), .go(.desk, .deskItem(row.id)))
+        }
+        // Products whose platforms are not level, then every product's page; the agents and their pull requests waiting.
+        let board = products.report()
+        for card in board.notLevel {
+            add(PaletteCandidate(id: "products.notlevel.\(card.id)", title: String(localized: "\(card.product.title): platforms not level"),
+                                 subtitle: "\(SidebarItem.productBoard.title) · \(card.level.findings.first?.text ?? "")",
+                                 keywords: ["level", "not level", "platforms", "versions", "behind main", card.product.title], group: .entity,
+                                 symbol: "exclamationmark.triangle"), .go(.productBoard, .productCard(card.id)))
+        }
+        for card in board.cards {
+            add(PaletteCandidate(id: "productcard.\(card.id)", title: card.product.title,
+                                 subtitle: "\(SidebarItem.productBoard.title) · \(card.level.title)",
+                                 keywords: ["products", "platforms", "versions", "level"], group: .entity,
+                                 symbol: SidebarItem.productBoard.symbol), .go(.productBoard, .productCard(card.id)))
+        }
+        let agents = products.agents()
+        if !agents.waiting.isEmpty {
+            add(PaletteCandidate(id: "agents.waiting", title: String(localized: "Agent pull requests waiting for review: \(agents.waiting.count)"),
+                                 subtitle: SidebarItem.agents.title,
+                                 keywords: ["agents", "pull requests", "review", "waiting", "pr", "merge"], group: .entity,
+                                 symbol: "arrow.triangle.pull"), .go(.agents, .agentsWaiting))
+        }
+        for status in agents.statuses {
+            add(PaletteCandidate(id: "agent.\(status.agent.slug)", title: "\(status.agent.label) · \(status.agent.slug)",
+                                 subtitle: "\(SidebarItem.agents.title) · \(L(status.agent.title))",
+                                 keywords: ["agent"] + status.agent.products + status.agent.repositories, group: .entity,
+                                 symbol: SidebarItem.agents.symbol), .go(.agents, .agent(status.agent.slug)))
+            for pr in status.open {
+                add(PaletteCandidate(id: "pr.\(pr.repo)#\(pr.number)", title: "#\(pr.number) \(pr.title)",
+                                     subtitle: String(localized: "Open PR in \(pr.repo)"),
+                                     keywords: [pr.repo, pr.head, "pr", "pull", "agent", status.agent.slug], group: .entity,
+                                     symbol: "arrow.triangle.pull"), .openURL(pr.url))
+            }
         }
         // Obligations that are open: title and product; choosing one shows it on its screen.
         for o in obligations.register().obligations where !o.isClosed {

@@ -51,6 +51,7 @@ final class AutomationEngine {
     private let desk: DeskModel
     private let obligations: ObligationsModel
     private let deskSync: DeskSyncModel
+    private let products: ProductsModel
     private let legal: LegalModel
     /// What a run that did the work left on disk (the backup's file name), recorded with the run.
     private var pendingArtifacts: [AutomationJobID: String] = [:]
@@ -67,7 +68,7 @@ final class AutomationEngine {
     init(inventory: InventoryModel, licences: LicenceModel, platforms: PlatformHubModel, worktrack: WorkTrackModel,
          operations: OperationsModel, releases: ReleaseCenterModel, monitor: MonitorModel, brief: BriefModel,
          keys: KeysModel, siteMessages: SiteMessagesModel, sentinel: SentinelModel, desk: DeskModel,
-         obligations: ObligationsModel, deskSync: DeskSyncModel, legal: LegalModel) {
+         obligations: ObligationsModel, deskSync: DeskSyncModel, products: ProductsModel, legal: LegalModel) {
         self.inventory = inventory
         self.licences = licences
         self.platforms = platforms
@@ -82,6 +83,7 @@ final class AutomationEngine {
         self.desk = desk
         self.obligations = obligations
         self.deskSync = deskSync
+        self.products = products
         self.legal = legal
         #if os(macOS)
         specs = AutomationCatalog.jobs
@@ -401,6 +403,24 @@ final class AutomationEngine {
             if fresh.isEmpty { return .failed(notes.first ?? String(localized: "Nothing could be read.")) }
             if fresh.count < tried.count { return .partial(notes.joined(separator: " ")) }
             return .succeeded(String(localized: "\(s.waiting.count) items waiting on you"))
+
+        case .products:
+            guard inventory.isLoaded else { return .skipped(.notReady) }
+            guard inventory.hasGitHubToken else { return .skipped(.notConnected) }
+            guard !products.isRefreshing else { return .skipped(.alreadyRunning) }
+            products.errorMessage = nil
+            await products.refresh()
+            guard let last = products.file.lastRefresh, last >= started, let report = products.lastReport else {
+                return .failed(products.errorMessage ?? String(localized: "The products and agents were not read."))
+            }
+            // A repository is read for its commits and for its pull requests: count each once.
+            let failed = Set(report.failed.keys)
+            let read = Set(report.updated).subtracting(failed)
+            if read.isEmpty, !failed.isEmpty { return .failed(Self.firstFailure(report.failed).trimmingCharacters(in: CharacterSet(charactersIn: ". "))) }
+            if !failed.isEmpty {
+                return .partial(String(localized: "\(read.count) repositories read, \(failed.count) failed") + Self.firstFailure(report.failed))
+            }
+            return .succeeded(String(localized: "\(read.count) repositories read"))
 
         case .licences:
             guard licences.isLoaded else { return .skipped(.notReady) }

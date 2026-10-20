@@ -153,7 +153,15 @@ public enum PlatformCatalog {
         PlatformProfile(
             productID: "namazia", title: "Afghan Prayer Times (Namazia)", businessModel: .consumer,
             businessModelSource: CatalogSource("Store listings on the App Store and Google Play (inventory)", checkedAt: checked),
-            trackingNote: "The main branch of aminullah-dev/-Namazia holds only README.md (GitHub tree, 2026-10-09), so there is no version file to read."
+            // On 2026-10-09 main held only README.md; by 2026-10-20 it holds both apps (GitHub tree of main, read that day).
+            versionFiles: [
+                VersionFileSpec(repo: "aminullah-dev/-Namazia", path: "app/build.gradle", format: .gradle, component: "Android",
+                                platform: .android, appIdentifier: "af.namazia.app",
+                                source: CatalogSource("GitHub contents API, app/build.gradle:25-26 @ main", checkedAt: day("2026-10-20"))),
+                VersionFileSpec(repo: "aminullah-dev/-Namazia", path: "ios/project.yml", format: .xcodegen(bundleID: "af.namazia.app"),
+                                component: "iOS", platform: .iOS, appIdentifier: "af.namazia.app",
+                                source: CatalogSource("GitHub contents API, ios/project.yml:23-24,53 @ main", checkedAt: day("2026-10-20"))),
+            ]
         ),
         PlatformProfile(
             productID: "dukanpro", title: "DukanPro", businessModel: .unknown,

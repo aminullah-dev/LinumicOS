@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 1,
+  "source": "The 20 scheduled cloud agents as created on 2026-10-20 between 05:01 and 05:13 UTC (name, area, repositories and cron of each routine, from the coordinator session that created them). No routine id, prompt or secret is kept here.",
+  "recordedOn": "2026-10-20",
+  "createdAt": "2026-10-20T05:13:00Z",
+  "rules": {
+    "titlePrefix": "[agent:<slug>]",
+    "branchPrefix": "agent/<slug>/",
+    "pullRequestsOnly": true,
+    "quietAfterDays": 4
+  },
+  "agents": [
+    {
+      "number": 1,
+      "slug": "worktrack-backend",
+      "title": "WorkTrack backend",
+      "products": [
+        "WorkTrack"
+      ],
+      "platforms": [
+        "backend"
+      ],
+      "repositories": [
+        "aminullah-dev/WorkTrack"
+      ],
+      "cadence": "every 2 days",
+      "cron": "7 1 */2 * *",
+      "utcTime": "01:07",
+      "days": "odd"
+    },
+    {
+      "number": 2,
+      "slug": "worktrack-web",
+      "title": "WorkTrack web and desktop",
+      "products": [
+        "WorkTrack"
+      ],
+      "platforms": [
+        "web"
+      ],
+      "repositories": [
+        "aminullah-dev/WorkTrack"
+      ],
+      "cadence": "every 2 days",
+      "cron": "19 3 */2 * *",
+      "utcTime": "03:19",
+      "days": "odd"
+    },
+    {
+      "number": 3,
+      "slug": "worktrack-android",
+      "title": "WorkTrack Android",
+      "products": [
+        "WorkTrack"
+      ],
+      "platforms": [
+        "android"
+      ],
+      "repositories": [
+        "aminullah-dev/WorkTrack"
+      ],
+      "cadence": "every 2 days",
+      "cron": "41 5 */2 * *",
+      "utcTime": "05:41",
+      "days": "odd"
+    },
+    {
+      "number": 4,
+      "slug": "worktrack-ios",
+      "title": "WorkTrack iOS",
+      "products": [
+        "WorkTrack"
+      ],
+      "platforms": [
+        "iOS"
+      ],
+      "repositories": [
+        "aminullah-dev/WorkTrack"
+      ],
+      "cadence": "every 2 days",
+      "cron": "53 7 */2 * *",
+      "utcTime": "07:53",
+      "days": "odd"
+    },
+    {
+      "number": 5,
+      "slug": "safebeauty-server",
+      "title": "SafeBeauty server",
+      "products": [
+        "SafeBeauty"
+      ],
+      "platforms": [
+        "backend"
+      ],
+      "repositories": [
+        "aminullah-dev/stealth-service-vault-"
+      ],
+      "cadence": "every 2 days",
+      "cron": "11 10 */2 * *",
+      "utcTime": "10:11",
+      "days": "odd"
+    },
+    {
+      "number": 6,
+      "slug": "safebeauty-android",
+      "title": "SafeBeauty Android",
+      "products": [
+        "SafeBeauty"
+      ],
+      "platforms": [
+        "android"
+      ],
+      "repositories": [
+        "aminullah-dev/stealth-service-vault-"
+      ],
+      "cadence": "every 2 days",
+      "cron": "23 12 */2 * *",
+      "utcTime": "12:23",
+      "days": "odd"
+    },
+    {
+      "number": 7,
+      "slug": "safebeauty-ios",
+      "title": "SafeBeauty iOS",
+      "products": [
+        "SafeBeauty"
+      ],
+      "platforms": [
+        "iOS"
+      ],
+      "repositories": [
+        "aminullah-dev/stealth-service-vault-"
+      ],
+      "cadence": "every 2 days",
+      "cron": "37 14 */2 * *",
+      "utcTime": "14:37",
+      "days": "odd"
+    },
+    {
+      "number": 8,
+      "slug": "velro-backend",
+      "title": "VELRO backend and admin",
+      "products": [
+        "VELRO"
+      ],
+      "platforms": [
+        "backend"
+      ],
+      "repositories": [
+        "aminullah-dev/velro"
+      ],
+      "cadence": "every 2 days",
+      "cron": "49 16 */2 * *",
+      "utcTime": "16:49",
+      "days": "odd"
+    },
+    {
+      "number": 9,
+      "slug": "velro-rider",
+      "title": "VELRO passenger apps",
+      "products": [
+        "VELRO"
+      ],
+      "platforms": [
+        "android",
+        "iOS"
+      ],
+      "repositories": [
+        "aminullah-dev/velro"
+      ],
+      "cadence": "every 2 days",
+      "cron": "13 19 */2 * *",
+      "utcTime": "19:13",
+      "days": "odd"
+    },
+    {
+      "number": 10,
+      "slug": "velro-driver",
+      "title": "VELRO driver apps",
+      "products": [
+        "VELRO"
+      ],
+      "platforms": [
+        "android",
+        "iOS"
+      ],
+      "repositories": [
+        "aminullah-dev/velro"
+      ],
+      "cadence": "every 2 days",
+      "cron": "27 21 */2 * *",
+      "utcTime": "21:27",
+      "days": "odd"
+    },
+    {
+      "number": 11,
+      "slug": "khayatyar-desktop",
+      "title": "KhayatYar desktop (Mac and Windows)",
+      "products": [
+        "KhayatYar"
+      ],
+      "platforms": [
+        "macOS",
+        "windows"
+      ],
+      "repositories": [
+        "aminullah-dev/AfghanJama"
+      ],
+      "cadence": "every 2 days",
+      "cron": "7 1 2-30/2 * *",
+      "utcTime": "01:07",
+      "days": "even"
+    },
+    {
+      "number": 12,
+      "slug": "khayatyar-android",
+      "title": "KhayatYar Android",
+      "products": [
+        "KhayatYar"
+      ],
+      "platforms": [
+        "android"
+      ],
+      "repositories": [
+        "aminullah-dev/AfghanJama"
+      ],
+      "cadence": "every 2 days",
+      "cron": "19 3 2-30/2 * *",
+      "utcTime": "03:19",
+      "days": "even"
+    },
+    {
+      "number": 13,
+      "slug": "khayatyar-ios",
+      "title": "KhayatYar iOS",
+      "products": [
+        "KhayatYar"
+      ],
+      "platforms": [
+        "iOS"
+      ],
+      "repositories": [
+        "aminullah-dev/AfghanJama"
+      ],
+      "cadence": "every 2 days",
+      "cron": "41 5 2-30/2 * *",
+      "utcTime": "05:41",
+      "days": "even"
+    },
+    {
+      "number": 14,
+      "slug": "talar-web",
+      "title": "Talar web and backend",
+      "products": [
+        "Talar"
+      ],
+      "platforms": [
+        "web",
+        "backend"
+      ],
+      "repositories": [
+        "aminullah-dev/talar"
+      ],
+      "cadence": "every 2 days",
+      "cron": "53 7 2-30/2 * *",
+      "utcTime": "07:53",
+      "days": "even"
+    },
+    {
+      "number": 15,
+      "slug": "talar-android",
+      "title": "Talar Android",
+      "products": [
+        "Talar"
+      ],
+      "platforms": [
+        "android"
+      ],
+      "repositories": [
+        "aminullah-dev/talar"
+      ],
+      "cadence": "every 2 days",
+      "cron": "11 10 2-30/2 * *",
+      "utcTime": "10:11",
+      "days": "even"
+    },
+    {
+      "number": 16,
+      "slug": "linumic-os",
+      "title": "Linumic OS",
+      "products": [
+        "Linumic OS"
+      ],
+      "platforms": [
+        "macOS",
+        "iOS"
+      ],
+      "repositories": [
+        "aminullah-dev/LinumicOS"
+      ],
+      "cadence": "every 2 days",
+      "cron": "23 12 2-30/2 * *",
+      "utcTime": "12:23",
+      "days": "even"
+    },
+    {
+      "number": 17,
+      "slug": "dukanpro",
+      "title": "DukanPro",
+      "products": [
+        "DukanPro"
+      ],
+      "platforms": [
+        "android",
+        "iOS",
+        "macOS"
+      ],
+      "repositories": [
+        "aminullah-dev/DukanPro"
+      ],
+      "cadence": "every 2 days",
+      "cron": "37 14 2-30/2 * *",
+      "utcTime": "14:37",
+      "days": "even"
+    },
+    {
+      "number": 18,
+      "slug": "mediflow",
+      "title": "MediFlow",
+      "products": [
+        "MediFlow"
+      ],
+      "platforms": [
+        "windows",
+        "macOS"
+      ],
+      "repositories": [
+        "aminullah-dev/MediFlow"
+      ],
+      "cadence": "every 2 days",
+      "cron": "49 16 2-30/2 * *",
+      "utcTime": "16:49",
+      "days": "even"
+    },
+    {
+      "number": 19,
+      "slug": "nerkhtimes-namazia",
+      "title": "NerkhTimes and Namazia",
+      "products": [
+        "NerkhTimes",
+        "Namazia"
+      ],
+      "platforms": [
+        "android"
+      ],
+      "repositories": [
+        "aminullah-dev/NerkhTimes",
+        "aminullah-dev/-Namazia"
+      ],
+      "cadence": "every 2 days",
+      "cron": "13 19 2-30/2 * *",
+      "utcTime": "19:13",
+      "days": "even"
+    },
+    {
+      "number": 20,
+      "slug": "security",
+      "title": "Security and dependencies",
+      "products": [
+        "WorkTrack",
+        "SafeBeauty",
+        "Talar",
+        "VELRO",
+        "KhayatYar"
+      ],
+      "platforms": [],
+      "repositories": [
+        "aminullah-dev/WorkTrack",
+        "aminullah-dev/stealth-service-vault-",
+        "aminullah-dev/talar",
+        "aminullah-dev/velro",
+        "aminullah-dev/AfghanJama"
+      ],
+      "cadence": "every 2 days",
+      "cron": "27 21 2-30/2 * *",
+      "utcTime": "21:27",
+      "days": "even"
+    }
+  ]
+}

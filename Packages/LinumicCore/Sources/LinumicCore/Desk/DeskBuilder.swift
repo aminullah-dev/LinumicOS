@@ -282,6 +282,8 @@ public enum DeskBuilder {
         case .obligations: .obligations
         case .money: .money
         case .sales: .sales(nil)
+        case .products: .products(nil)
+        case .agents: .agents(nil)
         case .legal: .legal
         case .automation, .changes: .automation
         }
@@ -302,6 +304,8 @@ public enum DeskBuilder {
         case .sales: .worktrack
         case .oversight: .oversight
         case .keys: .keys
+        // Read by their own job, together with the Platforms hub's and the Release Center's readings it uses.
+        case .products, .agents: .products
         // Built from what the other jobs read, every time the Brief is: never older than they are. Legal & company's
         // company lines are recorded facts dated by the day they were recorded (like the obligations' seed rows), so a
         // cadence would call them old forever; its marker lines carry the legal folder's own read time.

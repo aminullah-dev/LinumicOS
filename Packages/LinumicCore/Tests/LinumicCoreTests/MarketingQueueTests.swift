@@ -131,7 +131,7 @@ struct SidebarArchiveTests {
     /// The sidebar's groups as the app lists them (Navigation.swift, `SidebarSection.grouped`), by page id.
     private let groups: [SidebarGroup] = [
         SidebarGroup(title: nil, items: ["desk", "obligations", "money", "sales", "legal", "dashboard", "brief", "monitor", "automation",
-                                         "releaseCenter", "platforms", "oversight", "licences", "worktrackCustomers", "operations",
+                                         "releaseCenter", "platforms", "productBoard", "agents", "oversight", "licences", "worktrackCustomers", "operations",
                                          "siteMessages", "vault", "keys", "continuity"]),
         SidebarGroup(title: "Products", items: ["allProducts", "verification", "releases", "roadmap", "issues"]),
         SidebarGroup(title: "Development", items: ["repositories", "builds", "deployments"]),

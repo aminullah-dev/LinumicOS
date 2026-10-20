@@ -45,8 +45,12 @@ drafts that are only copied. **Legal & company** (حقوقی و شرکت, Phase 
 per store as the listings say it, the DSA status Unknown), and on the Mac the [TO FILL], [LAWYER] and [TO DECIDE]
 markers of the legal drafts with file and line, never their text, and the Asasnama files by name and date, never opened,
 through a one-time read-only grant. **Marketing queue**: each brand's queue end and the clock change as obligations
-beside the brand's ledger, with Verify; it never posts. Six empty manual pages are in a collapsed **Archive**. See
-[docs/integrations.md](docs/integrations.md) and [docs/security.md](docs/security.md).
+beside the brand's ledger, with Verify; it never posts. Six empty manual pages are in a collapsed **Archive**.
+**Products** (محصولات, Phase 7): every product's platforms with the live store version,
+newest build, version on main and commits behind it, pull requests, CI, licences and health, each with its source and
+read time, and "platforms not level" on the Desk; **Agents** (ایجنت‌ها): the 20 scheduled agents and their pull requests
+on GitHub, with "no pull request for more than 4 days" on the Desk. See [docs/integrations.md](docs/integrations.md)
+and [docs/security.md](docs/security.md).
 
 ## Layout
 
@@ -111,7 +115,7 @@ find strings with no Dari translation.
 - [ARCHITECTURE.md](ARCHITECTURE.md): system design and module boundaries
 - [PRODUCTS.md](PRODUCTS.md): product data model
 - [ROADMAP.md](ROADMAP.md): Linumic OS roadmap
-- [docs/company-os-roadmap.md](docs/company-os-roadmap.md): running the whole company from Linumic OS (Dari); Phase 1 is the Desk and Ledgers, Phase 2 obligations and continuity, Phase 4 Money, Phase 5 Sales, Phase 6 Legal & company, the marketing queue and the Archive
+- [docs/company-os-roadmap.md](docs/company-os-roadmap.md): running the whole company from Linumic OS (Dari); Phase 1 is the Desk and Ledgers, Phase 2 obligations and continuity, Phase 4 Money, Phase 5 Sales, Phase 6 Legal & company, the marketing queue and the Archive, Phase 7 Products and Agents
 - [docs/automation.md](docs/automation.md): the automation engine, the daily backup and what counts as one
 - [docs/sentinel.md](docs/sentinel.md): the server-side checks on Supabase
 - [docs/obligations.md](docs/obligations.md): obligations and accounts, every seed row with its source
@@ -119,6 +123,8 @@ find strings with no Dari translation.
 - [docs/money.md](docs/money.md): Money, every figure with its source, the Unknown reasons and the TEST-company rules
 - [docs/sales.md](docs/sales.md): Sales, what is listed and from where, Kabul's day, privacy, drafts, the owner's shape check
 - [docs/legal.md](docs/legal.md): Legal & company, what is read and what never is, the marker rule and its grep, the sandbox check and the grant
+- [docs/products.md](docs/products.md): Products, every product's platforms with source and read time, and when they are not level
+- [docs/agents.md](docs/agents.md): Agents, the registry of the scheduled agents and their pull requests on GitHub
 - [docs/backend-plan.md](docs/backend-plan.md): Supabase
 - [CHANGELOG.md](CHANGELOG.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md): working rules

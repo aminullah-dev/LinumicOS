@@ -11,6 +11,9 @@ public enum AutomationJobID: String, Codable, CaseIterable, Sendable, Identifiab
     case oversight
     case platforms
     case releases
+    /// The Products page's commits on each default branch and Linumic OS's own repository, and the agents' pull requests
+    /// (GitHub, read-only); after the Platforms hub and the Release Center, whose readings the page also uses.
+    case products
     case licences
     case worktrack
     case operations
@@ -83,6 +86,9 @@ public enum AutomationCatalog {
         AutomationJobSpec(id: .releases, title: "Release Center",
                           detail: "App Store versions and builds, Play tracks, pull requests and CI.",
                           cadence: 30 * 60, settingsKey: "LCCAutoRefreshReleases"),
+        AutomationJobSpec(id: .products, title: "Products and agents",
+                          detail: "Commits on each default branch for the Products page, and the agents' pull requests, from GitHub.",
+                          cadence: 30 * 60, settingsKey: nil),
         AutomationJobSpec(id: .licences, title: "Licence sync",
                           detail: "The licence ledger with the cloud, and expiry reminders.",
                           cadence: 30 * 60),

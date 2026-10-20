@@ -32,11 +32,12 @@ final class BriefModel {
     private let keys: KeysModel
     private let siteMessages: SiteMessagesModel
     private let obligations: ObligationsModel
+    private let products: ProductsModel
     private let legal: LegalModel
 
     init(inventory: InventoryModel, licences: LicenceModel, worktrack: WorkTrackModel, operations: OperationsModel,
          releases: ReleaseCenterModel, monitor: MonitorModel, keys: KeysModel, siteMessages: SiteMessagesModel,
-         obligations: ObligationsModel, legal: LegalModel) {
+         obligations: ObligationsModel, products: ProductsModel, legal: LegalModel) {
         self.inventory = inventory
         self.licences = licences
         self.worktrack = worktrack
@@ -46,6 +47,7 @@ final class BriefModel {
         self.keys = keys
         self.siteMessages = siteMessages
         self.obligations = obligations
+        self.products = products
         self.legal = legal
         store = (try? BriefSnapshotStore.defaultFileURL()).map(BriefSnapshotStore.init(fileURL:))
         history = store?.load() ?? BriefSnapshotHistory()
@@ -83,6 +85,8 @@ final class BriefModel {
             backup: backup,
             obligations: obligations.briefInput,
             money: .collect(worktrack: worktrack, safeBeauty: operations.safeBeauty, obligations: obligations, now: now),
+            products: products.report(now: now),
+            agents: products.agents(now: now),
             legal: legal.briefInput)
     }
 

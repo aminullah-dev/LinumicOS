@@ -1,0 +1,121 @@
+[
+  {
+    "number": 7,
+    "title": "[agent:talar-web] Sample change from the web agent",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/talar/pull/7",
+    "created_at": "2026-10-20T12:00:00Z",
+    "updated_at": "2026-10-20T14:00:00Z",
+    "closed_at": "2026-10-20T14:00:00Z",
+    "merged_at": "2026-10-20T14:00:00Z",
+    "head": {
+      "ref": "agent/talar-web/2026-10-20-sample-web"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 6,
+    "title": "[agent:talar-android] Sample change from the Android agent",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/talar/pull/6",
+    "created_at": "2026-10-20T09:00:00Z",
+    "updated_at": "2026-10-20T13:00:00Z",
+    "closed_at": "2026-10-20T13:00:00Z",
+    "merged_at": "2026-10-20T13:00:00Z",
+    "head": {
+      "ref": "agent/talar-android/2026-10-20-sample-android"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 5,
+    "title": "Sample pull request five",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/talar/pull/5",
+    "created_at": "2026-10-05T09:00:00Z",
+    "updated_at": "2026-10-05T10:00:00Z",
+    "closed_at": "2026-10-05T10:00:00Z",
+    "merged_at": "2026-10-05T10:00:00Z",
+    "head": {
+      "ref": "sample/branch-five"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 4,
+    "title": "Sample pull request four",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/talar/pull/4",
+    "created_at": "2026-09-15T09:00:00Z",
+    "updated_at": "2026-09-15T10:00:00Z",
+    "closed_at": "2026-09-15T10:00:00Z",
+    "merged_at": "2026-09-15T10:00:00Z",
+    "head": {
+      "ref": "sample/branch-four"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 3,
+    "title": "Sample pull request three",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/talar/pull/3",
+    "created_at": "2026-08-25T09:00:00Z",
+    "updated_at": "2026-08-25T10:00:00Z",
+    "closed_at": "2026-08-25T10:00:00Z",
+    "merged_at": "2026-08-25T10:00:00Z",
+    "head": {
+      "ref": "sample/branch-three"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 2,
+    "title": "Sample pull request two",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/talar/pull/2",
+    "created_at": "2026-08-01T09:00:00Z",
+    "updated_at": "2026-08-01T10:00:00Z",
+    "closed_at": "2026-08-01T10:00:00Z",
+    "merged_at": "2026-08-01T10:00:00Z",
+    "head": {
+      "ref": "sample/branch-two"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 1,
+    "title": "Sample pull request one",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/talar/pull/1",
+    "created_at": "2026-07-25T00:00:00Z",
+    "updated_at": "2026-08-01T11:00:00Z",
+    "closed_at": "2026-08-01T11:00:00Z",
+    "merged_at": "2026-08-01T11:00:00Z",
+    "head": {
+      "ref": "sample/branch-one"
+    },
+    "base": {
+      "ref": "main"
+    }
+  }
+]

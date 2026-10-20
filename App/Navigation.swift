@@ -14,6 +14,8 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case automation
     case releaseCenter
     case platforms
+    case productBoard
+    case agents
     case oversight
     case licences
     case worktrackCustomers
@@ -44,6 +46,8 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .automation: L("Automation")
         case .releaseCenter: L("Releases")
         case .platforms: L("Platforms")
+        case .productBoard: L("Products")
+        case .agents: L("Agents")
         case .oversight: L("Oversight")
         case .licences: L("Licences")
         case .worktrackCustomers: L("WorkTrack customers")
@@ -86,6 +90,8 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .automation: "gearshape.2"
         case .releaseCenter: "shippingbox.and.arrow.backward"
         case .platforms: "square.stack.3d.up"
+        case .productBoard: "square.grid.3x2"
+        case .agents: "person.2.wave.2"
         case .oversight: "scope"
         case .licences: "key.horizontal"
         case .worktrackCustomers: "person.2.badge.key"
@@ -130,7 +136,7 @@ struct SidebarSection: Identifiable {
 
     /// Every page by area, before the Archive takes its pages out.
     static let grouped: [SidebarSection] = [
-        SidebarSection(title: nil, items: [.desk, .obligations, .money, .sales, .legal, .dashboard, .brief, .monitor, .automation, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys, .continuity]),
+        SidebarSection(title: nil, items: [.desk, .obligations, .money, .sales, .legal, .dashboard, .brief, .monitor, .automation, .releaseCenter, .platforms, .productBoard, .agents, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys, .continuity]),
         SidebarSection(title: "Products", items: [.allProducts, .verification, .releases, .roadmap, .issues]),
         SidebarSection(title: "Development", items: [.repositories, .builds, .deployments]),
         SidebarSection(title: "Stores", items: [.appStore, .googlePlay]),
@@ -159,6 +165,12 @@ enum RouterRequest: Equatable {
     case completeObligation(String)
     /// Shows one Sales row (a `SalesKey`), scrolled to and highlighted.
     case salesItem(String)
+    /// Opens one product's card on the Products page.
+    case productCard(String)
+    /// Shows one agent on the Agents page (its slug), scrolled to and highlighted.
+    case agent(String)
+    /// Shows the agents with pull requests waiting for review.
+    case agentsWaiting
 }
 
 /// Navigation state shared by the sidebar, the menu commands, the Command Palette and the Daily Brief.
@@ -181,6 +193,8 @@ final class Router {
         if let screen = defaults.string(forKey: "LCCScreen").flatMap(SidebarItem.init(rawValue:)) { sidebar = screen }
         if let tab = defaults.string(forKey: "LCCOpsTab").flatMap(OperationsProduct.init(rawValue:)) { operationsTab = tab }
         if let product = defaults.string(forKey: "LCCProduct") { open(productID: product) }
+        if let card = defaults.string(forKey: "LCCProductCard") { request = .productCard(card) }
+        if let agent = defaults.string(forKey: "LCCAgent") { request = .agent(agent) }
         #endif
     }
 
@@ -223,6 +237,8 @@ final class Router {
         case .continuity: go(.continuity)
         case .money: go(.money)
         case .sales(let key): go(.sales, request: key.map(RouterRequest.salesItem))
+        case .products(let id): go(.productBoard, request: id.map(RouterRequest.productCard))
+        case .agents(let slug): go(.agents, request: slug.map(RouterRequest.agent))
         case .legal: go(.legal)
         }
     }
