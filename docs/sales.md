@@ -93,7 +93,7 @@ The rule is the server's and Money's: any mark (`flags != nil`, TEST or DUPLICAT
 | Company list not read or failed | The whole WorkTrack part is Unknown: nothing is shown unfiltered |
 | `rows + skipped >= 2000` (`crm.ts:204`: no order, ULID ids, so the newest accounts are the ones missing) | Signups and the no-CRM count are Unknown; every follow-up card's badge says "At least N", an empty follow-up or no-next-step card is Unknown with the reason (never "none"), and the Desk line is "At least N open CRM accounts have no next-action date"; a note (Money already raises this limit as a Desk item); marks on Sales lines are kept |
 | An account set aside (`skipped > 0`) | One Desk item (Later): "N CRM accounts could not be read; their follow-ups, and whether a company has a CRM account, are unknown"; signups Unknown; the follow-up cards and the no-date line say "at least" as above; marks kept |
-| 500 companies (`services/vendor.ts:201`) | Signups and renewals found are listed; their badges and counts say "at least", an empty renewals card says renewals past 500 are unknown; a note (Money raises it) |
+| 500 companies (`services/vendor.ts:201`) | Signups and renewals found are listed; their badges and counts say "at least", an empty signups or renewals card is Unknown (those past 500 are unknown), never "none"; a note (Money raises it) |
 | Not production | Every line is information with no horizon, so nothing reaches Today or the notification; a note (WorkTrack customers raises it) |
 
 ## Unknown reasons (each one a sentence, never a zero)
@@ -173,7 +173,9 @@ about an earlier call, a promise or a discount. Words are the ones WorkTrack's c
 Signed «لینومیک». Nothing is sent: there is no `sms:`, WhatsApp or `mailto:` link for a draft.
 
 Every name in a draft (the company's or account's, and the contact's in the greeting) is set apart with Unicode isolates
-(FIRST STRONG ISOLATE and POP DIRECTIONAL ISOLATE, U+2068 and U+2069; `SalesDraft.isolated`). Without them a Latin name
+(FIRST STRONG ISOLATE and POP DIRECTIONAL ISOLATE, U+2068 and U+2069; `SalesDraft.isolated`), after the name's own
+embeddings, overrides and isolates (U+202A to U+202E, U+2066 to U+2069) are taken out, so a name can neither close its
+isolate early nor reverse the text after it. Without the isolates a Latin name
 right before a Persian day takes the day's digits into its own left-to-right run, and the reader sees «ورک‌ترک ۲۷ Kabul
 Tailors (SAMPLE) میزان ۱۴۰۵». The Dari "ended" kinds also keep «تا» between the name and the day («لایسنس ورک‌ترک … تا
 ۹ میزان ۱۴۰۵ اعتبار داشت», «دورهٔ آزمایشی ورک‌ترک … تا … ادامه داشت»), so the date stays whole even where an app drops
@@ -185,10 +187,10 @@ the kinds that state it, with its real source (the company list or the CRM accou
 |---|---|
 | Ask for a call | every account row and renewal row |
 | Licence ending / Trial ending | the licence is **ACTIVE** and its last day is 0 to 30 days from Kabul's today, **counted again** from `expiresAt` when the draft is built (not the server's `daysUntilExpiry`, which can be hours old) |
-| Licence ended / Trial ended | the last day, counted again, is **before** Kabul's today |
+| Licence ended / Trial ended | the last day, counted again, is **before** Kabul's today, and the licence is not **SUSPENDED** |
 | Welcome | a signup row |
 
-A SUSPENDED licence never gets "valid until", an EXPIRED one whose last day is still ahead never gets "the last day was",
+A SUSPENDED licence never gets "valid until" or "the last day was" (only a call), an EXPIRED one whose last day is still ahead never gets "the last day was",
 and a perpetual licence gets no dated draft. `SalesDraft.text` checks the same rule again and returns no draft when a
 fact is missing or no longer holds.
 
@@ -317,9 +319,10 @@ count, and every draft kind in both languages (including SUSPENDED, EXPIRED with
 names set apart so a date is never split (laid out with CoreText), "at least" when accounts are set aside, renewal
 timing, a support-only trial, and contacts of another account.
 
-**The page, seen.** `SalesViews.swift` has previews (read, Unknown, accounts set aside, not production, Dari right to
-left, iPhone width) built from made-up data (`SalesPreviewData`). The same data opens in a Debug build with
-`-LCCScreen sales -LCCSalesSample read|skipped|unknown|demo` (and `-LCCSalesScroll 0.5` to open it scrolled); with that
+**The page, seen.** `SalesViews.swift` has previews (read, Unknown, accounts set aside, accounts set aside with no
+follow-up due today, 500 companies, not production, Dari right to left, iPhone width) built from made-up data
+(`SalesPreviewData`). The same data opens in a Debug build with
+`-LCCScreen sales -LCCSalesSample read|skipped|skipped-empty|limit|unknown|demo` (and `-LCCSalesScroll 0.5` to open it scrolled); with that
 argument the app starts no job, so nothing is read or sent. It was looked at this way on a new iPhone 17 Simulator
 (iOS 27.2) in Dari and English, and at the largest accessibility text size. That found one bug, fixed here: on iOS a
 selectable `Text` inside the page drew nothing, so every Unknown reason was blank; the reason is now plain text on iOS
