@@ -3,8 +3,9 @@ import Testing
 @testable import LinumicCore
 
 // The agents' registry, which pull request belongs to which agent, "no pull request for more than 4 days", and their
-// Brief lines and Desk items. Pages are recorded GitHub answers (Fixtures/products-pulls-*.json, trimmed to the fields
-// read; LinumicOS is public).
+// Brief lines and Desk items. Pages are GitHub answers trimmed to the fields read (Fixtures/products-pulls-*.json): the
+// LinumicOS page is recorded (a public repository); the talar page is made-up sample data in the same shape, since that
+// repository is private and this one is public.
 
 private func at(_ s: String) -> Date { ISO8601DateFormatter().date(from: s)! }
 
@@ -58,8 +59,8 @@ struct AgentsTests {
     @Test func matchingByTitleOrBranch() {
         let cases: [(title: String, head: String, slug: String?)] = [
             ("[agent:linumic-os] Tests for the public App Store lookup and StoreSync", "agent/linumic-os/2026-10-20-app-store-lookup-tests", "linumic-os"),
-            ("[agent:talar-web] Unit tests for lib/jalali", "feature/x", "talar-web"),
-            ("Unit tests for lib/jalali", "agent/talar-web/2026-10-20-jalali-tests", "talar-web"),
+            ("[agent:talar-web] Sample change", "feature/x", "talar-web"),
+            ("Sample change", "agent/talar-web/2026-10-20-sample-change", "talar-web"),
             ("  [Agent:Talar-Android] Unit tests", "main", "talar-android"),
             // "talar" is not an agent; "talar-web" without a topic is no agent branch.
             ("[agent:talar] tests", "agent/talar-web", nil),
@@ -83,7 +84,7 @@ struct AgentsTests {
         let talar = try window("aminullah-dev/talar", "products-pulls-talar", readAt: readAt)
         #expect(talar.pulls.map(\.slug) == ["talar-web", "talar-android"])
         #expect(talar.pulls.allSatisfy { $0.state == .merged && $0.mergedAt != nil })
-        #expect(talar.oldestCreatedAt == at("2026-07-25T01:05:20Z"))
+        #expect(talar.oldestCreatedAt == at("2026-07-25T00:00:00Z"))
     }
 
     @Test func quietAfterFourDaysOnly() throws {

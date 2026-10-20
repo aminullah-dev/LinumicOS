@@ -76,12 +76,12 @@ enum ProductsPreviewData {
         let registry = AgentRegistry.bundled
         // Pull request titles are of record (never translated), so they are not written as `title: "…"` literals, which the
         // catalogue check would take for strings to translate.
-        let titles = ["[agent:linumic-os] Tests for the public App Store lookup and StoreSync", "[agent:talar-web] Unit tests for lib/jalali"]
+        let titles = ["[agent:linumic-os] Tests for the public App Store lookup and StoreSync", "[agent:talar-web] Sample change from the web agent"]
         let open = AgentPull(slug: "linumic-os", repo: "aminullah-dev/LinumicOS", number: 30, title: titles[0],
                              head: "agent/linumic-os/2026-10-20-app-store-lookup-tests", state: .open, isDraft: false,
                              url: URL(string: "https://github.com/aminullah-dev/LinumicOS/pull/30")!, createdAt: now.addingTimeInterval(-26 * 3600))
         let merged = AgentPull(slug: "talar-web", repo: "aminullah-dev/talar", number: 7, title: titles[1],
-                               head: "agent/talar-web/2026-10-20-jalali-tests", state: .merged, isDraft: false,
+                               head: "agent/talar-web/2026-10-20-sample-web", state: .merged, isDraft: false,
                                url: URL(string: "https://github.com/aminullah-dev/talar/pull/7")!, createdAt: now.addingTimeInterval(-30 * 3600),
                                mergedAt: now.addingTimeInterval(-29 * 3600))
         return registry.repositories.map { repo in
