@@ -6,6 +6,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case desk
     case obligations
     case money
+    case sales
     case dashboard
     case brief
     case monitor
@@ -34,6 +35,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .desk: L("Desk")
         case .obligations: L("Obligations & accounts")
         case .money: L("Money")
+        case .sales: L("Sales")
         case .dashboard: L("Dashboard")
         case .brief: L("Brief")
         case .monitor: L("Monitor")
@@ -73,6 +75,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .desk: "checklist"
         case .obligations: "calendar.badge.exclamationmark"
         case .money: "banknote"
+        case .sales: "phone.arrow.up.right"
         case .dashboard: "square.grid.2x2"
         case .brief: "sun.horizon"
         case .monitor: "waveform.path.ecg"
@@ -114,7 +117,7 @@ struct SidebarSection: Identifiable {
     var id: String { title ?? "root" }
 
     static let all: [SidebarSection] = [
-        SidebarSection(title: nil, items: [.desk, .obligations, .money, .dashboard, .brief, .monitor, .automation, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys, .continuity]),
+        SidebarSection(title: nil, items: [.desk, .obligations, .money, .sales, .dashboard, .brief, .monitor, .automation, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys, .continuity]),
         SidebarSection(title: "Products", items: [.allProducts, .verification, .releases, .roadmap, .issues]),
         SidebarSection(title: "Development", items: [.repositories, .builds, .deployments]),
         SidebarSection(title: "Stores", items: [.appStore, .googlePlay]),
@@ -141,6 +144,8 @@ enum RouterRequest: Equatable {
     case obligation(String)
     /// Opens "Done with evidence" for one obligation (the sheet saves, nothing else).
     case completeObligation(String)
+    /// Shows one Sales row (a `SalesKey`), scrolled to and highlighted.
+    case salesItem(String)
 }
 
 /// Navigation state shared by the sidebar, the menu commands, the Command Palette and the Daily Brief.
@@ -204,6 +209,7 @@ final class Router {
         case .obligation(let id): go(.obligations, request: .obligation(id))
         case .continuity: go(.continuity)
         case .money: go(.money)
+        case .sales(let key): go(.sales, request: key.map(RouterRequest.salesItem))
         }
     }
 

@@ -39,13 +39,13 @@ public enum DeskCloudMapping {
     // MARK: This device's rows
 
     /// The owner's marks by cloud key. Two marks for one item (one under its id, one under its cloud key) give the newer.
-    /// An undo not yet sent is a deletion.
+    /// An undo not yet sent is a deletion. A Sales item's dismissal carries only a preset reason (`SalesDismissReason`).
     public static func localMarks(_ state: DeskState) -> [String: CloudLocal<DeskMark>] {
         var out: [String: CloudLocal<DeskMark>] = [:]
         for (id, mark) in state.marks.sorted(by: { $0.key < $1.key }) {
             let key = DeskCloudKey.cloud(id)
             if case .value(let other)? = out[key], other.at >= mark.at { continue }
-            out[key] = .value(mark)
+            out[key] = .value(SalesDismissReason.cloudSafe(mark, itemID: id))
         }
         for id in state.restored.sorted() {
             let key = DeskCloudKey.cloud(id)

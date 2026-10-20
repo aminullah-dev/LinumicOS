@@ -5,6 +5,47 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Sales (فروش), read-only, WorkTrack first; Phase 5 of the company OS roadmap (2026-10-20)
+- **Sales** (sidebar after Money, macOS and iOS): who to call today. Follow-ups due today or overdue, in the next 7
+  days and later, by **Kabul's day** as the WorkTrack server counts it (checked against a copy of its rule for every
+  day of two months, and in four device time zones); next-action dates that are not a real day; open accounts with no
+  next step (WorkTrack's own Today tab never shows them); new or self-serve companies with no CRM account; renewals and
+  trials ending; website messages; SafeBeauty providers waiting for KYC (a count). Each card says where and when it was
+  read; a part not read is Unknown with its reason, never empty, and a list cut by a limit or by accounts set aside
+  says "at least" (its badge too) and never "none".
+- **Desk:** follow-ups due today in Today, due soon in This week (`BriefLine.horizon`, so the device's day never
+  decides), a date that could not be read and accounts with no next step in Today, a self-serve signup with no CRM
+  account in Today, other companies with no CRM account in Later. Renewals, website messages, KYC and new trials are
+  already Desk items of their own sections and are never a second one. One cause is one item: not signed in, a failed
+  company list or failed CRM accounts is one Sales item in Later; the 2000-account and 500-company limits and the environment are notes that
+  keep marks (`BriefGap.isDeskItem`), since Money and WorkTrack customers raise them.
+- **TEST and DUPLICATE** companies' accounts are left out (counted, names in a collapsed card); an account whose company
+  is not in the list is kept with a caveat and stays out of the notification; a WON account WorkTrack opens for a
+  trial's support ticket does not count as a sale (for a new signup only: such a trial still has an account); scheduled
+  deletions are left out of signups and renewals.
+- **Privacy:** Desk ids carry a hash (`SalesKey`), never a CRM or company id; a Sales item's dismiss reason is one of
+  five fixed reasons, refused otherwise and sent as "another reason" if anything else is found, so no customer name
+  reaches Supabase through Desk sync; the morning notification counts Sales lines ("N WorkTrack follow-ups are due",
+  "N other Sales items") and names no one; the agent brief carries the hash. Notes, cities, contacts' email and who
+  wrote a record are never decoded. Nothing is written to disk. The Dismiss sheet of the other customer sections
+  (WorkTrack customers, website messages, licences, Money) asks the owner not to write a customer's name, number or
+  message, since a typed reason is synced.
+- **Reads:** the WorkTrack refresh's CRM accounts now also decode `stage`, `nextActionAt` and `nextAction` (a bad value
+  never sets a row aside). Two GETs only when the owner asks: one account's contacts (`accountId` required, refused
+  empty before any request, percent-encoded) and the one-time **response-shape check** (key names, types and counts,
+  never a value; in Sales and in Settings). A URLProtocol test proves every request is a GET without a body to the four
+  allowed paths, plus the token refresh. No CRM write, no new key, no job, no migration.
+- **Reminder drafts** in Dari and Pashto from facts read only (name, a picked contact, the licence's last day in Solar
+  Hijri; names set apart with Unicode isolates, so a Latin name never splits a Persian date), copied through one long-lived concealed clipboard cleared after 2 minutes, never sent; a dated draft only when
+  the licence allows it today, counted again from Kabul's date (never "valid until" for a suspended licence, never "the
+  last day was" for a date still ahead). Phone numbers are copied the same way and are not selectable text.
+- **Also:** WorkTrack days are shown through one formatter fixed to UTC (`WorkTrackDates.displayText`), so Money and
+  WorkTrack customers no longer show the next day at UTC+12 to +14. Dari for 175 strings. Previews of the Sales page
+  (read, Unknown, accounts set aside, not production, Dari right to left, iPhone width) and a debug-only
+  `-LCCSalesSample` launch argument that shows made-up data and starts no job. Two WorkTrack follow-ups
+  (a partial PUT resets the stage to LEAD; deal plans don't match the real plans) are written up in docs/sales.md, with
+  the owner's shape check and the read-only proof query for Supabase. See docs/sales.md.
+
 ### Added: Money (پول), read-only; Phase 4 of the company OS roadmap (2026-10-19)
 - **Money** (sidebar after Obligations & accounts, macOS and iOS): who paid, what is on the way, what we owe salons and
   what we pay, in four frosted summary cards and a section per question. Ten figures, each with its source,

@@ -7,7 +7,8 @@ import Testing
 //
 //   LCC_WT_EMULATOR=1 swift test --package-path Packages/LinumicCore --filter liveEmulator
 //
-// The Money test writes its TEST documents only through the emulator's Firestore REST API on 127.0.0.1:8080.
+// The Money and Sales tests write their TEST documents only through the emulator's Firestore REST API on 127.0.0.1:8080;
+// every vendor API request they make is a GET.
 //
 // Needs the emulators running (functions, firestore, auth) with the vendor test user and sample companies from
 // docs/integrations.md ("WorkTrack: testing against the emulator"). It never talks to a real project: the
@@ -163,5 +164,33 @@ struct WorkTrackEmulatorTests {
         #expect(read.accounts.value?.rows.contains { $0.id == "emu_money_acct" && $0.companyId == "emu_herat" } == true)
         #expect(read.revenue.value?.currency == "AFN")
         print("EMULATOR CRM invoices:", invoices.rows.count, "set aside:", invoices.skipped, "accounts:", read.accounts.value?.rows.count ?? -1)
+    }
+
+    /// Sales' done criterion against the emulator: a LEAD whose next action is today in Kabul, written straight into the
+    /// emulator's Firestore (TEST data, `emu_sales_*`), is a "Call today" line after one reading; its contact and the shape
+    /// check are read with GETs.
+    @Test func liveEmulatorSalesCallToday() async throws {
+        let env = WorkTrackEnvironment.localEmulator
+        #expect(env.apiBase.host == "127.0.0.1")
+        let today = WorkTrackDates.kabulToday()
+        try await seedEmulatorDocument("crmAccounts", "emu_sales_lead", fields: [
+            "name": ["stringValue": "Sales test tailor (emulator)"], "stage": ["stringValue": "LEAD"],
+            "nextActionAt": ["stringValue": today], "nextAction": ["stringValue": "TEST data"], "companyId": ["nullValue": NSNull()],
+        ])
+        try await seedEmulatorDocument("crmContacts", "emu_sales_contact", fields: [
+            "accountId": ["stringValue": "emu_sales_lead"], "name": ["stringValue": "Sales test contact (emulator)"],
+            "phone": ["stringValue": "+93 700 000 000"], "primary": ["booleanValue": true],
+        ])
+        let client = WorkTrackVendorClient(environment: env)
+        _ = try await client.signIn(email: vendorEmail, password: password)
+        let companies = try await client.companies()
+        let read = await WorkTrackMoneyReader.read(client)
+        let input = MoneyWorkTrackInput(isSignedIn: true, environment: env.rawValue, companies: companies, companiesReadAt: .now, money: read)
+        let line = SalesBrief.section(input, now: .now).lines.first { $0.id == "sales.followup." + SalesKey.account("emu_sales_lead") }
+        #expect(line?.text == "Call today: Sales test tailor (emulator)")
+        let contacts = try await client.crmContacts(accountId: "emu_sales_lead")
+        #expect(contacts.rows.contains { $0.id == "emu_sales_contact" && $0.primary })
+        let shape = try await client.crmAccountsShape()
+        print("EMULATOR CRM shape:", shape.rows, "rows; differences:", shape.differences)
     }
 }

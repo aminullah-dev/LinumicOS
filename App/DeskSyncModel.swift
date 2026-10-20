@@ -285,7 +285,7 @@ final class DeskSyncModel {
         case .done: return String(localized: "Done, \(when)")
         case .snoozed: return String(localized: "Snoozed until \((mark.until ?? mark.at).formatted(date: .abbreviated, time: .shortened))")
         case .waiting: return String(localized: "Waiting on others, since \(when)")
-        case .dismissed: return String(localized: "Dismissed, \(when): \(mark.reason ?? "")")
+        case .dismissed: return String(localized: "Dismissed, \(when): \(SalesDismissReason.displayText(mark.reason ?? ""))")
         }
     }
 

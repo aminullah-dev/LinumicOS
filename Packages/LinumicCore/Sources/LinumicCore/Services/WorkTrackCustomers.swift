@@ -74,6 +74,15 @@ public enum WorkTrackDates {
         return utcCalendar.date(from: DateComponents(year: y, month: m, day: d, hour: 12))
     }
 
+    /// The day in this device's calendar and language (the owner's Mac: Solar Hijri, Dari), formatted at noon UTC **in
+    /// UTC**, so no device time zone shows another day (Pacific/Kiritimati, UTC+14, would show the next one). The text as
+    /// it is when it is not a real day. Money and Sales show WorkTrack's days through this one function.
+    public static func displayText(_ text: String, calendar: Calendar = .autoupdatingCurrent, locale: Locale = .autoupdatingCurrent) -> String {
+        guard let date = displayDate(text) else { return text }
+        return date.formatted(Date.FormatStyle(date: .abbreviated, time: .omitted, locale: locale, calendar: calendar,
+                                               timeZone: TimeZone(identifier: "UTC")!))
+    }
+
     /// The `YYYY-MM-DD` the owner picked in a date picker (its components in this device's calendar).
     public static func string(fromPicked date: Date, calendar: Calendar = .current) -> String {
         var g = Calendar(identifier: .gregorian)

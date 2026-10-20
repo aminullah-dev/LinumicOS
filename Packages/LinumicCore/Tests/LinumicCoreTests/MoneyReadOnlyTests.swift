@@ -57,8 +57,8 @@ final class MoneyGuardProtocol: URLProtocol, @unchecked Sendable {
 
     override func stopLoading() {}
 
-    /// URLSession hands a protocol the body as a stream.
-    private static func body(of request: URLRequest) -> String {
+    /// URLSession hands a protocol the body as a stream. Sales' guard reads it the same way.
+    static func body(of request: URLRequest) -> String {
         if let data = request.httpBody { return String(decoding: data, as: UTF8.self) }
         guard let stream = request.httpBodyStream else { return "" }
         stream.open()

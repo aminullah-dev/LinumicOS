@@ -3,10 +3,10 @@ import SwiftUI
 
 // MARK: - Small pieces
 
-/// A WorkTrack `YYYY-MM-DD` in the UI's calendar (the day itself never shifts).
+/// A WorkTrack `YYYY-MM-DD` in the UI's calendar (the day itself never shifts, in any time zone).
 func workTrackDay(_ text: String?) -> String {
     guard let text else { return "" }
-    return WorkTrackDates.displayDate(text)?.formatted(date: .abbreviated, time: .omitted) ?? text
+    return WorkTrackDates.displayText(text)
 }
 
 /// Production in red, so a write to real customers never looks like a test.

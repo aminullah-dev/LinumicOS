@@ -673,15 +673,34 @@ struct DeskDismissSheet: View {
     @Environment(\.dismiss) private var close
     @State private var reason = ""
 
+    /// A Sales item names a customer, and a dismiss reason is synced as written: its reason is picked, never typed.
+    private var isSales: Bool { SalesDismissReason.applies(toItemID: item.id) }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Dismiss").font(.title3.weight(.semibold))
             Text(DeskText.text(item.title, of: item)).font(.callout)
             Text("Why? The reason is kept with the mark. The item comes back by itself if its fact changes.")
                 .font(.caption).foregroundStyle(.secondary)
-            TextField("Reason", text: $reason, axis: .vertical)
-                .lineLimit(2...4)
-                .textFieldStyle(.roundedBorder)
+            if isSales {
+                Picker("Reason", selection: $reason) {
+                    Text("Choose a reason").tag("")
+                    ForEach(SalesDismissReason.allCases) { Text(verbatim: $0.title).tag($0.rawValue) }
+                }
+                .labelsHidden()
+                Text("Sales reasons are fixed: a reason is synced to your other devices, and none of these names the customer.")
+                    .font(.caption).foregroundStyle(.secondary)
+            } else {
+                TextField("Reason", text: $reason, axis: .vertical)
+                    .lineLimit(2...4)
+                    .textFieldStyle(.roundedBorder)
+                if DeskAgentBrief.namesCustomers(item) {
+                    // The reason is synced as typed and kept in its history (docs/desk-sync.md).
+                    Label("Don't write the customer's name, number or message here: the reason is synced to your other devices and kept in its history.",
+                          systemImage: "hand.raised")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
             HStack {
                 Spacer()
                 Button("Cancel", role: .cancel) { close() }
@@ -732,7 +751,7 @@ enum DeskText {
         case .waiting:
             return String(localized: "Waiting on others since \(when); back when the fact changes.")
         case .dismissed:
-            return String(localized: "Dismissed \(when): \(m.reason ?? "")")
+            return String(localized: "Dismissed \(when): \(SalesDismissReason.displayText(m.reason ?? ""))")
         case .done:
             // Done on a fact only says the owner pressed it; whether it is done is for the next reading to show.
             return item.evidence.readAt == nil

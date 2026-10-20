@@ -129,11 +129,13 @@ public struct DeskState: Codable, Hashable, Sendable {
         set(item.id, DeskMark(kind: .waiting, at: Self.stamp(now), factHash: item.factHash))
     }
 
-    /// Dismisses with a reason; an empty reason is refused (returns false).
+    /// Dismisses with a reason; an empty reason is refused (returns false), and so is any reason on a Sales item that is
+    /// not one of `SalesDismissReason`'s: the reason is synced, and a typed one could name the customer.
     @discardableResult
     public mutating func dismiss(_ item: DeskItem, reason: String, now: Date) -> Bool {
         let r = reason.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !r.isEmpty else { return false }
+        if SalesDismissReason.applies(toItemID: item.id), SalesDismissReason(rawValue: r) == nil { return false }
         set(item.id, DeskMark(kind: .dismissed, at: Self.stamp(now), factHash: item.factHash, reason: r))
         return true
     }

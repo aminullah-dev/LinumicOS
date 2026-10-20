@@ -22,7 +22,7 @@ enum WorkTrackNotifier {
             let when = DateComponents(year: y, month: m, day: d, hour: 9)
             let content = UNMutableNotificationContent()
             content.title = String(localized: "WorkTrack licence expiring")
-            let last = WorkTrackDates.displayDate(r.expiresAt)?.formatted(date: .abbreviated, time: .omitted) ?? r.expiresAt
+            let last = WorkTrackDates.displayText(r.expiresAt)
             content.body = String(localized: "\(r.name) (\(r.plan)) ends in \(r.daysBefore) days (last day \(last)). Open WorkTrack customers to renew.")
             content.sound = r.daysBefore <= 7 ? .default : nil
             let trigger = UNCalendarNotificationTrigger(dateMatching: when, repeats: false)

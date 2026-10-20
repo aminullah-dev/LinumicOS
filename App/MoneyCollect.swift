@@ -9,13 +9,21 @@ extension MoneyInput {
     static func collect(worktrack: WorkTrackModel, safeBeauty: SafeBeautyModel, obligations: ObligationsModel, now: Date = .now) -> MoneyInput {
         let register = obligations.register(now: now)
         return MoneyInput(
-            worktrack: MoneyWorkTrackInput(isSignedIn: worktrack.isSignedIn, environment: worktrack.environment?.rawValue,
-                                           companies: worktrack.companies, companiesReadAt: worktrack.lastRead,
-                                           loadError: worktrack.loadError, money: worktrack.moneyRead),
+            worktrack: .collect(worktrack),
             safeBeauty: MoneySafeBeautyInput(isSignedIn: safeBeauty.isSignedIn, environment: safeBeauty.environment?.rawValue,
                                              balances: safeBeauty.balancesRead),
             // An unreadable obligations.json leaves only the seed, whose accounts carry no cost: Unknown, not "none". The
             // store's reason alone: Money's own sentence goes around it.
             costs: MoneyCostsInput(accounts: register.accounts, builtAt: register.builtAt, loadError: obligations.loadFailure))
+    }
+}
+
+extension MoneyWorkTrackInput {
+    /// The company list and the money reading of one WorkTrack refresh, as Money and Sales both read it.
+    @MainActor
+    static func collect(_ worktrack: WorkTrackModel) -> MoneyWorkTrackInput {
+        MoneyWorkTrackInput(isSignedIn: worktrack.isSignedIn, environment: worktrack.environment?.rawValue,
+                            companies: worktrack.companies, companiesReadAt: worktrack.lastRead,
+                            loadError: worktrack.loadError, money: worktrack.moneyRead)
     }
 }

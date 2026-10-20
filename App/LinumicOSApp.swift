@@ -80,6 +80,11 @@ struct LinumicOSApp: App {
         let vault = VaultModel()
         vault.load()
         _vault = State(initialValue: vault)
+        #if DEBUG
+        // Debug-only screenshot aid: with `-LCCSalesSample`, the Sales page shows made-up data and no job starts, so
+        // nothing is read or sent.
+        if UserDefaults.standard.string(forKey: "LCCSalesSample") != nil { return }
+        #endif
         automation.start()
     }
 

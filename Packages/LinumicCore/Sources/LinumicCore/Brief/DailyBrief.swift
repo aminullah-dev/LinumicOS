@@ -3,13 +3,13 @@ import Foundation
 // MARK: - Daily Brief (گزارش روز)
 //
 // One page that summarises what the app has ALREADY read: Monitor, Release Center, the licence ledger, WorkTrack
-// customers, Operations queues, Money and Oversight, plus what changed since yesterday. Nothing here makes a request; the
+// customers, Operations queues, Money, Sales and Oversight, plus what changed since yesterday. Nothing here makes a request; the
 // App layer collects each model's state into `BriefInput` and renders `DailyBrief`. Every line carries its source and
 // the time it was read. A source that was never read says so instead of showing zero.
 
 /// Where a line or section comes from. The order is the order of the sections on screen.
 public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiable {
-    case monitor, siteMessages, releases, licences, worktrack, operations, money, oversight, keys, obligations, automation, changes
+    case monitor, siteMessages, releases, licences, worktrack, operations, money, sales, oversight, keys, obligations, automation, changes
 
     public var id: String { rawValue }
 
@@ -22,6 +22,7 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .worktrack: L("WorkTrack customers")
         case .operations: L("Operations")
         case .money: L("Money")
+        case .sales: L("Sales")
         case .oversight: L("Oversight")
         case .keys: L("Keys & Backups")
         case .obligations: L("Obligations")
@@ -39,6 +40,7 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .worktrack: "person.2.badge.key"
         case .operations: "tray.full"
         case .money: "banknote"
+        case .sales: "phone.arrow.up.right"
         case .oversight: "scope"
         case .keys: "externaldrive.badge.checkmark"
         case .obligations: "calendar.badge.exclamationmark"
@@ -69,6 +71,8 @@ public enum BriefDestination: Hashable, Sendable {
     case continuity
     /// The Money screen.
     case money
+    /// The Sales screen, with one row to show (a `SalesKey`), or none.
+    case sales(String?)
 }
 
 public enum BriefSeverity: Int, Codable, Sendable, Comparable {
@@ -117,6 +121,9 @@ public struct BriefLine: Identifiable, Hashable, Sendable {
     public var factKey: String?
     /// The day it is due, when the source gives one (an obligation). The Desk puts it in Today, This week or Later by it.
     public var due: KeyDay?
+    /// Today or this week by the source's own day rule, when that rule is not this device's calendar (a WorkTrack follow-up
+    /// is due by Kabul's day): the Desk puts the line there without comparing a day of its own. Not part of the fact.
+    public var horizon: DeskHorizon?
     /// The obligation the line is about, when it is one. Its Done is recorded on the Obligations screen, with evidence,
     /// unless `closesAtSource`.
     public var obligationID: String?
@@ -126,7 +133,8 @@ public struct BriefLine: Identifiable, Hashable, Sendable {
 
     public init(id: String, kind: BriefSourceKind, severity: BriefSeverity, text: String, detail: String? = nil,
                 source: String, readAt: Date?, destination: BriefDestination, links: [BriefLink] = [], product: String? = nil,
-                factKey: String? = nil, due: KeyDay? = nil, obligationID: String? = nil, closesAtSource: Bool = false) {
+                factKey: String? = nil, due: KeyDay? = nil, horizon: DeskHorizon? = nil, obligationID: String? = nil,
+                closesAtSource: Bool = false) {
         self.id = id
         self.kind = kind
         self.severity = severity
@@ -139,6 +147,7 @@ public struct BriefLine: Identifiable, Hashable, Sendable {
         self.product = product
         self.factKey = factKey
         self.due = due
+        self.horizon = horizon
         self.obligationID = obligationID
         self.closesAtSource = closesAtSource
     }
@@ -165,12 +174,16 @@ public struct BriefGap: Hashable, Sendable {
     public var product: String?
     /// A caveat on a part that was read, not a part that was not read: its Desk item does not say "unknown, not zero".
     public var isCaveat: Bool
+    /// False when another section already raises the same Desk item (Money's 2000-account limit, the WorkTrack
+    /// environment): the sentence is among the notes and still keeps marks on the part's lines, but makes no second item.
+    public var isDeskItem: Bool
 
-    public init(key: String, text: String, product: String? = nil, isCaveat: Bool = false) {
+    public init(key: String, text: String, product: String? = nil, isCaveat: Bool = false, isDeskItem: Bool = true) {
         self.key = key
         self.text = text
         self.product = product
         self.isCaveat = isCaveat
+        self.isDeskItem = isDeskItem
     }
 }
 
@@ -391,6 +404,7 @@ public enum DailyBriefBuilder {
             worktrack(input),
             operations(input),
             money(input),
+            sales(input),
             oversight(input),
             keys(input),
             obligations(input),
@@ -777,7 +791,7 @@ public enum BriefNotificationText {
         if attention.isEmpty {
             parts.append(L("Nothing needs you in what was last read."))
         } else {
-            let top = attention.prefix(3).map(\.text).joined(separator: "; ")
+            let top = texts(attention).prefix(3).joined(separator: "; ")
             parts.append(attention.count == 1 ? top : LF("%d items need you: %@", attention.count, top))
         }
         let never = brief.neverRead.filter { $0 != .changes }
@@ -786,6 +800,27 @@ public enum BriefNotificationText {
         }
         parts.append(LF("As of %@.", asOf))
         return (L("Daily Brief"), parts.joined(separator: " "))
+    }
+
+    /// The lines' texts, with every Sales line folded into counts where the first one was: a Sales line names a customer,
+    /// and the lock screen shows no customer name. Follow-ups due today or overdue by Kabul's day are counted as such; any
+    /// other Sales line (a next-action date that could not be read, accounts with no next step, a new signup) is counted
+    /// apart, never called a follow-up.
+    static func texts(_ attention: [BriefLine]) -> [String] {
+        let sales = attention.filter { $0.kind == .sales }
+        guard !sales.isEmpty else { return attention.map(\.text) }
+        let due = sales.count { SalesBrief.isFollowUpDue($0) }
+        let others = sales.count - due
+        var phrases: [String] = []
+        if due > 0 { phrases.append(LF("%d WorkTrack follow-ups are due", due)) }
+        if others > 0 { phrases.append(due > 0 ? LF("%d other Sales items need you", others) : LF("%d Sales items need you", others)) }
+        var out: [String] = []
+        var folded = false
+        for line in attention {
+            guard line.kind == .sales else { out.append(line.text); continue }
+            if !folded { out += phrases; folded = true }
+        }
+        return out
     }
 }
 
