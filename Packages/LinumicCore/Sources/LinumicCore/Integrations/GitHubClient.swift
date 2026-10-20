@@ -18,6 +18,21 @@ public struct URLSessionTransport: HTTPTransport {
         return URLSession(configuration: c)
     }()
 
+    /// Like `bounded`, for APIs that answer with customer records or money (the WorkTrack vendor API, SafeBeauty's
+    /// Firestore): an ephemeral session with no URL cache and no cookies, and every request sent to the server rather
+    /// than answered from a cache, so no response body is ever written to this device's disk.
+    public static let uncached: URLSession = {
+        let c = URLSessionConfiguration.ephemeral
+        c.urlCache = nil
+        c.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        c.httpCookieStorage = nil
+        c.httpShouldSetCookies = false
+        c.urlCredentialStorage = nil
+        c.timeoutIntervalForRequest = 30
+        c.timeoutIntervalForResource = 120
+        return URLSession(configuration: c)
+    }()
+
     public func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }

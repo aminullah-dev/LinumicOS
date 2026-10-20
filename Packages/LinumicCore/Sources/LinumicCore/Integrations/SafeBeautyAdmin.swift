@@ -12,6 +12,11 @@ import Foundation
 //   functions/shared.js:374-377         pbkdf2Hash; :114-121 assertAdmin (users/{appUid}.role == "ADMIN")
 //   functions/domains/payments.js:39-79 getCommissionPercent: platform_config/general.commissionPercent, else 10
 //   firestore.rules                     isAdmin() via uid_map; users list admin-only; provider_balances, refund_requests
+// and, for Money, at origin/main @ 3688474 (2026-10-19):
+//   public/admin/index.html:955-966     balanceLine: owedAmount > 0 the platform owes the salon, < 0 the salon owes
+//   public/admin/index.html:3396-3530   renderFinance: every non-zero balance, both signs kept per row, never netted
+//   firestore.rules:885-888             provider_balances readable by its owner or isAdmin()
+//   functions/lib/money.js:7            "All amounts are in whole AFN"
 //   ios/SafeBeautyCore/.../Security/PinHasher.swift and Util/PhoneUtils.swift  the tested Swift ports reused below
 // Nothing here writes to Firestore or calls an admin callable. The only callables used are the two sign-in steps.
 
@@ -208,6 +213,36 @@ public struct SafeBeautyBalance: Equatable, Sendable, Identifiable {
     }
 }
 
+/// Salon balances summed by Firestore (two aggregation queries over `provider_balances`), every document counted, with
+/// no page limit. Salons the platform owes and salons that owe the platform are two figures and are never netted: they
+/// are different salons.
+public struct SafeBeautyBalanceTotals: Equatable, Sendable {
+    /// Balances above zero: how many, and `sum(owedAmount)` over them (AFN).
+    public var owedToSalonsCount: Int
+    public var owedToSalons: Decimal
+    /// Balances below zero: how many, and the size of `sum(owedAmount)` over them (AFN, positive).
+    public var owedBySalonsCount: Int
+    public var owedBySalons: Decimal
+    /// Firestore's own read time (the later of the two queries); nil when it sent none.
+    public var readTime: Date?
+    /// When this device asked.
+    public var readAt: Date
+
+    public init(owedToSalonsCount: Int, owedToSalons: Decimal, owedBySalonsCount: Int, owedBySalons: Decimal, readTime: Date?, readAt: Date) {
+        self.owedToSalonsCount = owedToSalonsCount
+        self.owedToSalons = owedToSalons
+        self.owedBySalonsCount = owedBySalonsCount
+        self.owedBySalons = owedBySalons
+        self.readTime = readTime
+        self.readAt = readAt
+    }
+}
+
+/// Everything Money asks SafeBeauty for: two read-only aggregation queries. No callable, no write.
+public protocol SafeBeautyMoneyReading: Sendable {
+    func balanceTotals() async throws -> SafeBeautyBalanceTotals
+}
+
 /// `platform_config/general` as stored, and the commission the server actually applies.
 public struct SafeBeautyCommission: Equatable, Sendable {
     /// The stored value, nil when the document or field is missing or not a number.
@@ -346,7 +381,9 @@ public actor SafeBeautyAdminClient {
     private let now: @Sendable () -> Date
     public static let queueLimit = 100
 
-    public init(environment: SafeBeautyEnvironment, transport: HTTPTransport = URLSessionTransport(), now: @escaping @Sendable () -> Date = { .now }) {
+    /// The default transport keeps nothing on disk (no URL cache): the answers carry names and balances.
+    public init(environment: SafeBeautyEnvironment, transport: HTTPTransport = URLSessionTransport(session: URLSessionTransport.uncached),
+                now: @escaping @Sendable () -> Date = { .now }) {
         self.environment = environment
         self.transport = transport
         self.now = now
@@ -448,6 +485,33 @@ public actor SafeBeautyAdminClient {
         return owed.map { var b = $0; b.name = names[b.providerID]; return b }
     }
 
+    /// Salons owed and salons owing, summed by Firestore: `count()` and `sum(owedAmount)` where owedAmount > 0, then
+    /// where < 0. Unlike `payoutsOwed()` (one page of at most 300), nothing is left out. A number Firestore did not send,
+    /// or sent in a form that is not a number, is an error, never 0.
+    public func balanceTotals() async throws -> SafeBeautyBalanceTotals {
+        let at = now()
+        let aggregations: [FirestoreAggregation] = [.count(alias: "n"), .sum(alias: "s", field: "owedAmount")]
+        func totals(_ op: FirestoreFilter.Op) async throws -> FirestoreAggregateResult {
+            try await read { try await firestore.aggregate("provider_balances", filters: [FirestoreFilter("owedAmount", op, .integer(0))], aggregations, token: $0) }
+        }
+        let owed = try await totals(.greaterThan)
+        let owing = try await totals(.lessThan)
+        func count(_ r: FirestoreAggregateResult) throws -> Int {
+            guard let n = r.values["n"], case let c = NSDecimalNumber(decimal: n).intValue, Decimal(c) == n, c >= 0 else {
+                throw SafeBeautyError.firestore(.decoding("the balance count is not a whole number"))
+            }
+            return c
+        }
+        func sum(_ r: FirestoreAggregateResult) throws -> Decimal {
+            guard let s = r.values["s"] else { throw SafeBeautyError.firestore(.decoding("no sum in the balance totals")) }
+            return s
+        }
+        let times = [owed.readTime, owing.readTime].compactMap { $0 }
+        return SafeBeautyBalanceTotals(owedToSalonsCount: try count(owed), owedToSalons: try sum(owed),
+                                       owedBySalonsCount: try count(owing), owedBySalons: abs(try sum(owing)),
+                                       readTime: times.max(), readAt: at)
+    }
+
     /// Everything the overview shows. The counts are server-side aggregation queries (no documents read).
     public func snapshot() async throws -> SafeBeautySnapshot {
         let at = now()
@@ -473,3 +537,5 @@ public actor SafeBeautyAdminClient {
             readAt: at)
     }
 }
+
+extension SafeBeautyAdminClient: SafeBeautyMoneyReading {}
