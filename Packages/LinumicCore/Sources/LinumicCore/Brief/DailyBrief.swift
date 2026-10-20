@@ -9,7 +9,7 @@ import Foundation
 
 /// Where a line or section comes from. The order is the order of the sections on screen.
 public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiable {
-    case monitor, siteMessages, releases, licences, worktrack, operations, money, sales, oversight, keys, obligations, automation, changes
+    case monitor, siteMessages, releases, products, agents, licences, worktrack, operations, money, sales, oversight, keys, obligations, automation, changes
 
     public var id: String { rawValue }
 
@@ -18,6 +18,8 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .monitor: L("Monitor")
         case .siteMessages: L("Website messages")
         case .releases: L("Releases")
+        case .products: L("Products")
+        case .agents: L("Agents")
         case .licences: L("Licences")
         case .worktrack: L("WorkTrack customers")
         case .operations: L("Operations")
@@ -36,6 +38,8 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .monitor: "waveform.path.ecg"
         case .siteMessages: "envelope"
         case .releases: "shippingbox.and.arrow.backward"
+        case .products: "square.grid.3x2"
+        case .agents: "person.2.wave.2"
         case .licences: "key.horizontal"
         case .worktrack: "person.2.badge.key"
         case .operations: "tray.full"
@@ -73,6 +77,10 @@ public enum BriefDestination: Hashable, Sendable {
     case money
     /// The Sales screen, with one row to show (a `SalesKey`), or none.
     case sales(String?)
+    /// The Products page, with one product's card to open (a `CompanyProduct.id`), or none.
+    case products(String?)
+    /// The Agents page, with one agent to show (its slug), or none.
+    case agents(String?)
 }
 
 public enum BriefSeverity: Int, Codable, Sendable, Comparable {
@@ -363,12 +371,17 @@ public struct BriefInput: Sendable {
     public var obligations: BriefObligationsInput?
     /// Money as the App collected it; nil when it was not collected.
     public var money: MoneyInput?
+    /// The Products page as built on this device; nil when it was not built.
+    public var products: ProductsReport?
+    /// The agents' pull requests as read; nil when the App has no Agents model.
+    public var agents: AgentsReport?
 
     public init(now: Date, monitor: MonitorSnapshot, monitorTargets: [MonitorTarget] = MonitorCatalog.targets,
                 releases: ReleaseCenterSnapshot, licences: BriefLicenceInput, worktrack: BriefWorkTrackInput,
                 operations: [BriefOperationsInput], oversight: BriefOversightInput, keys: BriefKeysInput? = nil,
                 siteMessages: BriefSiteMessagesInput? = nil, automation: AutomationLedger? = nil,
-                backup: BackupFolderStatus? = nil, obligations: BriefObligationsInput? = nil, money: MoneyInput? = nil) {
+                backup: BackupFolderStatus? = nil, obligations: BriefObligationsInput? = nil, money: MoneyInput? = nil,
+                products: ProductsReport? = nil, agents: AgentsReport? = nil) {
         self.now = now
         self.monitor = monitor
         self.monitorTargets = monitorTargets
@@ -383,6 +396,8 @@ public struct BriefInput: Sendable {
         self.backup = backup
         self.obligations = obligations
         self.money = money
+        self.products = products
+        self.agents = agents
     }
 }
 
@@ -400,6 +415,8 @@ public enum DailyBriefBuilder {
             monitor(input),
             siteMessages(input),
             releases(input),
+            products(input),
+            agents(input),
             licences(input),
             worktrack(input),
             operations(input),
