@@ -1008,6 +1008,16 @@
         }
       }
     },
+    "%lld companies with a scheduled deletion are left out; WorkTrack customers lists them.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld شرکت با حذفِ زمان‌بندی‌شده کنار گذاشته شد؛ مشتریان WorkTrack آن‌ها را نشان می‌دهد."
+          }
+        }
+      }
+    },
     "%lld days": {
       "localizations": {
         "fa-AF": {
@@ -1084,6 +1094,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld فاکتور به حسابی در CRM اشاره می‌کند که در فهرست خوانده‌شده نبود؛ حساب شده‌اند."
+          }
+        }
+      }
+    },
+    "%lld items": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مورد"
           }
         }
       }
@@ -1384,6 +1404,86 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld سطر آمادهٔ تعهدات و حساب‌ها فرستاده شد"
+          }
+        }
+      }
+    },
+    "At least %ld open CRM accounts have no next-action date": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دست‌کم %ld حساب باز CRM تاریخ اقدام بعدی ندارد"
+          }
+        }
+      }
+    },
+    "at least %lld items": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دست‌کم %lld مورد"
+          }
+        }
+      }
+    },
+    "Contacts for %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخاطب‌های %@"
+          }
+        }
+      }
+    },
+    "Copy reminder draft for %@…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کپی پیش‌نویس یادآوری برای %@…"
+          }
+        }
+      }
+    },
+    "Copy the number of %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کپی شمارهٔ %@"
+          }
+        }
+      }
+    },
+    "Don't write the customer's name, number or message here: the reason is synced to your other devices and kept in its history.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام، شماره یا پیام مشتری را این‌جا ننویسید: دلیل به دستگاه‌های دیگر شما همگام می‌شود و در تاریخچه‌اش می‌ماند."
+          }
+        }
+      }
+    },
+    "Last day %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین روز %@."
+          }
+        }
+      }
+    },
+    "Last day %@; days counted from today in Kabul.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین روز %@؛ روزها از امروزِ کابل شمرده شده‌اند."
           }
         }
       }
@@ -4720,6 +4820,16 @@
         }
       }
     },
+    "Open %@ in WorkTrack customers": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن %@ در مشتریان WorkTrack"
+          }
+        }
+      }
+    },
     "Open Obligations & accounts": {
       "localizations": {
         "fa-AF": {
@@ -4746,6 +4856,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "باز کردن کنسول WorkTrack"
+          }
+        }
+      }
+    },
+    "Open WorkTrack console for %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن کنسول WorkTrack برای %@"
           }
         }
       }
@@ -6610,6 +6730,16 @@
         }
       }
     },
+    "WorkTrack reads at most %lld companies; renewals past that are unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حداکثر %lld شرکت را WorkTrack می‌خواند؛ تمدیدهای بیرون از این حد نامعلوم است."
+          }
+        }
+      }
+    },
     "WorkTrack returned %ld CRM accounts, the most it sends; invoices of accounts past that limit are counted unfiltered.": {
       "localizations": {
         "fa-AF": {
@@ -6686,6 +6816,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "WorkTrack: %ld فاکتور فرستاده شده و هنوز پرداخت نشده است"
+          }
+        }
+      }
+    },
+    "WorkTrack: GET /v1/vendor/companies": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع: WorkTrack، GET /v1/vendor/companies"
+          }
+        }
+      }
+    },
+    "WorkTrack: GET /v1/vendor/crm/accounts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع: WorkTrack، GET /v1/vendor/crm/accounts"
           }
         }
       }
@@ -27634,16 +27784,6 @@
         }
       }
     },
-    "Last day %@, counted from today in Kabul.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "آخرین روز %@، شمرده‌شده از امروزِ کابل."
-          }
-        }
-      }
-    },
     "Last day of the licence": {
       "localizations": {
         "fa-AF": {
@@ -27679,7 +27819,7 @@
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "کنار گذاشته شد: %ld حساب CRM شرکت‌های آزمایشی یا تکراری."
+            "value": "کنار گذاشته شد: %ld حساب CRM شرکت‌های TEST یا DUPLICATE."
           }
         }
       }
@@ -28500,16 +28640,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "منبع: API فروشندهٔ WorkTrack (%@)، /vendor/crm/accounts و /vendor/companies"
-          }
-        }
-      }
-    },
-    "WorkTrack: GET /v1/vendor/companies or /v1/vendor/crm/accounts": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "منبع: WorkTrack، GET /v1/vendor/companies یا /v1/vendor/crm/accounts"
           }
         }
       }
