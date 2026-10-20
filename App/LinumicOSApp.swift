@@ -20,6 +20,8 @@ struct LinumicOSApp: App {
     @State private var obligations: ObligationsModel
     @State private var deskSync: DeskSyncModel
     @State private var continuity: ContinuityModel
+    @State private var legal: LegalModel
+    @State private var marketingQueue = MarketingQueueModel()
     @State private var automation: AutomationEngine
     @Environment(\.scenePhase) private var scenePhase
     #if os(macOS)
@@ -62,8 +64,11 @@ struct LinumicOSApp: App {
         _continuity = State(initialValue: continuity)
         let obligations = ObligationsModel(monitor: monitor, licences: licences, keys: keys, continuity: continuity)
         _obligations = State(initialValue: obligations)
+        let legal = LegalModel(inventory: inventory)
+        _legal = State(initialValue: legal)
         let brief = BriefModel(inventory: inventory, licences: licences, worktrack: worktrack, operations: operations,
-                               releases: releases, monitor: monitor, keys: keys, siteMessages: siteMessages, obligations: obligations)
+                               releases: releases, monitor: monitor, keys: keys, siteMessages: siteMessages, obligations: obligations,
+                               legal: legal)
         _brief = State(initialValue: brief)
         let desk = DeskModel(brief: brief)
         _desk = State(initialValue: desk)
@@ -75,7 +80,7 @@ struct LinumicOSApp: App {
         let automation = AutomationEngine(inventory: inventory, licences: licences, platforms: platforms, worktrack: worktrack,
                                           operations: operations, releases: releases, monitor: monitor, brief: brief,
                                           keys: keys, siteMessages: siteMessages, sentinel: sentinel, desk: desk,
-                                          obligations: obligations, deskSync: deskSync)
+                                          obligations: obligations, deskSync: deskSync, legal: legal)
         _automation = State(initialValue: automation)
         let vault = VaultModel()
         vault.load()
@@ -167,6 +172,8 @@ struct LinumicOSApp: App {
             .environment(obligations)
             .environment(deskSync)
             .environment(continuity)
+            .environment(legal)
+            .environment(marketingQueue)
             .environment(router)
     }
 
@@ -178,7 +185,8 @@ struct LinumicOSApp: App {
     }()
 
     private var goShortcuts: [SidebarItem] {
-        // ⌘1 to ⌘9: the Desk first (the home screen); AI Assistant moved out to keep nine.
-        [.desk, .dashboard, .brief, .allProducts, .verification, .releases, .roadmap, .issues, .repositories]
+        // ⌘1 to ⌘9: the Desk first (the home screen); AI Assistant moved out to keep nine. Release records, Roadmap and
+        // Issues went to the Archive (Phase 6), so their keys go to Obligations, Money and Sales.
+        [.desk, .dashboard, .brief, .allProducts, .verification, .obligations, .money, .sales, .repositories]
     }
 }
