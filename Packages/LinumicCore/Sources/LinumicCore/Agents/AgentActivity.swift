@@ -14,7 +14,7 @@ public struct AgentPull: Codable, Hashable, Sendable, Identifiable {
 
         public var title: String {
             switch self {
-            case .open: L("Open")
+            case .open: L("Still open")
             case .merged: L("Merged")
             case .closed: L("Closed without merging")
             }

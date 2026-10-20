@@ -176,7 +176,7 @@ private struct AgentCard: View {
             }
             .font(.caption).foregroundStyle(.secondary)
             if !status.open.isEmpty {
-                Text("Open").font(.caption.weight(.semibold))
+                Text("Open pull requests").font(.caption.weight(.semibold))
                 ForEach(status.open) { pr in pullLink(pr) }
             }
             if !status.recent.isEmpty {

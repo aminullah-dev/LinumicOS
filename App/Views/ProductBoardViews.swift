@@ -194,7 +194,7 @@ struct ProductBoardCard: View {
             ForEach(tracks) { track in
                 if tracks.count > 1 {
                     GridRow {
-                        Text(verbatim: track.track.title).font(.caption.weight(.semibold)).gridCellColumns(4)
+                        Text(verbatim: L(track.track.title)).font(.caption.weight(.semibold)).gridCellColumns(4)
                     }
                 }
                 ForEach(track.slots.filter(\.slot.compared)) { s in
@@ -298,7 +298,7 @@ struct ProductBoardDetail: View {
             case .notLevel(let findings):
                 ForEach(findings) { f in
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(verbatim: f.track).font(.caption).foregroundStyle(.secondary)
+                        Text(verbatim: L(f.track)).font(.caption).foregroundStyle(.secondary)
                         Text(verbatim: f.text).monospacedDigit().textSelection(.enabled)
                     }
                 }
@@ -318,7 +318,7 @@ struct ProductBoardDetail: View {
     }
 
     private func trackPanel(_ track: TrackReading) -> some View {
-        DashboardPanel(title: track.track.title) {
+        DashboardPanel(title: L(track.track.title)) {
             ForEach(track.slots) { s in
                 VStack(alignment: .leading, spacing: 6) {
                     HStack(spacing: 6) {
