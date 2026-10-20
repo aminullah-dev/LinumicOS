@@ -18,6 +18,7 @@ struct LinumicOSApp: App {
     @State private var siteMessages: SiteMessagesModel
     @State private var sentinel: SentinelModel
     @State private var obligations: ObligationsModel
+    @State private var products: ProductsModel
     @State private var deskSync: DeskSyncModel
     @State private var continuity: ContinuityModel
     @State private var automation: AutomationEngine
@@ -62,8 +63,11 @@ struct LinumicOSApp: App {
         _continuity = State(initialValue: continuity)
         let obligations = ObligationsModel(monitor: monitor, licences: licences, keys: keys, continuity: continuity)
         _obligations = State(initialValue: obligations)
+        let products = ProductsModel(inventory: inventory, platforms: platforms, releases: releases, licences: licences, monitor: monitor)
+        _products = State(initialValue: products)
         let brief = BriefModel(inventory: inventory, licences: licences, worktrack: worktrack, operations: operations,
-                               releases: releases, monitor: monitor, keys: keys, siteMessages: siteMessages, obligations: obligations)
+                               releases: releases, monitor: monitor, keys: keys, siteMessages: siteMessages, obligations: obligations,
+                               products: products)
         _brief = State(initialValue: brief)
         let desk = DeskModel(brief: brief)
         _desk = State(initialValue: desk)
@@ -75,7 +79,7 @@ struct LinumicOSApp: App {
         let automation = AutomationEngine(inventory: inventory, licences: licences, platforms: platforms, worktrack: worktrack,
                                           operations: operations, releases: releases, monitor: monitor, brief: brief,
                                           keys: keys, siteMessages: siteMessages, sentinel: sentinel, desk: desk,
-                                          obligations: obligations, deskSync: deskSync)
+                                          obligations: obligations, deskSync: deskSync, products: products)
         _automation = State(initialValue: automation)
         let vault = VaultModel()
         vault.load()
@@ -165,6 +169,7 @@ struct LinumicOSApp: App {
             .environment(automation)
             .environment(sentinel)
             .environment(obligations)
+            .environment(products)
             .environment(deskSync)
             .environment(continuity)
             .environment(router)

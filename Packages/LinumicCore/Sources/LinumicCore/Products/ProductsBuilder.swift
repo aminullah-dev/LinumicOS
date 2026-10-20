@@ -131,6 +131,11 @@ public struct ProductCard: Hashable, Sendable, Identifiable {
 
     public var id: String { product.id }
     public var slots: [SlotReading] { tracks.flatMap(\.slots) }
+
+    /// What was not read on the compared platforms, whatever the level (a product not level can have parts unread too).
+    public var unread: [String] {
+        tracks.flatMap { ProductLevelRule.evaluate($0.track.title, $0.slots.filter(\.slot.compared)).unknowns }
+    }
 }
 
 public struct ProductsReport: Sendable, Hashable {
