@@ -34,8 +34,8 @@ private func product(_ listing: StoreListing) -> Product {
     return p
 }
 
-@Suite("App Store public lookup")
-struct AppStoreLookupTests {
+@Suite("App Store sync and lookup details")
+struct AppStoreSyncTests {
     @Test func lookupURLCarriesBundleAndStorefront() {
         let url = AppStoreLookupClient.lookupURL(bundleID: "com.sample.app", country: "af")
         #expect(url.absoluteString == "https://itunes.apple.com/lookup?bundleId=com.sample.app&country=af")
