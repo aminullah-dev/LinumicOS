@@ -49,11 +49,8 @@ public enum SalesBrief {
         let today = WorkTrackDates.kabulToday(now)
         let part = SalesBuilder.worktrack(w, today: today)
         guard let wt = part.value else {
-            // One item, in the shared group: not signed in and a failed company list are the WorkTrack section's own
-            // items in Today already.
-            if case .accountsFailed = part {
-                return BriefSection(kind: .sales, state: .unavailable(part.reason ?? ""), readAt: nil, source: source)
-            }
+            // One item, in the shared group (Later): not signed in and a failed company list are the WorkTrack section's
+            // own items in Today already, and failed CRM accounts are Money's (`worktrack.invoices`, This week).
             return BriefSection(kind: .sales, state: .neverRead(part.reason ?? ""), readAt: nil, source: source)
         }
         let read = sourceText(wt)
@@ -103,8 +100,11 @@ public enum SalesBrief {
         }
 
         if !wt.noNextStep.isEmpty {
+            // Accounts set aside, or past the limit, may be more of them.
+            let n = wt.noNextStep.count
             lines.append(BriefLine(id: noDateID, kind: .sales, severity: production ? .normal : .info,
-                                   text: LF("%ld open CRM accounts have no next-action date", wt.noNextStep.count),
+                                   text: wt.accountsComplete ? LF("%ld open CRM accounts have no next-action date", n)
+                                                             : LF("At least %ld open CRM accounts have no next-action date", n),
                                    detail: L("A lead with no next-action date is not on WorkTrack's own Today tab either. Set the date and the next action in the WorkTrack console; the Sales page lists them."),
                                    source: accountsSource, readAt: wt.accountsReadAt, destination: .sales(nil), links: links,
                                    product: product, factKey: DeskHash.of(wt.noNextStep.map(\.key).sorted())))
@@ -152,7 +152,9 @@ public enum SalesBrief {
             parts.append(L("Not linked to a WorkTrack company (a prospect)."))
         case .listed(let c):
             let end = c.license.expiresAt.map(SalesFormat.day) ?? L("no end date")
-            parts.append(LF("WorkTrack company %1$@: %2$@ licence, last day %3$@.", c.name, c.license.plan.rawValue, end))
+            // Set apart, so a Latin name or plan keeps the Dari line in its order.
+            parts.append(LF("WorkTrack company %1$@: %2$@ licence, last day %3$@.", SalesDraft.isolated(c.name),
+                            SalesDraft.isolated(c.license.plan.rawValue), end))
         case .notListed:
             parts.append(L("The linked company is not in the company list (deleted, or past its limit), so whether it is a TEST company is unknown."))
         }
@@ -164,6 +166,11 @@ public enum SalesBrief {
 
     /// The caveats and parts not read of a WorkTrack reading, as the Brief notes them (for the page's Unknown card).
     public static func caveats(_ wt: SalesWorkTrack) -> [String] { gaps(wt).map(\.text) }
+
+    /// Why the follow-up lists may be missing accounts (set aside, or the 2000 limit); empty when every account was read.
+    public static func accountsCaveats(_ wt: SalesWorkTrack) -> [String] {
+        gaps(wt).filter { [skippedKey, accountsLimitKey].contains($0.key) }.map(\.text)
+    }
 
     static func gaps(_ wt: SalesWorkTrack) -> [BriefGap] {
         var gaps: [BriefGap] = []

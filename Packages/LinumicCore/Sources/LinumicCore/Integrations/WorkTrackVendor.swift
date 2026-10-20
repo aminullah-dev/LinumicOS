@@ -216,6 +216,42 @@ public struct WTCrmContactRef: Codable, Equatable, Sendable, Identifiable {
     public var primary: Bool
 }
 
+/// A CRM contact as Sales reads it (`contactWriteSchema`, `services/crm.ts:56-66`): who to call and their number.
+/// `email`, `notes`, `createdAt` and `updatedAt` cross the wire (the API has no field mask) but are not decoded, so they
+/// are never held. In memory only, while the contacts view or the draft sheet is open.
+public struct WTSalesContact: Decodable, Equatable, Sendable, Identifiable {
+    public var id: String
+    public var accountId: String
+    public var name: String
+    public var role: String?
+    public var phone: String?
+    /// False when absent, as the server's own default (`crm.ts:64`).
+    public var primary: Bool
+
+    public init(id: String, accountId: String, name: String, role: String? = nil, phone: String? = nil, primary: Bool = false) {
+        self.id = id
+        self.accountId = accountId
+        self.name = name
+        self.role = role
+        self.phone = phone
+        self.primary = primary
+    }
+
+    private enum Keys: String, CodingKey { case id, accountId, name, role, phone, primary }
+
+    /// The id and the account are required (a row without them is set aside and counted). A role, phone or primary of
+    /// the wrong type is read as absent.
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: Keys.self)
+        id = try c.decode(String.self, forKey: .id)
+        accountId = try c.decode(String.self, forKey: .accountId)
+        name = (try? c.decodeIfPresent(String.self, forKey: .name)) ?? ""
+        role = try? c.decodeIfPresent(String.self, forKey: .role)
+        phone = try? c.decodeIfPresent(String.self, forKey: .phone)
+        primary = (try? c.decodeIfPresent(Bool.self, forKey: .primary)) ?? false
+    }
+}
+
 /// `TimelineEvent` (`services/vendor.ts:289-317`), newest first.
 public enum WTTimelineEvent: Decodable, Equatable, Sendable {
     case signup(at: String)
@@ -819,13 +855,15 @@ public actor WorkTrackVendorClient {
     public func crmInvoices() async throws -> WTLossyList<WTCrmInvoice> { try await get("vendor", "crm", "invoices") }
     /// `GET /vendor/crm/contacts?accountId=<id>`: one account's contacts (`routes/vendor.ts:339-345`, `crm.ts:198-206`).
     /// An empty id is refused here, before any request: the server reads an empty `accountId` as no filter and would
-    /// answer every contact of every account.
-    public func crmContacts(accountId: String) async throws -> WTLossyList<WTCrmContactRef> {
+    /// answer every contact of every account. A contact of another account is dropped and counted as set aside.
+    public func crmContacts(accountId: String) async throws -> WTLossyList<WTSalesContact> {
         let id = accountId.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !id.isEmpty else {
             throw WorkTrackError.validation(detail: L("No CRM account was given, so no contacts were asked for."), fieldErrors: [:])
         }
-        return try await get("vendor", "crm", "contacts", query: [URLQueryItem(name: "accountId", value: id)])
+        let list: WTLossyList<WTSalesContact> = try await get("vendor", "crm", "contacts", query: [URLQueryItem(name: "accountId", value: id)])
+        let mine = list.rows.filter { $0.accountId == id }
+        return WTLossyList(rows: mine, skipped: list.skipped + list.rows.count - mine.count)
     }
     /// The same `GET /vendor/crm/accounts`, kept only as key names, JSON types and counts (`WTShapeReport`): every value
     /// is dropped here. The owner's one check of what the server really sends.
@@ -874,7 +912,7 @@ extension WorkTrackVendorClient: WorkTrackMoneyReading {}
 /// What Sales asks WorkTrack for beyond Money's reading (which it reuses): two GETs, each made only when the owner asks.
 /// No write and no other CRM route, so code handed this protocol can only read.
 public protocol WorkTrackSalesReading: Sendable {
-    func crmContacts(accountId: String) async throws -> WTLossyList<WTCrmContactRef>
+    func crmContacts(accountId: String) async throws -> WTLossyList<WTSalesContact>
     func crmAccountsShape() async throws -> WTShapeReport
 }
 

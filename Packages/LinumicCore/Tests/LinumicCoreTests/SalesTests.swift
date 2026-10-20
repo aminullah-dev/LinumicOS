@@ -231,6 +231,21 @@ struct SalesBuilderTests {
         #expect(signups.rows.contains { $0.company.companyId == "c_trial_new" })
     }
 
+    /// The support-ticket exception decides who is a new signup, nothing else: an older trial whose only account is
+    /// that WON one has an account, so it is not counted as "no CRM account".
+    @Test func aSupportAccountStillCountsAsAnAccount() throws {
+        var old = try #require((try companies()).first { $0.companyId == "c_trial_new" })
+        old.companyId = "c_old_trial"
+        old.createdAt = "2026-09-01T06:00:00.000Z"
+        let support = WTCrmAccount(id: "acc_old_support", name: "Old Trial (SAMPLE)", companyId: "c_old_trial", stage: .won)
+        let wt = try #require(part(try worktrack(companies: [old], accounts: .read(WTLossyList(rows: [support]), at: readAt))))
+        #expect(old.isTrial && wt.signups.value?.rows.isEmpty == true, "49 days old: not new")
+        #expect(wt.withoutCRMAccount.value?.rows.isEmpty == true, "it has an account")
+        // The same trial with no account at all is "without one".
+        let none = try #require(part(try worktrack(companies: [old], accounts: .read(WTLossyList(rows: []), at: readAt))))
+        #expect(none.withoutCRMAccount.value?.rows.map(\.companyId) == ["c_old_trial"])
+    }
+
     @Test func aNewTrialIsOneDeskItemNotTwo() throws {
         let s = section(try worktrack())
         let signupLines = s.lines.filter { $0.id.hasPrefix("sales.signup.") }
@@ -251,6 +266,14 @@ struct SalesBuilderTests {
         let one = try #require(part(try worktrack(accounts: .read(skipped, at: readAt))))
         #expect(one.signups.value == nil && one.withoutCRMAccount.value == nil && one.signups.reason?.contains("1 CRM accounts") == true)
         #expect(section(try worktrack(accounts: .read(skipped, at: readAt))).lines.allSatisfy { !$0.id.hasPrefix("sales.signup.") && $0.id != "sales.nocrm" })
+        // The follow-up lists are then "at least", and the page says why (never "none").
+        let whole = try #require(part(try worktrack()))
+        #expect(!one.accountsComplete && !atLimit.accountsComplete && whole.accountsComplete)
+        #expect(SalesBrief.accountsCaveats(one) == ["1 CRM accounts could not be read; their follow-ups, and whether a company has a CRM account, are unknown."])
+        #expect(SalesBrief.accountsCaveats(atLimit) == [LF("WorkTrack sent %ld CRM accounts, the most it sends; newer accounts past that, and their follow-ups, are unknown.", 2000)])
+        #expect(SalesBrief.accountsCaveats(whole).isEmpty)
+        let noDate = section(try worktrack(accounts: .read(skipped, at: readAt))).lines.first { $0.id == "sales.nodate" }
+        #expect(noDate?.text == "At least 4 open CRM accounts have no next-action date")
         // 500 companies: signups found are listed, and the rest is "at least".
         let base = try companies()
         let filler = (0..<(500 - base.count)).map { i -> WTCompany in
@@ -267,9 +290,21 @@ struct SalesBuilderTests {
 
     @Test func renewalsAreKnownOrUnknownWithAReason() throws {
         let report = SalesBuilder.build(SalesInput(worktrack: try worktrack()), now: now)
-        let rows = try #require(report.renewals.value).rows
-        #expect(rows.map(\.company.companyId) == ["c_expired_future", "c_trial_day15", "c_trial_day14", "c_trial_new", "c_deleting"])
+        let renewals = try #require(report.renewals.value)
+        let rows = renewals.list.rows
+        #expect(rows.map(\.company.companyId) == ["c_expired_future", "c_trial_day15", "c_trial_day14", "c_trial_new"],
+                "a scheduled deletion is no one to call")
+        #expect(renewals.deletionsLeftOut == 1 && renewals.list.isComplete)
+        #expect(renewals.environment == "production" && renewals.readAt == readAt, "the company list's source and time")
         #expect(rows.first { $0.company.companyId == "c_trial_day15" }?.daysLeft == -1)
+        // Days are "left" only while the licence is in force.
+        func timing(_ id: String) -> SalesRenewal.Timing? { rows.first { $0.company.companyId == id }?.timing }
+        #expect(timing("c_expired_future") == .notInForce, "EXPIRED with its last day ahead: no days left")
+        #expect(timing("c_trial_day15") == .ended(daysAgo: 1))
+        #expect(timing("c_trial_new").map { if case .daysLeft = $0 { true } else { false } } == true)
+        // Without the CRM accounts, renewals are still read, with the list's own source.
+        let failed = SalesBuilder.build(SalesInput(worktrack: try worktrack(accounts: .failed("HTTP 502", at: readAt, needsSignIn: false))), now: now)
+        #expect(failed.worktrack.value == nil && failed.renewals.value?.readAt == readAt)
         let signedOut = SalesBuilder.build(SalesInput(worktrack: MoneyWorkTrackInput(isSignedIn: false, environment: nil)), now: now)
         #expect(signedOut.renewals.value == nil && signedOut.renewals.reason == "Not signed in to WorkTrack customers, so renewals are unknown.")
         #expect(signedOut.worktrack.reason == "Not signed in to WorkTrack, so who to call is unknown.")
@@ -280,10 +315,14 @@ struct SalesBuilderTests {
         let exact = SalesBuilder.kyc(SalesKYCInput(isSignedIn: true, environment: "production", pendingCount: 7,
                                                    queueRoles: ["PROVIDER", "CUSTOMER", "PROVIDER", "CUSTOMER", "PROVIDER", "CUSTOMER", "CUSTOMER"],
                                                    readAt: now))
-        #expect(exact.value == SalesKYC(providers: 3, isExact: true, pending: 7, environment: "production", readAt: now))
+        #expect(exact.value == SalesKYC(providers: 3, isExact: true, queueRead: 7, pending: 7, environment: "production", readAt: now))
         let page = SalesBuilder.kyc(SalesKYCInput(isSignedIn: true, environment: "production", pendingCount: 140,
                                                   queueRoles: Array(repeating: "PROVIDER", count: 100), readAt: now))
-        #expect(page.value?.providers == 100 && page.value?.isExact == false)
+        #expect(page.value?.providers == 100 && page.value?.isExact == false && page.value?.queueRead == 100)
+        // A count that moved between the two reads: "at least", among the people actually read.
+        let drift = SalesBuilder.kyc(SalesKYCInput(isSignedIn: true, environment: "production", pendingCount: 9,
+                                                   queueRoles: ["PROVIDER", "CUSTOMER"], readAt: now))
+        #expect(drift.value?.isExact == false && drift.value?.queueRead == 2)
         #expect(SalesBuilder.kyc(SalesKYCInput(isSignedIn: false, environment: nil)).reason != nil)
         #expect(SalesBuilder.kyc(SalesKYCInput(isSignedIn: true, environment: "production", loadError: "HTTP 503")).reason == "SafeBeauty could not be read: HTTP 503")
     }
@@ -341,9 +380,11 @@ struct SalesBriefTests {
             #expect(sales.map(\.id) == ["brief.sales|section|not-read"])
             #expect(sales.first?.bucket == .later && sales.first?.item.domain == .shared)
         }
+        // Failed CRM accounts: Money's own item (WorkTrack) is the one in This week; Sales adds one in Later.
         let failed = try worktrack(accounts: .failed("HTTP 502", at: readAt, needsSignIn: false))
-        #expect(section(failed).state == .unavailable("The CRM accounts could not be read: HTTP 502"))
-        #expect(desk(failed).open.filter { $0.id.hasPrefix("brief.sales|") }.count == 1)
+        #expect(section(failed).state == .neverRead("The CRM accounts could not be read: HTTP 502"))
+        let sales = desk(failed).open.filter { $0.id.hasPrefix("brief.sales|") }
+        #expect(sales.map(\.id) == ["brief.sales|section|not-read"] && sales.first?.bucket == .later)
     }
 
     @Test func limitNoticesAreCaveatsAndMakeNoSecondItem() throws {

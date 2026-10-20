@@ -9,6 +9,11 @@ import Foundation
 // `web/src/i18n/strings.ts:437, 439, 452, 639` and `:1533, 1535, 1548, 1735`). Dates are Solar Hijri. The texts are
 // written here, not in the catalog: the app has no Pashto catalog, and the drafts are in both languages whatever the
 // app's language. The App copies a draft to a concealed, local-only clipboard and never sends it.
+//
+// A name (the company's, the account's, the contact's) is set apart for the bidi algorithm (`isolated`): a Latin name
+// right before a Persian day would otherwise take the day's digits into its own left-to-right run, and the reader would
+// see the day on the far side of the name from its month. The Dari ended forms also keep a Persian word («تا») between
+// the name and the day, so the date stays whole even where the isolates are dropped.
 
 public enum SalesDraftKind: String, CaseIterable, Sendable, Identifiable {
     case followUp, renewalEnding, renewalEnded, trialEnding, trialEnded, welcome
@@ -28,6 +33,9 @@ public enum SalesDraftKind: String, CaseIterable, Sendable, Identifiable {
 
     /// Whether the text states the licence's last day.
     public var isDated: Bool { [.renewalEnding, .renewalEnded, .trialEnding, .trialEnded].contains(self) }
+
+    /// Whether the text states the company's or account's name: every kind but the request for a call.
+    public var usesName: Bool { self != .followUp }
 }
 
 public enum SalesDraftLanguage: String, CaseIterable, Sendable, Identifiable {
@@ -98,18 +106,25 @@ public enum SalesDraft {
         return f.string(from: date)
     }
 
+    /// A name set apart for the bidi algorithm (FIRST STRONG ISOLATE … POP DIRECTIONAL ISOLATE, U+2068 … U+2069): it keeps
+    /// its own direction and takes nothing around it into its run. Empty stays empty.
+    public static func isolated(_ text: String) -> String {
+        text.isEmpty ? text : "\u{2068}\(text)\u{2069}"
+    }
+
     /// The draft, or nil when a fact it needs is missing or no longer holds (no name, no last day, a licence that does
     /// not allow that kind today).
     public static func text(_ kind: SalesDraftKind, language: SalesDraftLanguage, facts: SalesDraftFacts) -> String? {
-        let name = facts.name.trimmingCharacters(in: .whitespacesAndNewlines)
-        let contact = facts.contact?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
+        let trimmed = facts.name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let name = isolated(trimmed)
+        let contact = facts.contact?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty.map(isolated)
         var date = ""
         if kind.isDated {
             guard let license = facts.license, datedKind(for: license, today: facts.today) == kind,
                   let last = license.expiresAt, let d = day(last, language: language) else { return nil }
             date = d
         }
-        if kind != .followUp, name.isEmpty { return nil }
+        if kind.usesName, trimmed.isEmpty { return nil }
         let dari = language == .dari
         // «سلام» is the same word in both languages. A company's name is never a greeting.
         let greeting = "سلام" + (contact.map { " " + $0 } ?? "") + "،"
@@ -124,7 +139,7 @@ public enum SalesDraft {
         case (.renewalEnding, false):
             "د \(name) د ورک‌ټرک جواز تر \(date) پورې اعتبار لري. د جواز د نوي کولو لپاره مهرباني وکړئ زموږ سره اړیکه ونیسئ یا همدې پیغام ته ځواب راکړئ."
         case (.renewalEnded, true):
-            "آخرین روز اعتبار لایسنس ورک‌ترک \(name) \(date) بود. برای تمدید لایسنس، لطفاً با ما تماس بگیرید یا به همین پیام جواب دهید."
+            "لایسنس ورک‌ترک \(name) تا \(date) اعتبار داشت. برای تمدید لایسنس، لطفاً با ما تماس بگیرید یا به همین پیام جواب دهید."
         case (.renewalEnded, false):
             "د \(name) د ورک‌ټرک د جواز وروستۍ ورځ \(date) وه. د جواز د نوي کولو لپاره مهرباني وکړئ زموږ سره اړیکه ونیسئ یا همدې پیغام ته ځواب راکړئ."
         case (.trialEnding, true):
@@ -132,7 +147,7 @@ public enum SalesDraft {
         case (.trialEnding, false):
             "د \(name) د ورک‌ټرک ازمایښتي موده تر \(date) پورې ده. که پوښتنه لرئ یا د پلان په ټاکلو کې مرسته غواړئ، همدې پیغام ته ځواب راکړئ."
         case (.trialEnded, true):
-            "آخرین روز دورهٔ آزمایشی ورک‌ترک \(name) \(date) بود. اگر سؤالی دارید یا برای انتخاب پلان کمک می‌خواهید، به همین پیام جواب دهید."
+            "دورهٔ آزمایشی ورک‌ترک \(name) تا \(date) ادامه داشت. اگر سؤالی دارید یا برای انتخاب پلان کمک می‌خواهید، به همین پیام جواب دهید."
         case (.trialEnded, false):
             "د \(name) د ورک‌ټرک د ازمایښتي مودې وروستۍ ورځ \(date) وه. که پوښتنه لرئ یا د پلان په ټاکلو کې مرسته غواړئ، همدې پیغام ته ځواب راکړئ."
         case (.welcome, true):

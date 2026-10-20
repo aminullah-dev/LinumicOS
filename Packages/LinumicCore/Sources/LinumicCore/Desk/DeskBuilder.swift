@@ -552,6 +552,12 @@ public enum DeskAgentBrief {
         .siteMessages: "پیام‌های وب‌سایت", .worktrack: "مشتریان WorkTrack", .licences: "لایسنس‌ها", .money: "پول", .sales: "فروش",
     ]
 
+    /// Whether the item comes from a section whose lines name customers: its dismiss reason, which is synced as typed,
+    /// should not name one either (Sales items take a fixed reason, `SalesDismissReason`).
+    public static func namesCustomers(_ item: DeskItem) -> Bool {
+        if case .brief(let kind) = item.origin { customerSections[kind] != nil } else { false }
+    }
+
     public static func text(for item: DeskItem, now: Date) -> String {
         let ledger: String = {
             if case .ledger(let id) = item.origin, let s = LedgerAllowList.priorities.first(where: { $0.id == id }) { return s.displayPath }

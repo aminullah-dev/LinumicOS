@@ -113,11 +113,39 @@ public struct SalesSignup: Equatable, Sendable, Identifiable {
 
 /// A licence ending within 30 days or ended, from the company list. Already a Desk item of the WorkTrack section.
 public struct SalesRenewal: Equatable, Sendable, Identifiable {
+    /// What a row may say about the days.
+    public enum Timing: Equatable, Sendable {
+        /// ACTIVE, and its last day is today (0) or this many days ahead.
+        case daysLeft(Int)
+        /// The last day is past, whatever the status.
+        case ended(daysAgo: Int)
+        /// Not ACTIVE (SUSPENDED, EXPIRED) while its last day is still ahead: it is not in force, so no days are "left".
+        case notInForce
+        /// No last day, or one that is not a real day.
+        case dayUnknown
+    }
+
     public var company: WTCompany
     /// Days from Kabul's today to the last day, counted again now (not the server's count of up to 6 hours ago); nil
     /// for a date that is not a real day.
     public var daysLeft: Int?
     public var id: String { company.companyId }
+
+    public var timing: Timing {
+        guard let days = daysLeft else { return .dayUnknown }
+        if days < 0 { return .ended(daysAgo: -days) }
+        return company.license.status == .active ? .daysLeft(days) : .notInForce
+    }
+}
+
+/// The renewals of one company list, with where and when it was read (not the CRM accounts': renewals are known
+/// without them).
+public struct SalesRenewals: Sendable {
+    public var list: SalesList<SalesRenewal>
+    /// Companies ending or ended with a scheduled deletion: no one to call, so not listed (the WorkTrack section keeps them).
+    public var deletionsLeftOut: Int
+    public var environment: String
+    public var readAt: Date
 }
 
 /// The WorkTrack part: follow-ups, accounts with no next step, signups without a CRM account.
@@ -142,6 +170,9 @@ public struct SalesWorkTrack: Sendable {
     public var companiesAtLimit: Bool
 
     public var isProduction: Bool { environment == WorkTrackEnvironment.production.rawValue }
+    /// Every CRM account was read: none set aside, the 2000 limit not reached. When false, a follow-up list or count can
+    /// only be "at least", and an empty one is unknown, not "none".
+    public var accountsComplete: Bool { accountsSkipped == 0 && !accountsAtLimit }
     /// The vendor console, production only.
     public var console: URL? { isProduction ? WorkTrackEnvironment.production.console : nil }
 
@@ -207,6 +238,8 @@ public struct SalesKYC: Sendable, Equatable {
     public var providers: Int
     /// The queue read holds every person waiting (its size equals Firestore's count); otherwise "at least".
     public var isExact: Bool
+    /// How many people the queue read holds (at most `SafeBeautyAdminClient.queueLimit`).
+    public var queueRead: Int
     /// Everyone waiting for KYC, providers or not.
     public var pending: Int
     public var environment: String
@@ -218,7 +251,7 @@ public struct SalesReport: Sendable {
     /// Kabul's date at `builtAt`, `YYYY-MM-DD`.
     public var kabulToday: String
     public var worktrack: SalesWorkTrackPart
-    public var renewals: SalesRead<SalesList<SalesRenewal>>
+    public var renewals: SalesRead<SalesRenewals>
     public var siteMessages: SalesRead<SalesSiteMessages>
     public var kyc: SalesRead<SalesKYC>
 }
@@ -228,8 +261,9 @@ public enum SalesBuilder {
     public static let newSignupDays = 14
     /// "Due soon" reaches this many days ahead (`crm.ts:260-262`).
     public static let soonDays = 7
-    /// Renewals and trials ending within this many days are listed (the WorkTrack section's window).
-    public static let renewalWindow = 30
+    /// Renewals and trials ending within this many days are listed: the WorkTrack section's own window, so a new trial is
+    /// "on the Desk as a trial ending" exactly when that section has its item.
+    public static let renewalWindow = DailyBriefBuilder.expiryWindowDays
     /// The role SafeBeauty gives a salon provider (`functions/lib/registration.js:39-41`).
     public static let providerRole = "PROVIDER"
 
@@ -304,19 +338,21 @@ public enum SalesBuilder {
         if let why { return (.unknown(why), .unknown(why)) }
 
         let byID = Dictionary(companies.map { ($0.companyId, $0) }, uniquingKeysWith: { first, _ in first })
-        var linked: Set<String> = []
+        // Every company an account links to. For a signup only: WorkTrack opens a WON account for a company on its first
+        // support ticket (`routes/support.ts:49-68`); while the company is still on its trial that is not a sale, so a
+        // trial with only that account is still a new signup. It does have an account, so it is never "without one".
+        var linked: Set<String> = [], linkedForSignup: Set<String> = []
         for a in accounts.rows {
             guard let id = a.companyId else { continue }
-            // WorkTrack opens a WON account for a company on its first support ticket (`routes/support.ts:49-68`). While
-            // the company is still on its trial that is not a sale, so it does not count as "has a CRM account".
-            if a.stage == .won, byID[id]?.isTrial == true { continue }
             linked.insert(id)
+            if a.stage == .won, byID[id]?.isTrial == true { continue }
+            linkedForSignup.insert(id)
         }
         let summary = WTCustomersSummary(companies: companies, window: renewalWindow)
         let onDesk = Set((summary.expiringSoon + summary.expired).map(\.companyId))
         var signups: [SalesSignup] = [], without: [WTCompany] = []
         // A company being deleted (only a scheduled deletion is reported, `services/vendor.ts:124-126`) is no one to call.
-        for c in companies where !c.isFlagged && c.deletion == nil && !linked.contains(c.companyId) {
+        for c in companies where !c.isFlagged && c.deletion == nil && !linkedForSignup.contains(c.companyId) {
             let reason: SalesSignup.Reason?
             if c.license.source == "SELF_SERVE" {
                 reason = .selfServe
@@ -329,7 +365,7 @@ public enum SalesBuilder {
             if let reason {
                 signups.append(SalesSignup(key: SalesKey.company(c.companyId), company: c, reason: reason,
                                            isOnDeskAsRenewal: onDesk.contains(c.companyId)))
-            } else {
+            } else if !linked.contains(c.companyId) {
                 without.append(c)
             }
         }
@@ -348,17 +384,20 @@ public enum SalesBuilder {
     // MARK: Renewals
 
     /// Licences ending within 30 days (ACTIVE) or ended, TEST and DUPLICATE left out, as the WorkTrack section reads them.
-    static func renewals(_ w: MoneyWorkTrackInput, today: String) -> SalesRead<SalesList<SalesRenewal>> {
+    /// A company with a scheduled deletion is no one to call, so it is counted, not listed (signups leave it out too).
+    static func renewals(_ w: MoneyWorkTrackInput, today: String) -> SalesRead<SalesRenewals> {
         guard w.isSignedIn else { return .unknown(L("Not signed in to WorkTrack customers, so renewals are unknown.")) }
         if let error = w.loadError { return .unknown(error) }
-        guard w.companiesReadAt != nil else { return .unknown(L("Signed in, but the company list has not been read yet.")) }
+        guard let readAt = w.companiesReadAt else { return .unknown(L("Signed in, but the company list has not been read yet.")) }
         let summary = WTCustomersSummary(companies: w.companies, window: renewalWindow)
         func row(_ c: WTCompany) -> SalesRenewal {
             SalesRenewal(company: c, daysLeft: c.license.expiresAt.flatMap { WorkTrackDates.daysBetween(today, $0) })
         }
         let ended = summary.expired.sorted { ($0.license.expiresAt ?? "", $1.name) > ($1.license.expiresAt ?? "", $0.name) }
-        return .read(SalesList(rows: ended.map(row) + summary.expiringSoon.map(row),
-                               isComplete: w.companies.count < MoneyBuilder.revenueCompanyLimit))
+        let all = ended + summary.expiringSoon
+        let listed = all.filter { $0.deletion == nil }
+        return .read(SalesRenewals(list: SalesList(rows: listed.map(row), isComplete: w.companies.count < MoneyBuilder.revenueCompanyLimit),
+                                   deletionsLeftOut: all.count - listed.count, environment: w.environment ?? "?", readAt: readAt))
     }
 
     // MARK: Website messages and KYC
@@ -381,8 +420,8 @@ public enum SalesBuilder {
             if let error = k.loadError { return .unknown(LF("SafeBeauty could not be read: %@", error)) }
             return .unknown(L("Signed in to SafeBeauty, but its queues have not been read yet."))
         }
-        return .read(SalesKYC(providers: roles.count { $0 == providerRole }, isExact: roles.count == pending, pending: pending,
-                              environment: k.environment ?? "?", readAt: readAt))
+        return .read(SalesKYC(providers: roles.count { $0 == providerRole }, isExact: roles.count == pending, queueRead: roles.count,
+                              pending: pending, environment: k.environment ?? "?", readAt: readAt))
     }
 }
 

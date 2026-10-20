@@ -1,6 +1,9 @@
 import Foundation
 import Testing
 @testable import LinumicCore
+#if canImport(CoreText)
+import CoreText
+#endif
 
 // Reminder drafts: only facts that were read, Solar Hijri dates, and no dated draft a licence does not allow today.
 // Names are made up (SAMPLE). The month names were checked with Foundation on macOS (Calendar(identifier: .persian),
@@ -39,26 +42,26 @@ struct SalesDraftTests {
         let ending = license(.silver, .active, "2026-11-04")
         #expect(SalesDraft.text(.renewalEnding, language: .dari, facts: facts(ending)) == """
             سلام،
-            لایسنس ورک‌ترک Kabul Tailors (SAMPLE) تا ۱۳ عقرب ۱۴۰۵ اعتبار دارد. برای تمدید لایسنس، لطفاً با ما تماس بگیرید یا به همین پیام جواب دهید.
+            لایسنس ورک‌ترک \u{2068}Kabul Tailors (SAMPLE)\u{2069} تا ۱۳ عقرب ۱۴۰۵ اعتبار دارد. برای تمدید لایسنس، لطفاً با ما تماس بگیرید یا به همین پیام جواب دهید.
             با احترام،
             لینومیک
             """)
         #expect(SalesDraft.text(.renewalEnding, language: .pashto, facts: facts(ending, contact: "Ahmad")) == """
-            سلام Ahmad،
-            د Kabul Tailors (SAMPLE) د ورک‌ټرک جواز تر ۱۳ لړم ۱۴۰۵ پورې اعتبار لري. د جواز د نوي کولو لپاره مهرباني وکړئ زموږ سره اړیکه ونیسئ یا همدې پیغام ته ځواب راکړئ.
+            سلام \u{2068}Ahmad\u{2069}،
+            د \u{2068}Kabul Tailors (SAMPLE)\u{2069} د ورک‌ټرک جواز تر ۱۳ لړم ۱۴۰۵ پورې اعتبار لري. د جواز د نوي کولو لپاره مهرباني وکړئ زموږ سره اړیکه ونیسئ یا همدې پیغام ته ځواب راکړئ.
             په درنښت،
             لینومیک
             """)
         let ended = license(.trial, .active, "2026-10-19")
         #expect(SalesDraft.text(.trialEnded, language: .dari, facts: facts(ended)) == """
             سلام،
-            آخرین روز دورهٔ آزمایشی ورک‌ترک Kabul Tailors (SAMPLE) ۲۷ میزان ۱۴۰۵ بود. اگر سؤالی دارید یا برای انتخاب پلان کمک می‌خواهید، به همین پیام جواب دهید.
+            دورهٔ آزمایشی ورک‌ترک \u{2068}Kabul Tailors (SAMPLE)\u{2069} تا ۲۷ میزان ۱۴۰۵ ادامه داشت. اگر سؤالی دارید یا برای انتخاب پلان کمک می‌خواهید، به همین پیام جواب دهید.
             با احترام،
             لینومیک
             """)
         #expect(SalesDraft.text(.welcome, language: .pashto, facts: facts()) == """
             سلام،
-            زه د لینومیک له خوا، چې ورک‌ټرک جوړوي، درته پیغام لیکم. که په Kabul Tailors (SAMPLE) کې د ورک‌ټرک د پیلولو لپاره مرسته غواړئ، همدې پیغام ته ځواب راکړئ.
+            زه د لینومیک له خوا، چې ورک‌ټرک جوړوي، درته پیغام لیکم. که په \u{2068}Kabul Tailors (SAMPLE)\u{2069} کې د ورک‌ټرک د پیلولو لپاره مرسته غواړئ، همدې پیغام ته ځواب راکړئ.
             په درنښت،
             لینومیک
             """)
@@ -68,7 +71,46 @@ struct SalesDraftTests {
             با احترام،
             لینومیک
             """, "a blank contact is no contact; a company name is never a greeting")
+        let licenceEnded = license(.gold, .expired, "2026-10-01")
+        #expect(SalesDraft.text(.renewalEnded, language: .dari, facts: facts(licenceEnded))?.contains(
+            "لایسنس ورک‌ترک \u{2068}Kabul Tailors (SAMPLE)\u{2069} تا ۹ میزان ۱۴۰۵ اعتبار داشت.") == true)
     }
+
+    /// The bug this guards against: a Latin name right before a Persian day took the day's digits into its own
+    /// left-to-right run («ورک‌ترک ۲۷ Kabul Tailors (SAMPLE) میزان ۱۴۰۵»). Every name is set apart, and every date is drawn
+    /// in one piece and in reading order, whatever the name.
+    @Test(arguments: ["Kabul Tailors (SAMPLE)", "خیاطی Kabul", "Tailors 2026", "خیاطی کابل (نمونه)"])
+    func namesNeverSplitADate(name: String) throws {
+        let licences: [SalesDraftKind: WTLicense] = [
+            .renewalEnding: license(.gold, .active, "2026-11-19"), .renewalEnded: license(.gold, .expired, "2026-10-01"),
+            .trialEnding: license(.trial, .active, "2026-10-20"), .trialEnded: license(.trial, .suspended, "2026-10-10"),
+        ]
+        for kind in SalesDraftKind.allCases {
+            for language in SalesDraftLanguage.allCases {
+                let l = licences[kind]
+                let text = try #require(SalesDraft.text(kind, language: language, facts: facts(l, contact: "Ahmad", name: name)), "\(kind) \(language)")
+                #expect(text.hasPrefix("سلام \u{2068}Ahmad\u{2069}،"), "the contact is set apart")
+                if kind.usesName { #expect(text.contains("\u{2068}\(name)\u{2069}"), "\(kind) \(language): the name is set apart") }
+                #if canImport(CoreText)
+                let body = text.components(separatedBy: "\n")[1]
+                if kind.usesName { #expect(BidiCheck.isWhole(name, in: body), "\(kind) \(language): \(name)") }
+                if let last = l?.expiresAt, let date = SalesDraft.day(last, language: language) {
+                    #expect(BidiCheck.isWhole(date, in: body), "\(kind) \(language): the date is split by \(name)")
+                    #expect(BidiCheck.readsRightToLeft(date, in: body), "\(kind) \(language): the day is right of its month")
+                }
+                #endif
+            }
+        }
+    }
+
+    #if canImport(CoreText)
+    /// The check can fail: the text as it was before names were set apart.
+    @Test func theBidiCheckSeesASplitDate() {
+        let before = "آخرین روز دورهٔ آزمایشی ورک‌ترک Kabul Tailors (SAMPLE) ۲۷ میزان ۱۴۰۵ بود."
+        #expect(!BidiCheck.isWhole("۲۷ میزان ۱۴۰۵", in: before))
+        #expect(BidiCheck.isWhole("۲۷ میزان ۱۴۰۵", in: "آخرین روز دورهٔ آزمایشی ورک‌ترک \u{2068}Kabul Tailors (SAMPLE)\u{2069} ۲۷ میزان ۱۴۰۵ بود."))
+    }
+    #endif
 
     @Test func everyKindAndLanguageSaysOnlyWhatWasRead() throws {
         let cases: [(SalesDraftKind, WTLicense?)] = [
@@ -124,9 +166,60 @@ struct SalesDraftTests {
         #expect(SalesDraft.text(.renewalEnding, language: .dari, facts: facts(stale.license)) == nil)
     }
 
+    @Test func onlyTheCallNamesNoOne() {
+        #expect(SalesDraftKind.allCases.filter { !$0.usesName } == [.followUp])
+        let call = SalesDraft.text(.followUp, language: .dari, facts: facts()) ?? ""
+        #expect(!call.contains("Kabul"), "Facts used lists the name only for the kinds that state it")
+    }
+
     @Test func aMissingFactMeansNoDraft() {
         #expect(SalesDraft.text(.welcome, language: .dari, facts: facts(name: " ")) == nil)
         #expect(SalesDraft.text(.renewalEnding, language: .dari, facts: facts(nil)) == nil, "no licence read")
         #expect(SalesDraft.text(.followUp, language: .pashto, facts: facts(name: "")) != nil, "a call needs no name")
     }
 }
+
+#if canImport(CoreText)
+/// How CoreText draws one line of a Dari or Pashto draft, right to left.
+enum BidiCheck {
+    /// The line's runs in visual order (left to right), each as its range in the text.
+    static func visualRuns(_ line: String) -> [NSRange] {
+        var direction = CTWritingDirection.rightToLeft
+        let style = withUnsafeBytes(of: &direction) { raw in
+            var setting = CTParagraphStyleSetting(spec: .baseWritingDirection, valueSize: MemoryLayout<CTWritingDirection>.size,
+                                                  value: raw.baseAddress!)
+            return CTParagraphStyleCreate(&setting, 1)
+        }
+        let attributes: [NSAttributedString.Key: Any] = [
+            NSAttributedString.Key(kCTParagraphStyleAttributeName as String): style,
+            NSAttributedString.Key(kCTFontAttributeName as String): CTFontCreateWithName("Helvetica" as CFString, 14, nil),
+        ]
+        let ct = CTLineCreateWithAttributedString(NSAttributedString(string: line, attributes: attributes))
+        return (CTLineGetGlyphRuns(ct) as? [CTRun] ?? []).map {
+            let r = CTRunGetStringRange($0)
+            return NSRange(location: r.location, length: r.length)
+        }
+    }
+
+    /// The runs that draw `part`, leftmost first, and whether nothing else is drawn between them.
+    private static func span(_ part: String, in line: String) -> (runs: [NSRange], target: NSRange, whole: Bool)? {
+        let target = (line as NSString).range(of: part)
+        guard target.location != NSNotFound else { return nil }
+        let runs = visualRuns(line)
+        let touching = runs.indices.filter { NSIntersectionRange(runs[$0], target).length > 0 }
+        guard let first = touching.first, let last = touching.last else { return nil }
+        let inner = first + 1 < last ? Array(runs[(first + 1)..<last]) : []
+        let whole = inner.allSatisfy { NSIntersectionRange($0, target).length == $0.length }
+        return (Array(runs[first...last]), target, whole)
+    }
+
+    /// `part` is drawn in one piece: no run from outside it is drawn between its runs.
+    static func isWhole(_ part: String, in line: String) -> Bool { span(part, in: line)?.whole ?? false }
+
+    /// `part` (a date: day, month, year) reads right to left: its first character is drawn rightmost, its last leftmost.
+    static func readsRightToLeft(_ part: String, in line: String) -> Bool {
+        guard let s = span(part, in: line), let left = s.runs.first, let right = s.runs.last else { return false }
+        return NSLocationInRange(s.target.location, right) && NSLocationInRange(NSMaxRange(s.target) - 1, left)
+    }
+}
+#endif

@@ -101,6 +101,11 @@ struct SalesReadOnlyTests {
         #expect(read.accounts.value?.rows.count == 21)
         let contacts = try await client.crmContacts(accountId: " acc_lead_today ")
         #expect(contacts.rows.map(\.id) == ["con_1", "con_2"] && contacts.rows.first?.phone == "+93 700 000 001")
+        #expect(contacts.skipped == 1, "a contact of another account is dropped, and counted")
+        #expect(contacts.rows.map(\.primary) == [true, false], "no primary field: false, as the server's default")
+        for never in ["sample@example.invalid", "SENTINEL-CONTACT-NOTES", "acc_other"] {
+            #expect(!String(describing: contacts).contains(never), "\(never) is never held")
+        }
         let shape = try await client.crmAccountsShape()
         #expect(shape.rows == 21 && shape.unexpectedKeys == ["legacyPhone"])
 
