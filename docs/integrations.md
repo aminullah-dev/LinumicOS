@@ -271,6 +271,12 @@ only when explicit credentials and authorization are provided.
   cursor). Only id, name and `companyId` of an account and id, account, number, status, amount, dates and method of an
   invoice are decoded; an invoice that can't be decoded is set aside and counted. The client's default session keeps no
   URL cache. See [money.md](money.md).
+- **Sales (Phase 5, read-only):** the same accounts read now also decodes `stage`, `nextActionAt` and `nextAction`
+  (`services/crm.ts:25-49`); a bad value is "unknown" for that field and never sets the row aside. Two more GETs, each
+  made only when the owner asks: `GET /vendor/crm/contacts?accountId=<id>` for one account's contacts (an empty id is
+  refused before any request, since the server would answer every contact; the value is percent-encoded so an id can't
+  change the query), and one `GET /vendor/crm/accounts` for the response-shape check, kept as key names, types and counts
+  (`WTShapeReport`). Both go through `WorkTrackSalesReading`, which has no other method. See [sales.md](sales.md).
 - **Not in this phase:** company deletion, purge, TEST/DUPLICATE marks, plan prices, CRM writes. None of these calls
   exist in the client.
 

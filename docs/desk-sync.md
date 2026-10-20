@@ -38,7 +38,9 @@ Before anything is sent the app checks every row against the key and token patte
 (`ContinuityBundle.forbiddenPatterns`); a match is not sent and is listed in Settings → Account as not accepted. The
 server checks the same patterns again. Ledger lines can name people: the withholding catches addresses, numbers and
 keys, not names. Dismiss reasons and the owner's own titles, sources and evidence are free text and are stored as he
-wrote them; only the Daily Brief's customer ids are hashed and its titles never sent. Turning off "Send the ledgers'
+wrote them, except on Sales items, whose dismiss reason is one of five fixed tokens (`sales.reason.*`, docs/sales.md):
+the app refuses any other and sends anything else as "another reason". Only the Daily Brief's customer ids are hashed
+(Sales ids carry a hash of their own) and its titles never sent. Turning off "Send the ledgers'
 lines for iPhone and iPad" (Settings → Account, Mac) sends an empty reading once, marked as turned off, which empties
 the cloud copy; turning it on again reads the ledgers and sends a new reading.
 

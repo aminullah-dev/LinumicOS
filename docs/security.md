@@ -23,6 +23,7 @@ post as Linumic, so it is treated as a production system.
 | Desk sync (Phase 3) | A customer's name or a secret in Supabase, one device silently writing over the other, a lost file or a restored server deleting the owner's entries, a direct table write skipping the version check, an old app breaking on a new event kind | Admin-only RLS, no anon access; writes only through four SECURITY DEFINER RPCs that check `private.is_admin()` and refuse a stale version (the row comes back and both sides are shown); a version trigger and an audit trigger on the owner's tables; rows never deleted (an undo is a tombstone), and a row missing on either side is never read as deleted; `desk_state` holds no titles and the server refuses a WorkTrack, website or licence id in clear (a hash instead); a row that reads as a key is held back by the app and refused by the server; ledger lines without their detail, and without their text when they hold an address, a phone number or a key; the Mac's ledger lines can be turned off; obligation events only for an app that asks for them (docs/desk-sync.md) |
 | Continuity export | A copy of the company's records readable by whoever finds the file, a secret carried off the Mac in it, a passphrase stored next to it, a "verified" export that does not open | age (scrypt, work factor 18) with a passphrase typed each time and never stored (no file, no Keychain, no log); the document holds no credential, key file or licence key text, and is searched for key and token patterns before anything is written (a match stops the export); written only into the folder the owner chose, never over a file; read back, decrypted and compared before it is recorded; `continuity.json` holds file names, sizes, hashes and dates only; no network |
 | Money (revenue, invoices, salon balances, costs) | A write to WorkTrack, SafeBeauty or Supabase, customer records or amounts on disk or in the cloud, a new finance key, a wrong number passing for a fact | Read-only clients (three WorkTrack GETs, two Firestore aggregation POSTs, the existing token refresh) behind protocols with no write; a URLProtocol test of every request the Core readers send; an ephemeral session with no URL cache for WorkTrack and SafeBeauty; CRM notes not decoded; nothing written to disk or Supabase; Desk lines with counts, amounts only in the detail, ids without customer ids; `SecretKey.allCases` pinned by a test; Unknown with a reason, never 0 |
+| Sales (who to call: CRM follow-ups, signups, renewals, website messages, KYC count) | A write to the WorkTrack CRM (the server has no `updatedAt` precondition, and a partial PUT resets fields), a customer's name or id in Supabase through Desk sync (ids, or a typed dismiss reason), a name on the lock screen or in the agent brief, a draft sent or saying something that was not read, a phone number left on the clipboard or in clipboard history | Read-only client protocol (`WorkTrackSalesReading`: two GETs, made only when the owner asks) on top of Money's reading; a URLProtocol test of every request and a source scan for the client's only non-GET (the licence PUT); an empty account id refused before any request; Desk ids carry `SalesKey` hashes; dismiss reasons on Sales items are five fixed tokens, refused otherwise and sanitised before sync; the notification folds Sales lines into counts; drafts only from facts read, recounted from Kabul's today, copied through one long-lived `ClipboardGuard` (concealed and transient on macOS, local-only on iOS, cleared after 2 minutes), never sent; numbers not selectable; nothing written to disk; Unknown with a reason, never empty |
 | Assistant | Invented status, prompt injection from ingested content | Grounded answers with verified/derived/unknown labels. Ingested text is treated as data, and actions are only proposals. |
 
 ## MVP (local app)
@@ -250,7 +251,8 @@ post as Linumic, so it is treated as a production system.
   `URLSessionTransport.uncached` (ephemeral, no URL cache, no cookies or credential storage, caches ignored), so a CRM
   answer, which carries whole customer records (notes, cities, names), is never stored in the on-disk URL cache. Only
   the fields Money shows are decoded (invoice id, account, number, status, amount, dates, method; account id, name,
-  company id): `notes`, `period`, `city`, `nextAction` cross the wire but are never held. Money figures live in memory
+  company id): `notes`, `period`, `city` cross the wire but are never held (since Phase 5 an account's stage,
+  next-action date and note are decoded for Sales, below). Money figures live in memory
   only and are rebuilt on each render; nothing is written to disk or sent to Supabase. Its Desk lines hold counts, not
   amounts (the morning notification prints line texts), their ids are fixed `money.*` strings with no company, salon,
   account or invoice id, and "Copy agent brief" carries the id only.
@@ -260,6 +262,28 @@ post as Linumic, so it is treated as a production system.
     methods that call these readers (`WorkTrackModel.refresh`, `SafeBeautyModel.refreshBalances`) are **not** run
     under the guard: their money calls are exactly the guarded readers, but the rest of `refresh` (companies, plans,
     audit) is outside this test.
+- **Sales (since Phase 5):** no new key, no new job, no Supabase migration. What Sales reads: Money's own reading
+  (`GET /v1/vendor/companies`, `/crm/accounts`, `/crm/invoices`, `/revenue`), now also decoding an account's `stage`,
+  `nextActionAt` and `nextAction`; the website messages and the SafeBeauty KYC queue the app already holds (roles only);
+  and two GETs made only when the owner asks: `GET /v1/vendor/crm/contacts?accountId=<id>` (an empty id is refused in the
+  client, since the server would answer every contact) and one `GET /v1/vendor/crm/accounts` for the shape check, kept as
+  key names, types and counts. The only non-GET request is the existing Firebase token refresh. No CRM write exists in the
+  client; Linumic OS never writes to the CRM. **What never leaves the device:** account and contact names, phone numbers,
+  stages, dates and the owner's next-action notes stay in memory on this device (page, Brief, Desk detail). Desk ids
+  carry a hash (`SalesKey`), never a CRM or company id; a Sales item's dismiss reason is one of five fixed tokens
+  (`sales.reason.*`), so the synced `desk_state.reason` and its `audit_events` history name no customer; the morning
+  notification folds Sales lines into counts; "Copy agent brief" carries the hash only. `notes`, `city`, `industry`,
+  `source`, `employeesEstimate`, `createdBy`, `updatedBy` and contact `notes` are never decoded. Reminder drafts (Dari,
+  Pashto) and phone numbers are only copied, through one `ClipboardGuard` the WorkTrack model keeps (concealed and
+  transient on macOS, local-only and expiring on iOS, cleared after 2 minutes); nothing is sent to a customer. The
+  owner's read-only proof query for Supabase is in docs/sales.md.
+  - **Scope of the read-only proof:** `SalesReadOnlyTests` runs `WorkTrackMoneyReader.read`, `crmContacts(accountId:)`
+    and `crmAccountsShape()` over a URLSession whose only protocol records every request, against the emulator address,
+    and fails on anything but GETs without a body to exactly revenue, CRM accounts, CRM invoices and CRM contacts (the
+    contacts request with exactly one `accountId`, no other request with a query) and the token refresh; negative controls
+    show it catches POST, PUT, PATCH, DELETE, contacts without an account, the dashboard route and a production host. The
+    App methods (`WorkTrackModel.contacts(forAccount:)`, `checkCRMShape()`) call exactly these and are not run under the
+    guard.
 - **No secrets in source or Git.** `.gitignore` blocks `.env*`, `*.p8`, `*.p12`,
   `*.pem`, `*.key`, keystores, provisioning profiles and service-account JSON.
   Check `git diff --cached` before each commit.

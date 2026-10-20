@@ -140,8 +140,9 @@ signs in there separately (sessions are per device).
 
 - Nothing Money shows is written to disk: no file, no cache. The WorkTrack and SafeBeauty clients use an ephemeral
   session with no URL cache (`URLSessionTransport.uncached`), because the CRM answers carry whole customer records.
-- CRM `notes`, `period`, `city`, `nextAction` and the other fields cross the wire (the API has no field mask) but are
-  not decoded, so they are never held.
+- CRM `notes`, `period`, `city` and the other fields cross the wire (the API has no field mask) but are not decoded,
+  so they are never held. Since Phase 5 an account's `stage`, `nextActionAt` and `nextAction` are decoded too, for Sales,
+  and stay in memory on this device ([sales.md](sales.md)).
 - Desk marks on Money items carry ids, kinds, times and hashes only; Money adds nothing to Supabase.
 - No key was added: `SecretKey.allCases` is pinned by a test.
 

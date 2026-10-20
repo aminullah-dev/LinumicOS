@@ -23,7 +23,7 @@ credentials already in this device's Keychain.
 | Platforms | 30 min | GitHub token | |
 | Release Center | 30 min | any of ASC key, Play account, GitHub | |
 | Licence sync | 30 min | cloud sign-in | |
-| WorkTrack customers | 6 h | vendor sign-in | several reads per company, so not more often; then Money's revenue, CRM accounts and CRM invoices (GET), one at a time, so invoices are filtered with the TEST marks of the same reading; a Money failure makes the run partial, not failed ([money.md](money.md)) |
+| WorkTrack customers | 6 h | vendor sign-in | several reads per company, so not more often; then Money's revenue, CRM accounts and CRM invoices (GET), one at a time, so invoices are filtered with the TEST marks of the same reading; a Money failure makes the run partial, not failed ([money.md](money.md)). Sales is built from the same reading (no job of its own); its Read now runs this refresh and Website messages ([sales.md](sales.md)) |
 | Operations | 30 min | sign-in per product | VELRO counts are expensive; SafeBeauty counts are billed; also SafeBeauty's balance totals for Money (two aggregation queries, after the snapshot, separately; a failure makes the run partial) |
 | Website messages | 30 min | WordPress application password | |
 | Keys & Backups | 1 h | a granted folder (Mac only) | attributes only, never contents |
