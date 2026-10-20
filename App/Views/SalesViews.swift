@@ -13,8 +13,8 @@ struct SalesView: View {
 
     var body: some View {
         #if DEBUG
-        // Debug-only screenshot aid: `-LCCSalesSample skipped` (with `-LCCScreen sales`) shows made-up data; nothing is
-        // read, and the app starts no job (LinumicOSApp).
+        // Debug-only screenshot aid: `-LCCSalesSample skipped` (with `-LCCScreen sales`; every sample is listed at
+        // SalesPreviewData) shows made-up data; nothing is read, and the app starts no job (LinumicOSApp).
         if let sample = SalesPreviewData.launchSample {
             SalesPage(report: sample)
         } else {
@@ -158,6 +158,7 @@ struct SalesPage: View {
         }
         if !wt.later.isEmpty {
             SalesCard(title: "Later", symbol: "calendar.badge.clock", tint: .secondary, count: wt.later.count, atLeast: atLeast, caption: source) {
+                ForEach(missing, id: \.self) { SalesNote($0, symbol: "exclamationmark.triangle", tint: .orange) }
                 ForEach(wt.later) { f in row(f.account, due: f.due, wt: wt) }
             }
         }
@@ -179,11 +180,8 @@ struct SalesPage: View {
             case .unknown(let reason):
                 SalesUnknownText(reason: reason)
             case .read(let list):
-                if list.rows.isEmpty { SalesEmptyText("No new or self-serve company without a CRM account.") }
-                if !list.isComplete {
-                    SalesNote(String(localized: "WorkTrack reads at most \(MoneyBuilder.revenueCompanyLimit) companies; signups past that are unknown."),
-                              symbol: "exclamationmark.triangle", tint: .orange)
-                }
+                SalesCompleteness(isEmpty: list.rows.isEmpty, empty: "No new or self-serve company without a CRM account.",
+                                  missing: list.isComplete ? [] : [String(localized: "WorkTrack reads at most \(MoneyBuilder.revenueCompanyLimit) companies; signups past that are unknown.")])
                 ForEach(list.rows) { s in
                     SalesSignupRow(signup: s, today: report.kabulToday, console: wt.console, isHighlighted: highlighted == s.key).id(s.key)
                 }
@@ -275,7 +273,8 @@ struct SalesPage: View {
         if let r = report.worktrack.reason { reasons.append(r) }
         if let wt = report.worktrack.value {
             reasons += SalesBrief.caveats(wt)
-            if let r = wt.signups.reason, !reasons.contains(r) { reasons.append(r) }
+            // When accounts were set aside, their caveat already says whether a company has a CRM account is unknown.
+            if wt.accountsSkipped == 0, let r = wt.signups.reason, !reasons.contains(r) { reasons.append(r) }
         }
         for r in [report.renewals.reason, report.siteMessages.reason, report.kyc.reason].compactMap({ $0 }) where !reasons.contains(r) {
             reasons.append(r)
@@ -871,7 +870,8 @@ private struct SalesCard<Content: View>: View {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Label { Text(title) } icon: { Image(systemName: symbol).foregroundStyle(tint) }
                     .font(.headline)
-                if let count {
+                // "At least 0" says nothing: the card shows Unknown with its reason instead.
+                if let count, !(atLeast && count == 0) {
                     Text(verbatim: atLeast ? String(localized: "At least \(count.formatted())") : count.formatted())
                         .font(.caption.weight(.semibold)).monospacedDigit()
                         .padding(.horizontal, 8).padding(.vertical, 2)
@@ -981,9 +981,9 @@ private struct SalesCompleteness: View {
 // MARK: - Previews and the debug screenshot aid
 
 #if DEBUG
-/// Made-up data (SAMPLE, نمونه) for the previews and the debug-only `-LCCSalesSample <read|skipped|unknown|demo>` launch
-/// argument (with `-LCCScreen sales`, and `-LCCSalesScroll` to scroll). Nothing is read: no model, no request, and the
-/// app starts no job.
+/// Made-up data (SAMPLE, نمونه) for the previews and the debug-only
+/// `-LCCSalesSample <read|skipped|skipped-empty|limit|unknown|demo>` launch argument (with `-LCCScreen sales`, and
+/// `-LCCSalesScroll` to scroll). Nothing is read: no model, no request, and the app starts no job.
 enum SalesPreviewData {
     /// 2026-10-20 12:30 in Kabul.
     static let now = ISO8601DateFormatter().date(from: "2026-10-20T08:00:00Z")!
@@ -1017,16 +1017,27 @@ enum SalesPreviewData {
         return #"{"companyId":"\#(id)","name":"\#(name)","status":"ACTIVE","license":{"plan":"\#(tier)","deviceLimit":20,"status":"\#(status)","expiresAt":\#(end),"enforceDevices":false,"enforcePlan":false,"employeeLimit":null,"extraFeatures":[],"source":"\#(source)"},"devicesInUse":0,"employeeCount":0,"employeesCounted":0,"employeeCap":20,"daysUntilExpiry":\#(days),"createdAt":"\#(createdAt)","lastActivityAt":null,"deletion":null,"flags":null,"duplicates":[],"attention":[]}"#
     }
 
-    static let companies: [WTCompany] = {
-        let rows = [
-            company("c_kabul", "Kabul Tailors (SAMPLE)", expiresAt: "2026-11-04"),
-            company("c_herat", "خیاطی هرات (نمونه)", tier: "TRIAL", expiresAt: "2026-10-27", createdAt: "2026-10-13T06:00:00.000Z"),
-            company("c_mazar", "Mazar Stitch (SAMPLE)", tier: "GOLD", status: "EXPIRED", expiresAt: "2026-11-15"),
-            company("c_bamyan", "Bamyan Workshop (SAMPLE)", tier: "BRONZE", expiresAt: "2026-10-12"),
-            company("c_kandahar", "Kandahar Cuts (SAMPLE)", expiresAt: "2027-04-01", createdAt: "2026-04-01T06:00:00.000Z", source: "SELF_SERVE"),
-            company("c_old", "Old Shop (SAMPLE)", expiresAt: "2027-02-01"),
-        ]
-        return (try? JSONDecoder().decode([WTCompany].self, from: Data("[\(rows.joined(separator: ","))]".utf8))) ?? []
+    private static func decode(_ rows: [String]) -> [WTCompany] {
+        (try? JSONDecoder().decode([WTCompany].self, from: Data("[\(rows.joined(separator: ","))]".utf8))) ?? []
+    }
+
+    static let companies: [WTCompany] = decode([
+        company("c_kabul", "Kabul Tailors (SAMPLE)", expiresAt: "2026-11-04"),
+        company("c_herat", "خیاطی هرات (نمونه)", tier: "TRIAL", expiresAt: "2026-10-27", createdAt: "2026-10-13T06:00:00.000Z"),
+        company("c_mazar", "Mazar Stitch (SAMPLE)", tier: "GOLD", status: "EXPIRED", expiresAt: "2026-11-15"),
+        company("c_bamyan", "Bamyan Workshop (SAMPLE)", tier: "BRONZE", expiresAt: "2026-10-12"),
+        company("c_kandahar", "Kandahar Cuts (SAMPLE)", expiresAt: "2027-04-01", createdAt: "2026-04-01T06:00:00.000Z", source: "SELF_SERVE"),
+        company("c_old", "Old Shop (SAMPLE)", expiresAt: "2027-02-01"),
+    ])
+
+    /// As many companies as the server lists at most (500), none of them new or self-serve: the signups card is Unknown
+    /// (signups past the limit may exist), and renewals and the companies without a CRM account are "at least".
+    static let companiesAtLimit: [WTCompany] = {
+        let listed = companies.filter { !["c_herat", "c_kandahar"].contains($0.companyId) }
+        let more = (1...(MoneyBuilder.revenueCompanyLimit - listed.count)).map {
+            company("c_more\($0)", "Workshop \($0) (SAMPLE)", expiresAt: "2027-06-01")
+        }
+        return listed + decode(more)
     }()
 
     static let accounts: [WTCrmAccount] = [
@@ -1043,7 +1054,8 @@ enum SalesPreviewData {
     static func input(_ sample: String) -> SalesInput? {
         let kyc = SalesKYCInput(isSignedIn: true, environment: "production", pendingCount: 7,
                                 queueRoles: ["PROVIDER", "CUSTOMER", "PROVIDER", "CUSTOMER", "PROVIDER", "CUSTOMER", "CUSTOMER"], readAt: now)
-        func worktrack(_ environment: String, skipped: Int = 0) -> MoneyWorkTrackInput {
+        func worktrack(_ environment: String, skipped: Int = 0, accounts: [WTCrmAccount] = SalesPreviewData.accounts,
+                       companies: [WTCompany] = SalesPreviewData.companies) -> MoneyWorkTrackInput {
             let unused = "not used by Sales"
             let money = WorkTrackMoneyRead(revenue: .failed(unused, at: now, needsSignIn: false),
                                            accounts: .read(WTLossyList(rows: accounts, skipped: skipped), at: now),
@@ -1053,6 +1065,11 @@ enum SalesPreviewData {
         switch sample {
         case "read": return SalesInput(worktrack: worktrack("production"), kyc: kyc)
         case "skipped": return SalesInput(worktrack: worktrack("production", skipped: 2), kyc: kyc)
+        case "skipped-empty":
+            // Accounts set aside, and none of those read is due today or has no next step: those lists are Unknown.
+            let read = accounts.filter { ["a_parwan", "a_bamyan"].contains($0.id) }
+            return SalesInput(worktrack: worktrack("production", skipped: 2, accounts: read), kyc: kyc)
+        case "limit": return SalesInput(worktrack: worktrack("production", companies: companiesAtLimit), kyc: kyc)
         case "demo": return SalesInput(worktrack: worktrack("demo"), kyc: kyc)
         case "unknown":
             return SalesInput(worktrack: MoneyWorkTrackInput(isSignedIn: false, environment: nil),
@@ -1065,6 +1082,10 @@ enum SalesPreviewData {
 #Preview("Sales, read") { SalesPreviewData.preview("read") }
 
 #Preview("Sales, accounts set aside") { SalesPreviewData.preview("skipped") }
+
+#Preview("Sales, accounts set aside, none due today") { SalesPreviewData.preview("skipped-empty") }
+
+#Preview("Sales, 500 companies") { SalesPreviewData.preview("limit") }
 
 #Preview("Sales, Unknown") { SalesPreviewData.preview("unknown") }
 
