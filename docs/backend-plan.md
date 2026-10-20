@@ -11,7 +11,7 @@ after the owner approves it ([company-os-roadmap.md](company-os-roadmap.md)).
 | Organization | `mjkdmjrjalelcmqwdwok` (Free plan) |
 | Project | `linumic-command-center`, ref `mczuclgfqxffcbiwvecf`, region **ca-central-1** |
 | API URL | `https://mczuclgfqxffcbiwvecf.supabase.co` |
-| Migrations | `supabase/migrations/`: core_schema, inventory_import_export, private_is_admin, rename_linumic_os, store_listing_insights, licences, oversight_sync, sentinel, sentinel_schedule |
+| Migrations | `supabase/migrations/`: core_schema, inventory_import_export, private_is_admin, rename_linumic_os, store_listing_insights, licences, oversight_sync, sentinel, sentinel_schedule, desk_sync, obligation_sweep, explicit_data_api_grants. Every table in `public` has its Data API grants written out, and a new table gets them in its own migration ([security.md](security.md), "Data API grants are explicit") |
 
 ### What's built
 - Tables mirroring the model: products (facts as JSON, validated), repositories, platforms, store_listings, releases,

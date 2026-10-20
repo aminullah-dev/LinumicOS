@@ -12,8 +12,7 @@ create table auth.users (id uuid primary key);
 create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
 grant usage on schema auth to anon, authenticated, service_role;
 grant usage on schema public to anon, authenticated, service_role;
-alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
-alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
+-- Supabase's default privileges in `public` are in ../grants/defaults-<SUPABASE_DEFAULTS>.sql (old, opt-in or none).
 -- Vault
 create schema vault;
 create table vault.secrets (id uuid primary key default gen_random_uuid(), name text unique, secret text, description text);

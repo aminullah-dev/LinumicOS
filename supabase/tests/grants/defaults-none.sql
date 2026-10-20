@@ -1,0 +1,2 @@
+-- No automatic grant at all: a table, sequence or function the migrations create in `public` gets only what the
+-- migrations grant (PUBLIC keeps EXECUTE on functions, Postgres's own default). Nothing to run.

@@ -1,5 +1,5 @@
-# LinumicCore tests and the Dari catalog check on every pull request and every push to main.
-# The app target itself is built locally (it needs the signing team); the core package holds the logic.
+# LinumicCore tests, the Dari catalog check and the Supabase migrations' grants check on every pull request and every
+# push to main. The app target itself is built locally (it needs the signing team); the core package holds the logic.
 name: CI
 
 on:
@@ -30,3 +30,7 @@ jobs:
         run: tools/test/persian-calendar.sh
       - name: Dari translations
         run: python3 tools/l10n/check_catalog.py
+      - name: Supabase migrations grant every table they create (Supabase's 2026-10-30 change)
+        run: |
+          python3 tools/supabase/check_migration_grants.py
+          python3 tools/supabase/test_check_migration_grants.py

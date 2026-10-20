@@ -25,6 +25,16 @@ Small, verifiable steps:
 5. Update docs and `CHANGELOG.md`.
 6. Commit with a meaningful message.
 
+## Supabase migrations
+
+- A migration that creates a table, a view or a sequence in `public` grants it to the API roles that need it, and
+  revokes what they must not have, in the same file and in plain SQL. Since 2026-10-30 Supabase grants a new table
+  nothing on its own. If no API role may reach it, revoke it from `anon` and `authenticated` and add
+  `-- data-api: revoke-only public.<name>: <why>`. Details: docs/security.md, "Data API grants are explicit".
+- `python3 tools/supabase/check_migration_grants.py` checks this (CI runs it). Add the table to the expected matrix in
+  `supabase/tests/grants/matrix.sql`, and run `supabase/tests/grants/run.sh` (a throwaway local Postgres, never the
+  live project).
+
 ## Localization (English + Dari)
 
 - Literal strings in SwiftUI views (`Text("…")`, `Button("…")`, `.help("…")`) are localizable
