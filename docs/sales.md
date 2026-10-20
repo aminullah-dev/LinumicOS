@@ -26,7 +26,7 @@ relative to `backend/functions/src/` unless they start with `web/`.
 | **Later**: follow-ups more than 7 days away | the same | No, the page only (a note in the Brief) |
 | **New signups without a CRM account**: a company created in the last 14 Kabul days (`TRIAL_DAYS`, `services/plans.ts:101`) or one that bought a plan itself (`license.source == "SELF_SERVE"`, `services/billing.ts:386`), with no CRM account | `GET /v1/vendor/companies` (same refresh) and the accounts | A self-serve or non-trial signup: yes (`sales.signup.<hash>`). A new trial is already a WorkTrack "trial ending" item: page only, never a second item |
 | Other companies with no CRM account | the same | One information item `sales.nocrm` (Later) |
-| **Renewals and trials ending** within 30 days, or ended | the company list (`WTCustomersSummary`, TEST and DUPLICATE left out) | Already WorkTrack customers items: page only |
+| **Renewals and trials ending** within 30 days (the WorkTrack section's own window, `DailyBriefBuilder.expiryWindowDays`), or ended; a scheduled deletion is counted in a note, not listed | the company list (`WTCustomersSummary`, TEST and DUPLICATE left out), with the list's own source and read time | Already WorkTrack customers items: page only |
 | **Website messages** not marked seen | the existing reading (`SiteMessagesModel`) | Already Website messages items: page only |
 | **SafeBeauty: providers waiting for KYC**: a count, never names | the existing Operations snapshot: `kycQueue` roles (`role == "PROVIDER"`, SafeBeauty `functions/lib/registration.js:39-41`) and `kycPendingCount` | Already the Operations item `ops.safeBeautyKYC`: page only |
 
@@ -34,10 +34,15 @@ relative to `backend/functions/src/` unless they start with `web/`.
 as `VENDOR` (`services/signup.ts:22-33`), and any vendor licence write sets it back to `VENDOR` (`services/license.ts:176-197`).
 Each signup row says why it is listed ("signed up …" or "bought a plan itself").
 
-**Has a CRM account** means that an account row, in any stage, has `companyId` equal to the company's. One exception: the
-WON account WorkTrack opens by itself on a company's first support ticket (`routes/support.ts:49-68`) does not count
-while the company is still on its trial, so a trial that wrote in is still a signup. A company with a scheduled deletion
-(`services/vendor.ts:124-126`) is not listed at all.
+**Has a CRM account** means that an account row, in any stage, has `companyId` equal to the company's. One exception,
+for deciding who is a **new signup** only: the WON account WorkTrack opens by itself on a company's first support ticket
+(`routes/support.ts:49-68`) does not count while the company is still on its trial, so a new trial that wrote in is still
+a signup. An older trial whose only account is that one does have an account, so it is not in "no CRM account". A company
+with a scheduled deletion (`services/vendor.ts:124-126`) is not listed among signups or renewals.
+
+A renewal row says "N days left" only while the licence is ACTIVE. An EXPIRED or SUSPENDED licence whose last day is
+still ahead shows its status and "Last day …" with no days (it is not in force); one whose last day is past shows "Ended
+N days ago" (`SalesRenewal.timing`).
 
 **The only new requests**, both GET and both started by the owner:
 
@@ -86,9 +91,9 @@ The rule is the server's and Money's: any mark (`flags != nil`, TEST or DUPLICAT
 | Account linked to a company that is **not in the list** (deleted, purged, or past the 500 limit; purge keeps CRM records, `crm.ts:8-11`) | Kept, with "whether it is a TEST company is unknown". It stays on the Desk by its day, but as information: it is **not** counted in the morning notification |
 | No `companyId` (absent, null or blank) | A prospect, kept |
 | Company list not read or failed | The whole WorkTrack part is Unknown: nothing is shown unfiltered |
-| `rows + skipped >= 2000` (`crm.ts:204`: no order, ULID ids, so the newest accounts are the ones missing) | Signups and the no-CRM count are Unknown; a note (Money already raises this limit as a Desk item); marks on Sales lines are kept |
-| An account set aside (`skipped > 0`) | One Desk item (Later): "N CRM accounts could not be read; their follow-ups, and whether a company has a CRM account, are unknown"; signups Unknown; marks kept |
-| 500 companies (`services/vendor.ts:201`) | Signups found are listed; counts say "at least"; a note (Money raises it) |
+| `rows + skipped >= 2000` (`crm.ts:204`: no order, ULID ids, so the newest accounts are the ones missing) | Signups and the no-CRM count are Unknown; every follow-up card's badge says "At least N", an empty follow-up or no-next-step card is Unknown with the reason (never "none"), and the Desk line is "At least N open CRM accounts have no next-action date"; a note (Money already raises this limit as a Desk item); marks on Sales lines are kept |
+| An account set aside (`skipped > 0`) | One Desk item (Later): "N CRM accounts could not be read; their follow-ups, and whether a company has a CRM account, are unknown"; signups Unknown; the follow-up cards and the no-date line say "at least" as above; marks kept |
+| 500 companies (`services/vendor.ts:201`) | Signups and renewals found are listed; their badges and counts say "at least", an empty renewals card says renewals past 500 are unknown; a note (Money raises it) |
 | Not production | Every line is information with no horizon, so nothing reaches Today or the notification; a note (WorkTrack customers raises it) |
 
 ## Unknown reasons (each one a sentence, never a zero)
@@ -99,15 +104,15 @@ The rule is the server's and Money's: any mark (`flags != nil`, TEST or DUPLICAT
 - The CRM accounts could not be read: <the error>.
 - N CRM accounts could not be read, so whether a company has a CRM account is unknown.
 - WorkTrack sent 2000 CRM accounts, the most it sends, so whether a company has a CRM account is unknown.
-- WorkTrack reads at most 500 companies; signups past that are unknown.
+- WorkTrack reads at most 500 companies; signups past that are unknown (and, on the renewals card, renewals past that).
 - Read from the <environment> environment, not production.
 - Renewals: not signed in, the company list failed, or not read yet (the WorkTrack customers sentences).
 - Website messages: not connected, the last read failed, or not read yet (the Website messages sentences).
 - SafeBeauty: not signed in, could not be read, or its queues not read yet.
 
-On the Desk, one cause is one item. Not signed in, a failed company list and "not read yet" are one Sales item in the
-shared group (Later), because the WorkTrack customers section already puts its own item in Today. A failed accounts read
-is one item (This week). The limits and the environment are notes (`BriefGap.isDeskItem == false`, `isCaveat == true`):
+On the Desk, one cause is one item. Not signed in, a failed company list, failed CRM accounts and "not read yet" are one
+Sales item in the shared group (Later), because the WorkTrack customers section (or, for the accounts, Money's
+`worktrack.invoices` item) already puts its own item in Today or This week. The limits and the environment are notes (`BriefGap.isDeskItem == false`, `isCaveat == true`):
 they keep marks on Sales lines but make no second Desk item, since Money and WorkTrack customers raise them.
 
 ## The Desk and the notification
@@ -127,7 +132,10 @@ they keep marks on Sales lines but make no second Desk item, since Money and Wor
   the WorkTrack console", "Not someone to call", "A test or duplicate record", "Another reason (not written down)". A
   dismiss reason is synced to Supabase as written and kept in `audit_events`, and a typed one could name the customer:
   `DeskState.dismiss` refuses any other text for a Sales item, and `DeskCloudMapping.localMarks` sends anything else as
-  "another reason". Other Desk items keep the owner's own words.
+  "another reason". Other Desk items keep the owner's own words. On items of the other sections that name customers
+  (WorkTrack customers, website messages, licences, Money: `DeskAgentBrief.namesCustomers`), the Dismiss sheet says not
+  to write a customer's name, number or message, since that typed reason is synced too (Q15). The Sales page sends the
+  owner to the WorkTrack customers items for new trials and renewals, so this matters after a Sales call.
 - **Morning notification:** Sales lines are folded into counts at the place of the first one: "N WorkTrack follow-ups
   are due" counts only follow-ups due today or overdue (by Kabul's day) in production whose company is not missing from
   the list; every other Sales line (a date that could not be read, accounts with no next step, a signup) is "N other
@@ -142,7 +150,7 @@ they keep marks on Sales lines but make no second Desk item, since Money and Wor
 | Account id, company id | memory | Only as `SalesKey` hashes inside Desk ids (`desk-state.json`, and `desk_state` once synced) |
 | Stage, `nextActionAt`, `nextAction` (the owner's note) | memory | No. The date is hashed into the fact hash; the note is shown in the Desk detail, which is never uploaded |
 | `notes`, `city`, `industry`, `source`, `employeesEstimate`, `createdBy`, `updatedBy`, `createdAt`, `updatedAt` | **never decoded** | They cross the wire (the API has no field mask) and are dropped while decoding |
-| Contacts (name, role, phone, primary) | the popover or draft sheet while it is open | No. A number leaves only when the owner taps **Copy number** |
+| Contacts (name, role, phone, primary) | the popover or draft sheet while it is open | No. A number leaves only when the owner taps **Copy number**. `email` and `notes` cross the wire but are never decoded (`WTSalesContact`); a missing `primary` is false, as on the server; a contact of another account is dropped and counted as "could not be read" |
 | Draft text | built on tap | Only by the owner's **Copy** |
 | Shape report | the sheet while it is open | It holds key names, types and counts, never a value |
 | KYC | the existing Operations snapshot | A count of roles only; names stay on the Operations screen |
@@ -163,6 +171,15 @@ about an earlier call, a promise or a discount. Words are the ones WorkTrack's c
 452, 639` and `:1533, 1535, 1548, 1735`). Dates are Solar Hijri in the language's own month names and digits ("۲۸ میزان ۱۴۰۵",
 "۲۸ تله ۱۴۰۵"). The Pashto avoids past-tense transitive verbs; its only past form is the copula «وه» with the feminine «ورځ».
 Signed «لینومیک». Nothing is sent: there is no `sms:`, WhatsApp or `mailto:` link for a draft.
+
+Every name in a draft (the company's or account's, and the contact's in the greeting) is set apart with Unicode isolates
+(FIRST STRONG ISOLATE and POP DIRECTIONAL ISOLATE, U+2068 and U+2069; `SalesDraft.isolated`). Without them a Latin name
+right before a Persian day takes the day's digits into its own left-to-right run, and the reader sees «ورک‌ترک ۲۷ Kabul
+Tailors (SAMPLE) میزان ۱۴۰۵». The Dari "ended" kinds also keep «تا» between the name and the day («لایسنس ورک‌ترک … تا
+۹ میزان ۱۴۰۵ اعتبار داشت», «دورهٔ آزمایشی ورک‌ترک … تا … ادامه داشت»), so the date stays whole even where an app drops
+the isolates. A test lays out every kind in both languages with CoreText, right to left, and checks that the date is
+drawn in one piece and in reading order; it fails on the old text. The sheet's "Facts used" lists the name only for
+the kinds that state it, with its real source (the company list or the CRM account).
 
 | Kind | Offered when |
 |---|---|
@@ -222,7 +239,9 @@ To be filled from the owner's one check on production (counts only, no values):
    ```
 
    It was checked on a throwaway local Postgres with every migration: `0 | 0` after clean Sales marks, `1 | 1` after a
-   typed reason, `2 | 2` after an id in clear. `desk_items` never holds Daily Brief lines.
+   typed reason, `2 | 2` after an id in clear. `desk_items` never holds Daily Brief lines. It covers **Sales marks only**:
+   a reason typed on a WorkTrack customers, website messages, licences or Money item is the owner's own words and is
+   synced as written (Phase 3); see Q15.
 
 ## Owner questions (each with the default this change ships)
 
@@ -242,6 +261,7 @@ To be filled from the owner's one check on production (counts only, no values):
 | Q12 | Where does Sales sit in the sidebar? | Right after Money, no ⌘ shortcut (all nine are taken) |
 | Q13 | The five fixed dismiss reasons for Sales items? | As listed above |
 | Q14 | A follow-up whose company is missing from the list (maybe a purged TEST company)? | Listed with the caveat and on the Desk by its day, but not counted in the morning notification |
+| Q15 | Fixed dismiss reasons (and the proof query) for the other customer sections too (`brief.worktrack`, `brief.siteMessages`, `brief.licences`, `brief.money`)? | Not in this phase: those items keep a typed reason, with a hint on the Dismiss sheet not to write a customer's name, number or message. Extending the rule would change Phase 3's Dismiss for those sections |
 
 Proposal for Q3 (not applied; a migration needs the owner's approval):
 
@@ -282,17 +302,28 @@ own: `DELETE /crm/accounts/:id` answers 204 and writes an audit entry even for a
 - The Solar Hijri month names of the drafts come from the system's ICU data (checked on macOS 27); another system could
   name them differently.
 - Drafts are as old as the last reading; the sheet shows the read time and counts the days again from Kabul's today.
+- The Mac page was built but not opened: a Debug build on the owner's Mac would use his own data folder.
 
 ## Tests
 
-`SalesTests` (30 tests), `SalesDraftTests` (6) and `SalesReadOnlyTests` (5) run with every `swift test` and in the
+`SalesTests` (31 tests), `SalesDraftTests` (9) and `SalesReadOnlyTests` (5) run with every `swift test` and in the
 Persian-calendar run; `MoneyTests.crmAccountsDecodeOnlyTheLink` now expects the stage and the next step as well. They
 cover the widened decode (no `notes`, `city` or `createdBy` held; a bad value never sets a row aside), Kabul's day and the
 server's rule for every day of two months, the Desk list in four device time zones, TEST, DUPLICATE, missing companies
 and the limits, signups on days 14 and 15, scheduled deletions and support-ticket accounts, one Desk item per cause, the
 notification with mixed Sales lines, mark pruning, facts, hashed ids against Phase 3's server check and the proposed one,
 the agent brief, fixed dismiss reasons and what is sent to the cloud, the shape report with the console's nulls, the KYC
-count, and every draft kind in both languages (including SUSPENDED, EXPIRED with a later day, and a stale server count).
+count, and every draft kind in both languages (including SUSPENDED, EXPIRED with a later day, and a stale server count),
+names set apart so a date is never split (laid out with CoreText), "at least" when accounts are set aside, renewal
+timing, a support-only trial, and contacts of another account.
+
+**The page, seen.** `SalesViews.swift` has previews (read, Unknown, accounts set aside, not production, Dari right to
+left, iPhone width) built from made-up data (`SalesPreviewData`). The same data opens in a Debug build with
+`-LCCScreen sales -LCCSalesSample read|skipped|unknown|demo` (and `-LCCSalesScroll 0.5` to open it scrolled); with that
+argument the app starts no job, so nothing is read or sent. It was looked at this way on a new iPhone 17 Simulator
+(iOS 27.2) in Dari and English, and at the largest accessibility text size. That found one bug, fixed here: on iOS a
+selectable `Text` inside the page drew nothing, so every Unknown reason was blank; the reason is now plain text on iOS
+(selectable on the Mac).
 
 The read-only proof (`SalesReadOnlyTests`) runs the real client over a URLSession whose only protocol records every request,
 against the emulator address: every WorkTrack request is a GET without a body to exactly revenue, CRM accounts, CRM

@@ -276,7 +276,10 @@ only when explicit credentials and authorization are provided.
   made only when the owner asks: `GET /vendor/crm/contacts?accountId=<id>` for one account's contacts (an empty id is
   refused before any request, since the server would answer every contact; the value is percent-encoded so an id can't
   change the query), and one `GET /vendor/crm/accounts` for the response-shape check, kept as key names, types and counts
-  (`WTShapeReport`). Both go through `WorkTrackSalesReading`, which has no other method. See [sales.md](sales.md).
+  (`WTShapeReport`). Both go through `WorkTrackSalesReading`, which has no other method; `WorkTrackModel.salesCall` hands
+  its closure the client typed as that protocol only, so code on the Sales path cannot reach the licence PUT. Contacts
+  are decoded as `WTSalesContact` (id, account, name, role, phone, primary; no email or notes), and a contact of another
+  account is dropped. See [sales.md](sales.md).
 - **Not in this phase:** company deletion, purge, TEST/DUPLICATE marks, plan prices, CRM writes. None of these calls
   exist in the client.
 
