@@ -7,6 +7,8 @@ import Testing
 //
 //   LCC_WT_EMULATOR=1 swift test --package-path Packages/LinumicCore --filter liveEmulator
 //
+// The Money test writes its TEST documents only through the emulator's Firestore REST API on 127.0.0.1:8080.
+//
 // Needs the emulators running (functions, firestore, auth) with the vendor test user and sample companies from
 // docs/integrations.md ("WorkTrack: testing against the emulator"). It never talks to a real project: the
 // environment is fixed to `.localEmulator` (127.0.0.1).
@@ -24,6 +26,20 @@ private func storedLicense(_ companyID: String) async throws -> [String: Any] {
     let fields = try #require(doc["fields"] as? [String: Any])
     let license = try #require((fields["license"] as? [String: Any])?["mapValue"] as? [String: Any])
     return try #require(license["fields"] as? [String: Any])
+}
+
+/// Writes one document into the emulator's Firestore through its REST API (admin bypass, as `storedLicense` reads), for
+/// the Money test below. Never through the vendor API: the client has no CRM write, and Money must not gain one.
+private func seedEmulatorDocument(_ collection: String, _ id: String, fields: [String: Any]) async throws {
+    let url = URL(string: "http://127.0.0.1:8080/v1/projects/demo-worktrack/databases/(default)/documents/\(collection)/\(id)")!
+    #expect(url.host == "127.0.0.1", "emulator only")
+    var request = URLRequest(url: url)
+    request.httpMethod = "PATCH"
+    request.setValue("Bearer owner", forHTTPHeaderField: "Authorization")  // emulator admin bypass
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    request.httpBody = try JSONSerialization.data(withJSONObject: ["fields": fields])
+    let (_, response) = try await URLSession.shared.data(for: request)
+    #expect((response as? HTTPURLResponse)?.statusCode == 200)
 }
 
 private func value(_ field: Any?) -> String {
@@ -122,5 +138,30 @@ struct WorkTrackEmulatorTests {
         let restored = WorkTrackVendorClient(environment: env)
         await restored.restore(refreshToken: session.refreshToken)
         #expect(try await restored.me().vendor)
+    }
+
+    /// Money's CRM reads with a real GET: one account linked to a sample company and one invoice, written straight into
+    /// the emulator's Firestore (TEST data, `emu_money_*`), then read back through the vendor API.
+    @Test func liveEmulatorMoneyReadsTheCRM() async throws {
+        let env = WorkTrackEnvironment.localEmulator
+        #expect(env.apiBase.host == "127.0.0.1")
+        try await seedEmulatorDocument("crmAccounts", "emu_money_acct", fields: [
+            "name": ["stringValue": "Money test account (emulator)"], "stage": ["stringValue": "WON"],
+            "companyId": ["stringValue": "emu_herat"], "notes": ["stringValue": "TEST data, not decoded"],
+        ])
+        try await seedEmulatorDocument("crmInvoices", "emu_money_inv", fields: [
+            "accountId": ["stringValue": "emu_money_acct"], "number": ["stringValue": "EMU-1"], "status": ["stringValue": "SENT"],
+            "amountAfn": ["doubleValue": 1500.5], "issuedAt": ["stringValue": "2026-09-20"], "dueAt": ["stringValue": "2026-10-01"],
+            "method": ["nullValue": NSNull()], "notes": ["stringValue": "TEST data, not decoded"],
+        ])
+        let client = WorkTrackVendorClient(environment: env)
+        _ = try await client.signIn(email: vendorEmail, password: password)
+        let read = await WorkTrackMoneyReader.read(client)
+        let invoices = try #require(read.invoices.value)
+        let invoice = try #require(invoices.rows.first { $0.id == "emu_money_inv" })
+        #expect(invoice.amountAfn == Decimal(string: "1500.5")! && invoice.status == .sent && invoice.dueAt == "2026-10-01" && invoice.method == nil)
+        #expect(read.accounts.value?.rows.contains { $0.id == "emu_money_acct" && $0.companyId == "emu_herat" } == true)
+        #expect(read.revenue.value?.currency == "AFN")
+        print("EMULATOR CRM invoices:", invoices.rows.count, "set aside:", invoices.skipped, "accounts:", read.accounts.value?.rows.count ?? -1)
     }
 }

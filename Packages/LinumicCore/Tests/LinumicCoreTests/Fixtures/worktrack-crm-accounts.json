@@ -1,0 +1,88 @@
+{
+ "data": [
+  {
+   "id": "acc_herat",
+   "name": "شرکت آزمایشی هرات (SAMPLE)",
+   "stage": "WON",
+   "companyId": "emu_herat",
+   "city": "SAMPLE city",
+   "industry": "SAMPLE",
+   "notes": "SAMPLE note: not decoded",
+   "nextAction": "SAMPLE",
+   "nextActionAt": "2026-10-25",
+   "createdBy": "vendor-uid-sample",
+   "createdAt": "2026-09-01T08:00:00.000Z",
+   "updatedAt": "2026-09-01T08:00:00.000Z"
+  },
+  {
+   "id": "acc_test",
+   "name": "Test Company (SAMPLE)",
+   "stage": "WON",
+   "companyId": "emu_test",
+   "city": "SAMPLE city",
+   "industry": "SAMPLE",
+   "notes": "SAMPLE note: not decoded",
+   "nextAction": "SAMPLE",
+   "nextActionAt": "2026-10-25",
+   "createdBy": "vendor-uid-sample",
+   "createdAt": "2026-09-01T08:00:00.000Z",
+   "updatedAt": "2026-09-01T08:00:00.000Z"
+  },
+  {
+   "id": "acc_dup",
+   "name": "Perpetual Gold (SAMPLE)",
+   "stage": "WON",
+   "companyId": "emu_perpetual",
+   "city": "SAMPLE city",
+   "industry": "SAMPLE",
+   "notes": "SAMPLE note: not decoded",
+   "nextAction": "SAMPLE",
+   "nextActionAt": "2026-10-25",
+   "createdBy": "vendor-uid-sample",
+   "createdAt": "2026-09-01T08:00:00.000Z",
+   "updatedAt": "2026-09-01T08:00:00.000Z"
+  },
+  {
+   "id": "acc_prospect",
+   "name": "Prospect Bakery (SAMPLE)",
+   "stage": "QUOTED",
+   "companyId": null,
+   "city": "SAMPLE city",
+   "industry": "SAMPLE",
+   "notes": "SAMPLE note: not decoded",
+   "nextAction": "SAMPLE",
+   "nextActionAt": "2026-10-25",
+   "createdBy": "vendor-uid-sample",
+   "createdAt": "2026-09-01T08:00:00.000Z",
+   "updatedAt": "2026-09-01T08:00:00.000Z"
+  },
+  {
+   "id": "acc_gone",
+   "name": "Purged Test Co (SAMPLE)",
+   "stage": "WON",
+   "companyId": "emu_purged",
+   "city": "SAMPLE city",
+   "industry": "SAMPLE",
+   "notes": "SAMPLE note: not decoded",
+   "nextAction": "SAMPLE",
+   "nextActionAt": "2026-10-25",
+   "createdBy": "vendor-uid-sample",
+   "createdAt": "2026-09-01T08:00:00.000Z",
+   "updatedAt": "2026-09-01T08:00:00.000Z"
+  },
+  {
+   "id": "acc_blank",
+   "name": "Blank Link (SAMPLE)",
+   "stage": "WON",
+   "companyId": "",
+   "city": "SAMPLE city",
+   "industry": "SAMPLE",
+   "notes": "SAMPLE note: not decoded",
+   "nextAction": "SAMPLE",
+   "nextActionAt": "2026-10-25",
+   "createdBy": "vendor-uid-sample",
+   "createdAt": "2026-09-01T08:00:00.000Z",
+   "updatedAt": "2026-09-01T08:00:00.000Z"
+  }
+ ]
+}
