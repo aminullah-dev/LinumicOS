@@ -26963,6 +26963,1626 @@
           }
         }
       }
+    },
+    "%1$@: %2$ld rows are not %3$@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فیلد %1$@: %2$ld سطر با انتظار جور نیست (%3$@)."
+          }
+        }
+      }
+    },
+    "%@ in every row": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در همهٔ سطرها از نوع %@"
+          }
+        }
+      }
+    },
+    "%@ or null in every row": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در همهٔ سطرها از نوع %@ یا null"
+          }
+        }
+      }
+    },
+    "%@, null or absent": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از نوع %@، یا null، یا بدون این کلید"
+          }
+        }
+      }
+    },
+    "%@ licence, last day %@. No contact on file: the vendor API never shows a company's own people.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس %@، آخرین روز %@. مخاطبی ثبت نشده: API فروشندهٔ WorkTrack هرگز افراد خود شرکت را نشان نمی‌دهد."
+          }
+        }
+      }
+    },
+    "%@, %lld days overdue": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@، %lld روز از موعد گذشته"
+          }
+        }
+      }
+    },
+    "%@, in %lld days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@، %lld روز دیگر"
+          }
+        }
+      }
+    },
+    "%d Sales items need you": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d مورد فروش منتظر شماست"
+          }
+        }
+      }
+    },
+    "%d WorkTrack follow-ups are due": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "موعد %d پیگیری WorkTrack رسیده است"
+          }
+        }
+      }
+    },
+    "%d other Sales items need you": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d مورد دیگر فروش منتظر شماست"
+          }
+        }
+      }
+    },
+    "%ld CRM accounts could not be read, so whether a company has a CRM account is unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld حساب CRM خوانده نشد، پس این‌که شرکتی حساب CRM دارد یا نه نامعلوم است."
+          }
+        }
+      }
+    },
+    "%ld CRM accounts could not be read; their follow-ups, and whether a company has a CRM account, are unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld حساب CRM خوانده نشد؛ پیگیری‌های آن‌ها، و این‌که شرکتی حساب CRM دارد یا نه، نامعلوم است."
+          }
+        }
+      }
+    },
+    "%ld WorkTrack companies have no CRM account": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld شرکت WorkTrack حساب CRM ندارد"
+          }
+        }
+      }
+    },
+    "%ld follow-ups are more than 7 days away; the Sales page lists them.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld پیگیری بیش از ۷ روز دیگر است؛ صفحهٔ فروش آن‌ها را نشان می‌دهد."
+          }
+        }
+      }
+    },
+    "%ld follow-ups belong to a WorkTrack company that is not in the company list (deleted, or past its limit); whether it is a TEST company is unknown, so they are listed but not counted in the morning notification.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld پیگیری به شرکتی در WorkTrack تعلق دارد که در فهرست شرکت‌ها نیست (حذف‌شده، یا بیرون از حد فهرست)؛ TEST بودن آن نامعلوم است، پس فهرست می‌شوند ولی در اعلان صبح شمرده نمی‌شوند."
+          }
+        }
+      }
+    },
+    "%ld new signups are on the Desk as WorkTrack trials ending; the Sales page lists them.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld ثبت‌نام تازه به شکل پایان دورهٔ آزمایشی WorkTrack در میز کار هست؛ صفحهٔ فروش آن‌ها را نشان می‌دهد."
+          }
+        }
+      }
+    },
+    "%ld next-action dates are not a real day.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld تاریخ اقدام بعدی روز واقعی نیست."
+          }
+        }
+      }
+    },
+    "%ld open CRM accounts have no next-action date": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld حساب باز CRM تاریخ اقدام بعدی ندارد"
+          }
+        }
+      }
+    },
+    "%ld rows are not JSON objects.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld سطر شیء JSON نیست."
+          }
+        }
+      }
+    },
+    "%ld rows have a stage WorkTrack does not define.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld سطر مرحله‌ای دارد که WorkTrack تعریف نکرده است."
+          }
+        }
+      }
+    },
+    "%lld contacts could not be read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مخاطب خوانده نشد."
+          }
+        }
+      }
+    },
+    "%lld days left": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld روز مانده"
+          }
+        }
+      }
+    },
+    "%lld differ": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld سطر فرق دارد"
+          }
+        }
+      }
+    },
+    "%lld earlier messages already marked seen.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld پیام قبلی دیده‌شده علامت خورده است."
+          }
+        }
+      }
+    },
+    "%lld other WorkTrack companies have no CRM account": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld شرکت دیگر WorkTrack حساب CRM ندارد"
+          }
+        }
+      }
+    },
+    "%lld providers waiting, of %lld people waiting for KYC": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld ارائه‌دهنده منتظر است، از %2$lld نفری که منتظر تأیید هویت (KYC) هستند"
+          }
+        }
+      }
+    },
+    "A count only; the names are on the Operations screen.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط شمار؛ نام‌ها در صفحهٔ عملیات است."
+          }
+        }
+      }
+    },
+    "A lead with no next-action date is not on WorkTrack's own Today tab either. Set the date and the next action in the WorkTrack console; the Sales page lists them.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مشتری احتمالی بدون تاریخ اقدام بعدی در زبانهٔ «امروز» خود WorkTrack هم دیده نمی‌شود. تاریخ و اقدام بعدی را در کنسول WorkTrack بگذارید؛ صفحهٔ فروش آن‌ها را نشان می‌دهد."
+          }
+        }
+      }
+    },
+    "A test or duplicate record": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک رکورد آزمایشی یا تکراری"
+          }
+        }
+      }
+    },
+    "Add a lead in the WorkTrack console": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افزودن مشتری احتمالی در کنسول WorkTrack"
+          }
+        }
+      }
+    },
+    "Already on the Desk from WorkTrack customers; listed here so the call list is in one place.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از «مشتریان WorkTrack» در میز کار هست؛ این‌جا هم آمده تا فهرست تماس یک‌جا باشد."
+          }
+        }
+      }
+    },
+    "Another reason (not written down, so nothing about the customer is synced)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دلیل دیگر (نوشته نمی‌شود، تا چیزی دربارهٔ مشتری همگام نشود)"
+          }
+        }
+      }
+    },
+    "Ask for a call": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درخواست تماس"
+          }
+        }
+      }
+    },
+    "At least %ld WorkTrack companies have no CRM account": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دست‌کم %ld شرکت WorkTrack حساب CRM ندارد"
+          }
+        }
+      }
+    },
+    "At least %lld other WorkTrack companies have no CRM account": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دست‌کم %lld شرکت دیگر WorkTrack حساب CRM ندارد"
+          }
+        }
+      }
+    },
+    "At least %lld providers among the first %lld of %lld people waiting for KYC": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دست‌کم %1$lld ارائه‌دهنده در میان %2$lld نفر اول، از %3$lld نفری که منتظر تأیید هویت (KYC) هستند"
+          }
+        }
+      }
+    },
+    "Bought a plan itself": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خودش پلن خریده است"
+          }
+        }
+      }
+    },
+    "CRM accounts of companies marked TEST or DUPLICATE in WorkTrack. They are not called and not on the Desk.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب‌های CRM شرکت‌هایی که در WorkTrack با TEST یا DUPLICATE علامت خورده‌اند. با آن‌ها تماس گرفته نمی‌شود و در میز کار نیستند."
+          }
+        }
+      }
+    },
+    "CRM answer": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاسخ CRM"
+          }
+        }
+      }
+    },
+    "Call today": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیگیری امروز"
+          }
+        }
+      }
+    },
+    "Call today: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیگیری امروز: %@"
+          }
+        }
+      }
+    },
+    "Called; the date is moved in the WorkTrack console": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تماس گرفته شد؛ تاریخ در کنسول WorkTrack جابه‌جا می‌شود"
+          }
+        }
+      }
+    },
+    "Check the CRM answer (one GET)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی شکل پاسخ CRM (یک GET)"
+          }
+        }
+      }
+    },
+    "Check the CRM answer (one GET)…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی شکل پاسخ CRM (یک GET)…"
+          }
+        }
+      }
+    },
+    "Choose a reason": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک دلیل انتخاب کنید"
+          }
+        }
+      }
+    },
+    "Contact": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخاطب"
+          }
+        }
+      }
+    },
+    "Contacted": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تماس گرفته شد"
+          }
+        }
+      }
+    },
+    "Contacts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخاطب‌ها"
+          }
+        }
+      }
+    },
+    "Copied. Nothing was sent; paste it yourself. The clipboard is cleared in 2 minutes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کپی شد. چیزی فرستاده نشد؛ خودتان آن را بچسبانید. کلیپ‌بورد پس از ۲ دقیقه پاک می‌شود."
+          }
+        }
+      }
+    },
+    "Copied. The clipboard is cleared in 2 minutes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کپی شد. کلیپ‌بورد پس از ۲ دقیقه پاک می‌شود."
+          }
+        }
+      }
+    },
+    "Copy number": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کپی شماره"
+          }
+        }
+      }
+    },
+    "Copy reminder draft…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کپی پیش‌نویس یادآوری…"
+          }
+        }
+      }
+    },
+    "Date could not be read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ خوانده نشد"
+          }
+        }
+      }
+    },
+    "Date not readable": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ خوانا نیست"
+          }
+        }
+      }
+    },
+    "Date not readable: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ خوانا نیست: %@"
+          }
+        }
+      }
+    },
+    "Demo stage": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نمایش"
+          }
+        }
+      }
+    },
+    "Done here does not change the CRM: move the date or the stage in the WorkTrack console.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«انجام شد» در این‌جا CRM را تغییر نمی‌دهد؛ تاریخ یا مرحله را در کنسول WorkTrack تغییر دهید."
+          }
+        }
+      }
+    },
+    "Dormant": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "راکد"
+          }
+        }
+      }
+    },
+    "Every open account has a next-action date.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر حساب باز تاریخ اقدام بعدی دارد."
+          }
+        }
+      }
+    },
+    "Every part of this page was read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همهٔ بخش‌های این صفحه خوانده شد."
+          }
+        }
+      }
+    },
+    "Expected: %@. Present in %lld, null in %lld; %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انتظار: %1$@. در %2$lld سطر هست، در %3$lld سطر null است؛ %4$@"
+          }
+        }
+      }
+    },
+    "Facts used": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "واقعیت‌های به‌کاررفته"
+          }
+        }
+      }
+    },
+    "Fields": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فیلدها"
+          }
+        }
+      }
+    },
+    "Follow up with %1$@ on %2$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیگیری با %1$@ در %2$@"
+          }
+        }
+      }
+    },
+    "Follow-up overdue: %1$@ (due %2$@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیگیری عقب‌افتاده: %1$@ (سررسید %2$@)"
+          }
+        }
+      }
+    },
+    "Handled in the WorkTrack console": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در کنسول WorkTrack رسیدگی شد"
+          }
+        }
+      }
+    },
+    "Keys WorkTrack is not expected to send: %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدهایی که از WorkTrack انتظار نمی‌رود: %@."
+          }
+        }
+      }
+    },
+    "Last day %@, counted from today in Kabul.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین روز %@، شمرده‌شده از امروزِ کابل."
+          }
+        }
+      }
+    },
+    "Last day of the licence": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین روز لایسنس"
+          }
+        }
+      }
+    },
+    "Lead": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مشتری احتمالی"
+          }
+        }
+      }
+    },
+    "Left out": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنار گذاشته‌شده"
+          }
+        }
+      }
+    },
+    "Left out: %ld CRM accounts of TEST or DUPLICATE companies.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کنار گذاشته شد: %ld حساب CRM شرکت‌های آزمایشی یا تکراری."
+          }
+        }
+      }
+    },
+    "Licence ended": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لایسنس تمام شد"
+          }
+        }
+      }
+    },
+    "Licence ending": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پایان نزدیک لایسنس"
+          }
+        }
+      }
+    },
+    "Lost": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از دست رفت"
+          }
+        }
+      }
+    },
+    "New signup with no CRM account: %1$@ (%2$@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت‌نام تازه بدون حساب CRM: %1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "New signups without a CRM account": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت‌نام‌های تازه بدون حساب CRM"
+          }
+        }
+      }
+    },
+    "Next action: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اقدام بعدی: %@"
+          }
+        }
+      }
+    },
+    "No CRM account is linked to this WorkTrack company. Add one in the WorkTrack console to follow it up.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ حساب CRM به این شرکت WorkTrack وصل نیست. برای پیگیری، یکی در کنسول WorkTrack بیفزایید."
+          }
+        }
+      }
+    },
+    "No CRM account was given, so no contacts were asked for.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب CRM داده نشد، پس مخاطبی خواسته نشد."
+          }
+        }
+      }
+    },
+    "No contact on file": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخاطبی ثبت نشده"
+          }
+        }
+      }
+    },
+    "No contact on file: the greeting has no name.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مخاطبی ثبت نشده: سلام بدون نام است."
+          }
+        }
+      }
+    },
+    "No follow-up in the next 7 days.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در ۷ روز آینده پیگیری‌ای نیست."
+          }
+        }
+      }
+    },
+    "No follow-up is due today.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امروز موعد هیچ پیگیری‌ای نیست."
+          }
+        }
+      }
+    },
+    "No licence ends in the next 30 days, and none has ended.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در ۳۰ روز آینده لایسنسی تمام نمی‌شود و هیچ‌کدام تمام نشده است."
+          }
+        }
+      }
+    },
+    "No name": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون نام"
+          }
+        }
+      }
+    },
+    "No new message.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیام تازه‌ای نیست."
+          }
+        }
+      }
+    },
+    "No new or self-serve company without a CRM account.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شرکت تازه یا خودخریدی بدون حساب CRM نیست."
+          }
+        }
+      }
+    },
+    "No next step": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون اقدام بعدی"
+          }
+        }
+      }
+    },
+    "No number on file": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شماره‌ای ثبت نشده"
+          }
+        }
+      }
+    },
+    "Not linked to a WorkTrack company (a prospect).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به شرکتی در WorkTrack وصل نیست (مشتری احتمالی)."
+          }
+        }
+      }
+    },
+    "Not signed in to SafeBeauty, so providers waiting for KYC are unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به SafeBeauty وارد نشده‌اید، پس ارائه‌دهندگان منتظر تأیید هویت نامعلوم است."
+          }
+        }
+      }
+    },
+    "Not signed in to WorkTrack, so who to call is unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به WorkTrack وارد نشده‌اید، پس نامعلوم است با چه کسی تماس بگیرید."
+          }
+        }
+      }
+    },
+    "Not someone to call": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نیازی به تماس نیست"
+          }
+        }
+      }
+    },
+    "Nothing is sent from here. Copy, then paste it into your own message.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از این‌جا چیزی فرستاده نمی‌شود. کپی کنید و در پیام خودتان بچسبانید."
+          }
+        }
+      }
+    },
+    "Nothing on this page is saved on this device or sent to Linumic's cloud. Nothing is sent to customers.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ چیز این صفحه روی این دستگاه ذخیره یا به ابر لینومیک فرستاده نمی‌شود. به مشتری هم چیزی فرستاده نمی‌شود."
+          }
+        }
+      }
+    },
+    "On the Desk as a trial ending": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در میز کار به شکل پایان دورهٔ آزمایشی"
+          }
+        }
+      }
+    },
+    "Open Operations → SafeBeauty": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن عملیات ← SafeBeauty"
+          }
+        }
+      }
+    },
+    "Open WorkTrack customers": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن مشتریان WorkTrack"
+          }
+        }
+      }
+    },
+    "Open accounts with no next-action date. WorkTrack's own Today tab does not show them; set the date in the console.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب‌های باز بدون تاریخ اقدام بعدی. زبانهٔ «امروز» خود WorkTrack آن‌ها را نشان نمی‌دهد؛ تاریخ را در کنسول بگذارید."
+          }
+        }
+      }
+    },
+    "Open in WorkTrack customers": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن در مشتریان WorkTrack"
+          }
+        }
+      }
+    },
+    "Preview": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیش‌نمایش"
+          }
+        }
+      }
+    },
+    "Primary": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اصلی"
+          }
+        }
+      }
+    },
+    "Quoted": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قیمت داده شد"
+          }
+        }
+      }
+    },
+    "Read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زمان خواندن"
+          }
+        }
+      }
+    },
+    "Read WorkTrack (the company list and the CRM accounts) and the website messages again": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن دوبارهٔ WorkTrack (فهرست شرکت‌ها و حساب‌های CRM) و پیام‌های سایت"
+          }
+        }
+      }
+    },
+    "Read contacts for the greeting (one GET)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن مخاطب‌ها برای سلام (یک GET)"
+          }
+        }
+      }
+    },
+    "Read-only. Linumic OS never writes to the CRM; change dates and stages in the WorkTrack console.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط خواندنی. Linumic OS هرگز در CRM نمی‌نویسد؛ تاریخ و مرحله را در کنسول WorkTrack تغییر دهید."
+          }
+        }
+      }
+    },
+    "Reads WorkTrack's CRM accounts once and keeps only key names, JSON types and counts, never a value. Run it once on production after this change; record the counts in docs/sales.md.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب‌های CRM در WorkTrack را یک بار می‌خواند و فقط نام کلیدها، نوع JSON و شمارها را نگه می‌دارد، هرگز مقدار را. پس از این تغییر یک بار روی production اجرا کنید و شمارها را در docs/sales.md ثبت کنید."
+          }
+        }
+      }
+    },
+    "Reads the CRM accounts once and shows only their keys, types and counts, never a value": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب‌های CRM را یک بار می‌خواند و فقط کلیدها، نوع‌ها و شمارهایشان را نشان می‌دهد، هرگز مقدار را"
+          }
+        }
+      }
+    },
+    "Reads the CRM accounts once and shows only their keys, types and counts, never a value.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب‌های CRM را یک بار می‌خواند و فقط کلیدها، نوع‌ها و شمارهایشان را نشان می‌دهد، هرگز مقدار را."
+          }
+        }
+      }
+    },
+    "Reminder draft": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پیش‌نویس یادآوری"
+          }
+        }
+      }
+    },
+    "Renewals and trials ending": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمدیدها و پایان دورهٔ آزمایشی"
+          }
+        }
+      }
+    },
+    "Renewals, website messages and SafeBeauty's KYC queue are on the Desk from their own sections; the Sales page lists them too.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمدیدها، پیام‌های سایت و صف تأیید هویت SafeBeauty از بخش‌های خودشان در میز کار هستند؛ صفحهٔ فروش هم آن‌ها را نشان می‌دهد."
+          }
+        }
+      }
+    },
+    "Rows": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سطرها"
+          }
+        }
+      }
+    },
+    "SafeBeauty (%@) · Firestore users, kycStatus PENDING · read %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع: SafeBeauty (%1$@) · Firestore users، kycStatus PENDING · خوانده‌شده %2$@"
+          }
+        }
+      }
+    },
+    "SafeBeauty could not be read: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خواندن SafeBeauty ممکن نشد: %@"
+          }
+        }
+      }
+    },
+    "SafeBeauty: providers waiting for KYC": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ارائه‌دهندگان SafeBeauty منتظر تأیید هویت (KYC)"
+          }
+        }
+      }
+    },
+    "Sales": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فروش"
+          }
+        }
+      }
+    },
+    "Sales has not been collected on this device yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "معلومات فروش هنوز روی این دستگاه خوانده نشده است."
+          }
+        }
+      }
+    },
+    "Sales reasons are fixed: a reason is synced to your other devices, and none of these names the customer.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دلیل‌های فروش ثابت است: دلیل به دستگاه‌های دیگر شما همگام می‌شود، و هیچ‌کدام از این‌ها نام مشتری را ندارد."
+          }
+        }
+      }
+    },
+    "Sales: WorkTrack CRM accounts and company list (read-only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فروش: حساب‌های CRM و فهرست شرکت‌های WorkTrack (فقط خواندنی)"
+          }
+        }
+      }
+    },
+    "Signed in to SafeBeauty, but its queues have not been read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به SafeBeauty وارد شده‌اید، ولی صف‌های آن هنوز خوانده نشده است."
+          }
+        }
+      }
+    },
+    "Signed in, but the CRM accounts have not been read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وارد شده‌اید، ولی حساب‌های CRM هنوز خوانده نشده است."
+          }
+        }
+      }
+    },
+    "Signed up %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت‌نام در %@"
+          }
+        }
+      }
+    },
+    "Stage %@ (not one WorkTrack defines)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرحلهٔ %@ (WorkTrack آن را تعریف نکرده)"
+          }
+        }
+      }
+    },
+    "Stage unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرحله نامعلوم"
+          }
+        }
+      }
+    },
+    "Stage: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرحله: %@"
+          }
+        }
+      }
+    },
+    "The CRM accounts could not be read: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حساب‌های CRM خوانده نشد: %@"
+          }
+        }
+      }
+    },
+    "The WorkTrack company list could not be read (WorkTrack customers says why), so who to call is unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست شرکت‌های WorkTrack خوانده نشد («مشتریان WorkTrack» دلیلش را می‌گوید)، پس نامعلوم است با چه کسی تماس بگیرید."
+          }
+        }
+      }
+    },
+    "The answer is what Sales expects.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاسخ همان است که فروش انتظار دارد."
+          }
+        }
+      }
+    },
+    "The linked company is not in the company list (deleted, or past its limit), so whether it is a TEST company is unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شرکت وصل‌شده در فهرست شرکت‌ها نیست (حذف‌شده، یا بیرون از حد فهرست)، پس TEST بودن آن نامعلوم است."
+          }
+        }
+      }
+    },
+    "The next-action date is not a real day. WorkTrack's own Today tab may still list it; fix the date in the console.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ اقدام بعدی روز واقعی نیست. شاید زبانهٔ «امروز» خود WorkTrack باز هم آن را نشان دهد؛ تاریخ را در کنسول درست کنید."
+          }
+        }
+      }
+    },
+    "The next-action date of %1$@ could not be read (%2$@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ اقدام بعدی %1$@ خوانده نشد (%2$@)"
+          }
+        }
+      }
+    },
+    "The next-action date of %@ could not be read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ اقدام بعدی %@ خوانده نشد"
+          }
+        }
+      }
+    },
+    "This draft needs a fact that was not read, or the licence no longer allows it today.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این پیش‌نویس به واقعیتی نیاز دارد که خوانده نشده، یا لایسنس امروز دیگر آن را اجازه نمی‌دهد."
+          }
+        }
+      }
+    },
+    "Today in Kabul": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امروز در کابل"
+          }
+        }
+      }
+    },
+    "Today in Kabul: %@ (%@)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امروز در کابل: %1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "Today, %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امروز، %@"
+          }
+        }
+      }
+    },
+    "Trial ended": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دورهٔ آزمایشی تمام شد"
+          }
+        }
+      }
+    },
+    "Trial ending": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پایان نزدیک دورهٔ آزمایشی"
+          }
+        }
+      }
+    },
+    "Welcome": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوش‌آمد"
+          }
+        }
+      }
+    },
+    "Who to call": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "با چه کسی تماس بگیرم"
+          }
+        }
+      }
+    },
+    "Won": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "موفق"
+          }
+        }
+      }
+    },
+    "WorkTrack (%@) · %@ · read %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع: WorkTrack (%1$@) · %2$@ · خوانده‌شده %3$@"
+          }
+        }
+      }
+    },
+    "WorkTrack company %1$@: %2$@ licence, last day %3$@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شرکت WorkTrack %1$@: لایسنس %2$@، آخرین روز %3$@."
+          }
+        }
+      }
+    },
+    "WorkTrack company %@: %@ licence, last day %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شرکت WorkTrack %1$@: لایسنس %2$@، آخرین روز %3$@."
+          }
+        }
+      }
+    },
+    "WorkTrack is being read right now. Try again in a moment.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همین حالا WorkTrack خوانده می‌شود. کمی بعد دوباره امتحان کنید."
+          }
+        }
+      }
+    },
+    "WorkTrack reads at most %ld companies; signups past that are unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حداکثر %ld شرکت را WorkTrack می‌خواند؛ ثبت‌نام‌های بیرون از این حد نامعلوم است."
+          }
+        }
+      }
+    },
+    "WorkTrack reads at most %lld companies; signups past that are unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حداکثر %lld شرکت را WorkTrack می‌خواند؛ ثبت‌نام‌های بیرون از این حد نامعلوم است."
+          }
+        }
+      }
+    },
+    "WorkTrack sent %ld CRM accounts, the most it sends, so whether a company has a CRM account is unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از WorkTrack %ld حساب CRM رسید که بیشترین شمار آن است، پس این‌که شرکتی حساب CRM دارد یا نه نامعلوم است."
+          }
+        }
+      }
+    },
+    "WorkTrack sent %ld CRM accounts, the most it sends; newer accounts past that, and their follow-ups, are unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از WorkTrack %ld حساب CRM رسید که بیشترین شمار آن است؛ حساب‌های تازه‌تر بیرون از این حد، و پیگیری‌هایشان، نامعلوم است."
+          }
+        }
+      }
+    },
+    "WorkTrack sent %ld accounts, the most it sends; accounts past that are not in the answer.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از WorkTrack %ld حساب رسید که بیشترین شمار آن است؛ حساب‌های بیرون از این حد در پاسخ نیستند."
+          }
+        }
+      }
+    },
+    "WorkTrack vendor API (%@), /vendor/crm/accounts and /vendor/companies": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع: API فروشندهٔ WorkTrack (%@)، /vendor/crm/accounts و /vendor/companies"
+          }
+        }
+      }
+    },
+    "WorkTrack: GET /v1/vendor/companies or /v1/vendor/crm/accounts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع: WorkTrack، GET /v1/vendor/companies یا /v1/vendor/crm/accounts"
+          }
+        }
+      }
+    },
+    "WorkTrack: GET /v1/vendor/crm/contacts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع: WorkTrack، GET /v1/vendor/crm/contacts"
+          }
+        }
+      }
+    },
+    "WorkTrack: GET /v1/vendor/crm/contacts · read %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع: WorkTrack، GET /v1/vendor/crm/contacts · خوانده‌شده %@"
+          }
+        }
+      }
+    },
+    "WorkTrack: license.expiresAt, counted from today in Kabul": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "منبع: WorkTrack، license.expiresAt، شمرده‌شده از امروزِ کابل"
+          }
+        }
+      }
+    },
+    "bought a plan itself": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خودش پلن خریده است"
+          }
+        }
+      }
+    },
+    "no end date": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون تاریخ پایان"
+          }
+        }
+      }
+    },
+    "no values": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون مقدار"
+          }
+        }
+      }
+    },
+    "signed up %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت‌نام در %@"
+          }
+        }
+      }
     }
   },
   "version": "1.1"
