@@ -5235,7 +5235,7 @@
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
-            "value": "SafeBeauty نشان TEST ندارد، پس بیلانس همهٔ سالون‌ها حساب می‌شود."
+            "value": "در SafeBeauty نشان TEST نیست، پس بیلانس همهٔ سالون‌ها حساب می‌شود."
           }
         }
       }
@@ -21830,16 +21830,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "platform_config/general، به همان شکلی که سرور می‌فهمد (payments.js getCommissionPercent). تغییرش را فقط در کنسول مدیریت انجام دهید."
-          }
-        }
-      }
-    },
-    "provider_balances above zero (the platform owes the salon) and refund_requests PENDING. Mark payouts paid only in the admin console: SafeBeauty doesn't audit that action.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "provider_balances بالاتر از صفر (پلتفورم به سالون بدهکار است) و refund_requests در حالت PENDING. علامت «پرداخت‌شده» را فقط در کنسول مدیریت بزنید: SafeBeauty این کار را در دفتر بازرسی ثبت نمی‌کند."
           }
         }
       }
