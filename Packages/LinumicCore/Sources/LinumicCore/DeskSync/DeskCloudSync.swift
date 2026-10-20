@@ -135,6 +135,8 @@ public struct DeskCloudLocal: Sendable {
 public struct DeskCloudReport: Hashable, Sendable {
     /// Rows written to the server.
     public var sent = 0
+    /// Rows of the obligations and accounts the app ships (the seed) written to the server; not counted in `sent`.
+    public var seedSent = 0
     /// Rows taken in from the server.
     public var received = 0
     public var conflicts = 0
@@ -147,6 +149,22 @@ public struct DeskCloudReport: Hashable, Sendable {
     public var ledger: CloudLedgerPushResult.Status?
 
     public init() {}
+}
+
+extension DeskCloudReport {
+    /// The automation line: the owner's rows both ways, then the app's own rows and the ledger reading when this sync
+    /// wrote them, so a first sync that sent only those does not read as "0 sent".
+    public var summary: String {
+        var parts = [LF("%lld sent, %lld received", Int64(sent), Int64(received))]
+        if seedSent > 0 { parts.append(LF("%lld built-in obligation and account rows sent", Int64(seedSent))) }
+        switch ledger {
+        case .applied?: parts.append(L("ledger reading sent"))
+        case .unchanged?: parts.append(L("ledger reading unchanged, its time updated"))
+        case .invalid?: parts.append(L("ledger reading not accepted by the server"))
+        case .stale?, .older?, nil: break
+        }
+        return ListFormatter.localizedString(byJoining: parts)
+    }
 }
 
 /// The outcome of one sync: the new state, and what to take into this device's files.
@@ -312,6 +330,7 @@ public enum DeskCloudSync {
 
         st.lastSyncedAt = now
         report.sent = m.sent + o.sent + v.sent
+        report.seedSent = o.extraApplied.count + v.extraApplied.count
         report.received = m.received + o.received + v.received
         report.conflicts = st.conflictCount
         report.refused = st.refusedCount

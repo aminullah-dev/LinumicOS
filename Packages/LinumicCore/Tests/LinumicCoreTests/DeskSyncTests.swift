@@ -337,6 +337,8 @@ struct DeskSyncDeviceTests {
         let upload = DeskCloudLedger.upload(reading, now: LedgerFixtures.now, calendar: utc)
         let report = try await mac.sync(server, at: at(1), ledger: upload)
         #expect(report.sent == 1 && report.ledger == .applied)
+        #expect(report.seedSent == 0 && report.summary.contains("ledger reading sent") && !report.summary.contains("built-in"),
+                "the job line names the ledger reading it sent")
 
         try await phone.sync(server, at: at(2))
         #expect(phone.desk.marks[line.item.id]?.kind == .done)
@@ -579,7 +581,11 @@ struct DeskSyncDeviceTests {
         let accounts = [VendorAccount(id: "test-host", name: "Sample Host", purpose: "A made-up host.", source: "fixture:3",
                                       recordedOn: KeyDay("2026-10-01"), origin: .seed)]
         var mac = Device(.macOS)
-        try await mac.sync(server, at: at(1), seed: seed, seedAccounts: accounts, revision: 3)
+        let first = try await mac.sync(server, at: at(1), seed: seed, seedAccounts: accounts, revision: 3)
+        #expect(first.sent == 0 && first.seedSent == seed.count + accounts.count,
+                "the app's own rows are counted apart from the owner's")
+        #expect(first.summary.contains("\(seed.count + accounts.count) built-in obligation and account rows sent"),
+                "so a first sync that sent only those does not read as \"0 sent\"")
         #expect(await server.obligations["seed:test.seed-a"]?.seedRevision == 3)
         #expect(await server.vendors["seed:test-host"] != nil)
         #expect(mac.file.added.isEmpty && mac.file.accounts.isEmpty, "seed rows never enter obligations.json")
@@ -590,8 +596,9 @@ struct DeskSyncDeviceTests {
         #expect(sent.title == "Sample seed row" && sent.due == KeyDay("2026-11-01") && sent.consequence == nil)
         #expect(sent.source.hasPrefix("Linumic OS ObligationSeed, revision 3"), "the Mac's file paths stay in the app")
         let before = await server.written.count
-        try await mac.sync(server, at: at(2), seed: seed, seedAccounts: accounts, revision: 3)
+        let again = try await mac.sync(server, at: at(2), seed: seed, seedAccounts: accounts, revision: 3)
         #expect(await server.written.count == before, "nothing sent again")
+        #expect(again.seedSent == 0 && !again.summary.contains("built-in"))
         var newer = Device(.iOS)
         var changed = seed[0]
         changed.due = KeyDay("2026-11-03")
