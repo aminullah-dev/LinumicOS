@@ -222,7 +222,7 @@ public enum DeskBuilder {
                     items.append(DeskItem(origin: origin, subjectKey: line.id, kindKey: "fact", kind: .fact,
                                           domain: domain(line.kind, product: line.product), severity: line.severity,
                                           title: line.text, detail: line.detail, subject: line.product ?? line.kind.title,
-                                          due: line.due, ownerAction: line.severity <= .normal,
+                                          due: line.due, horizon: line.horizon, ownerAction: line.severity <= .normal,
                                           evidence: DeskEvidence(source: line.source, readAt: line.readAt, cadence: cadence),
                                           factHash: factHash(line), destination: .screen(line.destination),
                                           obligationID: line.obligationID, closesAtSource: line.closesAtSource))
@@ -230,8 +230,8 @@ public enum DeskBuilder {
             }
             // "All clear" is only about what was read: a part that was not read is an item, never a zero. A section that
             // could not be read can still name parts that are unknown whatever happens (Money's store proceeds). A caveat
-            // on a part that was read is an item too, and says it was read.
-            for gap in section.gaps {
+            // on a part that was read is an item too, and says it was read, unless another section already raises it.
+            for gap in section.gaps where gap.isDeskItem {
                 let domain = domain(section.kind, product: gap.product)
                 items.append(DeskItem(origin: origin, subjectKey: "part.\(gap.key)", kindKey: "not-read", kind: .source,
                                       domain: domain, severity: domain.isFocus ? .normal : .info,
@@ -281,6 +281,7 @@ public enum DeskBuilder {
         case .keys: .keys
         case .obligations: .obligations
         case .money: .money
+        case .sales: .sales(nil)
         case .automation, .changes: .automation
         }
     }
@@ -296,6 +297,8 @@ public enum DeskBuilder {
         case .operations: .operations
         // Read by the WorkTrack and Operations jobs; the slower one (6 hours) sets when a row is old.
         case .money: .worktrack
+        // Built from the WorkTrack refresh (and the website messages and SafeBeauty readings it lists, never as items).
+        case .sales: .worktrack
         case .oversight: .oversight
         case .keys: .keys
         // Built from what the other jobs read, every time the Brief is: never older than they are.
@@ -529,6 +532,11 @@ public enum DeskBuilder {
         if section.kind == .money, let keys = MoneyBrief.readGapKeys(forLineID: subject) {
             return !section.gaps.contains { keys.contains($0.key) }
         }
+        // A Sales line is gone when the accounts (and, for a company's line, the companies) were read whole: not while
+        // some were set aside or a limit was reached. Not production is no reason to keep a mark.
+        if section.kind == .sales, let keys = SalesBrief.readGapKeys(forLineID: subject) {
+            return !section.gaps.contains { keys.contains($0.key) }
+        }
         return section.gaps.isEmpty
     }
 }
@@ -538,10 +546,10 @@ public enum DeskBuilder {
 /// The text the owner pastes to an agent: always Dari, with file:line and "read PRIORITIES.md first".
 public enum DeskAgentBrief {
     /// Brief sections whose lines name customers (a website message's sender and text, a WorkTrack company, a licence
-    /// holder) or carry amounts (Money), with their Dari names. Their brief carries the Brief entry id instead of the
-    /// title, and no detail.
+    /// holder, a CRM account) or carry amounts (Money), with their Dari names. Their brief carries the Brief entry id
+    /// instead of the title, and no detail (a Sales id is a hash, never the CRM's own id).
     static let customerSections: [BriefSourceKind: String] = [
-        .siteMessages: "پیام‌های وب‌سایت", .worktrack: "مشتریان WorkTrack", .licences: "لایسنس‌ها", .money: "پول",
+        .siteMessages: "پیام‌های وب‌سایت", .worktrack: "مشتریان WorkTrack", .licences: "لایسنس‌ها", .money: "پول", .sales: "فروش",
     ]
 
     public static func text(for item: DeskItem, now: Date) -> String {
