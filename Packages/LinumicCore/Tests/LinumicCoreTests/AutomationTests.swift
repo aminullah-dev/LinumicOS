@@ -24,7 +24,7 @@ struct AutomationCatalogTests {
 
     @Test func localJobsDontNeedTheNetwork() {
         let local = AutomationCatalog.jobs.filter { !$0.needsNetwork }.map(\.id)
-        #expect(Set(local) == [.keys, .backup, .ledgers, .brief])
+        #expect(Set(local) == [.keys, .backup, .legal, .ledgers, .brief])
     }
 
     @Test func ledgersRunJustBeforeTheBrief() {
@@ -110,7 +110,7 @@ struct AutomationSchedulerTests {
     @Test func offlineHoldsBackNetworkJobsOnly() {
         let due = AutomationScheduler.dueJobs(AutomationCatalog.jobs, states: [:], disabled: [],
                                               conditions: AutomationConditions(online: false), now: t0)
-        #expect(due == [.keys, .backup, .ledgers, .brief])
+        #expect(due == [.keys, .backup, .legal, .ledgers, .brief])
     }
 
     @Test func pauseHoldsEverythingUntilItEnds() {

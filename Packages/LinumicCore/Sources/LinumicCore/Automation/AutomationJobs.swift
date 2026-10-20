@@ -20,6 +20,8 @@ public enum AutomationJobID: String, Codable, CaseIterable, Sendable, Identifiab
     /// The Desk's marks, the obligations and accounts with the cloud, and the Mac's ledger reading for iPhone and iPad
     /// (docs/desk-sync.md). A new ledger reading is also sent as soon as it is read.
     case deskSync
+    /// The legal folder: marker counts and Asasnama names and dates, read-only (Legal & company).
+    case legal
     /// The owner's ledgers for the Desk; before the Brief, so the Desk and the Brief see the same round.
     case ledgers
     case brief
@@ -106,6 +108,11 @@ public enum AutomationCatalog {
         AutomationJobSpec(id: .deskSync, title: "Desk sync",
                           detail: "Your Desk marks, obligations and accounts with the cloud, and the Mac's ledger reading for iPhone and iPad. Conflicts are shown on the Desk, never overwritten.",
                           cadence: 30 * 60, retryAfter: 5 * 60, runsInBackground: true, timeLimit: 2 * 60),
+        // Local files only, read-only, inside the legal folder the owner granted (or that the sandbox lets the app read);
+        // Mac only. The drafts change by hand, so once an hour is enough.
+        AutomationJobSpec(id: .legal, title: "Legal folder",
+                          detail: "Marker counts with file and line, and Asasnama names and dates, read-only. Never the text. No network.",
+                          cadence: 60 * 60, retryAfter: 10 * 60, needsNetwork: false),
         // Local files only (the PRIORITIES.md files and the newest NEXT-ACTIONS), read-only, inside the folders the
         // owner granted; Mac only, like Keys & Backups.
         AutomationJobSpec(id: .ledgers, title: "Ledgers",
