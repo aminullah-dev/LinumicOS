@@ -338,6 +338,42 @@ post as Linumic, so it is treated as a production system.
 - `audit_events` is append-only (no update/delete policies) and written by a security-definer trigger.
 - Keys: the app will use only the **publishable** key and the user's session. The service-role key is never put in
   the app or the repository.
+- **Data API grants are explicit (since 2026-10-20).** Supabase changes a default on 2026-10-30
+  ([announcement](https://github.com/orgs/supabase/discussions/45329)). Until then the default privileges of the role
+  `postgres` grant every new table and sequence in `public` to `anon`, `authenticated` and `service_role`. From then
+  on a new table gets no grant, so the API answers "permission denied" (42501) until a migration grants it. Live
+  tables keep their grants. A replay of the migrations (a new project, a preview branch, a local reset, a rebuild
+  after a disaster) does not: the app's security-invoker RPCs (`export_inventory`, `import_inventory`,
+  `export_licences`, `upsert_licences`, `export_oversight`, `upsert_oversight`, `sentinel_overview`,
+  `sentinel_recent_events`, `desk_sync_pull`) read and write the tables as `authenticated` and need the table grants.
+  `supabase/migrations/20261020233000_explicit_data_api_grants.sql` restates the live grants, read on 2026-10-20,
+  table by table. On the live project it changes nothing.
+
+  | Tables | anon | authenticated | service_role |
+  |---|---|---|---|
+  | `app_admins`, `audit_events`, `content_items`, `deployments`, `inventory_meta`, `issues`, `licences`, `market_evidence`, `market_finding_evidence`, `market_findings`, `market_sources`, `oversight_repos`, `platforms`, `products`, `releases`, `repositories`, `roadmap_items`, `store_listings`, `unresolved_items` | all | all | all |
+  | `inventory_snapshots`, `sentinel_checks`, `sentinel_events`, `sentinel_rounds`, `sentinel_target_state` | read | read | all |
+  | `desk_items`, `desk_ledger_reading`, `desk_state`, `obligations`, `vendors` | none | read | all |
+
+  "all" is every table privilege (SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER, and MAINTAIN on
+  Postgres 17, which the project runs). "read" is SELECT, REFERENCES, TRIGGER and MAINTAIN. The five identity
+  sequences (`audit_events_id_seq`, `inventory_snapshots_id_seq`, `sentinel_checks_id_seq`,
+  `sentinel_events_id_seq`, `sentinel_rounds_id_seq`) give SELECT, UPDATE and USAGE to all three roles, as on live.
+  Every table has RLS on, and `anon` has no policy on any of them, so `anon` reaches no row. Whether to take back the
+  `anon` grants is the owner's decision, not part of this change. Functions keep their own explicit
+  `revoke ... from public, anon` / `grant execute ... to authenticated` in each migration. On a replay under the new
+  default, `service_role` lacks EXECUTE on the RPCs granted only to `authenticated`: live has it through the old
+  default, but nothing calls them with the service role. The Sentinel Edge Function calls only `sentinel_secret_ok`
+  and `sentinel_record_round`, which grant it explicitly.
+- **Rule: every new table gets its grants in its own migration.** A migration that creates a table, a view or a
+  sequence in `public` grants it to the API roles that need it, and revokes what they must not have, in the same file,
+  as plain SQL (no `on all tables in schema public`, no `alter default privileges ... grant`). If no API role may
+  reach it, the migration revokes it from `anon` and `authenticated` and says why in a comment:
+  `-- data-api: revoke-only public.<name>: <why>`. `tools/supabase/check_migration_grants.py` fails CI when a migration
+  breaks this rule (its tests, with mutations: `tools/supabase/test_check_migration_grants.py`). Add the table to the
+  expected matrix in `supabase/tests/grants/matrix.sql` too. `supabase/tests/grants/run.sh` replays every migration
+  on a throwaway Postgres under the old default, Supabase's new one and no default at all, and checks that the result
+  equals that matrix.
 
 ## Backend phase (design)
 
@@ -362,3 +398,5 @@ post as Linumic, so it is treated as a production system.
 2. Never paste real credentials into issues, docs, commits or AI prompts.
 3. Anything that writes to an external system needs explicit per-action user
    confirmation and an audit entry.
+4. A migration that creates a table in `public` grants it (and revokes what a role
+   must not have) in the same file. See "Data API grants are explicit" above.

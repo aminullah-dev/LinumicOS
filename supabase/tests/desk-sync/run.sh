@@ -4,12 +4,17 @@
 # writing the same new row at the same moment (two sessions), then the rollback exactly as docs/desk-sync.md prints it
 # (its first sql block under "## Rollback") and what it must leave (after-rollback.sql). Then, on a second throwaway
 # database, the same rollback after only the first migration was applied. Nothing touches the live project.
+# SUPABASE_DEFAULTS picks Supabase's default privileges in `public` (../grants/defaults-*.sql): old (the live project
+# before 2026-10-30, the default), opt-in (from 2026-10-30) or none (no automatic grant).
 #
-#   supabase/tests/desk-sync/run.sh           # from the repository root; needs initdb, pg_ctl and psql on PATH
+#   supabase/tests/desk-sync/run.sh                          # from the repository root; needs initdb, pg_ctl and psql
+#   SUPABASE_DEFAULTS=none supabase/tests/desk-sync/run.sh
 set -euo pipefail
 HERE=$(cd "$(dirname "$0")" && pwd)
 REPO=$(cd "$HERE/../../.." && pwd)
 PORT=${DESK_SYNC_TEST_PORT:-54331}
+DEFAULTS="$REPO/supabase/tests/grants/defaults-${SUPABASE_DEFAULTS:-old}.sql"
+[[ -f "$DEFAULTS" ]] || { echo "SUPABASE_DEFAULTS must be old, opt-in or none" >&2; exit 1; }
 TMP=$(mktemp -d)
 trap 'pg_ctl -D "$TMP/data" stop -m immediate >/dev/null 2>&1 || true; pg_ctl -D "$TMP/data2" stop -m immediate >/dev/null 2>&1 || true; rm -rf "$TMP"' EXIT
 
@@ -19,6 +24,7 @@ start() {
   initdb -D "$TMP/$1" -U postgres --auth=trust >/dev/null
   pg_ctl -D "$TMP/$1" -o "-p $PORT -c unix_socket_directories='' -c listen_addresses=127.0.0.1" -l "$TMP/$1.log" start >/dev/null
   run -f "$REPO/supabase/tests/sentinel/stubs.sql"
+  run -f "$DEFAULTS"
 }
 migrate() {
   for f in "$@"; do

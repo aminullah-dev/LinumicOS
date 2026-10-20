@@ -86,6 +86,12 @@ xcodegen generate && open LinumicOS.xcodeproj
 xcodegen generate && xcodebuild -project LinumicOS.xcodeproj -scheme LinumicOS \
   -destination 'generic/platform=iOS Simulator' build
 
+# Supabase migrations: every table in `public` gets its Data API grants in its own migration (CI runs this too)
+python3 tools/supabase/check_migration_grants.py
+
+# Replay every migration on a throwaway local Postgres and check the grants (never the live project)
+supabase/tests/grants/run.sh
+
 # Signed, notarised macOS release (see the script header for the one-time notarytool profile)
 tools/release/build-release.sh
 

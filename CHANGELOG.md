@@ -5,6 +5,25 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: explicit Data API grants for every Supabase table, before Supabase's 2026-10-30 change (2026-10-20)
+- **Why:** from 2026-10-30 Supabase stops granting new tables in `public` to `anon`, `authenticated` and
+  `service_role` on its own. Live tables keep their grants. A replay of the migrations (a new project, a preview
+  branch, a local reset, a rebuild after a disaster) would make tables the API answers "permission denied" for.
+- `supabase/migrations/20261020233000_explicit_data_api_grants.sql` names each of the 29 tables and the 5 identity
+  sequences and restates exactly the grants live has (read 2026-10-20). Nothing widened or narrowed. It changes
+  nothing on the live project, and running it again changes nothing.
+- `tools/supabase/check_migration_grants.py` (in CI) fails when a migration creates a table, a view or a sequence in
+  `public` without a GRANT in the same file, or without a REVOKE plus `-- data-api: revoke-only public.<name>: <why>`.
+  It also fails on `on all tables in schema public` and on `alter default privileges ... grant`. Its 20 tests include
+  mutations of the real migrations (`tools/supabase/test_check_migration_grants.py`).
+- `supabase/tests/grants/run.sh` replays every migration on a throwaway Postgres under the old default, the new one
+  and no default at all. The result equals the live matrix every time. The grants migration changes no ACL on a
+  database built like the live one. Without it, 313 (new default) or 559 (no default) grants are missing. The
+  Sentinel and Desk sync suites pass under no default. They take `SUPABASE_DEFAULTS=old|opt-in|none`, and their
+  stubs no longer hold the default privileges (`supabase/tests/grants/defaults-*.sql`).
+- Docs: the rule and the matrix in docs/security.md, CONTRIBUTING.md, docs/backend-plan.md, and re-applying after a
+  rollback in docs/sentinel.md and docs/desk-sync.md.
+
 ### Added: Products (محصولات) and Agents (ایجنت‌ها), read-only; Phase 7 of the company OS roadmap (2026-10-20)
 - **Products** (sidebar after Platforms, macOS and iOS): one card per product (WorkTrack, SafeBeauty, VELRO, Talar,
   KhayatYar, MediFlow, NerkhTimes, Namazia, DukanPro, Linumic OS) with each platform's live store version, newest

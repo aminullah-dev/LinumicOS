@@ -225,6 +225,10 @@ Status 2026-10-20 (04:25 UTC): **applied**, with the owner present, through the 
   sweep parity fixture (with a domain the Monitor read), the live prefixes and event kinds against the migration, the
   seed pinned to its revision, the server's reminders read against the register (after a synced Done, days late,
   re-dated), the overview's counts, and the job's settings. `tools/test/persian-calendar.sh` passes the same suite.
+- `supabase/tests/grants/run.sh` (2026-10-20): every migration, under Supabase's old default, its new one
+  (2026-10-30) and no default at all, ends with the live Data API grants: `authenticated` reads the five tables,
+  `anon` has nothing, writes go through the push RPCs (`20261020233000_explicit_data_api_grants.sql`). It then runs
+  the suite below under no default too.
 - `supabase/tests/desk-sync/run.sh`: every migration on a throwaway Postgres 16 with the Sentinel suite's stand-ins
   for auth, Vault, pg_cron (named jobs keyed by name and role, as pg_cron does) and pg_net, then the behaviour checks
   (roles, versions and stale writes, tombstones, the refusals including days that are not days, audit, the ledger
@@ -368,6 +372,11 @@ drop function if exists private.desk_sync_has_secret(text);
 
 commit;
 ```
+
+**Applying the migrations again after this rollback:** since 2026-10-30 Supabase grants a new table nothing, so
+`20261019090000_desk_sync.sql` alone makes tables the app can't read (`desk_sync_pull` answers "permission denied").
+Run its section of `20261020233000_explicit_data_api_grants.sql` (the "Desk sync tables" grants and revokes, and the
+MAINTAIN block) right after it. The whole file needs every table it names to exist.
 
 ## For the owner (دری)
 

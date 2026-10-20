@@ -53,6 +53,7 @@ Files:
 | Edge Function (targets copied from `MonitorCatalog`) | `supabase/functions/sentinel/` |
 | Swift models, client, summary | `Packages/LinumicCore/Sources/LinumicCore/Sentinel/` |
 | Tests | `SentinelTests.swift` (Swift), `supabase/functions/sentinel/evaluate_test.ts` (Deno), `supabase/tests/sentinel/` (SQL) |
+| Data API grants of the five tables (read for anon and authenticated, all for service_role), written out for Supabase's 2026-10-30 change | `supabase/migrations/20261020233000_explicit_data_api_grants.sql`, checked by `supabase/tests/grants/` |
 
 ## Objects
 
@@ -215,3 +216,8 @@ drop table if exists public.sentinel_events, public.sentinel_target_state, publi
 ```
 
 Then delete the function: `supabase functions delete sentinel --project-ref mczuclgfqxffcbiwvecf`.
+
+**Applying the migrations again after a rollback:** since 2026-10-30 Supabase grants a new table nothing, so
+`20261018090000_sentinel.sql` alone makes tables the app can't read (`sentinel_overview` answers "permission denied").
+Run its section of `20261020233000_explicit_data_api_grants.sql` (the "Sentinel tables" grants, the MAINTAIN block
+and the sequences of these tables) right after it. The whole file needs every table it names to exist.
