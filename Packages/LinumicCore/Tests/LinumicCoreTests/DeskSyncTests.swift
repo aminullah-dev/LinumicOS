@@ -1102,7 +1102,8 @@ struct DeskSyncSeedTests {
     /// corrected, added or dropped, or a change to what is sent of it, changes this: bump `ObligationSeed.revision` (the
     /// server's sweep keeps the rows of the newest revision a device sent, so without a bump it keeps the old ones) and
     /// pin the new value here.
-    static let pinned: [Int: String] = [4: "c66e3823d972884d152f9ecdb7886270e94c4924f66ea0d68d2c118a21970e24"]
+    static let pinned: [Int: String] = [4: "c66e3823d972884d152f9ecdb7886270e94c4924f66ea0d68d2c118a21970e24",
+                                         5: "c46734153bf44ba0402e61f7e160c32863c5802b3a8630fae5189cdbb6b7bd6c"]
 
     @Test func whatIsSentOfTheSeedIsPinnedToItsRevision() {
         let revision = ObligationSeed.revision

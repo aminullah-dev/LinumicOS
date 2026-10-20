@@ -12,13 +12,17 @@ public enum ObligationSeed {
     /// Bumped whenever a row is added or corrected, or what Desk sync sends of the seed changes (recorded in exports;
     /// the server's sweep keeps the rows of the newest revision a device sent). A test pins what is sent to this
     /// number (DeskSyncSeedTests), so a changed row without a new revision fails. 4: the seed's linumic.com row is no
-    /// longer sent (the Monitor's reading replaces it), and the one revision 3 sent becomes a tombstone.
-    public static let revision = 4
+    /// longer sent (the Monitor's reading replaces it), and the one revision 3 sent becomes a tombstone. 5: the end of
+    /// SafeBeauty's scheduled queue, and VELRO's queue with its end not recorded (the marketing queue, roadmap module 8).
+    public static let revision = 5
 
     static let multiplatform = "~/Projects/Multiplatform"
     static let nextActions = "~/Projects/Multiplatform/NEXT-ACTIONS-2026-10-19.md"
     static let memory = "~/.claude/projects/-Users-aminullahhashemi/memory"
     static let repo = "~/Projects/Multiplatform/Linumic/LinumicCommandCenter"
+    /// The marketing ledgers (MarketingLedgers): cited by line, never parsed by the app.
+    static let safeBeautyLedger = "~/Desktop/1/SafeBeauty-Marketing/STATUS.md"
+    static let velroCalendar = "~/Desktop/1/Marketing/Velro/01-plan/content-calendar.md"
 
     /// What docs/integrations.md:548-551 says depends on linumic.com, in its own terms (the seed row and the Monitor's
     /// live reading share it). The source names no mailbox, so none is named here.
@@ -68,6 +72,19 @@ public enum ObligationSeed {
                        consequence: "From 2026-10-27 nothing is scheduled on WorkTrack's Facebook and Instagram; 24 launch packages and 4 videos are ready but not scheduled.",
                        source: "\(memory)/worktrack-marketing.md:15 (scheduled 2026-10-19..26, next free day 2026-10-27, recorded 2026-10-18); \(nextActions):117 («WorkTrack، پیش از ۲۷ اکتبر»)",
                        recordedOn: KeyDay("2026-10-18"), origin: .seed),
+            // The last day anything is scheduled, as the ledger lists it (Business Suite's own days, New York time).
+            Obligation(id: "marketing.safebeauty-queue-end",
+                       title: "SafeBeauty's scheduled Meta posts end on 2026-11-13",
+                       product: "SafeBeauty", area: .marketing, due: KeyDay("2026-11-13"),
+                       consequence: "Nothing is scheduled on SafeBeauty's Facebook and Instagram after the reels of 2026-11-11 to 2026-11-13: the feed runs to 2026-11-07 and the stories to 2026-11-10. New content after 2026-11-13 is still to be made.",
+                       source: "\(safeBeautyLedger):9-18 (feed posts 2026-10-17 to 2026-11-07), :35 (stories to 2026-11-10), :39-40 (reels 2026-11-11 to 13; «nothing may be scheduled past ~Nov 13»), updated 2026-10-15; \(memory)/safebeauty-marketing.md:57 («Next to do: new content after Nov 13»)",
+                       recordedOn: KeyDay("2026-10-15"), origin: .seed),
+            // No schedule is recorded for VELRO: its end is unknown, which is itself to find out (never "nothing").
+            Obligation(id: "marketing.velro-queue",
+                       title: "VELRO's post queue: what is scheduled, and until when, is not recorded",
+                       product: "VELRO", area: .marketing, due: nil,
+                       source: "\(memory)/velro-marketing.md:27-29 (posts published by hand, the last recorded on 2026-10-17; no schedule recorded), :37 (one post an hour, by hand); \(velroCalendar):4 (the calendar's last update, 2026-09-30)",
+                       recordedOn: KeyDay("2026-10-17"), origin: .seed),
             // The Monitor's live RDAP reading replaces this row (same id) once it has read the domain.
             Obligation(id: "domain.linumic.com",
                        title: "linumic.com registration ends",
