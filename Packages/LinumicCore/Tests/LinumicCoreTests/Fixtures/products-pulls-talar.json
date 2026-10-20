@@ -1,0 +1,121 @@
+[
+  {
+    "number": 7,
+    "title": "[agent:talar-web] Unit tests for lib/jalali",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/talar/pull/7",
+    "created_at": "2026-10-20T13:53:42Z",
+    "updated_at": "2026-10-20T14:38:00Z",
+    "closed_at": "2026-10-20T14:37:58Z",
+    "merged_at": "2026-10-20T14:37:58Z",
+    "head": {
+      "ref": "agent/talar-web/2026-10-20-jalali-tests"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 6,
+    "title": "[agent:talar-android] Unit tests for Digits, TalarResult.of, LocalizedText.resolve",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/talar/pull/6",
+    "created_at": "2026-10-20T10:17:07Z",
+    "updated_at": "2026-10-20T14:37:43Z",
+    "closed_at": "2026-10-20T14:37:43Z",
+    "merged_at": "2026-10-20T14:37:43Z",
+    "head": {
+      "ref": "agent/talar-android/2026-10-20-core-unit-tests"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 5,
+    "title": "Panel: sign-up for new halls, Jalali calendar, trilingual UI; API request-id; release prep",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/talar/pull/5",
+    "created_at": "2026-10-08T03:00:54Z",
+    "updated_at": "2026-10-08T03:43:44Z",
+    "closed_at": "2026-10-08T03:43:44Z",
+    "merged_at": "2026-10-08T03:43:44Z",
+    "head": {
+      "ref": "feat/panel-i18n-and-platform-hardening"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 4,
+    "title": "Repo hygiene: accurate README, tighter .gitignore, and the working method in CLAUDE.md",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/talar/pull/4",
+    "created_at": "2026-09-20T07:40:51Z",
+    "updated_at": "2026-10-19T03:55:43Z",
+    "closed_at": "2026-09-20T07:52:42Z",
+    "merged_at": "2026-09-20T07:52:42Z",
+    "head": {
+      "ref": "demo/sandbox-project"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 3,
+    "title": "Demo sandbox: a separate project so trying Talar cannot touch a real hall",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/talar/pull/3",
+    "created_at": "2026-08-25T17:35:04Z",
+    "updated_at": "2026-08-25T17:58:45Z",
+    "closed_at": "2026-08-25T17:58:45Z",
+    "merged_at": "2026-08-25T17:58:45Z",
+    "head": {
+      "ref": "demo/sandbox-project"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 2,
+    "title": "Admin settlement + reviews, then a security and correctness pass over the whole stack",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/talar/pull/2",
+    "created_at": "2026-08-02T02:58:31Z",
+    "updated_at": "2026-08-02T04:59:38Z",
+    "closed_at": "2026-08-02T04:59:38Z",
+    "merged_at": "2026-08-02T04:59:38Z",
+    "head": {
+      "ref": "panel/admin-settlement-reviews"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 1,
+    "title": "Add CLAUDE.md: repo conventions + platform-skill reconciliation",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/talar/pull/1",
+    "created_at": "2026-07-25T01:05:20Z",
+    "updated_at": "2026-10-19T03:55:43Z",
+    "closed_at": "2026-08-02T04:59:39Z",
+    "merged_at": "2026-08-02T04:59:39Z",
+    "head": {
+      "ref": "claude/red-skills-check-8d3f35"
+    },
+    "base": {
+      "ref": "main"
+    }
+  }
+]

@@ -1,0 +1,512 @@
+[
+  {
+    "number": 30,
+    "title": "[agent:linumic-os] Tests for the public App Store lookup and StoreSync",
+    "state": "open",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/30",
+    "created_at": "2026-10-20T14:31:42Z",
+    "updated_at": "2026-10-20T14:39:37Z",
+    "closed_at": null,
+    "merged_at": null,
+    "head": {
+      "ref": "agent/linumic-os/2026-10-20-app-store-lookup-tests"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 29,
+    "title": "Company OS phase 5: Sales, WorkTrack first (read-only)",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/29",
+    "created_at": "2026-10-20T05:18:31Z",
+    "updated_at": "2026-10-20T10:50:44Z",
+    "closed_at": "2026-10-20T10:50:44Z",
+    "merged_at": "2026-10-20T10:50:44Z",
+    "head": {
+      "ref": "feat/sales"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 28,
+    "title": "App icon: the Linumic monogram (macOS and iOS)",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/28",
+    "created_at": "2026-10-20T05:04:26Z",
+    "updated_at": "2026-10-20T05:08:03Z",
+    "closed_at": "2026-10-20T05:08:03Z",
+    "merged_at": "2026-10-20T05:08:03Z",
+    "head": {
+      "ref": "feat/app-icon"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 27,
+    "title": "Desk sync: the job line counts the app's own rows and names the ledger reading",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/27",
+    "created_at": "2026-10-20T04:43:45Z",
+    "updated_at": "2026-10-20T04:45:56Z",
+    "closed_at": "2026-10-20T04:45:55Z",
+    "merged_at": "2026-10-20T04:45:55Z",
+    "head": {
+      "ref": "fix/desk-sync-line"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 26,
+    "title": "Company OS phase 4: Money v1 (read-only)",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/26",
+    "created_at": "2026-10-20T01:21:46Z",
+    "updated_at": "2026-10-20T04:37:40Z",
+    "closed_at": "2026-10-20T04:37:40Z",
+    "merged_at": "2026-10-20T04:37:40Z",
+    "head": {
+      "ref": "feat/money"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 25,
+    "title": "Phase 3: Desk sync and reminders while the Mac is off (migrations need approval)",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/25",
+    "created_at": "2026-10-19T19:04:34Z",
+    "updated_at": "2026-10-20T04:31:59Z",
+    "closed_at": "2026-10-20T04:31:59Z",
+    "merged_at": "2026-10-20T04:31:59Z",
+    "head": {
+      "ref": "feat/desk-sync"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 24,
+    "title": "Operations: VELRO sign-in code by SMS or email",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/24",
+    "created_at": "2026-10-19T16:51:46Z",
+    "updated_at": "2026-10-19T16:54:19Z",
+    "closed_at": "2026-10-19T16:54:17Z",
+    "merged_at": "2026-10-19T16:54:17Z",
+    "head": {
+      "ref": "feat/velro-email-code"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 23,
+    "title": "Company OS phase 2: obligations and accounts, encrypted continuity export, daily backup counted from Backups/",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/23",
+    "created_at": "2026-10-19T15:56:13Z",
+    "updated_at": "2026-10-19T18:08:11Z",
+    "closed_at": "2026-10-19T18:08:09Z",
+    "merged_at": "2026-10-19T18:08:09Z",
+    "head": {
+      "ref": "feat/obligations"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 22,
+    "title": "Automation: time limit per job and bounded network timeouts (queue stalled for hours)",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/22",
+    "created_at": "2026-10-19T15:01:59Z",
+    "updated_at": "2026-10-19T15:09:09Z",
+    "closed_at": "2026-10-19T15:09:07Z",
+    "merged_at": "2026-10-19T15:09:07Z",
+    "head": {
+      "ref": "fix/automation-timeouts"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 21,
+    "title": "Desk and Ledgers: the home screen from the Daily Brief and the owner's ledgers (company OS, phase 1)",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/21",
+    "created_at": "2026-10-19T05:00:59Z",
+    "updated_at": "2026-10-19T05:56:32Z",
+    "closed_at": "2026-10-19T05:56:30Z",
+    "merged_at": "2026-10-19T05:56:30Z",
+    "head": {
+      "ref": "feat/desk"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 20,
+    "title": "Keys & Backups: correct the registry to the keys on this Mac (2026-10-18)",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/20",
+    "created_at": "2026-10-19T02:44:13Z",
+    "updated_at": "2026-10-19T03:24:50Z",
+    "closed_at": "2026-10-19T03:24:48Z",
+    "merged_at": "2026-10-19T03:24:48Z",
+    "head": {
+      "ref": "fix/keys-registry-2026-10"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 19,
+    "title": "Release Center: ignore runs of deleted workflows (MediFlow showed CI failing)",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/19",
+    "created_at": "2026-10-19T01:54:22Z",
+    "updated_at": "2026-10-19T01:56:26Z",
+    "closed_at": "2026-10-19T01:56:24Z",
+    "merged_at": "2026-10-19T01:56:24Z",
+    "head": {
+      "ref": "fix/ci-deleted-workflows"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 18,
+    "title": "Website messages: site not set up counts as not connected, not a failure",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/18",
+    "created_at": "2026-10-19T01:52:51Z",
+    "updated_at": "2026-10-19T01:56:22Z",
+    "closed_at": "2026-10-19T01:56:20Z",
+    "merged_at": "2026-10-19T01:56:20Z",
+    "head": {
+      "ref": "fix/site-messages-setup-skip"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 17,
+    "title": "Release 0.2.0 (2): version numbers and release script fix",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/17",
+    "created_at": "2026-10-19T01:44:41Z",
+    "updated_at": "2026-10-19T01:56:29Z",
+    "closed_at": "2026-10-19T01:48:22Z",
+    "merged_at": "2026-10-19T01:48:22Z",
+    "head": {
+      "ref": "release/0.2.0"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 16,
+    "title": "Sentinel to main (PR #14 was merged into feat/automation)",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/16",
+    "created_at": "2026-10-19T01:06:31Z",
+    "updated_at": "2026-10-19T01:11:35Z",
+    "closed_at": "2026-10-19T01:11:15Z",
+    "merged_at": "2026-10-19T01:11:15Z",
+    "head": {
+      "ref": "feat/automation"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 15,
+    "title": "Bump actions/checkout from 4 to 7",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/15",
+    "created_at": "2026-10-19T01:06:01Z",
+    "updated_at": "2026-10-19T01:11:27Z",
+    "closed_at": "2026-10-19T01:11:18Z",
+    "merged_at": "2026-10-19T01:11:18Z",
+    "head": {
+      "ref": "dependabot/github_actions/actions/checkout-7"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 14,
+    "title": "Sentinel: server-side checks on Supabase that run while the Mac is off (not deployed)",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/14",
+    "created_at": "2026-10-19T00:08:34Z",
+    "updated_at": "2026-10-19T01:11:35Z",
+    "closed_at": "2026-10-19T01:06:01Z",
+    "merged_at": "2026-10-19T01:06:01Z",
+    "head": {
+      "ref": "feat/sentinel-app"
+    },
+    "base": {
+      "ref": "feat/automation"
+    }
+  },
+  {
+    "number": 13,
+    "title": "Automation: one engine for every schedule, menu bar, login item, quiet hours, verified backups",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/13",
+    "created_at": "2026-10-19T00:08:22Z",
+    "updated_at": "2026-10-19T01:05:45Z",
+    "closed_at": "2026-10-19T01:05:45Z",
+    "merged_at": "2026-10-19T01:05:45Z",
+    "head": {
+      "ref": "feat/automation"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 12,
+    "title": "CI: LinumicCore tests and Dari catalog check",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/12",
+    "created_at": "2026-10-19T00:03:20Z",
+    "updated_at": "2026-10-19T01:56:29Z",
+    "closed_at": "2026-10-19T01:05:27Z",
+    "merged_at": "2026-10-19T01:05:26Z",
+    "head": {
+      "ref": "ci/core-tests"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 11,
+    "title": "Website messages: linumic.com contact form entries in the Brief",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/11",
+    "created_at": "2026-10-09T20:40:21Z",
+    "updated_at": "2026-10-19T03:55:38Z",
+    "closed_at": "2026-10-09T23:02:23Z",
+    "merged_at": "2026-10-09T23:02:23Z",
+    "head": {
+      "ref": "feat/site-messages"
+    },
+    "base": {
+      "ref": "feat/keys"
+    }
+  },
+  {
+    "number": 10,
+    "title": "Keys & Backups: registry, staleness checks and restore reminders",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/10",
+    "created_at": "2026-10-09T19:00:00Z",
+    "updated_at": "2026-10-19T03:55:30Z",
+    "closed_at": "2026-10-09T23:02:36Z",
+    "merged_at": "2026-10-09T23:02:36Z",
+    "head": {
+      "ref": "feat/keys"
+    },
+    "base": {
+      "ref": "feat/brief"
+    }
+  },
+  {
+    "number": 9,
+    "title": "Daily Brief and Command Palette",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/9",
+    "created_at": "2026-10-09T18:43:46Z",
+    "updated_at": "2026-10-19T03:55:29Z",
+    "closed_at": "2026-10-09T23:02:48Z",
+    "merged_at": "2026-10-09T23:02:48Z",
+    "head": {
+      "ref": "feat/brief"
+    },
+    "base": {
+      "ref": "feat/releases"
+    }
+  },
+  {
+    "number": 8,
+    "title": "Release Center: stores, PRs and CI in one place",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/8",
+    "created_at": "2026-10-09T18:27:19Z",
+    "updated_at": "2026-10-19T03:55:37Z",
+    "closed_at": "2026-10-09T23:03:05Z",
+    "merged_at": "2026-10-09T23:03:05Z",
+    "head": {
+      "ref": "feat/releases"
+    },
+    "base": {
+      "ref": "feat/monitor"
+    }
+  },
+  {
+    "number": 7,
+    "title": "Monitor: live health, TLS and domain expiry for every platform",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/7",
+    "created_at": "2026-10-09T18:06:11Z",
+    "updated_at": "2026-10-19T03:55:32Z",
+    "closed_at": "2026-10-09T23:03:18Z",
+    "merged_at": "2026-10-09T23:03:18Z",
+    "head": {
+      "ref": "feat/monitor"
+    },
+    "base": {
+      "ref": "feat/vault"
+    }
+  },
+  {
+    "number": 6,
+    "title": "Vault: credentials with Touch ID, copy, and sign-in fill",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/6",
+    "created_at": "2026-10-09T17:52:15Z",
+    "updated_at": "2026-10-19T03:55:39Z",
+    "closed_at": "2026-10-09T23:03:31Z",
+    "merged_at": "2026-10-09T23:03:31Z",
+    "head": {
+      "ref": "feat/vault"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 5,
+    "title": "Platform control, phase 4: Talar, SafeBeauty and VELRO overview",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/5",
+    "created_at": "2026-10-09T05:56:03Z",
+    "updated_at": "2026-10-19T03:55:33Z",
+    "closed_at": "2026-10-09T17:11:48Z",
+    "merged_at": "2026-10-09T17:11:48Z",
+    "head": {
+      "ref": "feat/operations"
+    },
+    "base": {
+      "ref": "feat/worktrack-customers"
+    }
+  },
+  {
+    "number": 4,
+    "title": "Platform control, phase 3: WorkTrack customers and renewals",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/4",
+    "created_at": "2026-10-09T05:15:31Z",
+    "updated_at": "2026-10-19T03:55:40Z",
+    "closed_at": "2026-10-09T17:12:49Z",
+    "merged_at": "2026-10-09T17:12:49Z",
+    "head": {
+      "ref": "feat/worktrack-customers"
+    },
+    "base": {
+      "ref": "feat/platform-hub"
+    }
+  },
+  {
+    "number": 3,
+    "title": "Platform control, phase 2: platforms hub",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/3",
+    "created_at": "2026-10-09T04:51:04Z",
+    "updated_at": "2026-10-19T03:55:35Z",
+    "closed_at": "2026-10-09T17:13:19Z",
+    "merged_at": "2026-10-09T17:13:19Z",
+    "head": {
+      "ref": "feat/platform-hub"
+    },
+    "base": {
+      "ref": "feat/platform-control"
+    }
+  },
+  {
+    "number": 2,
+    "title": "Platform control, phase 1: licence center",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/2",
+    "created_at": "2026-10-09T04:28:00Z",
+    "updated_at": "2026-10-19T03:55:34Z",
+    "closed_at": "2026-10-09T17:13:34Z",
+    "merged_at": "2026-10-09T17:13:34Z",
+    "head": {
+      "ref": "feat/platform-control"
+    },
+    "base": {
+      "ref": "main"
+    }
+  },
+  {
+    "number": 1,
+    "title": "Project oversight: every repository from 0 to 100 (security + local status + live dashboard)",
+    "state": "closed",
+    "draft": false,
+    "html_url": "https://github.com/aminullah-dev/LinumicOS/pull/1",
+    "created_at": "2026-10-01T05:12:25Z",
+    "updated_at": "2026-10-19T03:55:36Z",
+    "closed_at": "2026-10-07T15:39:28Z",
+    "merged_at": "2026-10-07T15:39:28Z",
+    "head": {
+      "ref": "feat/project-oversight"
+    },
+    "base": {
+      "ref": "main"
+    }
+  }
+]
