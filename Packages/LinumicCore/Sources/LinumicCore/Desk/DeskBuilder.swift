@@ -221,13 +221,15 @@ public enum DeskBuilder {
                 }
             }
             // "All clear" is only about what was read: a part that was not read is an item, never a zero. A section that
-            // could not be read can still name parts that are unknown whatever happens (Money's store proceeds).
+            // could not be read can still name parts that are unknown whatever happens (Money's store proceeds). A caveat
+            // on a part that was read is an item too, and says it was read.
             for gap in section.gaps {
                 let domain = domain(section.kind, product: gap.product)
                 items.append(DeskItem(origin: origin, subjectKey: "part.\(gap.key)", kindKey: "not-read", kind: .source,
                                       domain: domain, severity: domain.isFocus ? .normal : .info,
                                       title: LF("%@: %@", section.kind.title, gap.text),
-                                      detail: L("This part was not read, so it is unknown here, not zero."),
+                                      detail: gap.isCaveat ? L("This part was read; its figures are shown, but may not be complete or exact until this is resolved.")
+                                          : L("This part was not read, so it is unknown here, not zero."),
                                       subject: section.kind.title, ownerAction: false,
                                       evidence: DeskEvidence(source: section.source, readAt: section.readAt, cadence: cadence),
                                       factHash: DeskHash.of(section.kind.rawValue, gap.key, gap.text),
@@ -497,6 +499,11 @@ public enum DeskBuilder {
         case .neverRead, .unavailable: return false
         }
         let subject = String(parts[1])
+        // A Money caveat (no TEST mark, a limit reached, not production) or failed part is gone only once the part it is
+        // about was read again: a WorkTrack failure or sign-out alone must not drop its dismissal.
+        if section.kind == .money, subject.hasPrefix("part."), let keys = MoneyBrief.readGapKeys(forPart: String(subject.dropFirst(5))) {
+            return !section.gaps.contains { keys.contains($0.key) }
+        }
         if subject == "section" || subject.hasPrefix("part.") { return true }
         guard let readAt = section.readAt, readAt > mark.at else { return false }
         if section.kind == .operations, subject.hasPrefix("ops."),

@@ -77,7 +77,8 @@ public struct MoneyCostsInput: Sendable {
     public var accounts: [VendorAccount]
     public var builtAt: Date
     /// obligations.json exists but could not be read: the register is then built from the seed alone, whose accounts
-    /// carry no cost, so the owner's costs are unknown rather than absent.
+    /// carry no cost, so the owner's costs are unknown rather than absent. The store's reason only ("bad JSON"), not a
+    /// sentence: `MoneyUnknownReason.obligationsUnreadable` puts it in one.
     public var loadError: String?
 
     public init(accounts: [VendorAccount], builtAt: Date, loadError: String? = nil) {

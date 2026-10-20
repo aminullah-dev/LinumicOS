@@ -78,6 +78,8 @@ public struct MoneyReport: Equatable, Sendable {
     /// WorkTrack's revenue answer as read (by Solar Hijri month and plan, the renewals, what the server left out); nil
     /// when it is not known.
     public var revenue: WTRevenue?
+    /// The currency WorkTrack named for that answer, for its breakdowns too; nil when the answer is not known.
+    public var revenueCurrency: CurrencyCode?
     public var paidByMethod: [MoneyMethodTotal] = []
     /// SENT invoices, past due first, then by due day (or issue day).
     public var openInvoices: [MoneyInvoiceRow] = []
@@ -85,8 +87,11 @@ public struct MoneyReport: Equatable, Sendable {
     public var recentPaid: [MoneyInvoiceRow] = []
     /// SENT invoices not past due (the outstanding ones less the overdue ones, counted directly); nil when unknown.
     public var notYetDue: MoneyTotals?
-    /// PAID or SENT invoices of TEST or DUPLICATE companies, left out; nil when the invoices are unknown.
-    public var invoiceExclusions: MoneyTotals?
+    /// PAID invoices of TEST or DUPLICATE companies, left out; nil when the invoices are unknown.
+    public var excludedPaid: MoneyTotals?
+    /// SENT invoices of TEST or DUPLICATE companies, left out. Kept apart from the paid ones: received and on the way
+    /// are different questions, never one sum.
+    public var excludedSent: MoneyTotals?
     public var costs: [MoneyCostRow] = []
     /// Names of the accounts (vendors, not customers) with no recorded cost.
     public var accountsWithoutCost: [String] = []
@@ -150,6 +155,7 @@ public enum MoneyBuilder {
         guard let revenue = read?.value else { return unknown(.notReadYet(product: worktrack)) }
         guard let code = CurrencyCode(rawValue: revenue.currency) else { return unknown(.unexpectedCurrency(revenue.currency)) }
         report.revenue = revenue
+        report.revenueCurrency = code
         var earned = MoneyCompleteness.complete
         var expected = MoneyCompleteness.complete
         if revenue.earned.orderCount + revenue.excluded.orderCount >= revenueOrderLimit {
@@ -200,7 +206,7 @@ public enum MoneyBuilder {
         let accountsByID = Dictionary(accounts.rows.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         let companiesByID = Dictionary(w.companies.map { ($0.companyId, $0) }, uniquingKeysWith: { first, _ in first })
         var paid = MoneyTotals(zeroIn: .afn), outstanding = MoneyTotals(zeroIn: .afn), overdue = MoneyTotals(zeroIn: .afn)
-        var notYetDue = MoneyTotals(zeroIn: .afn), excluded = MoneyTotals(zeroIn: .afn)
+        var notYetDue = MoneyTotals(zeroIn: .afn), excludedPaid = MoneyTotals(zeroIn: .afn), excludedSent = MoneyTotals(zeroIn: .afn)
         var byMethod: [String: MoneyTotals] = [:]
         var completeness: [MoneyFigureID: MoneyCompleteness] = [:]
         func caveat(_ figures: [MoneyFigureID], _ c: MoneyCompleteness) {
@@ -231,7 +237,7 @@ public enum MoneyBuilder {
                     }
                     // The server's own rule: any mark (TEST, DUPLICATE, or a kind added later) leaves the company out.
                     if company.flags != nil {
-                        if !counts.isEmpty { excluded.add(amount) }
+                        if inv.status == .paid { excludedPaid.add(amount) } else if inv.status == .sent { excludedSent.add(amount) }
                         continue
                     }
                 } else if !counts.isEmpty {
@@ -297,7 +303,8 @@ public enum MoneyBuilder {
         }
         report.recentPaid = Array(paidRows.sorted { ($0.paidAt ?? $0.issuedAt, $0.number) > ($1.paidAt ?? $1.issuedAt, $1.number) }.prefix(recentPaidCount))
         report.notYetDue = notYetDue
-        report.invoiceExclusions = excluded
+        report.excludedPaid = excludedPaid
+        report.excludedSent = excludedSent
         report.counts.invoicesNotLinked = notLinked
         report.counts.invoicesAccountMissing = accountMissing
         report.counts.invoicesCompanyMissing = companyMissing

@@ -338,7 +338,12 @@ struct MoneyBuilderTests {
         #expect(amounts(sent) == [5750] && sent.totals?.count == 5)
         #expect(amounts(overdue) == [3250] && overdue.totals?.count == 2)
         #expect(report.notYetDue.map { ($0.amounts.map(\.value), $0.count) }! == ([2500], 3))
-        #expect(report.invoiceExclusions.map { ($0.amounts.map(\.value), $0.count) }! == ([13000], 2), "inv_10 TEST and inv_11 DUPLICATE")
+        // Received and on the way are different questions: two totals, never one sum (13000).
+        #expect(report.excludedPaid.map { ($0.amounts.map(\.value), $0.count) }! == ([7000], 1), "inv_10, PAID, TEST")
+        #expect(report.excludedSent.map { ($0.amounts.map(\.value), $0.count) }! == ([6000], 1), "inv_11, SENT, DUPLICATE")
+        let notes = MoneyBrief.notes(report, input: input(try worktrack(), safeBeauty()))
+        #expect(notes.contains { $0.hasPrefix("Left out: 1 paid invoices") } && notes.contains { $0.hasPrefix("Left out: 1 sent invoices") })
+        #expect(!notes.joined().contains("13,000") && !notes.joined().contains("13000"))
         #expect(report.counts.invoicesNotLinked == 2 && report.counts.invoicesAccountMissing == 1 && report.counts.invoicesCompanyMissing == 1)
         #expect(report.counts.invoicesUnknownStatus == 1 && report.counts.invoicesSkipped == 1 && report.counts.drafts == 1)
         #expect(report.paidByMethod.map(\.method) == ["HAWALA", ""])
@@ -384,7 +389,7 @@ struct MoneyBuilderTests {
             #expect(why.contains("company list"))
         }
         #expect(report.counts.drafts == nil && report.counts.invoicesNotLinked == nil && report.counts.graceLicences == nil)
-        #expect(report.invoiceExclusions == nil && report.openInvoices.isEmpty)
+        #expect(report.excludedPaid == nil && report.excludedSent == nil && report.openInvoices.isEmpty)
         #expect(report.figure(.worktrackHesabPayReceived).isKnown, "the server leaves TEST companies out of revenue itself")
     }
 
@@ -510,6 +515,7 @@ struct MoneyBuilderTests {
         let accounts = [account("apple", cost: AccountCost(amount: 99, currency: "USD", cycle: .yearly, source: "SAMPLE bill"))]
         let report = MoneyBuilder.build(input(signedOutWorkTrack, safeBeauty(), costs(accounts, loadError: "bad JSON")), now: now)
         #expect(report.figure(.accountCosts).unknownReason == .obligationsUnreadable("bad JSON"))
+        #expect(report.figure(.accountCosts).unknownReason?.text == "obligations.json could not be read (bad JSON), so the costs you recorded are unknown.")
         #expect(report.costs.isEmpty)
         let none = MoneyBuilder.build(input(signedOutWorkTrack, safeBeauty(), nil), now: now)
         #expect(none.figure(.accountCosts).unknownReason == .registerNotBuilt)
@@ -603,6 +609,37 @@ struct MoneyDeskTests {
         let unread = try worktrack(money: moneyRead(invoices: .failed("timeout", at: later, needsSignIn: false)))
         let kept = desk(input(unread, safeBeauty(.read(balances, at: later))), state: state, at: later)
         #expect(!kept.obsoleteMarks.contains(overdue.id))
+    }
+
+    @Test func aDismissedCaveatHoldsWhileItsPartIsNotRead() throws {
+        var revenue = try decode(WTRevenue.self, "worktrack-revenue")
+        revenue.excluded = WTRevenue.Excluded(companyCount: 0, orderCount: 0, amountAfn: 0)
+        var state = DeskState()
+        let first = desk(input(try worktrack(money: moneyRead(revenue: .read(revenue, at: readAt))), safeBeauty()))
+        let test = try #require(first.open.first { $0.id == "brief.money|part.worktrack.test|not-read" })
+        #expect(test.item.detail == "This part was read; its figures are shown, but may not be complete or exact until this is resolved.",
+                "a caveat on what was read, not an unread part")
+        let dismissed = state.dismiss(test.item, reason: "No test company exists", now: now)
+        #expect(dismissed)
+        let later = now.addingTimeInterval(3600)
+        // WorkTrack's revenue read failed once, or WorkTrack is signed out, while SafeBeauty is read: the caveat is
+        // only not known this time, so the dismissal stays.
+        let failed = try worktrack(money: moneyRead(revenue: .failed("HTTP 500", at: later, needsSignIn: false)))
+        for (name, w) in [("revenue failed", failed), ("signed out", signedOutWorkTrack)] {
+            let d = desk(input(w, safeBeauty(.read(balances, at: later))), state: state, at: later)
+            #expect(!d.obsoleteMarks.contains(test.id), "\(name)")
+        }
+        // The company list failed and SafeBeauty is not signed in: one "not read" item in Later, not a second "could
+        // not be read" beside the WorkTrack section's own, and the dismissal stays.
+        let listFailed = MoneyWorkTrackInput(isSignedIn: true, environment: "production", loadError: "Couldn't reach WorkTrack")
+        let d = desk(input(listFailed, signedOutSafeBeauty), state: state, at: later)
+        #expect(!d.open.contains { $0.id == "brief.money|section|unavailable" })
+        let section = try #require(d.open.first { $0.id == "brief.money|section|not-read" })
+        #expect(section.bucket == .later && section.item.severity == .info)
+        #expect(!d.obsoleteMarks.contains(test.id))
+        // Read again with a company marked: the caveat is gone because the situation changed, so the mark goes.
+        let marked = desk(input(try worktrack(), safeBeauty(.read(balances, at: later))), state: state, at: later)
+        #expect(marked.obsoleteMarks.contains(test.id))
     }
 
     @Test func aDismissalOfStoreProceedsHolds() throws {

@@ -153,4 +153,20 @@ struct MoneyReadOnlyTests {
             .first?.hasPrefix("not the local emulator") == true)
         #expect(MoneyReadPolicy.violations([MoneyGuardProtocol.Seen(method: "POST", url: URL(string: "http://127.0.0.1:8080/v1/projects/p/databases/(default)/documents:commit")!, body: "")]).count == 2)
     }
+
+    /// The guard sees only what goes through a transport. Every Core request does: `URLSessionTransport` (in
+    /// GitHubClient.swift) is the one place that holds a URLSession, so a client that made a session of its own would
+    /// fail here rather than slip past the guard.
+    @Test func onlyTheTransportHoldsAURLSession() throws {
+        let sources = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("Sources")
+        let files = try #require(FileManager.default.enumerator(at: sources, includingPropertiesForKeys: nil)?.allObjects as? [URL])
+            .filter { $0.pathExtension == "swift" }
+        #expect(files.count > 50, "the sources were found")
+        let patterns = ["URLSession.shared", "URLSession(configuration", ".data(for:", "dataTask(", ".upload(for:", ".download(for:"]
+        for file in files where file.lastPathComponent != "GitHubClient.swift" {
+            let text = try String(contentsOf: file, encoding: .utf8)
+            for pattern in patterns { #expect(!text.contains(pattern), "\(file.lastPathComponent): \(pattern)") }
+        }
+    }
 }
