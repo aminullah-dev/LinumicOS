@@ -55,7 +55,8 @@ The roadmap names `/vendor/revenue`, `/vendor/crm/invoices` and `payoutsOwed()` 
 - **HesabPay and renewals:** WorkTrack leaves out every company with a mark (`flags != null`,
   `vendorInsights.ts:400, 439`) and reports what it left out; the page shows it.
 - **CRM invoices:** here, through account → company → `flags`, with the server's own rule (any mark). An account with
-  no `companyId` (a prospect, a customer handled by hand) is counted, with a note.
+  no `companyId` (a prospect, a customer handled by hand) is counted, with a note. What was left out is two notes,
+  the paid invoices and the sent ones, each with its own total: received and on the way are never one sum.
 - **When the marks are not known, invoices are Unknown, never counted unfiltered:** the company list was not read
   (or its last read failed), or the CRM accounts were not read. An invoice whose company is not in the company list
   (deleted, purged, or past the list's 500-company limit) is left out, counted, and makes the figure "incomplete".
@@ -65,6 +66,16 @@ The roadmap names `/vendor/revenue`, `/vendor/crm/invoices` and `payoutsOwed()` 
   PAID orders then count as earned again, because the server builds its marked set only from companies that still
   exist (`vendorInsights.ts:400`, `vendor.ts:497-499`). Money cannot see this (`earned` has no per-company breakdown).
   Until WorkTrack is fixed: **mark test companies TEST, and do not purge one that paid.** The page carries this note.
+
+## The page
+
+Four summary cards (one row of four from about 900 pt wide, two by two below), then a section per question. An Unknown
+card shows its reason under the pill. Dates are in the device's calendar (Solar Hijri on the owner's Mac): renewal
+expiry, invoice dates, the day a cost was recorded, and Kabul's date in the past-due Desk item; revenue by month is
+named in the Solar Hijri calendar whatever the device uses, since WorkTrack counts by it. An invoice shows the one date
+that answers its question, labelled: "Paid …", "Due …", or "Issued …, no due date"; a paid invoice without a payment
+date shows none. Each figure's source line says "read <time>", or "tried <time>" when the read failed. `MoneyPage`
+takes a report and its input, so `MoneyViews.swift` has previews built from made-up figures, with no session.
 
 ## Limits WorkTrack does not report
 
@@ -84,7 +95,7 @@ Every Unknown is one gap of the Money section of the Daily Brief, so one Desk it
 | Reason | Key | Where it lands |
 |---|---|---|
 | Not signed in, or signed in and not read yet (WorkTrack, SafeBeauty) | `worktrack`, `safebeauty` | Later (the WorkTrack and Operations sections already raise the sign-in for the focus product) |
-| WorkTrack's company list failed | `worktrack` | Later (the WorkTrack section raises it in Today) |
+| WorkTrack's company list failed | `worktrack` | Later (the WorkTrack section raises it in Today). When SafeBeauty was not read either, the section is "not read yet" (information, Later), not a second "could not be read" |
 | Revenue read failed; currency not a code | `worktrack.revenue` | WorkTrack, This week |
 | Invoices read failed; company list or CRM accounts not read | `worktrack.invoices` | WorkTrack, This week |
 | Balance totals failed (rules, index, network) | `safebeauty.balances` | SafeBeauty |
@@ -93,7 +104,11 @@ Every Unknown is one gap of the Money section of the Daily Brief, so one Desk it
 
 Caveats that only the owner can fix or accept are items too: `worktrack.test` (no company is marked TEST or
 DUPLICATE), `worktrack.limit`, `worktrack.production` / `safebeauty.production` (read from a non-production
-environment). Their texts carry no times, so "Dismiss with reason" holds until the situation changes.
+environment), and `costs` when some accounts have no cost. They are about a part that was read, so their item says
+so ("This part was read; its figures are shown, but may not be complete or exact…") instead of "unknown, not zero".
+Their texts carry no times, so "Dismiss with reason" holds until the situation changes. A caveat is gone only when its
+own part was read and it was not raised: while WorkTrack is signed out, not read or its revenue read failed (or
+SafeBeauty's balances, for `safebeauty.production`), a mark on it is kept (`MoneyBrief.readGapKeys(forPart:)`).
 
 When nothing remote could be read, the section itself is "not read" or "could not be read" (one item for that
 reason), and the store proceeds and costs items are still there: the Desk shows gaps of a section in every state.
@@ -104,7 +119,7 @@ notification never shows an amount:
 | Line id | When | Severity |
 |---|---|---|
 | `money.safebeauty.owed` | salons are owed a payout | normal in production (Today for SafeBeauty), else information |
-| `money.safebeauty.receivable` | salons owe the platform commission | information |
+| `money.safebeauty.receivable` | salons owe the platform (commission on unpaid cash bookings, or a payout that overshot) | information |
 | `money.worktrack.overdue` | invoices past due | normal in production, else information |
 | `money.worktrack.unpaid` | invoices sent and not yet due | information |
 
@@ -171,10 +186,12 @@ signs in there separately (sessions are per device).
 
 ## Tests
 
-`MoneyTests` (41) and `MoneyReadOnlyTests` (2) run with every `swift test` and in the Persian-calendar run. The read-only
+`MoneyTests` (42) and `MoneyReadOnlyTests` (3) run with every `swift test` and in the Persian-calendar run. The read-only
 proof runs the real clients over a URLSession whose only protocol records every request, against the local emulator
 addresses: only vendor GETs (exactly revenue, CRM accounts, CRM invoices), token refreshes and two aggregation POSTs; a
-negative control proves it catches a PUT. It covers the Core readers; the App methods that call them
+negative control proves it catches a PUT. A source scan keeps every Core request on a transport the guard can see: no
+file in `LinumicCore/Sources` but `GitHubClient.swift` (where `URLSessionTransport` lives) makes or calls a URLSession
+itself. It covers the Core readers; the App methods that call them
 (`WorkTrackModel.refresh`, `SafeBeautyModel.refreshBalances`) are not run under it (see docs/security.md). The opt-in
 `WorkTrackEmulatorTests.liveEmulatorMoneyReadsTheCRM` (`LCC_WT_EMULATOR=1`) writes one TEST account and invoice through
 the Firestore emulator's REST API on 127.0.0.1:8080 and reads them back through the vendor API. Nothing in the tests

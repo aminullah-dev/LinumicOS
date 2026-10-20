@@ -22,14 +22,20 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   account, company and flags, and are Unknown when the company list or the CRM accounts were not read. An invoice of a
   company not in the list is left out and said. A note and a Desk item say not to purge a test company that paid
   (WorkTrack would count its orders again).
-- **Desk:** salons owed a payout and invoices past due (normal in production), salons owing commission and invoices
+- **Desk:** salons owed a payout and invoices past due (normal in production), salons owing the platform and invoices
   not yet due (information); counts in the text, amounts only in the detail (not in the notification or the agent
-  brief). A mark on a Money line that is gone is dropped once its part was read again.
+  brief). A mark on a Money line that is gone is dropped once its part was read again; a dismissed caveat (no TEST mark,
+  a limit, not production) is kept while its part is not read, and its item says the part was read.
+- **Dates and labels:** every date on the page and in the past-due item is in the device's calendar; invoice dates
+  say what they are (paid, due, issued with no due date) and never stand in for one another; months of revenue are
+  named in the Solar Hijri calendar; breakdown counts say what they count; renewals say where their term came from.
+  Left-out TEST invoices are two totals, paid and sent. A failed read's time says "tried", not "read".
 - **Reads:** `GET /vendor/crm/accounts` and `/vendor/crm/invoices` with the existing WorkTrack session, two Firestore
   aggregation queries with the existing SafeBeauty session; no new key (`SecretKey.allCases` pinned by a test), no
   write, nothing on disk or in Supabase; the WorkTrack and SafeBeauty clients now use a session with no URL cache.
   Operations shows Firestore's exact count and sum of payouts owed instead of the sum of one 300-row page. A Money
-  failure makes the WorkTrack or Operations run partial, not failed. Dari for 118 strings. See docs/money.md.
+  failure makes the WorkTrack or Operations run partial, not failed. When the balance totals are Unknown, Operations
+  shows why under the value instead of in a tooltip. Dari for 126 strings. See docs/money.md.
 
 ### Added: Obligations & accounts, Continuity, and the daily backup counted from the folder; Phase 2 of the company OS roadmap (2026-10-19)
 - **Daily backup truth.** The run log said "Copy saved and read back: 12 products" (2026-10-19 00:00:01Z) while
