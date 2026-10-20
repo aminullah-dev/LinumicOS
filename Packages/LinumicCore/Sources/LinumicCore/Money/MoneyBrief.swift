@@ -207,14 +207,14 @@ public enum MoneyBrief {
                 notes.append(LF("Left out: %lld TEST or DUPLICATE companies (%lld orders, %@).", revenue.excluded.companyCount, revenue.excluded.orderCount,
                                 MoneyFormat.text(MoneyAmount(MoneyAmount.decimal(revenue.excluded.amountAfn), CurrencyCode(rawValue: revenue.currency) ?? .afn))))
             }
-            notes.append(L("Paid orders of a TEST company that was purged count as earned again: WorkTrack leaves out only companies that still exist."))
+            notes.append(L("Paid orders of a TEST company that was purged count as earned again: WorkTrack leaves out only companies that still exist. Mark test companies TEST; do not purge one that paid until WorkTrack is fixed."))
             notes.append(L("Pending HesabPay checkouts are not counted: WorkTrack has no route that lists them across companies."))
         }
         if let excluded = report.invoiceExclusions, excluded.count > 0 {
-            notes.append(LF("Left out: %1$lld paid or sent invoices of TEST or DUPLICATE companies (%2$@).", excluded.count, MoneyFormat.text(excluded)))
+            notes.append(LF("Left out: %lld paid or sent invoices of TEST or DUPLICATE companies (%@).", excluded.count, MoneyFormat.text(excluded)))
         }
         if let n = report.counts.invoicesCompanyMissing, n > 0 {
-            notes.append(LF("%ld invoices belong to a WorkTrack company that is not in the company list (deleted, or past its limit); they are left out.", n))
+            notes.append(LF("%lld invoices belong to a WorkTrack company that is not in the company list (deleted, or past its limit); they are left out.", n))
         }
         if let n = report.counts.graceLicences, n > 0 {
             notes.append(LF("%lld licences are in their grace days after expiry; WorkTrack's forecast leaves them out.", n))

@@ -245,6 +245,11 @@ final class SafeBeautyModel {
     private(set) var snapshot: SafeBeautySnapshot?
     private(set) var isRefreshing = false
     private(set) var loadError: String?
+    /// Every salon balance summed by Firestore, for Money and the Operations total. In memory only; a failed read
+    /// clears it rather than leaving an older total looking current.
+    private(set) var balances: SafeBeautyBalanceTotals?
+    private(set) var balancesError: String?
+    private(set) var balancesTriedAt: Date?
 
     private let secrets: SecretStore
     private let countStore: OperationsCountStore
@@ -261,6 +266,13 @@ final class SafeBeautyModel {
     var isSignedIn: Bool { session != nil }
     var environment: SafeBeautyEnvironment? { session?.environment }
     var lastRead: Date? { snapshot?.readAt }
+
+    /// The balances as Money reads them: nil before the first try.
+    var balancesRead: MoneyRead<SafeBeautyBalanceTotals>? {
+        if let balances { return .read(balances, at: balances.readAt) }
+        if let balancesError, let at = balancesTriedAt { return .failed(balancesError, at: at, needsSignIn: false) }
+        return nil
+    }
 
     var counts: [OperationsCount] {
         guard let env = environment, let s = snapshot else { return [] }
@@ -285,6 +297,7 @@ final class SafeBeautyModel {
         client = c
         session = s
         snapshot = nil
+        clearBalances()
         countStore.forget(.safeBeauty)
         await refresh()
     }
@@ -296,6 +309,7 @@ final class SafeBeautyModel {
         session = nil
         snapshot = nil
         loadError = nil
+        clearBalances()
         try? secrets.delete(.safeBeautyAdminSession)
         countStore.forget(.safeBeauty)
     }
@@ -318,6 +332,41 @@ final class SafeBeautyModel {
             if let e = error as? SafeBeautyError, e.needsSignIn { signOut() }
             loadError = error.localizedDescription
         }
+        // Separate from the snapshot: a money failure never empties the queues, and the reverse.
+        await readBalances()
+    }
+
+    /// Reads the balance totals again (Money's Read now).
+    func refreshBalances() async {
+        guard !isRefreshing else { return }
+        isRefreshing = true
+        defer { isRefreshing = false }
+        await readBalances()
+    }
+
+    private func readBalances() async {
+        guard let client else { return }
+        let at = Date.now
+        do {
+            balances = try await client.balanceTotals()
+            balancesError = nil
+            balancesTriedAt = at
+        } catch {
+            balances = nil
+            balancesTriedAt = at
+            if let e = error as? SafeBeautyError, e.needsSignIn {
+                signOut()
+                loadError = error.localizedDescription
+                return
+            }
+            balancesError = error.localizedDescription
+        }
+    }
+
+    private func clearBalances() {
+        balances = nil
+        balancesError = nil
+        balancesTriedAt = nil
     }
 
 }

@@ -267,7 +267,7 @@ public enum MoneyBuilder {
             caveat(Array(accountMissingFigures), .partial(LF("%ld invoices name a CRM account that was not in the list read; they are counted, and whether one is a TEST company's is unknown.", accountMissing)))
         }
         if companyMissing > 0 {
-            caveat(Array(companyMissingFigures), .partial(LF("%ld invoices belong to a WorkTrack company that is not in the company list (deleted, or past its limit); they are left out.", companyMissing)))
+            caveat(Array(companyMissingFigures), .partial(LF("%lld invoices belong to a WorkTrack company that is not in the company list (deleted, or past its limit); they are left out.", companyMissing)))
         }
         if unknownStatus > 0 {
             caveat(ids, .partial(LF("%ld invoices have a status WorkTrack does not define; they are not counted.", unknownStatus)))

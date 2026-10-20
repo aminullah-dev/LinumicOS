@@ -5,6 +5,7 @@ import Observation
 enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case desk
     case obligations
+    case money
     case dashboard
     case brief
     case monitor
@@ -32,6 +33,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         switch self {
         case .desk: L("Desk")
         case .obligations: L("Obligations & accounts")
+        case .money: L("Money")
         case .dashboard: L("Dashboard")
         case .brief: L("Brief")
         case .monitor: L("Monitor")
@@ -70,6 +72,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         switch self {
         case .desk: "checklist"
         case .obligations: "calendar.badge.exclamationmark"
+        case .money: "banknote"
         case .dashboard: "square.grid.2x2"
         case .brief: "sun.horizon"
         case .monitor: "waveform.path.ecg"
@@ -111,7 +114,7 @@ struct SidebarSection: Identifiable {
     var id: String { title ?? "root" }
 
     static let all: [SidebarSection] = [
-        SidebarSection(title: nil, items: [.desk, .obligations, .dashboard, .brief, .monitor, .automation, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys, .continuity]),
+        SidebarSection(title: nil, items: [.desk, .obligations, .money, .dashboard, .brief, .monitor, .automation, .releaseCenter, .platforms, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys, .continuity]),
         SidebarSection(title: "Products", items: [.allProducts, .verification, .releases, .roadmap, .issues]),
         SidebarSection(title: "Development", items: [.repositories, .builds, .deployments]),
         SidebarSection(title: "Stores", items: [.appStore, .googlePlay]),
@@ -200,6 +203,7 @@ final class Router {
         case .obligations: go(.obligations)
         case .obligation(let id): go(.obligations, request: .obligation(id))
         case .continuity: go(.continuity)
+        case .money: go(.money)
         }
     }
 

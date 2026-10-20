@@ -71,6 +71,7 @@ struct ContentView: View {
         switch item {
         case .desk: DeskView()
         case .obligations: ObligationsView()
+        case .money: MoneyView()
         case .dashboard: DashboardView()
         case .brief: DailyBriefView()
         case .monitor: MonitorView()
