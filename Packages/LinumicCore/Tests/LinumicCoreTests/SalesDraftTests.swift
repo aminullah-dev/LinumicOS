@@ -83,7 +83,7 @@ struct SalesDraftTests {
     func namesNeverSplitADate(name: String) throws {
         let licences: [SalesDraftKind: WTLicense] = [
             .renewalEnding: license(.gold, .active, "2026-11-19"), .renewalEnded: license(.gold, .expired, "2026-10-01"),
-            .trialEnding: license(.trial, .active, "2026-10-20"), .trialEnded: license(.trial, .suspended, "2026-10-10"),
+            .trialEnding: license(.trial, .active, "2026-10-20"), .trialEnded: license(.trial, .expired, "2026-10-10"),
         ]
         for kind in SalesDraftKind.allCases {
             for language in SalesDraftLanguage.allCases {
@@ -116,7 +116,7 @@ struct SalesDraftTests {
         let cases: [(SalesDraftKind, WTLicense?)] = [
             (.followUp, nil), (.welcome, nil), (.renewalEnding, license(.gold, .active, "2026-11-19")),
             (.renewalEnded, license(.gold, .expired, "2026-10-01")), (.trialEnding, license(.trial, .active, "2026-10-20")),
-            (.trialEnded, license(.trial, .suspended, "2026-10-10")),
+            (.trialEnded, license(.trial, .expired, "2026-10-10")),
         ]
         for (kind, l) in cases {
             for language in SalesDraftLanguage.allCases {
@@ -150,8 +150,14 @@ struct SalesDraftTests {
         // EXPIRED with a last day still ahead: never "the last day was".
         #expect(SalesDraft.datedKind(for: license(.silver, .expired, "2026-11-15"), today: today) == nil)
         #expect(SalesDraft.text(.renewalEnded, language: .pashto, facts: facts(license(.silver, .expired, "2026-11-15"))) == nil)
-        // A suspended licence whose last day is past did end: that is true.
-        #expect(SalesDraft.datedKind(for: license(.silver, .suspended, "2026-10-10"), today: today) == .renewalEnded)
+        // SUSPENDED with its last day past: no "ended" either, only a call.
+        #expect(SalesDraft.datedKind(for: license(.silver, .suspended, "2026-10-10"), today: today) == nil)
+        #expect(SalesDraft.datedKind(for: license(.trial, .suspended, "2026-10-10"), today: today) == nil)
+        #expect(SalesDraft.text(.renewalEnded, language: .dari, facts: facts(license(.silver, .suspended, "2026-10-10"))) == nil)
+        #expect(SalesDraft.text(.trialEnded, language: .pashto, facts: facts(license(.trial, .suspended, "2026-10-10"))) == nil)
+        #expect(SalesDraft.kinds(renewal: company(license(.trial, .suspended, "2026-10-10")), today: today) == [.followUp])
+        // EXPIRED with its last day past did end.
+        #expect(SalesDraft.datedKind(for: license(.silver, .expired, "2026-10-10"), today: today) == .renewalEnded)
     }
 
     @Test func kindsOffered() {
@@ -170,6 +176,32 @@ struct SalesDraftTests {
         #expect(SalesDraftKind.allCases.filter { !$0.usesName } == [.followUp])
         let call = SalesDraft.text(.followUp, language: .dari, facts: facts()) ?? ""
         #expect(!call.contains("Kabul"), "Facts used lists the name only for the kinds that state it")
+    }
+
+    /// A name cannot close its isolate early or reverse the text after it: its bidi embeddings, overrides and isolates
+    /// (U+202A … U+202E, U+2066 … U+2069) are taken out before it is set apart.
+    @Test func bidiControlsInANameAreTakenOut() throws {
+        let name = "Kabul\u{2069} Tailors\u{202E} (SAMPLE)"
+        #expect(SalesDraft.isolated(name) == "\u{2068}Kabul Tailors (SAMPLE)\u{2069}")
+        #expect(SalesDraft.isolated("\u{202E}\u{2069}") == "", "nothing left stays empty")
+        let ending = license(.silver, .active, "2026-11-04")
+        for language in SalesDraftLanguage.allCases {
+            let text = try #require(SalesDraft.text(.renewalEnding, language: language,
+                                                    facts: facts(ending, contact: "Ahmad\u{202E}\u{2069}", name: name)), "\(language)")
+            let controls = text.unicodeScalars.filter { (0x202A...0x202E).contains($0.value) || (0x2066...0x2069).contains($0.value) }
+            #expect(controls.map(\.value) == [0x2068, 0x2069, 0x2068, 0x2069], "\(language): only the draft's own isolates")
+            #expect(text.hasPrefix("سلام \u{2068}Ahmad\u{2069}،"))
+            #expect(text.contains("\u{2068}Kabul Tailors (SAMPLE)\u{2069}"))
+            #if canImport(CoreText)
+            let body = text.components(separatedBy: "\n")[1]
+            let date = try #require(SalesDraft.day("2026-11-04", language: language))
+            #expect(BidiCheck.isWhole(date, in: body), "\(language)")
+            #expect(BidiCheck.readsRightToLeft(date, in: body), "\(language)")
+            #endif
+        }
+        // Only controls and spaces: no name, no contact.
+        #expect(SalesDraft.text(.welcome, language: .dari, facts: facts(name: " \u{202E}\u{2069} ")) == nil)
+        #expect(SalesDraft.text(.followUp, language: .dari, facts: facts(contact: "\u{2069}\u{202E}"))?.hasPrefix("سلام،\n") == true)
     }
 
     @Test func aMissingFactMeansNoDraft() {

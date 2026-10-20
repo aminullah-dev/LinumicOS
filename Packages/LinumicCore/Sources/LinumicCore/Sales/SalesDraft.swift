@@ -12,8 +12,9 @@ import Foundation
 //
 // A name (the company's, the account's, the contact's) is set apart for the bidi algorithm (`isolated`): a Latin name
 // right before a Persian day would otherwise take the day's digits into its own left-to-right run, and the reader would
-// see the day on the far side of the name from its month. The Dari ended forms also keep a Persian word («تا») between
-// the name and the day, so the date stays whole even where the isolates are dropped.
+// see the day on the far side of the name from its month. The name's own bidi controls are taken out first, so it can
+// neither close its isolate early nor reverse the text after it. The Dari ended forms also keep a Persian word («تا»)
+// between the name and the day, so the date stays whole even where the isolates are dropped.
 
 public enum SalesDraftKind: String, CaseIterable, Sendable, Identifiable {
     case followUp, renewalEnding, renewalEnded, trialEnding, trialEnded, welcome
@@ -69,11 +70,12 @@ public struct SalesDraftFacts: Equatable, Sendable {
 public enum SalesDraft {
     /// The dated kind a licence allows on `today`, its days counted again from `expiresAt` and Kabul's today (not the
     /// server's count, which can be hours old): ending only while ACTIVE and 0 to 30 days away; ended only once the last
-    /// day is past. A suspended licence, one ending later, a perpetual one or a day that is not real: none.
+    /// day is past and the licence is not SUSPENDED. A suspended licence (whatever its last day), one ending later, a
+    /// perpetual one or a day that is not real: none.
     public static func datedKind(for license: WTLicense, today: String) -> SalesDraftKind? {
         guard let last = license.expiresAt, let days = WorkTrackDates.daysBetween(today, last) else { return nil }
         let trial = license.plan == .trial
-        if days < 0 { return trial ? .trialEnded : .renewalEnded }
+        if days < 0 { return license.status == .suspended ? nil : trial ? .trialEnded : .renewalEnded }
         if license.status == .active, days <= SalesBuilder.renewalWindow { return trial ? .trialEnding : .renewalEnding }
         return nil
     }
@@ -107,17 +109,28 @@ public enum SalesDraft {
     }
 
     /// A name set apart for the bidi algorithm (FIRST STRONG ISOLATE … POP DIRECTIONAL ISOLATE, U+2068 … U+2069): it keeps
-    /// its own direction and takes nothing around it into its run. Empty stays empty.
+    /// its own direction and takes nothing around it into its run. Its own bidi controls are taken out first
+    /// (`withoutBidiControls`). Empty, or nothing left, stays empty.
     public static func isolated(_ text: String) -> String {
-        text.isEmpty ? text : "\u{2068}\(text)\u{2069}"
+        let name = withoutBidiControls(text)
+        return name.isEmpty ? name : "\u{2068}\(name)\u{2069}"
+    }
+
+    /// The text without bidi embeddings, overrides and isolates (U+202A … U+202E, U+2066 … U+2069). In a name, a POP
+    /// DIRECTIONAL ISOLATE would close the isolate around it early and an override would reverse what follows it.
+    static func withoutBidiControls(_ text: String) -> String {
+        var scalars = String.UnicodeScalarView()
+        scalars.append(contentsOf: text.unicodeScalars.filter { !(0x202A...0x202E).contains($0.value) && !(0x2066...0x2069).contains($0.value) })
+        return String(scalars)
     }
 
     /// The draft, or nil when a fact it needs is missing or no longer holds (no name, no last day, a licence that does
     /// not allow that kind today).
     public static func text(_ kind: SalesDraftKind, language: SalesDraftLanguage, facts: SalesDraftFacts) -> String? {
-        let trimmed = facts.name.trimmingCharacters(in: .whitespacesAndNewlines)
+        // A name or contact that is only bidi controls and spaces is none.
+        let trimmed = withoutBidiControls(facts.name).trimmingCharacters(in: .whitespacesAndNewlines)
         let name = isolated(trimmed)
-        let contact = facts.contact?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty.map(isolated)
+        let contact = facts.contact.map(withoutBidiControls)?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty.map(isolated)
         var date = ""
         if kind.isDated {
             guard let license = facts.license, datedKind(for: license, today: facts.today) == kind,
