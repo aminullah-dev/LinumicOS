@@ -706,8 +706,12 @@ struct SafeBeautyPane: View {
                             Text(verbatim: "\(b.owedToSalonsCount) · \(MoneyFormat.text(MoneyAmount(b.owedToSalons, .afn)))").monospacedDigit()
                         } else {
                             Text("Unknown").foregroundStyle(.secondary)
-                                .help(Text(verbatim: sb.balancesError ?? String(localized: "The balance totals have not been read yet.")))
                         }
+                    }
+                    // Why, in plain sight: a tooltip is not seen on iPhone, nor by keyboard and VoiceOver users.
+                    if sb.balances == nil {
+                        Text(verbatim: sb.balancesError ?? String(localized: "The balance totals have not been read yet."))
+                            .font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
                     }
                     if let b = sb.balances, b.owedBySalonsCount > 0 {
                         LabeledContent("Salons that owe the platform") {

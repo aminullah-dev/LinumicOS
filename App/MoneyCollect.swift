@@ -14,7 +14,8 @@ extension MoneyInput {
                                            loadError: worktrack.loadError, money: worktrack.moneyRead),
             safeBeauty: MoneySafeBeautyInput(isSignedIn: safeBeauty.isSignedIn, environment: safeBeauty.environment?.rawValue,
                                              balances: safeBeauty.balancesRead),
-            // An unreadable obligations.json leaves only the seed, whose accounts carry no cost: Unknown, not "none".
-            costs: MoneyCostsInput(accounts: register.accounts, builtAt: register.builtAt, loadError: obligations.loadError))
+            // An unreadable obligations.json leaves only the seed, whose accounts carry no cost: Unknown, not "none". The
+            // store's reason alone: Money's own sentence goes around it.
+            costs: MoneyCostsInput(accounts: register.accounts, builtAt: register.builtAt, loadError: obligations.loadFailure))
     }
 }

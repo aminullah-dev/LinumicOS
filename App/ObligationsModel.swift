@@ -16,6 +16,8 @@ final class ObligationsModel {
     private(set) var file = ObligationsFile()
     /// Set when `obligations.json` exists but can't be read; the file is then never overwritten.
     private(set) var loadError: String?
+    /// The store's own reason for it, without the sentence around it (Money puts it in a sentence of its own).
+    private(set) var loadFailure: String?
     var errorMessage: String?
 
     private let store: ObligationsStore?
@@ -33,6 +35,7 @@ final class ObligationsModel {
         switch store?.load() {
         case .loaded(let f)?: file = f
         case .unreadable(let why)?:
+            loadFailure = why
             loadError = String(localized: "obligations.json could not be read (\(why)). The seed and the live dates are shown; nothing you enter is saved until the file is fixed or removed.")
         case .empty?, nil: break
         }
