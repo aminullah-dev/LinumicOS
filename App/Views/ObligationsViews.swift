@@ -50,6 +50,7 @@ struct ObligationsView: View {
     @Environment(ObligationsModel.self) private var model
     @Environment(Router.self) private var router
     @Environment(MonitorModel.self) private var monitor
+    @Environment(MarketingQueueModel.self) private var marketing
     @AppStorage(ObligationsModel.notifyKey) private var notify = true
     @State private var adding = false
     @State private var addingAccount = false
@@ -122,6 +123,11 @@ struct ObligationsView: View {
             Button("OK") { model.errorMessage = nil }
         } message: {
             Text(verbatim: model.errorMessage ?? "")
+        }
+        .alert("Not opened", isPresented: Binding(get: { marketing.errorMessage != nil }, set: { if !$0 { marketing.errorMessage = nil } })) {
+            Button("OK") { marketing.errorMessage = nil }
+        } message: {
+            Text(verbatim: marketing.errorMessage ?? "")
         }
     }
 
@@ -225,11 +231,22 @@ struct ObligationsView: View {
                                   },
                                   open: { router.open(o.destination) },
                                   closeAtSource: { router.closeAtSource(o.id, destination: o.destination) },
-                                  reopen: { model.reopen(o) })
+                                  reopen: { model.reopen(o) },
+                                  verify: verifyAction(o))
                     .id(o.id)
                 if o.id != rows.last?.id { Divider() }
             }
         }
+    }
+
+    /// A marketing row with a recorded ledger is verified there: the ledger opens in its own app (Mac only).
+    private func verifyAction(_ o: Obligation) -> (() -> Void)? {
+        #if os(macOS)
+        guard o.area == .marketing, !o.isClosed, let ledger = MarketingLedgers.ledger(forBrand: o.product) else { return nil }
+        return { marketing.verify(ledger) }
+        #else
+        return nil
+        #endif
     }
 
     private func accountsSection(_ accounts: [VendorAccount]) -> some View {
@@ -282,6 +299,8 @@ struct ObligationRowView: View {
     let open: () -> Void
     let closeAtSource: () -> Void
     let reopen: () -> Void
+    /// Opens the row's marketing ledger, when it has one.
+    var verify: (() -> Void)? = nil
 
     private var o: Obligation { obligation }
 
@@ -366,6 +385,10 @@ struct ObligationRowView: View {
                 Button(action: reopen) { Label("Reopen", systemImage: "arrow.uturn.backward") }
                     .help("Take the Done back (pressed by mistake)")
             } else {
+                if let verify {
+                    Button(action: verify) { Label("Verify…", systemImage: "checkmark.magnifyingglass") }
+                        .help("Open the brand's marketing ledger in its own app to check this date there")
+                }
                 Button(action: done) { Label("Done…", systemImage: "checkmark") }
                     .help("Record it done with what proves it")
                 // An account's renewal opens the account's card: its one place for the day.

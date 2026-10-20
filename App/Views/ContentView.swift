@@ -4,6 +4,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(InventoryModel.self) private var model
     @Environment(Router.self) private var router
+    @AppStorage("LCCSidebarArchiveExpanded") private var archiveExpanded = false
 
     var body: some View {
         @Bindable var router = router
@@ -16,7 +17,10 @@ struct ContentView: View {
                 set: { router.sidebar = $0; router.productPath = [] }
             )) {
                 ForEach(SidebarSection.all) { section in
-                    if let title = section.title {
+                    if section.isArchive, let title = section.title {
+                        // Collapsed until opened; the choice is kept on this device.
+                        Section(isExpanded: $archiveExpanded) { rows(section.items) } header: { Text(LocalizedStringKey(title)) }
+                    } else if let title = section.title {
                         Section(LocalizedStringKey(title)) { rows(section.items) }
                     } else {
                         rows(section.items)
@@ -62,7 +66,12 @@ struct ContentView: View {
 
     private func rows(_ items: [SidebarItem]) -> some View {
         ForEach(items) { item in
-            Label(item.title, systemImage: item.symbol).tag(item)
+            // An archived page says what covers it now.
+            if let covered = SidebarArchive.coveredBy(item.rawValue) {
+                Label(item.title, systemImage: item.symbol).tag(item).help(Text(verbatim: covered))
+            } else {
+                Label(item.title, systemImage: item.symbol).tag(item)
+            }
         }
     }
 
@@ -73,6 +82,7 @@ struct ContentView: View {
         case .obligations: ObligationsView()
         case .money: MoneyView()
         case .sales: SalesView()
+        case .legal: LegalView()
         case .dashboard: DashboardView()
         case .brief: DailyBriefView()
         case .monitor: MonitorView()
@@ -100,6 +110,7 @@ struct ContentView: View {
             NotIntegratedView(item: item, message: "Build status will come from CI (GitHub Actions) once the read-only GitHub integration is connected.")
         case .appStore: StoreListingsView(store: .appStore)
         case .googlePlay: StoreListingsView(store: .googlePlay)
+        case .marketingQueue: MarketingQueueView()
         case .socialMedia: SocialAccountsView()
         case .contentCalendar: ContentCalendarView()
         case .marketIntelligence: MarketIntelligenceView()

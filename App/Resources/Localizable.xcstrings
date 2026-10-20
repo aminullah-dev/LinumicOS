@@ -30863,6 +30863,1236 @@
           }
         }
       }
+    },
+    "%1$d %2$@ decisions of yours in the legal drafts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d تصمیم %2$@ با شما در پیش‌نویس‌های حقوقی"
+          }
+        }
+      }
+    },
+    "%1$d %2$@ markers to fill in the legal drafts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d نشانهٔ %2$@ برای پر کردن در پیش‌نویس‌های حقوقی"
+          }
+        }
+      }
+    },
+    "%1$d %2$@ questions for the lawyer in the legal drafts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d پرسش %2$@ برای وکیل در پیش‌نویس‌های حقوقی"
+          }
+        }
+      }
+    },
+    "At least %1$d %2$@ decisions of yours in the legal drafts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دست‌کم %1$d تصمیم %2$@ با شما در پیش‌نویس‌های حقوقی"
+          }
+        }
+      }
+    },
+    "At least %1$d %2$@ markers to fill in the legal drafts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دست‌کم %1$d نشانهٔ %2$@ برای پر کردن در پیش‌نویس‌های حقوقی"
+          }
+        }
+      }
+    },
+    "At least %1$d %2$@ questions for the lawyer in the legal drafts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دست‌کم %1$d پرسش %2$@ برای وکیل در پیش‌نویس‌های حقوقی"
+          }
+        }
+      }
+    },
+    "%1$d files in the legal folder were not read (not text, or unreadable) and %2$d entries were left alone (links, or too deep), so the counts are at least.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d فایل در پوشهٔ حقوقی خوانده نشد (متنی نیست یا خوانده نمی‌شود) و از %2$d مورد گذشته شد (پیوند، یا بیش از حد عمیق)، پس شمارها «دست‌کم» است."
+          }
+        }
+      }
+    },
+    "%@ at least %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دست‌کم %2$@ %1$@"
+          }
+        }
+      }
+    },
+    "%@ could not be listed (%@).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست پوشهٔ %1$@ گرفته نشد (%2$@)."
+          }
+        }
+      }
+    },
+    "%@ in %lld files; %lld Asasnama files named": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ در %2$lld فایل؛ نام %3$lld فایل اساسنامه گرفته شد"
+          }
+        }
+      }
+    },
+    "%@ is not a regular file inside its folder, so it is not opened.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل %@ یک فایل عادی درون پوشهٔ خودش نیست، پس باز نشد."
+          }
+        }
+      }
+    },
+    "%@ was not found.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ %@ پیدا نشد."
+          }
+        }
+      }
+    },
+    "%@, file:line only": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط فایل و شمارهٔ سطر در %@"
+          }
+        }
+      }
+    },
+    "%@: no store listing is recorded, so the seller is unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در %@ هیچ لیست فروشگاهی ثبت نشده، پس فروشنده نامعلوم است."
+          }
+        }
+      }
+    },
+    "%@: no store listing names the seller, so it is unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در %@ هیچ لیست فروشگاهی نام فروشنده را ندارد، پس نامعلوم است."
+          }
+        }
+      }
+    },
+    "%@: not a text file (.%@), so its markers are unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل %1$@ متنی نیست (.%2$@)، پس نشانه‌های آن نامعلوم است."
+          }
+        }
+      }
+    },
+    "%@: not read (%@), so its markers are unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل %1$@ خوانده نشد (%2$@)، پس نشانه‌های آن نامعلوم است."
+          }
+        }
+      }
+    },
+    "%d Asasnama files: whether there is a partner is your decision": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d فایل اساسنامه: اینکه شریکی هست یا نه، تصمیم شماست"
+          }
+        }
+      }
+    },
+    "%lld entries left alone: links are never followed, and folders deeper than %lld are not entered.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از %1$lld مورد گذشته شد: پیوندها هرگز دنبال نمی‌شوند و به پوشه‌های عمیق‌تر از %2$lld لایه وارد نمی‌شود."
+          }
+        }
+      }
+    },
+    "%lld markers": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld نشانه"
+          }
+        }
+      }
+    },
+    "%lld store listings": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld لیست فروشگاه"
+          }
+        }
+      }
+    },
+    "%lld store listings, %lld without a seller": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld لیست فروشگاه، %2$lld بدون فروشنده"
+          }
+        }
+      }
+    },
+    "A ledger's date is its file's modification date, read without opening it. A ledger that changed after a date was recorded may have moved that date: verify it there.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ هر دفتر، تاریخ تغییر فایل آن است که بدون باز کردن فایل خوانده می‌شود. دفتری که پس از ثبت یک تاریخ تغییر کرده، شاید آن تاریخ را جابه‌جا کرده باشد: همان‌جا بررسی کنید."
+          }
+        }
+      }
+    },
+    "Access": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دسترسی"
+          }
+        }
+      }
+    },
+    "Add folder…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افزودن پوشه…"
+          }
+        }
+      }
+    },
+    "Asasnama (articles of association)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اساسنامه"
+          }
+        }
+      }
+    },
+    "At least %@; %lld files not read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دست‌کم %1$@؛ %2$lld فایل خوانده نشد"
+          }
+        }
+      }
+    },
+    "Check ledgers": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی دفترها"
+          }
+        }
+      }
+    },
+    "Choose the folder that holds the Asasnama files, at least two levels inside your home folder (such as ~/Desktop/1): not the home folder, one above it, or a folder directly in it such as ~/Documents or ~/Desktop.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشه‌ای را انتخاب کنید که فایل‌های اساسنامه در آن است و دست‌کم دو سطح درون پوشهٔ خانگی شماست (مانند ~/Desktop/1): نه خود پوشهٔ خانگی، نه پوشه‌ای بالاتر از آن، و نه پوشه‌ای که مستقیم درون آن است مانند ~/Documents یا ~/Desktop."
+          }
+        }
+      }
+    },
+    "Choose a folder that holds Asasnama files. Linumic OS reads only the names and dates of files whose name says Asasnama, never opens them, and never writes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشه‌ای را انتخاب کنید که فایل‌های اساسنامه در آن است. برنامهٔ Linumic OS فقط نام و تاریخ فایل‌هایی را می‌خواند که نامشان اساسنامه است، هرگز آن‌ها را باز نمی‌کند و هرگز چیزی نمی‌نویسد."
+          }
+        }
+      }
+    },
+    "Choose this brand's marketing folder. Linumic OS opens its ledger in the ledger's own app when you press Verify, and reads nothing of it itself. It never writes or posts.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ بازاریابی همین برند را انتخاب کنید. وقتی «بررسی» را بزنید، برنامهٔ Linumic OS دفتر آن را در برنامهٔ خود دفتر باز می‌کند و خودش چیزی از آن نمی‌خواند. هرگز چیزی نمی‌نویسد و پست نمی‌کند."
+          }
+        }
+      }
+    },
+    "Choose ~/Documents/Linumic-Legal. Linumic OS counts the [TO FILL], [LAWYER] and [TO DECIDE] markers in its text files with their file and line, lists Asasnama files by name and date, and never shows, keeps or sends any text. It never writes.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ ~/Documents/Linumic-Legal را انتخاب کنید. برنامهٔ Linumic OS نشانه‌های [TO FILL]، [LAWYER] و [TO DECIDE] را در فایل‌های متنی آن با فایل و شمارهٔ سطر می‌شمارد، فایل‌های اساسنامه را با نام و تاریخ فهرست می‌کند و هیچ متنی را نشان نمی‌دهد، نگه نمی‌دارد و نمی‌فرستد. هرگز چیزی نمی‌نویسد."
+          }
+        }
+      }
+    },
+    "EU DSA trader status": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت تاجر بودن (DSA اتحادیهٔ اروپا)"
+          }
+        }
+      }
+    },
+    "EU DSA trader status in the stores: Unknown. No source records it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وضعیت تاجر بودن در فروشگاه‌ها (DSA اتحادیهٔ اروپا): نامعلوم. هیچ منبعی آن را ثبت نکرده."
+          }
+        }
+      }
+    },
+    "Folders searched for Asasnama files (names and dates only)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشه‌هایی که برای فایل‌های اساسنامه جست‌وجو می‌شوند (فقط نام و تاریخ)"
+          }
+        }
+      }
+    },
+    "For the lawyer": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای وکیل"
+          }
+        }
+      }
+    },
+    "Grant the legal folder once (Legal & company → Grant…). The app reads it read-only.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک بار به پوشهٔ حقوقی اجازه بدهید (حقوقی و شرکت ← اجازه دادن…). برنامه آن را فقط می‌خواند."
+          }
+        }
+      }
+    },
+    "It is a symbolic link; only a real folder is read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این یک پیوند نمادین است؛ فقط پوشهٔ واقعی خوانده می‌شود."
+          }
+        }
+      }
+    },
+    "It is not a folder.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این پوشه نیست."
+          }
+        }
+      }
+    },
+    "Ledger dates are read on the Mac only.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ دفترها فقط در مک خوانده می‌شود."
+          }
+        }
+      }
+    },
+    "Ledger last changed %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین تغییر دفتر: %@"
+          }
+        }
+      }
+    },
+    "Legal & company": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حقوقی و شرکت"
+          }
+        }
+      }
+    },
+    "Legal & company has not been collected on this device yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بخش حقوقی و شرکت هنوز روی این دستگاه جمع نشده است."
+          }
+        }
+      }
+    },
+    "Legal folder": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ حقوقی"
+          }
+        }
+      }
+    },
+    "Legal folder (read-only, markers and Asasnama names only) and the store listings": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ حقوقی (فقط خواندن؛ تنها نشانه‌ها و نام اساسنامه‌ها) و لیست‌های فروشگاه"
+          }
+        }
+      }
+    },
+    "Markers in the legal drafts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشانه‌ها در پیش‌نویس‌های حقوقی"
+          }
+        }
+      }
+    },
+    "Marketing queue": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صف بازاریابی"
+          }
+        }
+      }
+    },
+    "Moved: grant again": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جابه‌جا شده: دوباره اجازه بدهید"
+          }
+        }
+      }
+    },
+    "Named as the ledger in: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به عنوان دفتر نام برده شده در: %@"
+          }
+        }
+      }
+    },
+    "Names and dates only; the files are never opened (roadmap §6, decision 1).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط نام و تاریخ؛ فایل‌ها هرگز باز نمی‌شوند (نقشهٔ راه، بخش ۶، تصمیم ۱)."
+          }
+        }
+      }
+    },
+    "Names and modification dates": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام‌ها و تاریخ‌های تغییر"
+          }
+        }
+      }
+    },
+    "Names and modification dates in %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نام‌ها و تاریخ‌های تغییر در %@"
+          }
+        }
+      }
+    },
+    "No Asasnama file in the folders read, so their names and dates are unknown here. Add the folder that holds them in Legal & company.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در پوشه‌های خوانده‌شده فایل اساسنامه نیست، پس نام و تاریخ آن‌ها این‌جا نامعلوم است. پوشه‌ای را که آن‌ها را دارد در «حقوقی و شرکت» بیفزایید."
+          }
+        }
+      }
+    },
+    "No Asasnama file in the folders read. Add the folder that holds them below.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در پوشه‌های خوانده‌شده فایل اساسنامه نیست. پوشه‌ای را که آن‌ها را دارد در پایین بیفزایید."
+          }
+        }
+      }
+    },
+    "No ledger is recorded for this brand.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای این برند دفتری ثبت نشده است."
+          }
+        }
+      }
+    },
+    "No queue end is recorded for this brand.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای این برند پایان صف ثبت نشده است."
+          }
+        }
+      }
+    },
+    "Not checked yet": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز بررسی نشده"
+          }
+        }
+      }
+    },
+    "Not opened": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز نشد"
+          }
+        }
+      }
+    },
+    "Nothing is scheduled on SafeBeauty's Facebook and Instagram after the reels of 2026-11-11 to 2026-11-13: the feed runs to 2026-11-07 and the stories to 2026-11-10. New content after 2026-11-13 is still to be made.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پس از ریل‌های ۲۰۲۶-۱۱-۱۱ تا ۲۰۲۶-۱۱-۱۳ در فیس‌بوک و اینستاگرام SafeBeauty چیزی زمان‌بندی نشده: پست‌های فید تا ۲۰۲۶-۱۱-۰۷ و استوری‌ها تا ۲۰۲۶-۱۱-۱۰ است. محتوای پس از ۲۰۲۶-۱۱-۱۳ هنوز باید ساخته شود."
+          }
+        }
+      }
+    },
+    "Nothing on this page is saved or sent to Linumic's cloud. On the Desk only counts appear, with ids that carry no file or folder name.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ چیز این صفحه ذخیره یا به ابر لینومیک فرستاده نمی‌شود. در میز کار فقط شمارها می‌آیند، با شناسه‌هایی که نام هیچ فایل یا پوشه‌ای در آن‌ها نیست."
+          }
+        }
+      }
+    },
+    "Now covered by Releases, which reads App Store Connect, Google Play and GitHub.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اکنون «انتشارها» این را پوشش می‌دهد که App Store Connect، Google Play و GitHub را می‌خواند."
+          }
+        }
+      }
+    },
+    "Now covered by Releases: builds and CI per store and repository.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اکنون «انتشارها» این را پوشش می‌دهد: بیلدها و CI برای هر فروشگاه و مخزن."
+          }
+        }
+      }
+    },
+    "Now covered by the Desk, which lists the ledgers' open items.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اکنون «میز کار» این را پوشش می‌دهد که موارد باز دفترها را فهرست می‌کند."
+          }
+        }
+      }
+    },
+    "Now covered by the Marketing queue.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اکنون «صف بازاریابی» این را پوشش می‌دهد."
+          }
+        }
+      }
+    },
+    "Now covered by the Monitor and Platforms: live endpoints and the versions on main.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اکنون «پایش» و «پلتفرم‌ها» این را پوشش می‌دهند: نقطه‌های زنده و نسخه‌های روی main."
+          }
+        }
+      }
+    },
+    "Only a marketing ledger's own folder is accepted (%@), so nothing was saved.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط پوشهٔ خود دفتر بازاریابی پذیرفته می‌شود (%@)، پس چیزی ذخیره نشد."
+          }
+        }
+      }
+    },
+    "Only the names and dates are read; the files are never opened. Whether there is a partner is your decision (roadmap §6, decision 1).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط نام و تاریخ خوانده می‌شود؛ فایل‌ها هرگز باز نمی‌شوند. اینکه شریکی هست یا نه، تصمیم شماست (نقشهٔ راه، بخش ۶، تصمیم ۱)."
+          }
+        }
+      }
+    },
+    "Only ~/%@ is accepted for the legal grant, so nothing was saved.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای اجازهٔ حقوقی فقط ~/%@ پذیرفته می‌شود، پس چیزی ذخیره نشد."
+          }
+        }
+      }
+    },
+    "Only ~/Documents/Linumic-Legal is accepted for the legal grant. An Asasnama folder can be any folder at least two levels inside your home folder (such as ~/Desktop/1), never ~/Documents or ~/Desktop as a whole. The grants are read-only and kept on this Mac; Remove access forgets them.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای اجازهٔ حقوقی فقط ~/Documents/Linumic-Legal پذیرفته می‌شود. پوشهٔ اساسنامه می‌تواند هر پوشه‌ای باشد که دست‌کم دو سطح درون پوشهٔ خانگی شماست (مانند ~/Desktop/1)، هرگز کل ~/Documents یا ~/Desktop. اجازه‌ها فقط‌خواندنی‌اند و روی همین مک نگه داشته می‌شوند؛ «برداشتن اجازه» آن‌ها را فراموش می‌کند."
+          }
+        }
+      }
+    },
+    "Open it on the Obligations screen, where its date is corrected or its Done recorded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آن را در صفحهٔ تعهدات باز کنید؛ تاریخش آن‌جا اصلاح یا «انجام شد» آن ثبت می‌شود"
+          }
+        }
+      }
+    },
+    "Open the brand's marketing ledger in its own app to check this date there": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر بازاریابی برند را در برنامهٔ خودش باز کنید تا این تاریخ را آن‌جا بررسی کنید"
+          }
+        }
+      }
+    },
+    "Open the ledger in its own app to check the dates there. The first time, grant its folder (read-only).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر را در برنامهٔ خودش باز کنید تا تاریخ‌ها را آن‌جا بررسی کنید. بار اول به پوشهٔ آن اجازه بدهید (فقط خواندن)."
+          }
+        }
+      }
+    },
+    "Public App Store lookup (itunes.apple.com/lookup, sellerName), run by the Store listings job; the store listings in the inventory": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جست‌وجوی عمومی App Store (itunes.apple.com/lookup، sellerName) که کار «لیست‌های فروشگاه» انجام می‌دهد؛ لیست‌های فروشگاه در فهرست محصولات"
+          }
+        }
+      }
+    },
+    "Read the ledgers' modification dates again (never their text)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تاریخ تغییر دفترها را دوباره بخوان (هرگز متن آن‌ها را نه)"
+          }
+        }
+      }
+    },
+    "Read the legal folder again: markers and Asasnama names and dates only": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ حقوقی را دوباره بخوان: فقط نشانه‌ها و نام و تاریخ اساسنامه‌ها"
+          }
+        }
+      }
+    },
+    "Read-only, and nothing is ever posted from here. The end of each brand's scheduled queue and the clock change are obligations, with their sources, so they reach the Desk and the reminders. The ledgers' text is never read: Verify opens a ledger in its own app, and you correct a date or record Done on the Obligations screen.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط خواندنی است و از این‌جا هرگز چیزی پست نمی‌شود. پایان صف زمان‌بندی‌شدهٔ هر برند و جابه‌جایی ساعت، تعهد هستند و منبع دارند، تا به میز کار و یادآوری‌ها برسند. متن دفترها هرگز خوانده نمی‌شود: «بررسی» دفتر را در برنامهٔ خودش باز می‌کند، و شما تاریخ را اصلاح می‌کنید یا «انجام شد» را در صفحهٔ تعهدات ثبت می‌کنید."
+          }
+        }
+      }
+    },
+    "Read-only. The drafts' text is never shown, kept or sent: only each marker's file and line, and the Asasnama files by name and date.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط خواندنی. متن پیش‌نویس‌ها هرگز نشان داده، نگه داشته یا فرستاده نمی‌شود: فقط فایل و شمارهٔ سطر هر نشانه، و فایل‌های اساسنامه با نام و تاریخ."
+          }
+        }
+      }
+    },
+    "Readable without a grant": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدون اجازه خوانده می‌شود"
+          }
+        }
+      }
+    },
+    "Refused by macOS": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ردشده از سوی macOS"
+          }
+        }
+      }
+    },
+    "Registration": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت"
+          }
+        }
+      }
+    },
+    "SafeBeauty's scheduled Meta posts end on 2026-11-13": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پست‌های زمان‌بندی‌شدهٔ SafeBeauty در Meta در ۲۰۲۶-۱۱-۱۳ تمام می‌شوند"
+          }
+        }
+      }
+    },
+    "Same rule as: grep -rnoE '%@' %@ (text files only, Asasnama files left out)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همان قاعدهٔ: grep -rnoE '%1$@' %2$@ (فقط فایل‌های متنی، بدون فایل‌های اساسنامه)"
+          }
+        }
+      }
+    },
+    "Sandbox check: listing the folder without a grant is refused (%@), so a one-time grant is needed.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی محیط امن (Sandbox): فهرست گرفتن از پوشه بدون اجازه رد می‌شود (%@)، پس یک بار اجازه لازم است."
+          }
+        }
+      }
+    },
+    "Sandbox check: the app can list the folder without a grant.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی محیط امن (Sandbox): برنامه بدون اجازه می‌تواند از پوشه فهرست بگیرد."
+          }
+        }
+      }
+    },
+    "Sandbox check: the folder is not there.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی محیط امن (Sandbox): پوشه وجود ندارد."
+          }
+        }
+      }
+    },
+    "Seller on %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فروشنده در %@"
+          }
+        }
+      }
+    },
+    "That is another ledger's folder. Press Verify again and choose %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این پوشهٔ دفتر دیگری است. دوباره «بررسی» را بزنید و %@ را انتخاب کنید."
+          }
+        }
+      }
+    },
+    "The granted folder was moved or renamed, so the grant was removed. Grant ~/Documents/Linumic-Legal again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ اجازه‌داده‌شده جابه‌جا یا تغییر نام داده شد، پس اجازه برداشته شد. دوباره به ~/Documents/Linumic-Legal اجازه بدهید."
+          }
+        }
+      }
+    },
+    "The granted legal folder was moved or renamed; grant it again. Until then the markers are unknown here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ حقوقی اجازه‌داده‌شده جابه‌جا یا تغییر نام داده شد؛ دوباره اجازه بدهید. تا آن وقت نشانه‌ها این‌جا نامعلوم است."
+          }
+        }
+      }
+    },
+    "The ledger changed after this was recorded: verify": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر پس از ثبت این تغییر کرده: بررسی کنید"
+          }
+        }
+      }
+    },
+    "The ledger file was not found.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل دفتر پیدا نشد."
+          }
+        }
+      }
+    },
+    "The legal folder has not been read yet, so the markers are unknown here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ حقوقی هنوز خوانده نشده، پس نشانه‌ها این‌جا نامعلوم است."
+          }
+        }
+      }
+    },
+    "The legal folder is read on the Mac only.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ حقوقی فقط در مک خوانده می‌شود."
+          }
+        }
+      }
+    },
+    "The legal folder is read on the Mac only. The company card above is the same on every device.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ حقوقی فقط در مک خوانده می‌شود. کارت شرکت در بالا در همهٔ دستگاه‌ها یکی است."
+          }
+        }
+      }
+    },
+    "The legal folder was not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ حقوقی خوانده نشد."
+          }
+        }
+      }
+    },
+    "The legal folder's Asasnama files are already listed through its own grant.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل‌های اساسنامهٔ پوشهٔ حقوقی از راه اجازهٔ خود آن پوشه فهرست می‌شوند."
+          }
+        }
+      }
+    },
+    "The store listings in the inventory (the public lookup has not set them on this device)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لیست‌های فروشگاه در فهرست محصولات (جست‌وجوی عمومی روی این دستگاه آن‌ها را تعیین نکرده)"
+          }
+        }
+      }
+    },
+    "The store listings in the inventory, recorded from the Play Console; Linumic OS does not read the seller from Google Play": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لیست‌های فروشگاه در فهرست محصولات، ثبت‌شده از Play Console؛ برنامهٔ Linumic OS فروشنده را از Google Play نمی‌خواند"
+          }
+        }
+      }
+    },
+    "The stored grant could not be resolved. It is tried again at the next read; grant the folder again if this stays.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازهٔ ذخیره‌شده باز نشد. در خواندن بعدی دوباره امتحان می‌شود؛ اگر همین‌طور ماند، دوباره به پوشه اجازه بدهید."
+          }
+        }
+      }
+    },
+    "The stored grant of the legal folder could not be resolved, so the markers are unknown here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازهٔ ذخیره‌شدهٔ پوشهٔ حقوقی باز نشد، پس نشانه‌ها این‌جا نامعلوم است."
+          }
+        }
+      }
+    },
+    "These grants were removed because they no longer lead to the folder they were made for: %@. Grant them again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این اجازه‌ها برداشته شدند، چون دیگر به پوشه‌ای که برایش داده شده بودند نمی‌رسند: %@. دوباره اجازه بدهید."
+          }
+        }
+      }
+    },
+    "To decide": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای تصمیم"
+          }
+        }
+      }
+    },
+    "To fill": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای پر کردن"
+          }
+        }
+      }
+    },
+    "VELRO's post queue: what is scheduled, and until when, is not recorded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صف پست‌های VELRO: اینکه چه چیزی زمان‌بندی شده و تا کی، ثبت نشده است"
+          }
+        }
+      }
+    },
+    "Verify…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بررسی…"
+          }
+        }
+      }
+    },
+    "When the ledger last changed is unknown (%@).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زمان آخرین تغییر دفتر نامعلوم است (%@)."
+          }
+        }
+      }
+    },
+    "When the ledger last changed is unknown.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زمان آخرین تغییر دفتر نامعلوم است."
+          }
+        }
+      }
+    },
+    "When to register, and the tax clause of the WorkTrack contract, are yours to decide with a lawyer (roadmap §6, decision 2).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "زمان ثبت شرکت و بند مالیات قرارداد WorkTrack را شما با وکیل تصمیم می‌گیرید (نقشهٔ راه، بخش ۶، تصمیم ۲)."
+          }
+        }
+      }
+    },
+    "Whether the company is registered is unknown: no source records it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اینکه شرکت ثبت شده یا نه نامعلوم است: هیچ منبعی آن را ثبت نکرده."
+          }
+        }
+      }
+    },
+    "macOS did not let the app use the stored grant.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سیستم macOS نگذاشت برنامه از اجازهٔ ذخیره‌شده استفاده کند."
+          }
+        }
+      }
+    },
+    "macOS refused the grant of %@. Remove access and grant it again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سیستم macOS اجازهٔ %@ را رد کرد. اجازه را بردارید و دوباره بدهید."
+          }
+        }
+      }
+    },
+    "macOS refused the legal folder (%@), so the markers are unknown here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سیستم macOS پوشهٔ حقوقی را رد کرد (%@)، پس نشانه‌ها این‌جا نامعلوم است."
+          }
+        }
+      }
+    },
+    "macOS refused the stored grant. Remove access and grant the folder again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سیستم macOS اجازهٔ ذخیره‌شده را رد کرد. اجازه را بردارید و دوباره به پوشه اجازه بدهید."
+          }
+        }
+      }
+    },
+    "~/%1$@ could not be read (%2$@), so the markers are unknown here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ ~/%1$@ خوانده نشد (%2$@)، پس نشانه‌ها این‌جا نامعلوم است."
+          }
+        }
+      }
+    },
+    "~/%@ (file:line only; the text is never shown or stored)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ ~/%@ (فقط فایل و سطر؛ متن هرگز نشان داده یا نگه داشته نمی‌شود)"
+          }
+        }
+      }
+    },
+    "~/%@ is not granted, so the markers are unknown here, not zero.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به پوشهٔ ~/%@ اجازه داده نشده، پس نشانه‌ها این‌جا نامعلوم است، نه صفر."
+          }
+        }
+      }
+    },
+    "~/%@ was not found, so the markers are unknown here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ ~/%@ پیدا نشد، پس نشانه‌ها این‌جا نامعلوم است."
+          }
+        }
+      }
+    },
+    "~/Documents/Linumic-Legal is not there. Put the legal drafts back there, or grant it again where it is now.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پوشهٔ ~/Documents/Linumic-Legal وجود ندارد. پیش‌نویس‌های حقوقی را دوباره آن‌جا بگذارید، یا پوشه را در جای کنونی‌اش دوباره اجازه بدهید."
+          }
+        }
+      }
+    },
+    "Archive": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بایگانی"
+          }
+        }
+      }
+    },
+    "Marker counts with file and line, and Asasnama names and dates, read-only. Never the text. No network.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شمار نشانه‌ها با فایل و سطر، و نام و تاریخ اساسنامه‌ها، فقط خواندن. هرگز متن. بدون شبکه."
+          }
+        }
+      }
+    },
+    "Not registered. The apps are sold under the owner's individual developer accounts.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثبت نشده. اپ‌ها زیر حساب‌های توسعه‌دهندهٔ شخصی صاحب پروژه فروخته می‌شوند."
+          }
+        }
+      }
+    },
+    "No source records the trader status declared in App Store Connect or the Play Console, and the app reads neither for it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ منبعی وضعیت تاجر بودن اعلام‌شده در App Store Connect یا Play Console را ثبت نکرده، و برنامه هیچ‌کدام را برای آن نمی‌خواند."
+          }
+        }
+      }
+    },
+    "Read-only grants for Verify: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اجازه‌های فقط‌خواندنی برای «بررسی»: %@"
+          }
+        }
+      }
     }
   },
   "version": "1.1"

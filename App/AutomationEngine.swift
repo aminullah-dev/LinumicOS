@@ -52,6 +52,7 @@ final class AutomationEngine {
     private let obligations: ObligationsModel
     private let deskSync: DeskSyncModel
     private let products: ProductsModel
+    private let legal: LegalModel
     /// What a run that did the work left on disk (the backup's file name), recorded with the run.
     private var pendingArtifacts: [AutomationJobID: String] = [:]
 
@@ -67,7 +68,7 @@ final class AutomationEngine {
     init(inventory: InventoryModel, licences: LicenceModel, platforms: PlatformHubModel, worktrack: WorkTrackModel,
          operations: OperationsModel, releases: ReleaseCenterModel, monitor: MonitorModel, brief: BriefModel,
          keys: KeysModel, siteMessages: SiteMessagesModel, sentinel: SentinelModel, desk: DeskModel,
-         obligations: ObligationsModel, deskSync: DeskSyncModel, products: ProductsModel) {
+         obligations: ObligationsModel, deskSync: DeskSyncModel, products: ProductsModel, legal: LegalModel) {
         self.inventory = inventory
         self.licences = licences
         self.platforms = platforms
@@ -83,11 +84,12 @@ final class AutomationEngine {
         self.obligations = obligations
         self.deskSync = deskSync
         self.products = products
+        self.legal = legal
         #if os(macOS)
         specs = AutomationCatalog.jobs
         #else
-        // Keys & Backups and the ledgers read folders on the Mac.
-        specs = AutomationCatalog.jobs.filter { $0.id != .keys && $0.id != .ledgers }
+        // Keys & Backups, the ledgers and the legal folder are read on the Mac.
+        specs = AutomationCatalog.jobs.filter { $0.id != .keys && $0.id != .ledgers && $0.id != .legal }
         #endif
         store = (try? AutomationStore.defaultFileURL()).map(AutomationStore.init(fileURL:))
         ledger = store?.load() ?? AutomationLedger()
@@ -150,6 +152,8 @@ final class AutomationEngine {
             await releases.load()
             // Local files only: the Desk shows the ledgers (or "not granted") from the first moment.
             await desk.refreshLedgers()
+            // The legal folder too (or "not granted"): local files only, read-only.
+            await legal.refresh()
             // The backup is what the folder holds, from the first moment too.
             await refreshBackupStatus()
             // Asked once, up front, so the first real alert isn't lost to a prompt nobody saw.
@@ -508,6 +512,27 @@ final class AutomationEngine {
                 }
                 return .succeeded(report.summary)
             }
+
+        case .legal:
+            #if os(macOS)
+            guard !legal.isReading else { return .skipped(.alreadyRunning) }
+            await legal.refresh()
+            guard let access = legal.access, let reading = legal.reading else { return .failed(String(localized: "The legal folder was not read.")) }
+            switch access {
+            case .notGranted: return .skipped(.notConnected)
+            case .granted, .readableWithoutGrant:
+                guard reading.state == .read else { return .failed(LegalBrief.notReadText(access, reading: reading) ?? "") }
+                let counts = LegalMarkerKind.allCases.map { "\(reading.count($0)) \($0.label)" }.joined(separator: ", ")
+                if !reading.isComplete {
+                    return .partial(String(localized: "At least \(counts); \(reading.unreadFiles.count) files not read"))
+                }
+                return .succeeded(String(localized: "\(counts) in \(reading.files.count) files; \(reading.asasnama.count) Asasnama files named"))
+            default:
+                return .failed(LegalBrief.notReadText(access, reading: reading) ?? access.ownerStep ?? "")
+            }
+            #else
+            return .skipped(.notConnected)
+            #endif
 
         case .ledgers:
             #if os(macOS)

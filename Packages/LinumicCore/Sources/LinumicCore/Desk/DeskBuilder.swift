@@ -284,6 +284,7 @@ public enum DeskBuilder {
         case .sales: .sales(nil)
         case .products: .products(nil)
         case .agents: .agents(nil)
+        case .legal: .legal
         case .automation, .changes: .automation
         }
     }
@@ -305,8 +306,10 @@ public enum DeskBuilder {
         case .keys: .keys
         // Read by their own job, together with the Platforms hub's and the Release Center's readings it uses.
         case .products, .agents: .products
-        // Built from what the other jobs read, every time the Brief is: never older than they are.
-        case .obligations, .automation, .changes: nil
+        // Built from what the other jobs read, every time the Brief is: never older than they are. Legal & company's
+        // company lines are recorded facts dated by the day they were recorded (like the obligations' seed rows), so a
+        // cadence would call them old forever; its marker lines carry the legal folder's own read time.
+        case .obligations, .automation, .changes, .legal: nil
         }
         return job.map { AutomationCatalog.spec($0).cadence }
     }
@@ -539,6 +542,12 @@ public enum DeskBuilder {
         // A Sales line is gone when the accounts (and, for a company's line, the companies) were read whole: not while
         // some were set aside or a limit was reached. Not production is no reason to keep a mark.
         if section.kind == .sales, let keys = SalesBrief.readGapKeys(forLineID: subject) {
+            return !section.gaps.contains { keys.contains($0.key) }
+        }
+        // Legal & company always has a part unknown (the DSA status): a marker or Asasnama line is gone once the legal
+        // folder was read, a company line once the section was.
+        if section.kind == .legal {
+            let keys = LegalBrief.readGapKeys(forLineID: subject)
             return !section.gaps.contains { keys.contains($0.key) }
         }
         return section.gaps.isEmpty

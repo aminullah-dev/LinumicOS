@@ -101,11 +101,12 @@ stands in for the Monitor's reading (the server's sweep leaves it out too). Sett
 | Keys & Backups registry | `keys.restore.<backup>`: next restore test (90 days after the last), or "no restore test recorded"; `keys.second-copy` while that gap is open |
 | Continuity log (`continuity.json`) | `continuity.export`: 30 days after the last verified export **known to be off this Mac** (an external drive, a network volume, or a cloud folder once the export was opened outside this Mac), or "no encrypted copy off this Mac yet". An export to this Mac's own disk, or to a folder whose place is not known, does not count (and the app refuses to make one); one in a cloud folder that was not opened elsewhere does not count yet, since its local copy reads back whether or not it was uploaded |
 
-### Seed (`ObligationSeed`, revision 4)
+### Seed (`ObligationSeed`, revision 5)
 
-Revision 4 changes no row: it stops Desk sync sending `domain.linumic.com` for the server's sweep (the Monitor's RDAP
-reading replaces it on the devices), and makes the copy revision 3 would have sent a tombstone. A test pins what is
-sent of the seed to the revision, so a corrected row needs a new one.
+Revision 5 (Phase 6, the marketing queue) adds two rows: the end of SafeBeauty's scheduled queue, and VELRO's queue,
+whose end is not recorded (date unknown). Revision 4 changed no row: it stopped Desk sync sending `domain.linumic.com`
+for the server's sweep (the Monitor's RDAP reading replaces it on the devices), and made the copy revision 3 would have
+sent a tombstone. A test pins what is sent of the seed to the revision, so a corrected row needs a new one.
 
 Only facts already recorded with a source. NA = `~/Projects/Multiplatform/NEXT-ACTIONS-2026-10-19.md`,
 M = `~/.claude/projects/-Users-aminullahhashemi/memory/`.
@@ -118,6 +119,8 @@ M = `~/.claude/projects/-Users-aminullahhashemi/memory/`.
 | `marketing.safebeauty-dst-pashto` | 2026-10-30 | NA:119 («پیش از ۳۱ اکتبر»); M/safebeauty-marketing.md:57 |
 | `marketing.safebeauty-dst-reels` | 2026-11-09 | NA:119 («پیش از ۱۰ نومبر»); M/safebeauty-marketing.md:57 |
 | `marketing.worktrack-queue-end` | 2026-10-26 | M/worktrack-marketing.md:15; NA:117 («پیش از ۲۷ اکتبر») |
+| `marketing.safebeauty-queue-end` | 2026-11-13 | `~/Desktop/1/SafeBeauty-Marketing/STATUS.md:9-18` (feed to 2026-11-07), `:35` (stories to 2026-11-10), `:39-40` (reels 2026-11-11 to 13, «nothing may be scheduled past ~Nov 13»), updated 2026-10-15; M/safebeauty-marketing.md:57 («new content after Nov 13») (revision 5) |
+| `marketing.velro-queue` | unknown | M/velro-marketing.md:27-29 (posts published by hand, the last recorded 2026-10-17; no schedule recorded), :37; `~/Desktop/1/Marketing/Velro/01-plan/content-calendar.md:4` (last update 2026-09-30). No consequence: no source states one (revision 5) |
 | `domain.linumic.com` | 2029-08-15 | docs/integrations.md:548-551 (RDAP, 2026-10-09). Its consequence is worded as that source says it: linumic.com and its subdomains (such as console.linumic.com) depend on it, Google's `web.app` and `cloudfunctions.net` hosts do not; no mailbox is named, since the source names none (revision 3) |
 | `stores.play-target-api` | unknown | docs/product-discovery-report.md:79 (the notice named 31 August 2026, already past when it was read on 2026-09-23; the next deadline is not recorded) |
 
@@ -173,6 +176,27 @@ entered with its source on the account's card. A cost is one amount in one curre
 another currency), how often, and the bill it was read from. Never a password or a card number: sign-ins are in the
 Vault. After the company is registered, the holder column is the list of what to move.
 
+## Marketing queue (Phase 6, roadmap module 8)
+
+The end of each brand's scheduled queue and the US clock change on 2026-11-01 are rows of this register (area
+Marketing, the seed above), so they reach the Desk, the 30/14/7/1-day alerts and the server's sweep like any other. The
+sidebar's **Marketing queue** (which takes the Social Media page's place; that page is in the Archive) groups them by
+brand beside the brand's own ledger (`MarketingLedgers`, each named in a memory note with its line):
+
+| Brand | Ledger | Named in |
+|---|---|---|
+| WorkTrack | `~/Desktop/1/WorkTrack-Marketing/Social/index.html` | M/worktrack-marketing.md:13 |
+| SafeBeauty | `~/Desktop/1/SafeBeauty-Marketing/STATUS.md` | M/safebeauty-marketing.md:55, :57 |
+| VELRO | `~/Desktop/1/Marketing/Velro/01-plan/content-calendar.md` | M/velro-marketing.md:13, :35 |
+
+The app never parses a ledger's text (roadmap §5). It reads the ledger file's modification date only (`lstat`, which
+the sandbox allows without a grant; docs/legal.md has the check), and flags a row whose ledger changed on a later day
+than the row was recorded (or than the owner set its date): "The ledger changed after this was recorded: verify".
+**Verify** (on the Marketing queue page and on a marketing row of this screen) opens the ledger in its own app, inside
+a read-only grant of that ledger's own folder (`LCCMarketingBookmarks`; `~/Desktop/1` as a whole is refused, since it
+also holds other drafts). The owner then changes the date ("Change date…", with its source) or records Done here.
+Nothing is posted, scheduled or written; the job and the network are not involved.
+
 ## Files
 
 `obligations.json` next to the inventory: the owner's rows, the dates he set (with sources), Done with evidence (per
@@ -190,3 +214,5 @@ overwritten, and is not synced.
 - سطرهای زنده (خروجی تداوم، بازیابی آزمایشی، لایسنس، دامنه) با جملهٔ تایپ‌شده بسته نمی‌شوند: فقط وقتی منبع خودشان ثبت کند. دکمهٔ آن‌ها همان‌جا را باز می‌کند.
 - تاریخ تمدید هر حساب فقط در کارت همان حساب («ویرایش…») ثبت می‌شود؛ «تعیین تاریخ…» در سطر تمدید هم همان کارت را باز می‌کند.
 - تمدید یک حساب فقط وقتی تعهد می‌شود که تاریخش یا هزینهٔ ماهانه/سالانه‌اش با منبع ثبت شده باشد.
+- «صف بازاریابی» پایان صف هر برند و جابه‌جایی ساعت را کنار دفتر همان برند نشان می‌دهد. برنامه متن دفتر را نمی‌خواند؛ «بررسی…» دفتر را در برنامهٔ خودش باز می‌کند (بار اول به پوشهٔ همان دفتر اجازه بدهید) و تاریخ یا «انجام شد» را این‌جا ثبت می‌کنید.
+- صف VELRO تاریخ ندارد، چون هیچ منبعی زمان‌بندی آن را ثبت نکرده؛ تا وقتی تاریخش را با منبع ثبت کنید، «تاریخ نامعلوم» می‌ماند.

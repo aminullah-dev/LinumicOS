@@ -9,7 +9,7 @@ import Foundation
 
 /// Where a line or section comes from. The order is the order of the sections on screen.
 public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiable {
-    case monitor, siteMessages, releases, products, agents, licences, worktrack, operations, money, sales, oversight, keys, obligations, automation, changes
+    case monitor, siteMessages, releases, products, agents, licences, worktrack, operations, money, sales, oversight, keys, legal, obligations, automation, changes
 
     public var id: String { rawValue }
 
@@ -27,6 +27,7 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .sales: L("Sales")
         case .oversight: L("Oversight")
         case .keys: L("Keys & Backups")
+        case .legal: L("Legal & company")
         case .obligations: L("Obligations")
         case .automation: L("Automation")
         case .changes: L("What changed since yesterday")
@@ -47,6 +48,7 @@ public enum BriefSourceKind: String, Codable, CaseIterable, Sendable, Identifiab
         case .sales: "phone.arrow.up.right"
         case .oversight: "scope"
         case .keys: "externaldrive.badge.checkmark"
+        case .legal: "building.columns"
         case .obligations: "calendar.badge.exclamationmark"
         case .automation: "gearshape.2"
         case .changes: "clock.arrow.circlepath"
@@ -81,6 +83,8 @@ public enum BriefDestination: Hashable, Sendable {
     case products(String?)
     /// The Agents page, with one agent to show (its slug), or none.
     case agents(String?)
+    /// The Legal & company screen.
+    case legal
 }
 
 public enum BriefSeverity: Int, Codable, Sendable, Comparable {
@@ -375,13 +379,15 @@ public struct BriefInput: Sendable {
     public var products: ProductsReport?
     /// The agents' pull requests as read; nil when the App has no Agents model.
     public var agents: AgentsReport?
+    /// Legal & company as the App collected it; nil when it was not collected.
+    public var legal: LegalInput?
 
     public init(now: Date, monitor: MonitorSnapshot, monitorTargets: [MonitorTarget] = MonitorCatalog.targets,
                 releases: ReleaseCenterSnapshot, licences: BriefLicenceInput, worktrack: BriefWorkTrackInput,
                 operations: [BriefOperationsInput], oversight: BriefOversightInput, keys: BriefKeysInput? = nil,
                 siteMessages: BriefSiteMessagesInput? = nil, automation: AutomationLedger? = nil,
                 backup: BackupFolderStatus? = nil, obligations: BriefObligationsInput? = nil, money: MoneyInput? = nil,
-                products: ProductsReport? = nil, agents: AgentsReport? = nil) {
+                products: ProductsReport? = nil, agents: AgentsReport? = nil, legal: LegalInput? = nil) {
         self.now = now
         self.monitor = monitor
         self.monitorTargets = monitorTargets
@@ -398,6 +404,7 @@ public struct BriefInput: Sendable {
         self.money = money
         self.products = products
         self.agents = agents
+        self.legal = legal
     }
 }
 
@@ -424,6 +431,7 @@ public enum DailyBriefBuilder {
             sales(input),
             oversight(input),
             keys(input),
+            legal(input),
             obligations(input),
             automation(input),
         ]

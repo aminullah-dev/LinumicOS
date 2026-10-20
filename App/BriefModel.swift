@@ -33,10 +33,11 @@ final class BriefModel {
     private let siteMessages: SiteMessagesModel
     private let obligations: ObligationsModel
     private let products: ProductsModel
+    private let legal: LegalModel
 
     init(inventory: InventoryModel, licences: LicenceModel, worktrack: WorkTrackModel, operations: OperationsModel,
          releases: ReleaseCenterModel, monitor: MonitorModel, keys: KeysModel, siteMessages: SiteMessagesModel,
-         obligations: ObligationsModel, products: ProductsModel) {
+         obligations: ObligationsModel, products: ProductsModel, legal: LegalModel) {
         self.inventory = inventory
         self.licences = licences
         self.worktrack = worktrack
@@ -47,6 +48,7 @@ final class BriefModel {
         self.siteMessages = siteMessages
         self.obligations = obligations
         self.products = products
+        self.legal = legal
         store = (try? BriefSnapshotStore.defaultFileURL()).map(BriefSnapshotStore.init(fileURL:))
         history = store?.load() ?? BriefSnapshotHistory()
     }
@@ -84,7 +86,8 @@ final class BriefModel {
             obligations: obligations.briefInput,
             money: .collect(worktrack: worktrack, safeBeauty: operations.safeBeauty, obligations: obligations, now: now),
             products: products.report(now: now),
-            agents: products.agents(now: now))
+            agents: products.agents(now: now),
+            legal: legal.briefInput)
     }
 
     /// The brief for right now, with the changes since the last snapshot of an earlier day.

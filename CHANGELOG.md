@@ -34,6 +34,42 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Docs: [docs/products.md](docs/products.md), [docs/agents.md](docs/agents.md), the roadmap (Phase 7),
   docs/security.md.
 
+### Added: Legal & company, the marketing queue and the Archive, read-only; Phase 6 of the company OS roadmap (2026-10-20)
+- **Legal & company** (حقوقی و شرکت, sidebar after Sales): a company card with the registration (not registered, from
+  the roadmap and the accounts, with sources), the seller of record per store as the store listings say it (App Store:
+  set by the public lookup the Store listings job already runs, with its read time; Google Play: as recorded from the
+  Play Console, which the app does not read) and the EU DSA trader status as **Unknown** (no source). On the Mac, the
+  legal folder `~/Documents/Linumic-Legal`: how many `[TO FILL]`, `[LAWYER]` and `[TO DECIDE]` markers its text files
+  hold, with the file and line of each, and the Asasnama files by name and date. The drafts' text is never shown, kept,
+  logged or sent; an Asasnama file is never opened; a link is never followed; other files (`.docx`, `.pdf`) make the
+  counts "at least". The rule equals `grep -rnoE '\[(TO FILL|LAWYER|TO DECIDE)([^A-Za-z0-9]|$)'` (a test runs grep on a
+  made-up fixture folder and compares); on the real folder both give 27, 11 and 2 (docs/legal.md explains the roadmap's
+  18, 8 and 1).
+- **Access without a new entitlement:** a probe with the app's own entitlements showed the sandbox refuses listing
+  `~/Documents` and `~/Desktop` (metadata only is allowed). The app tries the folder without a grant first (the screen's
+  "Sandbox check"), then uses a one-time, read-only security-scoped bookmark of exactly `~/Documents/Linumic-Legal`
+  (`LCCLegalBookmarks`; anything wider refused) and of folders the owner adds for Asasnama files
+  (`LCCAsasnamaBookmarks`). A grant that can't be resolved is kept and retried, one that leads elsewhere (moved) is
+  dropped, a scope macOS refuses is shown as such (`LegalAccessRules`, tested).
+- **Daily Brief and Desk:** a "Legal & company" section: one line per marker kind and product folder (counts only, ids
+  with a hash of the folder, never a file or folder name), the Asasnama line (the partner question is the owner's), the
+  registration (Later), and as Desk items the folder not granted or not read, files not read, no Asasnama file found, a
+  store with no seller, and the DSA status: unknown is an item, never 0. A new automation job, **Legal folder** (hourly,
+  no network, Mac only).
+- **Marketing queue** (صف بازاریابی, in Marketing, in place of Social Media): each brand's queue end and the clock change
+  as obligations, beside the brand's ledger (WorkTrack, SafeBeauty, VELRO). The ledgers' text is never parsed: the app
+  reads the file's modification date only and flags a row whose ledger changed after it was recorded; **Verify** opens
+  the ledger in its own app inside a read-only grant of that ledger's folder (`LCCMarketingBookmarks`), also from a
+  marketing row on the Obligations screen. Never posts.
+- **Obligations seed, revision 5:** `marketing.safebeauty-queue-end` (2026-11-13, from the SafeBeauty ledger and the
+  memory note) and `marketing.velro-queue` (date unknown: no schedule is recorded). The three rows the server sweep
+  already raised are unchanged. The pinned seed print is updated.
+
+### Changed
+- **Archive:** Release records, Roadmap, Issues, Builds, Deployments and Social Media, which hold no records on the
+  owner's Mac and are covered by newer pages, are in a collapsed "Archive" group at the end of the sidebar (each row
+  says what covers it now). No page, record or editor is removed. ⌘6 to ⌘8 now open Obligations, Money and Sales.
+
 ### Added: Sales (فروش), read-only, WorkTrack first; Phase 5 of the company OS roadmap (2026-10-20)
 - **Sales** (sidebar after Money, macOS and iOS): who to call today. Follow-ups due today or overdue, in the next 7
   days and later, by **Kabul's day** as the WorkTrack server counts it (checked against a copy of its rule for every

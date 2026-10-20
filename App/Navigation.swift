@@ -7,6 +7,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case obligations
     case money
     case sales
+    case legal
     case dashboard
     case brief
     case monitor
@@ -26,7 +27,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case allProducts, verification, releases, roadmap, issues
     case repositories, builds, deployments
     case appStore, googlePlay
-    case socialMedia, contentCalendar
+    case marketingQueue, socialMedia, contentCalendar
     case marketIntelligence, aiAssistant
     case integrations, security, account
 
@@ -38,6 +39,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .obligations: L("Obligations & accounts")
         case .money: L("Money")
         case .sales: L("Sales")
+        case .legal: L("Legal & company")
         case .dashboard: L("Dashboard")
         case .brief: L("Brief")
         case .monitor: L("Monitor")
@@ -64,6 +66,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .deployments: L("Deployments")
         case .appStore: L("App Store")
         case .googlePlay: L("Google Play")
+        case .marketingQueue: L("Marketing queue")
         case .socialMedia: L("Social Media")
         case .contentCalendar: L("Content Calendar")
         case .marketIntelligence: L("Market Intelligence")
@@ -80,6 +83,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .obligations: "calendar.badge.exclamationmark"
         case .money: "banknote"
         case .sales: "phone.arrow.up.right"
+        case .legal: "building.columns"
         case .dashboard: "square.grid.2x2"
         case .brief: "sun.horizon"
         case .monitor: "waveform.path.ecg"
@@ -106,6 +110,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .deployments: "server.rack"
         case .appStore: "applelogo"
         case .googlePlay: "play.rectangle"
+        case .marketingQueue: "calendar.badge.clock"
         case .socialMedia: "bubble.left.and.bubble.right"
         case .contentCalendar: "calendar"
         case .marketIntelligence: "chart.line.uptrend.xyaxis"
@@ -120,14 +125,22 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
 struct SidebarSection: Identifiable {
     let title: String?
     let items: [SidebarItem]
+    /// The Archive (Phase 6): shown collapsed until opened.
+    var isArchive = false
     var id: String { title ?? "root" }
 
-    static let all: [SidebarSection] = [
-        SidebarSection(title: nil, items: [.desk, .obligations, .money, .sales, .dashboard, .brief, .monitor, .automation, .releaseCenter, .platforms, .productBoard, .agents, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys, .continuity]),
+    /// The sidebar as shown: the pages by area, with the six archived manual pages moved into a last, collapsed group
+    /// (`SidebarArchive`, LinumicCore). No page or record is removed.
+    static let all: [SidebarSection] = SidebarArchive.arrange(grouped.map { SidebarGroup(title: $0.title, items: $0.items.map(\.rawValue)) })
+        .map { SidebarSection(title: $0.title, items: $0.items.compactMap(SidebarItem.init(rawValue:)), isArchive: $0.isArchive) }
+
+    /// Every page by area, before the Archive takes its pages out.
+    static let grouped: [SidebarSection] = [
+        SidebarSection(title: nil, items: [.desk, .obligations, .money, .sales, .legal, .dashboard, .brief, .monitor, .automation, .releaseCenter, .platforms, .productBoard, .agents, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys, .continuity]),
         SidebarSection(title: "Products", items: [.allProducts, .verification, .releases, .roadmap, .issues]),
         SidebarSection(title: "Development", items: [.repositories, .builds, .deployments]),
         SidebarSection(title: "Stores", items: [.appStore, .googlePlay]),
-        SidebarSection(title: "Marketing", items: [.socialMedia, .contentCalendar]),
+        SidebarSection(title: "Marketing", items: [.marketingQueue, .socialMedia, .contentCalendar]),
         SidebarSection(title: "Intelligence", items: [.marketIntelligence, .aiAssistant]),
         SidebarSection(title: "Settings", items: [.integrations, .security, .account]),
     ]
@@ -226,6 +239,7 @@ final class Router {
         case .sales(let key): go(.sales, request: key.map(RouterRequest.salesItem))
         case .products(let id): go(.productBoard, request: id.map(RouterRequest.productCard))
         case .agents(let slug): go(.agents, request: slug.map(RouterRequest.agent))
+        case .legal: go(.legal)
         }
     }
 
