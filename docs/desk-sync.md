@@ -147,6 +147,14 @@ The Security Advisor will list the four push/replace functions as SECURITY DEFIN
 
 ## Owner steps (needs approval; changes the live project)
 
+Status 2026-10-20 (00:40 UTC): **not applied.** The reviews approved the PR, and `apply_migration` was tried for the
+first file, but the Supabase connector answered "Invalid or expired requestState" twice. A one-line `select 1` went
+through, so the connector works; the full file needs the owner's own confirmation in the session, which expired while
+he was away. The live project is unchanged: no table, function or job from this PR exists there. The only trace is a
+migration-history entry `20261020003945 desk_sync_probe` (`select 1`, creates nothing). Step 1 is therefore done with
+the owner present, so he can confirm when the connector asks. Do not merge the PR or install its app before step 2
+passes: the app would call `desk_sync_pull`, which does not exist yet.
+
 1. **Approve and apply the migrations**, in order, **the same way the Sentinel was applied** (the Supabase MCP's
    `apply_migration`, as on 2026-10-19; the same role then owns every Sentinel job): first
    `supabase/migrations/20261019090000_desk_sync.sql`, then `supabase/migrations/20261019090100_obligation_sweep.sql`.
@@ -362,4 +370,5 @@ commit;
 - وقتی مک خاموش است، سرور هر روز ساعت ۱۰:۴۶ کابل، در کاری جدا از بررسی لایسنس‌ها (۱۰:۴۵)، تعهدات را بررسی می‌کند و برای هر پنجره (۳۰، ۱۴، ۷، ۱ روز و روز سررسید) فقط یک رویداد ثبت می‌کند. اگر یکی از این دو کار خطا بدهد، دیگری کارش را می‌کند. یادآوری‌ای که در این دستگاه «انجام شد» خورده باشد یا تاریخش عوض شده باشد اعلان نمی‌شود.
 - شناسهٔ مشتریان در بخش‌های «گزارش روز» به شکل hash ذخیره می‌شود و عنوان موردهای «گزارش روز» به ابر نمی‌رود. سطرهای دفترها، دلیل‌های کنار گذاشتن و عنوان‌هایی که خودتان می‌نویسید ممکن است نام اشخاص را داشته باشند و همان‌طور که نوشته‌اید ذخیره می‌شوند؛ از سطرهای دفتر فقط متنی که ایمیل، شماره تلفن یا کلید دارد پنهان می‌شود، و هر چیزی که شبیه کلید یا توکن باشد اصلاً فرستاده نمی‌شود.
 - تاریخچهٔ هر تغییر در جدول audit_events می‌ماند، حتی پس از برگرداندن (rollback)؛ پاک کردنش دستور جداگانه دارد (بخش History در بالا).
+- وضع ۲۰۲۶-۱۰-۲۰: هنوز اجرا نشده. ابزار Supabase برای فایل کامل تأیید خود شما را می‌خواهد و در نبود شما منقضی شد. پایگاه‌داده دست نخورده است؛ فقط یک سطر بی‌اثر `desk_sync_probe` در تاریخچهٔ migration ها هست. وقتی بیدار شدید، بگویید «migration فاز ۳ را اجرا کن» و وقتی ابزار پرسید، تأیید کنید.
 - کار شما: تأیید و اجرای دو migration به همان روشی که Sentinel اجرا شد (مراحل بالا)، بررسی پنج کار `sentinel-…` با یک username، سپس «اکنون همگام کن» در هر دو دستگاه.
