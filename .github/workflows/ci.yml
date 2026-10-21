@@ -30,6 +30,8 @@ jobs:
         run: tools/test/persian-calendar.sh
       - name: Dari translations
         run: python3 tools/l10n/check_catalog.py
+      - name: Colour tokens match their table and meet their contrast rules
+        run: python3 tools/design/make_colors.py --check
       - name: Supabase migrations grant every table they create (Supabase's 2026-10-30 change)
         run: |
           python3 tools/supabase/check_migration_grants.py

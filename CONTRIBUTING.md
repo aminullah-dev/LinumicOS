@@ -50,6 +50,18 @@ Small, verifiable steps:
   positional specifiers (`%1$@`) when Dari word order differs.
 - Afghan Dari terminology: معلومات (not اطلاعات), کمپاین, مخزن for repository, انتشار for release.
 
+## Colours and shapes
+
+- Use the tokens in `App/Views/Theme.swift`, not raw system colours: `.statusGood`, `.statusWarn`, `.statusBad`,
+  `.statusInfo`, `.statusUnknown` (neutral grey: unknown, not read or not checked is never shown green), `.brandAccent`,
+  and `SidebarItem.tint` / `AreaTint` for an area's tiles and header. Radii and spacing: `Theme.Radius`, `Theme.Spacing`.
+- Shared pieces: `PageHeader` at the top of a main page, `.cardSurface()` / `.frostedCard()` for cards, `PillLabel` for
+  status pills, `KPITile` for number cards, `.hoverHighlight()` for rows that act. They handle dark mode, Increase
+  Contrast, Reduce Transparency and Reduce Motion.
+- The values live in `App/Resources/Assets.xcassets` (`AccentColor`, `Theme/`), each with light, dark and Increase
+  Contrast variants, written by `python3 tools/design/make_colors.py`. Change a colour there, never in the asset files;
+  `make_colors.py --check` (CI runs it) fails when a file differs from the table or a pair misses its contrast rule.
+
 ## Code layout
 
 - Domain logic belongs in `LinumicCore` and must not import SwiftUI or AppKit.
