@@ -127,7 +127,7 @@ struct VerificationSection: View {
             TextField("What the source says (optional)", text: $draft.newDetail)
         }
         if let blocker = draft.blocker {
-            Section { Label(blocker, systemImage: "exclamationmark.circle").foregroundStyle(.orange) }
+            Section { Label(blocker, systemImage: "exclamationmark.circle").foregroundStyle(.statusWarn) }
         }
     }
 }
@@ -182,7 +182,7 @@ struct FactEditor: View {
                 }
                 Text("Leave it empty if the fact is unknown. Record where the value comes from below.")
                     .font(.caption).foregroundStyle(.secondary)
-                if let parseError { Label(parseError, systemImage: "xmark.octagon").foregroundStyle(.red) }
+                if let parseError { Label(parseError, systemImage: "xmark.octagon").foregroundStyle(.statusBad) }
             }
             VerificationSection(draft: $draft)
         }

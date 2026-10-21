@@ -26,11 +26,11 @@ struct DeskView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     header(desk, now: now)
                     if let error = model.loadError {
-                        Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange) }
+                        Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.statusWarn) }
                             .font(.callout)
                     } else if let error = model.errorMessage {
                         HStack(alignment: .firstTextBaseline) {
-                            Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange) }
+                            Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.statusWarn) }
                             Spacer()
                             Button("OK") { model.errorMessage = nil }.buttonStyle(.borderless)
                         }
@@ -103,18 +103,17 @@ struct DeskView: View {
 
     private func header(_ desk: Desk, now: Date) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(now.formatted(date: .complete, time: .omitted))
-                .font(.title2.weight(.semibold))
-                .accessibilityAddTraits(.isHeader)
             // Green only when nothing is open today and every source was read: an unread source is not "all clear".
             let unknown = desk.open.count { $0.item.kind == .source }
-            FitRow(spacing: 8) {
-                ReleaseBadge(text: String(localized: "\(desk.today.count) today"), symbol: "sun.max",
-                             color: !desk.today.isEmpty ? .red : (unknown > 0 ? .gray : .green))
-                ReleaseBadge(text: String(localized: "\(desk.thisWeek.count) this week"), symbol: "calendar", color: .orange)
-                ReleaseBadge(text: String(localized: "\(desk.later.count) later"), symbol: "tray", color: .gray)
-                if unknown > 0 {
-                    ReleaseBadge(text: String(localized: "\(unknown) sources to check"), symbol: "questionmark.circle", color: .gray)
+            PageHeader(.desk, subtitle: Text(now.formatted(date: .complete, time: .omitted))) {
+                FitRow(spacing: 8) {
+                    ReleaseBadge(text: String(localized: "\(desk.today.count) today"), symbol: "sun.max",
+                                 color: !desk.today.isEmpty ? .statusBad : (unknown > 0 ? .statusUnknown : .statusGood))
+                    ReleaseBadge(text: String(localized: "\(desk.thisWeek.count) this week"), symbol: "calendar", color: .statusWarn)
+                    ReleaseBadge(text: String(localized: "\(desk.later.count) later"), symbol: "tray", color: .statusUnknown)
+                    if unknown > 0 {
+                        ReleaseBadge(text: String(localized: "\(unknown) sources to check"), symbol: "questionmark.circle", color: .statusUnknown)
+                    }
                 }
             }
             ledgerLine(desk, now: now)
@@ -144,7 +143,7 @@ struct DeskView: View {
             .font(.caption).foregroundStyle(.secondary)
         } else if sync.state.cloudLedgerUnreadable {
             Text("The Mac's last ledger reading could not be read by this version of the app. Update the app on this device to see its lines.")
-                .font(.caption).foregroundStyle(.orange)
+                .font(.caption).foregroundStyle(.statusWarn)
         } else if let snapshot = sync.cloudLedger {
             // The Mac's reading, from the cloud: always with its date, and said plainly when it is old (or dated ahead of
             // this device's clock, when how old it is can't be known).
@@ -165,7 +164,7 @@ struct DeskView: View {
                     }
                     if age > 2 * AutomationCatalog.spec(.ledgers).cadence || age < -DeskEvidence.clockTolerance {
                         Text("The Mac has not sent a newer reading since then (it reads every 30 minutes while it runs). What the ledgers say now may differ.")
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(.statusWarn)
                     }
                 }
             }
@@ -199,7 +198,7 @@ struct DeskView: View {
     private func groups(_ rows: [DeskRow]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             ForEach(Desk.groups(rows)) { group in
-                StripeCard(tint: group.rows.map(\.item.severity).min()?.color ?? .gray) {
+                StripeCard(tint: group.rows.map(\.item.severity).min()?.color ?? .statusUnknown) {
                     HStack(spacing: 6) {
                         Text(verbatim: group.domain.displayTitle).font(.headline)
                         if group.domain.isFocus {
@@ -270,27 +269,27 @@ struct DeskRowView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(DeskText.text(item.title, of: item)).fixedSize(horizontal: false, vertical: true)
                 FitRow(spacing: 6) {
-                    ReleaseBadge(text: item.domain.displayTitle, symbol: "shippingbox", color: .accentColor)
+                    ReleaseBadge(text: item.domain.displayTitle, symbol: "shippingbox", color: .brandAccent)
                     ForEach(item.related) { other in
-                        ReleaseBadge(text: other.displayTitle, symbol: "shippingbox", color: .gray)
+                        ReleaseBadge(text: other.displayTitle, symbol: "shippingbox", color: .statusUnknown)
                     }
                     if let due = item.due {
                         ReleaseBadge(text: String(localized: "Due \(due.start().formatted(date: .abbreviated, time: .omitted))"),
-                                     symbol: "calendar.badge.clock", color: .red)
+                                     symbol: "calendar.badge.clock", color: .statusBad)
                     }
                     if row.isStale {
-                        ReleaseBadge(text: String(localized: "Stale"), symbol: "clock.badge.exclamationmark", color: .orange)
+                        ReleaseBadge(text: String(localized: "Stale"), symbol: "clock.badge.exclamationmark", color: .statusWarn)
                     }
                     if item.ownerAction {
                         ReleaseBadge(text: String(localized: "Yours"), symbol: "person", color: .purple)
                     }
                     if item.readOn == .macOS, !DeskModel.supportsLedgers {
-                        ReleaseBadge(text: String(localized: "The Mac's reading"), symbol: "laptopcomputer", color: .gray)
+                        ReleaseBadge(text: String(localized: "The Mac's reading"), symbol: "laptopcomputer", color: .statusUnknown)
                     }
                     // The report scheduled it for this week; the Desk puts the owner's work in a focus product in Today.
                     // Say so, so the Desk and the report don't seem to disagree.
                     if item.horizon == .thisWeek, row.bucket == .today {
-                        ReleaseBadge(text: String(localized: "This week in the report"), symbol: "calendar", color: .gray)
+                        ReleaseBadge(text: String(localized: "This week in the report"), symbol: "calendar", color: .statusUnknown)
                     }
                 }
                 status
@@ -310,7 +309,7 @@ struct DeskRowView: View {
                 // The ledger's own dated corrections under the line are always shown: the line above may be wrong.
                 ForEach(Array(item.corrections.enumerated()), id: \.offset) { _, note in
                     Label { Text(DeskText.text(note, of: item)).fixedSize(horizontal: false, vertical: true) } icon: {
-                        Image(systemName: "exclamationmark.bubble").foregroundStyle(.orange)
+                        Image(systemName: "exclamationmark.bubble").foregroundStyle(.statusWarn)
                     }
                     .font(.caption)
                     .accessibilityLabel(Text("Correction in the ledger: \(note)"))
@@ -334,7 +333,8 @@ struct DeskRowView: View {
             actions
         }
         .padding(4)
-        .background(highlighted ? Color.accentColor.opacity(0.15) : .clear, in: RoundedRectangle(cornerRadius: 8))
+        .hoverHighlight()
+        .background(highlighted ? Color.brandAccent.opacity(0.15) : .clear, in: RoundedRectangle(cornerRadius: Theme.Radius.small))
         .accessibilityElement(children: .contain)
     }
 
@@ -363,7 +363,7 @@ struct DeskRowView: View {
     @ViewBuilder
     private var status: some View {
         if let note = row.stillOpenNote {
-            Label { Text(verbatim: note) } icon: { Image(systemName: "arrow.uturn.backward.circle").foregroundStyle(.orange) }
+            Label { Text(verbatim: note) } icon: { Image(systemName: "arrow.uturn.backward.circle").foregroundStyle(.statusWarn) }
                 .font(.caption)
         }
         switch row.resolution {
@@ -375,7 +375,7 @@ struct DeskRowView: View {
                     Text("You marked it done \(m.at.formatted(date: .abbreviated, time: .shortened)); the ledger still lists it.")
                 }
             } icon: {
-                Image(systemName: "checkmark.circle").foregroundStyle(.green)
+                Image(systemName: "checkmark.circle").foregroundStyle(.statusGood)
             }
             .font(.caption)
         case .hidden(let m):
@@ -548,7 +548,7 @@ struct DeskSyncStatusLine: View {
     }
 
     private var color: Color {
-        sync.loadError != nil || sync.lastError != nil || sync.state.refusedCount > 0 || sync.state.conflictCount > 0 ? .orange : .secondary
+        sync.loadError != nil || sync.lastError != nil || sync.state.refusedCount > 0 || sync.state.conflictCount > 0 ? .statusWarn : .secondary
     }
 }
 
@@ -560,11 +560,11 @@ struct DeskSyncConflictsCard: View {
     var body: some View {
         let conflicts = sync.conflicts
         if !conflicts.isEmpty {
-            StripeCard(tint: .orange) {
+            StripeCard(tint: .statusWarn) {
                 Label {
                     Text("Changed on two devices (\(conflicts.count))").font(.headline)
                 } icon: {
-                    Image(systemName: "arrow.triangle.branch").foregroundStyle(.orange)
+                    Image(systemName: "arrow.triangle.branch").foregroundStyle(.statusWarn)
                 }
                 .accessibilityAddTraits(.isHeader)
                 Text("Both your devices changed these while they were apart. Nothing was written over: each keeps its own version until you choose which one stays.")
@@ -634,9 +634,9 @@ struct DeskBackupCard: View {
     }
 
     private func color(_ s: BackupFolderStatus?) -> Color {
-        guard let s else { return .gray }
-        if s.listError != nil || s.isEmpty || !s.restores { return .red }
-        return .green
+        guard let s else { return .statusUnknown }
+        if s.listError != nil || s.isEmpty || !s.restores { return .statusBad }
+        return .statusGood
     }
 
     private func headline(_ s: BackupFolderStatus?) -> String {
@@ -770,7 +770,7 @@ struct LedgerAccessSettingsSection: View {
     var body: some View {
         Section {
             LabeledContent {
-                StatusBadge(text: model.grantedFolders.isEmpty ? "Not granted" : "Read-only access", color: model.grantedFolders.isEmpty ? .orange : .green)
+                StatusBadge(text: model.grantedFolders.isEmpty ? "Not granted" : "Read-only access", color: model.grantedFolders.isEmpty ? .statusWarn : .statusGood)
             } label: {
                 Label("Ledger access", systemImage: "books.vertical")
                 Text("The Desk reads the PRIORITIES.md files and the newest NEXT-ACTIONS in these folders, nothing else, and never writes.")
@@ -780,12 +780,12 @@ struct LedgerAccessSettingsSection: View {
                 let granted = model.grantedFolders.contains { "~/\(folder)" == $0 || "~/\(folder)".hasPrefix($0 + "/") }
                 LabeledContent {
                     if granted {
-                        StatusBadge(text: "Granted", color: .green)
+                        StatusBadge(text: "Granted", color: .statusGood)
                     } else {
                         HStack(spacing: 8) {
                             // A stored grant that could not be resolved at the last read: kept, and tried again at the next.
                             if model.unresolvedFolders.contains("~/\(folder)") {
-                                StatusBadge(text: "Could not be resolved", color: .orange)
+                                StatusBadge(text: "Could not be resolved", color: .statusWarn)
                                     .help("The stored grant could not be resolved at the last read. It is kept and tried again at the next read; grant the folder again if this stays.")
                             }
                             Button("Grant…") { model.chooseFolder(suggested: "~/\(folder)") }

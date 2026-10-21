@@ -159,6 +159,8 @@ struct LinumicOSApp: App {
     /// Every model, for the main window and the menu bar panel alike.
     private func environment<V: View>(_ view: V) -> some View {
         view
+            // Buttons, toggles and links in the Linumic slate blue (Theme.swift), whatever accent the system is set to.
+            .tint(.brandAccent)
             .environment(\.layoutDirection, Self.layoutDirection)
             .environment(model)
             .environment(licences)

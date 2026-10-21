@@ -11,9 +11,9 @@ import UIKit
 extension KeyCheckStatus {
     var color: Color {
         switch self {
-        case .present: .green
-        case .missing: .red
-        case .notGranted: .gray
+        case .present: .statusGood
+        case .missing: .statusBad
+        case .notGranted: .statusUnknown
         }
     }
 
@@ -37,10 +37,10 @@ extension KeyCheckStatus {
 extension KeyBackupState {
     var color: Color {
         switch self {
-        case .covered: .green
-        case .changedAfterBackup: .red
-        case .notBackedUp: .orange
-        case .notApplicable: .gray
+        case .covered: .statusGood
+        case .changedAfterBackup: .statusBad
+        case .notBackedUp: .statusWarn
+        case .notApplicable: .statusUnknown
         }
     }
 
@@ -104,7 +104,7 @@ struct KeysView: View {
             VStack(alignment: .leading, spacing: 22) {
                 header
                 if let error = keys.loadError {
-                    Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.red) }
+                    Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) }
                         .font(.callout)
                 }
                 remindersSection(reminders)
@@ -247,7 +247,7 @@ struct KeysView: View {
                     .accessibilityAddTraits(.isHeader)
                 Text(verbatim: items.count.formatted()).font(.callout.weight(.semibold)).monospacedDigit()
                     .padding(.horizontal, 8).padding(.vertical, 2)
-                    .background((items.isEmpty ? Color.green : .orange).opacity(0.15), in: Capsule())
+                    .pillBackground(items.isEmpty ? .statusGood : .statusWarn)
             }
             if items.isEmpty {
                 Text("Nothing needs you: every key is backed up, unchanged, and a restore was tested in the last 90 days.")
@@ -334,7 +334,7 @@ struct KeysView: View {
             Text("Found by file name only (*.jks, *.keystore, *-private.pem, AuthKey_*.p8). No backup is known for them.")
                 .font(.caption).foregroundStyle(.secondary)
             ForEach(uncovered, id: \.path) { file in
-                StripeCard(tint: .orange) {
+                StripeCard(tint: .statusWarn) {
                     HStack(alignment: .firstTextBaseline) {
                         VStack(alignment: .leading, spacing: 3) {
                             Text(verbatim: file.name).fontWeight(.medium)
@@ -367,14 +367,14 @@ struct KeysView: View {
         VStack(alignment: .leading, spacing: 10) {
             sectionTitle("Known gaps", symbol: "exclamationmark.shield")
             ForEach(keys.registry.gaps) { gap in
-                StripeCard(tint: gap.isOpen ? .orange : .green) {
+                StripeCard(tint: gap.isOpen ? .statusWarn : .statusGood) {
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
                         Text(verbatim: L(gap.title)).font(.headline)
                         Spacer(minLength: 8)
                         if gap.isOpen {
-                            ReleaseBadge(text: String(localized: "Open"), symbol: "circle.dashed", color: .orange)
+                            ReleaseBadge(text: String(localized: "Open"), symbol: "circle.dashed", color: .statusWarn)
                         } else {
-                            ReleaseBadge(text: String(localized: "Done \(gap.closedOn?.description ?? "")"), symbol: "checkmark.circle.fill", color: .green)
+                            ReleaseBadge(text: String(localized: "Done \(gap.closedOn?.description ?? "")"), symbol: "checkmark.circle.fill", color: .statusGood)
                         }
                     }
                     if let d = gap.detail { Text(verbatim: L(d)).font(.callout).foregroundStyle(.secondary) }
@@ -426,7 +426,7 @@ struct KeysView: View {
             }
         }
         .padding(12)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+        .cardSurface()
     }
 
     private func status(_ root: String) -> ScanRootStatus? { keys.scan?.roots.first { $0.root == root }?.status }
@@ -442,11 +442,11 @@ struct KeysView: View {
     @ViewBuilder
     private func rootBadge(_ root: String) -> some View {
         switch status(root) {
-        case .scanned?: ReleaseBadge(text: String(localized: "Checked"), symbol: "checkmark.circle.fill", color: .green)
-        case .partly(let inside)?: ReleaseBadge(text: String(localized: "Partly: \(inside.joined(separator: ", "))"), symbol: "circle.lefthalf.filled", color: .orange)
-        case .notGranted?: ReleaseBadge(text: String(localized: "Not granted"), symbol: "lock.circle", color: .gray)
-        case .missing?: ReleaseBadge(text: String(localized: "No such folder"), symbol: "folder.badge.minus", color: .gray)
-        case nil: ReleaseBadge(text: String(localized: "Not checked"), symbol: "questionmark.circle", color: .gray)
+        case .scanned?: ReleaseBadge(text: String(localized: "Checked"), symbol: "checkmark.circle.fill", color: .statusGood)
+        case .partly(let inside)?: ReleaseBadge(text: String(localized: "Partly: \(inside.joined(separator: ", "))"), symbol: "circle.lefthalf.filled", color: .statusWarn)
+        case .notGranted?: ReleaseBadge(text: String(localized: "Not granted"), symbol: "lock.circle", color: .statusUnknown)
+        case .missing?: ReleaseBadge(text: String(localized: "No such folder"), symbol: "folder.badge.minus", color: .statusUnknown)
+        case nil: ReleaseBadge(text: String(localized: "Not checked"), symbol: "questionmark.circle", color: .statusUnknown)
         }
     }
     #endif
@@ -475,11 +475,11 @@ struct KeyCard: View {
 
     private var tint: Color {
         if key.isDeleted {
-            if case .present? = result?.status { return .orange }
-            return .gray
+            if case .present? = result?.status { return .statusWarn }
+            return .statusUnknown
         }
-        if case .missing? = result?.status { return .red }
-        return state == .covered || state == .notApplicable ? (result == nil ? .gray : .green) : state.color
+        if case .missing? = result?.status { return .statusBad }
+        return state == .covered || state == .notApplicable ? (result == nil ? .statusUnknown : .statusGood) : state.color
     }
 
     var body: some View {
@@ -500,18 +500,18 @@ struct KeyCard: View {
             FitRow(spacing: 6) {
                 if let deleted = key.deletedOn {
                     // Deleted on purpose: its absence is expected, so "Missing" would be wrong.
-                    ReleaseBadge(text: String(localized: "Deleted \(deleted.description)"), symbol: "trash.circle", color: .gray)
+                    ReleaseBadge(text: String(localized: "Deleted \(deleted.description)"), symbol: "trash.circle", color: .statusUnknown)
                     if case .present? = result?.status {
-                        ReleaseBadge(text: String(localized: "On this Mac again"), symbol: "exclamationmark.circle.fill", color: .orange)
+                        ReleaseBadge(text: String(localized: "On this Mac again"), symbol: "exclamationmark.circle.fill", color: .statusWarn)
                     }
                 } else if let result {
                     ReleaseBadge(text: result.status.title, symbol: result.status.symbol, color: result.status.color)
                 } else {
-                    ReleaseBadge(text: String(localized: "Not checked"), symbol: "questionmark.circle", color: .gray)
+                    ReleaseBadge(text: String(localized: "Not checked"), symbol: "questionmark.circle", color: .statusUnknown)
                 }
                 if !key.isDeleted { ReleaseBadge(text: state.title, symbol: state.symbol, color: state.color) }
                 if key.doNotDelete {
-                    ReleaseBadge(text: String(localized: "Do not delete"), symbol: "hand.raised.fill", color: .red)
+                    ReleaseBadge(text: String(localized: "Do not delete"), symbol: "hand.raised.fill", color: .statusBad)
                 }
             }
             Text(verbatim: [key.kind.title, key.product].compactMap { $0 }.joined(separator: " · "))
@@ -527,11 +527,11 @@ struct KeyCard: View {
                 FileFactsLine(file: file)
             }
             if key.isPattern, let expected = key.expectedCount, let found = result?.files.count, result != nil, found != expected {
-                Text("\(found) files found; the source lists \(expected).").font(.caption).foregroundStyle(.orange)
+                Text("\(found) files found; the source lists \(expected).").font(.caption).foregroundStyle(.statusWarn)
             }
             if case .changedAfterBackup(_, let modified) = state, let b = backups.max(by: { $0.createdOn < $1.createdOn }) {
                 Text("Modified \(modified.description), after the backup of \(b.createdOn.description). Make a new backup.")
-                    .font(.caption).foregroundStyle(.red)
+                    .font(.caption).foregroundStyle(.statusBad)
             }
             if !backups.isEmpty {
                 Text("In: \(backups.map(\.fileName).joined(separator: ", "))").font(.caption).foregroundStyle(.secondary)
@@ -561,16 +561,16 @@ struct BackupCard: View {
     var body: some View {
         let age = KeysRules.restoreTestAge(backup, now: .now)
         let due = age.map { $0 > KeysRules.restoreTestMaxDays } ?? true
-        StripeCard(tint: due ? .orange : .green) {
+        StripeCard(tint: due ? .statusWarn : .statusGood) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Label { Text(verbatim: L(backup.title)).font(.headline) } icon: { Image(systemName: "lock.doc") }
                     .accessibilityAddTraits(.isHeader)
                 Spacer(minLength: 8)
                 if let age {
                     ReleaseBadge(text: String(localized: "Restore tested \(age) days ago"),
-                                 symbol: due ? "clock.badge.exclamationmark" : "checkmark.circle.fill", color: due ? .orange : .green)
+                                 symbol: due ? "clock.badge.exclamationmark" : "checkmark.circle.fill", color: due ? .statusWarn : .statusGood)
                 } else {
-                    ReleaseBadge(text: String(localized: "No restore test"), symbol: "clock.badge.exclamationmark", color: .orange)
+                    ReleaseBadge(text: String(localized: "No restore test"), symbol: "clock.badge.exclamationmark", color: .statusWarn)
                 }
             }
             Text(verbatim: backup.fileName).font(.callout.monospaced()).textSelection(.enabled)
@@ -591,11 +591,11 @@ struct BackupCard: View {
             if let service = backup.passphraseKeychainService {
                 switch passphrase {
                 case .present?:
-                    ReleaseBadge(text: String(localized: "Keychain item found"), symbol: "key.icloud", color: .green)
+                    ReleaseBadge(text: String(localized: "Keychain item found"), symbol: "key.icloud", color: .statusGood)
                 case .missing?:
-                    ReleaseBadge(text: String(localized: "Keychain item “\(service)” not found"), symbol: "exclamationmark.triangle.fill", color: .red)
+                    ReleaseBadge(text: String(localized: "Keychain item “\(service)” not found"), symbol: "exclamationmark.triangle.fill", color: .statusBad)
                 case .unknown?, nil:
-                    ReleaseBadge(text: String(localized: "Keychain item not checked"), symbol: "questionmark.circle", color: .gray)
+                    ReleaseBadge(text: String(localized: "Keychain item not checked"), symbol: "questionmark.circle", color: .statusUnknown)
                 }
             }
             HStack(spacing: 10) {
@@ -645,7 +645,7 @@ struct RestoreGuidePanel: View {
                 .accessibilityAddTraits(.isHeader)
         }
         .padding(12)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+        .cardSurface()
     }
 
     private func step(_ n: Int, _ text: LocalizedStringKey, command: String?) -> some View {

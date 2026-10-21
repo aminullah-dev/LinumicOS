@@ -15,22 +15,13 @@ struct WorkTrackEnvironmentBadge: View {
 
     var body: some View {
         let (symbol, color): (String, Color) = switch environment {
-        case .production: ("exclamationmark.shield.fill", .red)
-        case .demo: ("theatermasks", .blue)
-        case .localEmulator: ("hammer", .gray)
+        case .production: ("exclamationmark.shield.fill", .statusBad)
+        case .demo: ("theatermasks", .statusInfo)
+        case .localEmulator: ("hammer", .statusUnknown)
         }
-        HStack(spacing: 4) {
-            Image(systemName: symbol).foregroundStyle(color)
-            Text(verbatim: environment.title)
-        }
-        .font(.caption.weight(.semibold))
-        .padding(.horizontal, 7)
-        .padding(.vertical, 2)
-        .background(color.opacity(0.14), in: Capsule())
-        .overlay(Capsule().strokeBorder(color.opacity(0.5), lineWidth: 1))
-        .fixedSize()
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("WorkTrack environment: \(environment.title)"))
+        PillLabel(text: Text(verbatim: environment.title), symbol: symbol, color: color)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("WorkTrack environment: \(environment.title)"))
     }
 }
 
@@ -40,35 +31,26 @@ struct WorkTrackStandingBadge: View {
 
     private var look: (text: String, symbol: String, color: Color) {
         switch company.standing {
-        case .perpetual: (String(localized: "No end date"), "infinity", .blue)
+        case .perpetual: (String(localized: "No end date"), "infinity", .statusInfo)
         case .active:
             company.isExpiring(within: 30)
-                ? (String(localized: "Expiring"), "clock.badge.exclamationmark", .orange)
-                : (String(localized: "Active"), "checkmark.seal.fill", .green)
-        case .grace: (String(localized: "In grace"), "hourglass", .orange)
+                ? (String(localized: "Expiring"), "clock.badge.exclamationmark", .statusWarn)
+                : (String(localized: "Active"), "checkmark.seal.fill", .statusGood)
+        case .grace: (String(localized: "In grace"), "hourglass", .statusWarn)
         case .lapsed:
             switch company.license.status {
-            case .suspended: (String(localized: "Suspended"), "pause.circle.fill", .red)
-            case .expired: (String(localized: "Expired"), "exclamationmark.octagon.fill", .red)
-            default: (String(localized: "Lapsed"), "exclamationmark.octagon.fill", .red)
+            case .suspended: (String(localized: "Suspended"), "pause.circle.fill", .statusBad)
+            case .expired: (String(localized: "Expired"), "exclamationmark.octagon.fill", .statusBad)
+            default: (String(localized: "Lapsed"), "exclamationmark.octagon.fill", .statusBad)
             }
         }
     }
 
     var body: some View {
         let l = look
-        HStack(spacing: 4) {
-            Image(systemName: l.symbol).foregroundStyle(l.color)
-            Text(verbatim: l.text)
-        }
-        .font(.caption.weight(.semibold))
-        .padding(.horizontal, 7)
-        .padding(.vertical, 2)
-        .background(l.color.opacity(0.14), in: Capsule())
-        .overlay(Capsule().strokeBorder(l.color.opacity(0.5), lineWidth: 1))
-        .fixedSize()
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("Licence: \(l.text)"))
+        PillLabel(text: Text(verbatim: l.text), symbol: l.symbol, color: l.color)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Licence: \(l.text)"))
     }
 }
 
@@ -98,7 +80,7 @@ struct WorkTrackMarks: View {
             StatusBadge(text: f.isTest ? String(localized: "TEST") : String(localized: "DUPLICATE"), color: .purple)
         }
         if company.deletion != nil {
-            StatusBadge(text: String(localized: "Closure scheduled"), color: .red)
+            StatusBadge(text: String(localized: "Closure scheduled"), color: .statusBad)
         }
     }
 }
@@ -161,7 +143,7 @@ struct WorkTrackCustomersView: View {
             Button("Sign In…") { isSigningIn = true }
                 .buttonStyle(.borderedProminent)
             if let error = worktrack.loadError {
-                Text(verbatim: error).font(.caption).foregroundStyle(.red)
+                Text(verbatim: error).font(.caption).foregroundStyle(.statusBad)
             }
         }
     }
@@ -178,7 +160,7 @@ struct WorkTrackCustomersView: View {
                 if worktrack.isRefreshing && worktrack.companies.isEmpty {
                     HStack { ProgressView().controlSize(.small); Text("Reading companies…").foregroundStyle(.secondary) }
                 } else if let error = worktrack.loadError {
-                    Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red)
+                    Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad)
                 } else if worktrack.companies.isEmpty {
                     Text("No companies in this environment.").foregroundStyle(.secondary)
                 } else if filtered.isEmpty {
@@ -212,8 +194,8 @@ struct WorkTrackCustomersView: View {
             }
             FitRow(spacing: 18) {
                 metric("Companies", "\(s.total)")
-                metric("Expiring in 30 days", "\(s.expiringSoon.count)", tint: s.expiringSoon.isEmpty ? .primary : .orange)
-                metric("Expired", "\(s.expired.count)", tint: s.expired.isEmpty ? .primary : .red)
+                metric("Expiring in 30 days", "\(s.expiringSoon.count)", tint: s.expiringSoon.isEmpty ? .primary : .statusWarn)
+                metric("Expired", "\(s.expired.count)", tint: s.expired.isEmpty ? .primary : .statusBad)
                 metric("Trials", "\(s.trials)")
                 metric("TEST / DUPLICATE", "\(s.flagged)")
                 Spacer(minLength: 0)
@@ -341,7 +323,7 @@ private struct WorkTrackActionsSection: View {
                     }
                     Text("Last day \(r.before.expiresAt ?? String(localized: "none")) → \(r.sent.expiresAt ?? String(localized: "none")), plan \(r.before.plan.rawValue) → \(r.sent.plan.rawValue) · \(r.actorEmail) · \(r.at.formatted(date: .abbreviated, time: .shortened))")
                         .font(.caption).foregroundStyle(.secondary)
-                    if let m = r.message { Text(verbatim: m).font(.caption).foregroundStyle(r.outcome == .verified ? Color.secondary : .red) }
+                    if let m = r.message { Text(verbatim: m).font(.caption).foregroundStyle(r.outcome == .verified ? Color.secondary : .statusBad) }
                 }
                 .accessibilityElement(children: .combine)
             }
@@ -354,9 +336,9 @@ private struct WorkTrackActionsSection: View {
 
     @ViewBuilder private func outcome(_ o: WorkTrackActionRecord.Outcome) -> some View {
         switch o {
-        case .verified: Label("Verified", systemImage: "checkmark.circle.fill").labelStyle(.iconOnly).foregroundStyle(.green).help(Text("Verified"))
-        case .unverified: Label("Not verified", systemImage: "questionmark.circle.fill").labelStyle(.iconOnly).foregroundStyle(.orange).help(Text("Not verified"))
-        case .failed: Label("Failed", systemImage: "xmark.octagon.fill").labelStyle(.iconOnly).foregroundStyle(.red).help(Text("Failed"))
+        case .verified: Label("Verified", systemImage: "checkmark.circle.fill").labelStyle(.iconOnly).foregroundStyle(.statusGood).help(Text("Verified"))
+        case .unverified: Label("Not verified", systemImage: "questionmark.circle.fill").labelStyle(.iconOnly).foregroundStyle(.statusWarn).help(Text("Not verified"))
+        case .failed: Label("Failed", systemImage: "xmark.octagon.fill").labelStyle(.iconOnly).foregroundStyle(.statusBad).help(Text("Failed"))
         }
     }
 }
@@ -414,7 +396,7 @@ struct WorkTrackSignInSheet: View {
                         .environment(\.layoutDirection, .leftToRight)
                     if environment.isProduction {
                         Label("Production holds real customers. Renewals you send here change their licences.", systemImage: "exclamationmark.shield.fill")
-                            .font(.caption).foregroundStyle(.red)
+                            .font(.caption).foregroundStyle(.statusBad)
                     }
                 }
                 Section {
@@ -432,7 +414,7 @@ struct WorkTrackSignInSheet: View {
                     Text("Your WorkTrack vendor account (Firebase email and password, with the vendor claim and a verified email). The password goes to Firebase once and is not stored; only the refresh token is kept, in this device's Keychain.")
                 }
                 if let error {
-                    Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red) }
+                    Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) }
                 }
             }
             .formStyle(.grouped)
@@ -500,7 +482,7 @@ struct WorkTrackCompanyView: View {
                 companySection(c)
             }
             if let error {
-                Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red) }
+                Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) }
             }
             if let r = record {
                 ordersSection(r.orders)
@@ -591,7 +573,7 @@ struct WorkTrackCompanyView: View {
                 }
             }
             if let d = c.deletion {
-                LabeledContent("Closure") { Text("Scheduled, purge after \(workTrackDay(d.purgeAfter))").foregroundStyle(.red) }
+                LabeledContent("Closure") { Text("Scheduled, purge after \(workTrackDay(d.purgeAfter))").foregroundStyle(.statusBad) }
             }
             ForEach(c.duplicates, id: \.companyId) { m in
                 LabeledContent("Possible duplicate") { Text(verbatim: "\(m.name) (\(m.reasons.joined(separator: ", ")))") }
@@ -619,7 +601,7 @@ struct WorkTrackCompanyView: View {
                         }
                         Spacer()
                         Text(verbatim: "\(o.amountAfn.formatted(.number.precision(.fractionLength(0)))) AFN").monospacedDigit()
-                        StatusBadge(text: o.status, color: o.status == "PAID" ? .green : o.status == "FAILED" ? .red : .orange)
+                        StatusBadge(text: o.status, color: o.status == "PAID" ? .statusGood : o.status == "FAILED" ? .statusBad : .statusWarn)
                     }
                     .accessibilityElement(children: .combine)
                 }
@@ -740,7 +722,7 @@ struct WorkTrackRenewSheet: View {
             } else {
                 Group {
                     if let company { form(company) } else if let error {
-                        Form { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red) }.formStyle(.grouped)
+                        Form { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) }.formStyle(.grouped)
                     } else {
                         ProgressView("Reading the current licence…").frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
@@ -783,7 +765,7 @@ struct WorkTrackRenewSheet: View {
                 LabeledContent("Environment") { if let env = worktrack.environment { WorkTrackEnvironmentBadge(environment: env) } }
                 if worktrack.environment?.isProduction == true {
                     Label("This changes a real customer's licence in production.", systemImage: "exclamationmark.shield.fill")
-                        .font(.callout).foregroundStyle(.red)
+                        .font(.callout).foregroundStyle(.statusBad)
                 }
                 if let readAt {
                     Text("Current licence read at \(readAt.formatted(date: .omitted, time: .shortened)). If it changes in WorkTrack before you send, nothing is sent.")
@@ -812,7 +794,7 @@ struct WorkTrackRenewSheet: View {
                     ForEach(WTLicenseStatus.writable, id: \.self) { Text(verbatim: $0.rawValue).tag($0) }
                 }
                 if c.license.status == .suspended && status == .suspended {
-                    Text("This licence is SUSPENDED and stays suspended unless you choose ACTIVE.").font(.caption).foregroundStyle(.orange)
+                    Text("This licence is SUSPENDED and stays suspended unless you choose ACTIVE.").font(.caption).foregroundStyle(.statusWarn)
                 }
                 if c.license.status == .expired {
                     Text("Status was EXPIRED; a renewal sets it to ACTIVE. Change it here if you don't mean that.").font(.caption).foregroundStyle(.secondary)
@@ -839,7 +821,7 @@ struct WorkTrackRenewSheet: View {
                         Text("I understand this licence will never expire")
                         Text("WorkTrack stores no end date: the customer keeps the plan with no renewal. Use only when that's the agreement.")
                     }
-                    .tint(.red)
+                    .tint(.statusBad)
                 }
             } header: {
                 Text("Expiry")
@@ -849,7 +831,7 @@ struct WorkTrackRenewSheet: View {
                 case .success(let write)?:
                     WorkTrackDiffTable(rows: WorkTrackRenewal.diff(current: c.license, write: write))
                 case .failure(let e)?:
-                    Label(e.localizedDescription, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+                    Label(e.localizedDescription, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusWarn)
                 case nil:
                     EmptyView()
                 }
@@ -870,7 +852,7 @@ struct WorkTrackRenewSheet: View {
                 Text("Confirm")
             }
             if let error {
-                Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red) }
+                Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) }
             }
         }
         .formStyle(.grouped)
@@ -893,11 +875,11 @@ struct WorkTrackRenewSheet: View {
             Section {
                 if r.refetched == nil {
                     Label("WorkTrack accepted the change, but reading it back failed, so it isn't verified. Check the company again.", systemImage: "questionmark.circle.fill")
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(.statusWarn)
                 } else if r.mismatches.isEmpty {
-                    Label("Read back from WorkTrack: every field is as sent.", systemImage: "checkmark.seal.fill").foregroundStyle(.green)
+                    Label("Read back from WorkTrack: every field is as sent.", systemImage: "checkmark.seal.fill").foregroundStyle(.statusGood)
                 } else {
-                    Label("Read back from WorkTrack: some fields differ from what was sent.", systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red)
+                    Label("Read back from WorkTrack: some fields differ from what was sent.", systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad)
                     WorkTrackDiffTable(rows: r.mismatches, beforeTitle: "Sent", afterTitle: "Stored")
                 }
                 Text("Recorded in this device's action log; WorkTrack wrote its own audit entries too.").font(.caption).foregroundStyle(.secondary)
@@ -936,7 +918,7 @@ struct WorkTrackDiffTable: View {
                 GridRow {
                     HStack(spacing: 4) {
                         Image(systemName: row.changed ? "arrow.right.circle.fill" : "equal.circle")
-                            .foregroundStyle(row.changed ? Color.orange : Color.secondary)
+                            .foregroundStyle(row.changed ? Color.statusWarn : Color.secondary)
                             .imageScale(.small)
                             .accessibilityHidden(true)
                         Text(verbatim: row.field)

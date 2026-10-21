@@ -11,9 +11,9 @@ enum OpsEnvironmentStyle {
 
     var look: (symbol: String, color: Color) {
         switch self {
-        case .production: ("exclamationmark.shield.fill", .red)
-        case .test: ("theatermasks", .blue)
-        case .local: ("hammer", .gray)
+        case .production: ("exclamationmark.shield.fill", .statusBad)
+        case .test: ("theatermasks", .statusInfo)
+        case .local: ("hammer", .statusUnknown)
         }
     }
 }
@@ -51,18 +51,9 @@ struct OpsEnvironmentBadge: View {
 
     var body: some View {
         let l = style.look
-        HStack(spacing: 4) {
-            Image(systemName: l.symbol).foregroundStyle(l.color)
-            Text(verbatim: title)
-        }
-        .font(.caption.weight(.semibold))
-        .padding(.horizontal, 7)
-        .padding(.vertical, 2)
-        .background(l.color.opacity(0.14), in: Capsule())
-        .overlay(Capsule().strokeBorder(l.color.opacity(0.5), lineWidth: 1))
-        .fixedSize()
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("Environment: \(title)"))
+        PillLabel(text: Text(verbatim: title), symbol: l.symbol, color: l.color)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Environment: \(title)"))
     }
 }
 
@@ -184,7 +175,7 @@ private struct OpsSignedOut: View {
             Text(detail)
         } actions: {
             Button("Sign In…", action: signIn).buttonStyle(.borderedProminent)
-            if let error { Text(verbatim: error).font(.caption).foregroundStyle(.red) }
+            if let error { Text(verbatim: error).font(.caption).foregroundStyle(.statusBad) }
         }
     }
 }
@@ -251,7 +242,7 @@ struct TalarPane: View {
         List {
             Section { overview }
             if let error = talar.loadError {
-                Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red) }
+                Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) }
             }
             Section {
                 if talar.halls.isEmpty {
@@ -296,8 +287,8 @@ struct TalarPane: View {
             }
             if let d = talar.dashboard {
                 FitRow(spacing: 18) {
-                    OpsMetric(title: "Halls to approve", value: "\(d.hallsAwaitingReview)", tint: d.hallsAwaitingReview > 0 ? .orange : .primary)
-                    OpsMetric(title: "Reviews to moderate", value: "\(talar.reviews.count)", tint: talar.reviews.isEmpty ? .primary : .orange)
+                    OpsMetric(title: "Halls to approve", value: "\(d.hallsAwaitingReview)", tint: d.hallsAwaitingReview > 0 ? .statusWarn : .primary)
+                    OpsMetric(title: "Reviews to moderate", value: "\(talar.reviews.count)", tint: talar.reviews.isEmpty ? .primary : .statusWarn)
                     OpsMetric(title: "Published halls", value: "\(d.publishedHalls)")
                     OpsMetric(title: "Confirmed bookings", value: "\(d.confirmedBookings)")
                     OpsMetric(title: "Open tickets", value: "\(d.openTickets)")
@@ -314,7 +305,7 @@ struct TalarPane: View {
     @ViewBuilder private var settlements: some View {
         Section {
             if let error = talar.payoutError {
-                Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+                Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusWarn)
             } else if let s = talar.payoutSummary {
                 LabeledContent("Pending settlements") {
                     Text(verbatim: "\(s.pendingCount) · \(TalarMoney.format(s.pendingNetMinor, currency: "AFN"))").monospacedDigit()
@@ -323,13 +314,13 @@ struct TalarPane: View {
                     Text(verbatim: s.organizationsFailed > 0 ? "\(s.organizationsRead) (+\(s.organizationsFailed) ✕)" : "\(s.organizationsRead)").monospacedDigit()
                 }
                 if s.truncated {
-                    Text("Only the first \(TalarAdminClient.organizationLimit) active organisations were read.").font(.caption).foregroundStyle(.orange)
+                    Text("Only the first \(TalarAdminClient.organizationLimit) active organisations were read.").font(.caption).foregroundStyle(.statusWarn)
                 }
                 ForEach(talar.payouts.filter { !$0.pending.isEmpty || $0.error != nil }) { row in
                     VStack(alignment: .leading, spacing: 2) {
                         Text(verbatim: row.organization.name).fontWeight(.medium)
                         if let e = row.error {
-                            Text(verbatim: e).font(.caption).foregroundStyle(.red)
+                            Text(verbatim: e).font(.caption).foregroundStyle(.statusBad)
                         } else {
                             ForEach(row.pending) { p in
                                 Text("Pending to \(p.periodTo ?? "—"): net \(TalarMoney.format(p.netMinor, currency: p.currency)) (gross \(TalarMoney.format(p.grossMinor, currency: p.currency)), commission \(TalarMoney.format(p.commissionMinor, currency: p.currency)), \(p.paymentCount) payments)")
@@ -376,7 +367,7 @@ private struct TalarReviewRow: View {
         VStack(alignment: .leading, spacing: 3) {
             HStack(spacing: 6) {
                 Text(verbatim: String(repeating: "★", count: max(0, min(review.rating, 5))) + String(repeating: "☆", count: max(0, 5 - review.rating)))
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(.statusWarn)
                     .accessibilityLabel(Text("Rating \(review.rating) of 5"))
                 Text(verbatim: review.hallId ?? "—").font(.caption.monospaced()).foregroundStyle(.secondary)
             }
@@ -467,9 +458,9 @@ struct TalarReviewSheet: View {
                 if let result {
                     Section {
                         switch result.outcome {
-                        case .verified: Label("Done. Read back from Talar: the hall has left the queue.", systemImage: "checkmark.seal.fill").foregroundStyle(.green)
-                        case .unverified: Label(result.message ?? String(localized: "Sent, not verified."), systemImage: "questionmark.circle.fill").foregroundStyle(.orange)
-                        case .failed: Label(result.message ?? "", systemImage: "xmark.octagon.fill").foregroundStyle(.red)
+                        case .verified: Label("Done. Read back from Talar: the hall has left the queue.", systemImage: "checkmark.seal.fill").foregroundStyle(.statusGood)
+                        case .unverified: Label(result.message ?? String(localized: "Sent, not verified."), systemImage: "questionmark.circle.fill").foregroundStyle(.statusWarn)
+                        case .failed: Label(result.message ?? "", systemImage: "xmark.octagon.fill").foregroundStyle(.statusBad)
                         }
                         Text("Recorded in this device's action log; Talar wrote its own audit entry.").font(.caption).foregroundStyle(.secondary)
                     }
@@ -479,13 +470,13 @@ struct TalarReviewSheet: View {
                         LabeledContent("Environment") { if let env = ops.talar.environment { OpsEnvironmentBadge(env) } }
                         LabeledContent("Status") { Text(verbatim: "pending_review → \(decision == .approve ? "published" : "draft")") }
                         if isProduction {
-                            Label("This changes a real hall in production.", systemImage: "exclamationmark.shield.fill").font(.callout).foregroundStyle(.red)
+                            Label("This changes a real hall in production.", systemImage: "exclamationmark.shield.fill").font(.callout).foregroundStyle(.statusBad)
                         }
                     }
                     Section {
                         TextField(decision == .approve ? "Note (optional)" : "Reason (optional, shown to nobody automatically)", text: $reason, axis: .vertical)
                             .lineLimit(2...5)
-                        Text("\(reason.count) / \(TalarHallReviewWrite.maxReason)").font(.caption).foregroundStyle(reason.count > TalarHallReviewWrite.maxReason ? .red : .secondary).monospacedDigit()
+                        Text("\(reason.count) / \(TalarHallReviewWrite.maxReason)").font(.caption).foregroundStyle(reason.count > TalarHallReviewWrite.maxReason ? .statusBad : .secondary).monospacedDigit()
                     } footer: {
                         Text("Stored on the hall as reviewNote. Talar's audit entry doesn't include it.")
                     }
@@ -499,7 +490,7 @@ struct TalarReviewSheet: View {
                     } header: {
                         Text("Confirm")
                     }
-                    if let error { Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red) } }
+                    if let error { Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) } }
                 }
             }
             .formStyle(.grouped)
@@ -545,15 +536,15 @@ private struct OpsActionsSection: View {
                 VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 6) {
                         switch r.outcome {
-                        case .verified: Image(systemName: "checkmark.circle.fill").foregroundStyle(.green).accessibilityLabel(Text("Verified"))
-                        case .unverified: Image(systemName: "questionmark.circle.fill").foregroundStyle(.orange).accessibilityLabel(Text("Not verified"))
-                        case .failed: Image(systemName: "xmark.octagon.fill").foregroundStyle(.red).accessibilityLabel(Text("Failed"))
+                        case .verified: Image(systemName: "checkmark.circle.fill").foregroundStyle(.statusGood).accessibilityLabel(Text("Verified"))
+                        case .unverified: Image(systemName: "questionmark.circle.fill").foregroundStyle(.statusWarn).accessibilityLabel(Text("Not verified"))
+                        case .failed: Image(systemName: "xmark.octagon.fill").foregroundStyle(.statusBad).accessibilityLabel(Text("Failed"))
                         }
                         Text(verbatim: r.targetName).fontWeight(.medium)
                         OpsEnvironmentBadge(rawEnvironment: r.environment)
                     }
                     Text(verbatim: "\(r.action) · \(r.actor) · \(r.at.formatted(date: .abbreviated, time: .shortened))").font(.caption).foregroundStyle(.secondary)
-                    if let m = r.message { Text(verbatim: m).font(.caption).foregroundStyle(r.outcome == .verified ? Color.secondary : .red) }
+                    if let m = r.message { Text(verbatim: m).font(.caption).foregroundStyle(r.outcome == .verified ? Color.secondary : .statusBad) }
                 }
                 .accessibilityElement(children: .combine)
             }
@@ -589,7 +580,7 @@ struct TalarSignInSheet: View {
                         .environment(\.layoutDirection, .leftToRight)
                     if environment.isProduction {
                         Label("Production holds real halls. Approving or rejecting a hall here changes it.", systemImage: "exclamationmark.shield.fill")
-                            .font(.caption).foregroundStyle(.red)
+                            .font(.caption).foregroundStyle(.statusBad)
                     }
                 }
                 Section {
@@ -606,7 +597,7 @@ struct TalarSignInSheet: View {
                 } footer: {
                     Text("A Talar platform admin account (Firebase email and password with the role \"admin\" claim). Use one that owns no organisation: creating or joining one replaces the claim. The password goes to Firebase once and is not stored.")
                 }
-                if let error { Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red) } }
+                if let error { Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) } }
             }
             .formStyle(.grouped)
             HStack {
@@ -683,7 +674,7 @@ struct SafeBeautyPane: View {
         List {
             Section { overview }
             if let error = sb.loadError {
-                Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red) }
+                Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) }
             }
             if let s = sb.snapshot {
                 queue(title: "Identity checks (KYC) to review", people: s.kycQueue, total: s.kycPendingCount, kyc: true,
@@ -737,7 +728,7 @@ struct SafeBeautyPane: View {
                         Text(verbatim: s.commission.storedPercent.map { "\($0.formatted())%" } ?? String(localized: "not set (default 10%)"))
                     }
                     if s.commission.storedIsIgnored {
-                        Label("The stored value is outside 0–100, so SafeBeauty uses its default of 10%.", systemImage: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+                        Label("The stored value is outside 0–100, so SafeBeauty uses its default of 10%.", systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusWarn)
                     }
                     LabeledContent("Largest discount allowed") { Text(verbatim: "\(Int((s.commission.effectiveMaxDiscountFraction * 100).rounded()))%").monospacedDigit() }
                 } header: {
@@ -761,8 +752,8 @@ struct SafeBeautyPane: View {
             }
             if let s = sb.snapshot {
                 FitRow(spacing: 18) {
-                    OpsMetric(title: "KYC to review", value: "\(s.kycPendingCount)", tint: s.kycPendingCount > 0 ? .orange : .primary)
-                    OpsMetric(title: "Approvals", value: "\(s.approvalPendingCount)", tint: s.approvalPendingCount > 0 ? .orange : .primary)
+                    OpsMetric(title: "KYC to review", value: "\(s.kycPendingCount)", tint: s.kycPendingCount > 0 ? .statusWarn : .primary)
+                    OpsMetric(title: "Approvals", value: "\(s.approvalPendingCount)", tint: s.approvalPendingCount > 0 ? .statusWarn : .primary)
                     OpsMetric(title: "Bookings today", value: "\(s.bookingsToday)")
                     OpsMetric(title: "This week", value: "\(s.bookingsThisWeek)")
                     OpsMetric(title: "Commission", value: "\(s.commission.effectivePercent.formatted())%")
@@ -880,7 +871,7 @@ struct SafeBeautySignInSheet: View {
                 } footer: {
                     Text("The same phone and password as the SafeBeauty admin console. 0700…, 700… and +93700… all work; an international number needs its +. SafeBeauty allows 10 attempts per number every 15 minutes. Nothing typed here is stored.")
                 }
-                if let error { Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red) } }
+                if let error { Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) } }
             }
             .formStyle(.grouped)
             HStack {
@@ -958,7 +949,7 @@ struct VelroPane: View {
         List {
             Section { overview }
             if let error = velro.loadError {
-                Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red) }
+                Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) }
             }
             Section {
                 if let d = velro.drivers {
@@ -1000,7 +991,7 @@ struct VelroPane: View {
                         Text(verbatim: c.basisPoints.map { "\((Double($0) / 100).formatted())% (\($0) basis points)" } ?? String(localized: "not set (default 10%)")).monospacedDigit()
                     }
                     if c.isOutOfRange {
-                        Label("Outside 0–10000: VELRO refuses every trip completion with this value.", systemImage: "exclamationmark.octagon.fill").foregroundStyle(.red)
+                        Label("Outside 0–10000: VELRO refuses every trip completion with this value.", systemImage: "exclamationmark.octagon.fill").foregroundStyle(.statusBad)
                     }
                 } else if let e = velro.commissionError {
                     Text(verbatim: e).font(.callout).foregroundStyle(.secondary)
@@ -1025,7 +1016,7 @@ struct VelroPane: View {
             }
             if let d = velro.dashboard {
                 FitRow(spacing: 18) {
-                    OpsMetric(title: "Drivers to approve", value: "\(d.attention.pendingDrivers)", tint: d.attention.pendingDrivers > 0 ? .orange : .primary)
+                    OpsMetric(title: "Drivers to approve", value: "\(d.attention.pendingDrivers)", tint: d.attention.pendingDrivers > 0 ? .statusWarn : .primary)
                     OpsMetric(title: "Trips under way", value: "\(d.activeTrips)")
                     OpsMetric(title: "Trips today", value: "\(d.today.trips)")
                     OpsMetric(title: "Completed today", value: "\(d.today.completedTrips)")
@@ -1117,7 +1108,7 @@ struct VelroDriverView: View {
             Section {
                 if let c = checklist {
                     LabeledContent("Required") { Text(verbatim: c.required.joined(separator: ", ")) }
-                    LabeledContent("Missing") { Text(verbatim: c.missing.isEmpty ? String(localized: "None") : c.missing.joined(separator: ", ")).foregroundStyle(c.missing.isEmpty ? Color.primary : .orange) }
+                    LabeledContent("Missing") { Text(verbatim: c.missing.isEmpty ? String(localized: "None") : c.missing.joined(separator: ", ")).foregroundStyle(c.missing.isEmpty ? Color.primary : .statusWarn) }
                     ForEach(c.documents.filter { $0.isCurrent != false }) { doc in
                         LabeledContent(doc.documentTypeCode) {
                             Text(verbatim: [doc.status, doc.expiresOn.map { String(localized: "expires \($0)") }, doc.rejectionReason].compactMap { $0 }.joined(separator: " · "))
@@ -1271,7 +1262,7 @@ struct VelroSignInSheet: View {
                         Text("Sent by \(sent.channel ?? "sms"). It works for \(sent.expiresInSeconds / 60) minutes and 5 tries.")
                     }
                 }
-                if let error { Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red) } }
+                if let error { Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) } }
             }
             .formStyle(.grouped)
             HStack {

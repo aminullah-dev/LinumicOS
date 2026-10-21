@@ -102,13 +102,13 @@ struct AgentsView: View {
     }
 
     private func header(_ report: AgentsReport) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        PageHeader(.agents) {
             FitRow(spacing: 8) {
                 BoardPill(text: String(localized: "\(report.registry.agents.count) agents, every 2 days"), symbol: "clock.arrow.2.circlepath", color: .teal)
                 BoardPill(text: String(localized: "\(report.waiting.count) pull requests waiting for review"), symbol: "arrow.triangle.pull",
-                          color: report.waiting.isEmpty ? .gray : .orange)
+                          color: report.waiting.isEmpty ? .statusUnknown : .statusWarn)
                 BoardPill(text: String(localized: "\(report.quiet.count) quiet for more than \(report.registry.rules.quietAfterDays) days"),
-                          symbol: "moon.zzz.fill", color: report.quiet.isEmpty ? .gray : .red)
+                          symbol: "moon.zzz.fill", color: report.quiet.isEmpty ? .statusUnknown : .statusBad)
             }
             Group {
                 if let at = report.readAt {
@@ -123,13 +123,10 @@ struct AgentsView: View {
                     .font(.caption)
             }
             ForEach(report.failures.sorted(by: { $0.key < $1.key }), id: \.key) { repo, error in
-                Label { Text(verbatim: "\(repo): \(error)") } icon: { Image(systemName: "exclamationmark.triangle").foregroundStyle(.orange) }
+                Label { Text(verbatim: "\(repo): \(error)") } icon: { Image(systemName: "exclamationmark.triangle").foregroundStyle(.statusWarn) }
                     .font(.caption)
             }
         }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 }
 
@@ -187,10 +184,10 @@ private struct AgentCard: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .cardSurface()
         .overlay {
             if highlighted {
-                RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Color.accentColor, lineWidth: 2)
+                RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous).strokeBorder(Color.brandAccent, lineWidth: 2)
             }
         }
     }
@@ -198,19 +195,19 @@ private struct AgentCard: View {
     @ViewBuilder private var pills: some View {
         FitRow(spacing: 6) {
             if !status.waiting.isEmpty {
-                BoardPill(text: String(localized: "Waiting for review: \(status.waiting.count)"), symbol: "arrow.triangle.pull", color: .orange)
+                BoardPill(text: String(localized: "Waiting for review: \(status.waiting.count)"), symbol: "arrow.triangle.pull", color: .statusWarn)
             }
             switch status.quiet {
             case .yes(let days, let since, _, let asOf):
-                BoardPill(text: String(localized: "No pull request for \(days) days"), symbol: "moon.zzz.fill", color: .red,
+                BoardPill(text: String(localized: "No pull request for \(days) days"), symbol: "moon.zzz.fill", color: .statusBad,
                           help: String(localized: "None since \(since.formatted(date: .abbreviated, time: .omitted)), as read \(asOf.formatted(date: .abbreviated, time: .shortened)). It runs every 2 days; more than \(quietAfter) days without one is a Desk item."))
             case .unknown(let why):
-                BoardPill(text: String(localized: "Unknown"), symbol: "questionmark.circle.fill", color: .gray, help: why)
+                BoardPill(text: String(localized: "Unknown"), symbol: "questionmark.circle.fill", color: .statusUnknown, help: why)
             case .no:
                 if status.lastActivity != nil {
-                    BoardPill(text: String(localized: "Active"), symbol: "checkmark.circle.fill", color: .green)
+                    BoardPill(text: String(localized: "Active"), symbol: "checkmark.circle.fill", color: .statusGood)
                 } else {
-                    BoardPill(text: String(localized: "No pull request yet"), symbol: "circle.dashed", color: .gray,
+                    BoardPill(text: String(localized: "No pull request yet"), symbol: "circle.dashed", color: .statusUnknown,
                               help: String(localized: "Created less than \(quietAfter) days ago, and none opened yet."))
                 }
             }

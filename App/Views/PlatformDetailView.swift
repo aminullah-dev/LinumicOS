@@ -104,7 +104,7 @@ struct PlatformDetailView: View {
                     if let reading = item.reading {
                         SourceLine(reference: reading.sourceReference, date: reading.fetchedAt)
                         if let error = reading.error {
-                            Text(verbatim: error).font(.caption).foregroundStyle(.orange)
+                            Text(verbatim: error).font(.caption).foregroundStyle(.statusWarn)
                         }
                     } else {
                         SourceLine(reference: "\(item.spec.repo) \(item.spec.path)", date: nil)
@@ -233,10 +233,10 @@ struct PlatformDetailView: View {
                     Text("Default branch \(repo.defaultBranch ?? "?") · read \(repo.fetchedAt.formatted(date: .abbreviated, time: .shortened))")
                         .font(.caption).foregroundStyle(.secondary)
                     if let error = repo.error {
-                        Text("Last refresh failed: \(error). Showing the previous read.").font(.caption).foregroundStyle(.orange)
+                        Text("Last refresh failed: \(error). Showing the previous read.").font(.caption).foregroundStyle(.statusWarn)
                     }
                     ForEach(repo.problems, id: \.self) { problem in
-                        Text(verbatim: problem).font(.caption).foregroundStyle(.orange)
+                        Text(verbatim: problem).font(.caption).foregroundStyle(.statusWarn)
                     }
                 }
             }
@@ -270,7 +270,7 @@ struct PlatformDetailView: View {
             }
             .padding(12)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+            .cardSurface()
         }
         .buttonStyle(.plain)
         .accessibilityHint("Opens the Licences screen")
@@ -317,8 +317,8 @@ struct ReleaseRow: View {
                 } else {
                     Text(verbatim: release.tag).font(.callout.weight(isLatest ? .semibold : .regular))
                 }
-                if isLatest { StatusBadge(text: "Latest", color: .green) }
-                if release.isPrerelease { StatusBadge(text: "Pre-release", color: .orange) }
+                if isLatest { StatusBadge(text: "Latest", color: .statusGood) }
+                if release.isPrerelease { StatusBadge(text: "Pre-release", color: .statusWarn) }
                 Spacer(minLength: 4)
                 Text(verbatim: release.publishedAt?.shortDate ?? "?").font(.caption).foregroundStyle(.secondary)
             }

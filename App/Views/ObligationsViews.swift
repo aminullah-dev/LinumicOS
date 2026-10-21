@@ -6,12 +6,12 @@ import SwiftUI
 extension ObligationLane {
     var color: Color {
         switch self {
-        case .overdue: .red
-        case .week: .orange
+        case .overdue: .statusBad
+        case .week: .statusWarn
         case .month: .yellow
-        case .later: .blue
-        case .dateUnknown: .gray
-        case .closed: .green
+        case .later: .statusInfo
+        case .dateUnknown: .statusUnknown
+        case .closed: .statusGood
         }
     }
 
@@ -138,23 +138,24 @@ struct ObligationsView: View {
     /// was read", not none.
     private func header(_ lanes: [ObligationLane: [Obligation]], unread: [ObligationLiveSource], fileUnread: Bool) -> some View {
         let partial = !unread.isEmpty || fileUnread
-        return VStack(alignment: .leading, spacing: 10) {
+        return PageHeader(.obligations) {
             FitRow(spacing: 8) {
                 ForEach([ObligationLane.overdue, .week, .month, .dateUnknown], id: \.self) { lane in
                     let count = lanes[lane]?.count ?? 0
                     ReleaseBadge(text: partial ? String(localized: "\(lane.title): \(count) (partial)") : "\(lane.title): \(count)",
-                                 symbol: lane.symbol, color: count == 0 ? .gray : lane.color)
+                                 symbol: lane.symbol, color: count == 0 ? .statusUnknown : lane.color)
                 }
                 if fileUnread {
-                    ReleaseBadge(text: String(localized: "Partial: obligations.json could not be read"), symbol: "exclamationmark.triangle", color: .orange)
+                    ReleaseBadge(text: String(localized: "Partial: obligations.json could not be read"), symbol: "exclamationmark.triangle", color: .statusWarn)
                         .help("Your own rows, dates and Done marks are in obligations.json, which could not be read, so they are not counted here.")
                 }
                 if !unread.isEmpty {
-                    ReleaseBadge(text: String(localized: "Partial: some live dates are not read yet"), symbol: "questionmark.circle", color: .orange)
+                    ReleaseBadge(text: String(localized: "Partial: some live dates are not read yet"), symbol: "questionmark.circle", color: .statusWarn)
                         .help("The counts leave out the rows of the sources listed below, which have not been read.")
                 }
             }
-            HStack(spacing: 12) {
+            // Side by side when they fit, stacked on a phone (the row used to push the page wider than an iPhone).
+            FitRow(spacing: 12) {
                 Button { adding = true } label: { Label("Add obligation…", systemImage: "plus.circle") }
                     .buttonStyle(.borderedProminent)
                 Button { addingAccount = true } label: { Label("Add account…", systemImage: "person.crop.rectangle.badge.plus") }
@@ -168,11 +169,11 @@ struct ObligationsView: View {
     @ViewBuilder
     private func banners(_ register: ObligationsRegister) -> some View {
         if let error = model.loadError {
-            Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange) }
+            Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.statusWarn) }
                 .font(.callout)
         }
         if !register.issues.isEmpty {
-            StripeCard(tint: .red) {
+            StripeCard(tint: .statusBad) {
                 Label("Refused by the register's check", systemImage: "xmark.shield").font(.headline)
                 ForEach(register.issues) { issue in
                     Text(verbatim: issue.text).font(.callout)
@@ -308,18 +309,18 @@ struct ObligationRowView: View {
         let severity = ObligationsBriefRules.severity(o, today: today)
         HStack(alignment: .firstTextBaseline, spacing: 10) {
             Image(systemName: o.isClosed ? "checkmark.circle.fill" : severity.symbol)
-                .foregroundStyle(o.isClosed ? .green : severity.color)
+                .foregroundStyle(o.isClosed ? .statusGood : severity.color)
                 .accessibilityLabel(Text(verbatim: o.isClosed ? ObligationLane.closed.title : severity.title))
             VStack(alignment: .leading, spacing: 4) {
                 Text(verbatim: o.displayTitle).fixedSize(horizontal: false, vertical: true)
                 FitRow(spacing: 6) {
                     if let product = o.product {
-                        ReleaseBadge(text: product, symbol: "shippingbox", color: .accentColor)
+                        ReleaseBadge(text: product, symbol: "shippingbox", color: .brandAccent)
                     }
-                    ReleaseBadge(text: o.area.title, symbol: "tag", color: .gray)
+                    ReleaseBadge(text: o.area.title, symbol: "tag", color: .statusUnknown)
                     timingBadge
                     ReleaseBadge(text: o.origin.label, symbol: o.origin.isLive ? "dot.radiowaves.left.and.right" : "doc.text",
-                                 color: o.origin.isLive ? .teal : .gray)
+                                 color: o.origin.isLive ? .teal : .statusUnknown)
                 }
                 if let consequence = o.displayConsequence {
                     Text("If missed: \(consequence)").font(.caption).foregroundStyle(.secondary)
@@ -327,7 +328,7 @@ struct ObligationRowView: View {
                 }
                 if let c = o.completion {
                     Label { Text("Done \(c.on.start().formatted(date: .abbreviated, time: .omitted)): \(c.evidence)") } icon: {
-                        Image(systemName: "checkmark.seal").foregroundStyle(.green)
+                        Image(systemName: "checkmark.seal").foregroundStyle(.statusGood)
                     }
                     .font(.caption)
                 }
@@ -340,7 +341,8 @@ struct ObligationRowView: View {
             actions
         }
         .padding(4)
-        .background(highlighted ? Color.accentColor.opacity(0.15) : .clear, in: RoundedRectangle(cornerRadius: 8))
+        .hoverHighlight()
+        .background(highlighted ? Color.brandAccent.opacity(0.15) : .clear, in: RoundedRectangle(cornerRadius: Theme.Radius.small))
         .accessibilityElement(children: .contain)
     }
 
@@ -357,18 +359,18 @@ struct ObligationRowView: View {
         switch ObligationRules.timing(o, today: today) {
         case .dateUnknown where o.origin == .continuity:
             // No copy off this Mac yet: undated, but due now (P0), not unknown.
-            ReleaseBadge(text: String(localized: "To do now"), symbol: "exclamationmark.circle", color: .orange)
+            ReleaseBadge(text: String(localized: "To do now"), symbol: "exclamationmark.circle", color: .statusWarn)
         case .dateUnknown:
-            ReleaseBadge(text: String(localized: "Date unknown"), symbol: "questionmark.circle", color: .gray)
+            ReleaseBadge(text: String(localized: "Date unknown"), symbol: "questionmark.circle", color: .statusUnknown)
         case .overdue(let days):
-            ReleaseBadge(text: String(localized: "\(dateText) · overdue by \(days) days"), symbol: "exclamationmark.octagon", color: .red)
+            ReleaseBadge(text: String(localized: "\(dateText) · overdue by \(days) days"), symbol: "exclamationmark.octagon", color: .statusBad)
         case .due(0, _):
-            ReleaseBadge(text: String(localized: "\(dateText) · today"), symbol: "calendar.badge.exclamationmark", color: .red)
+            ReleaseBadge(text: String(localized: "\(dateText) · today"), symbol: "calendar.badge.exclamationmark", color: .statusBad)
         case .due(let days, _):
             ReleaseBadge(text: String(localized: "\(dateText) · in \(days) days"), symbol: "calendar",
-                         color: days <= 7 ? .orange : (days <= 30 ? .yellow : .blue))
+                         color: days <= 7 ? .statusWarn : (days <= 30 ? .yellow : .statusInfo))
         case .closed:
-            ReleaseBadge(text: dateText, symbol: "calendar", color: .green)
+            ReleaseBadge(text: dateText, symbol: "calendar", color: .statusGood)
         }
     }
 
@@ -473,16 +475,16 @@ struct AccountCard: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 14))
+        .cardSurface()
         .accessibilityElement(children: .contain)
     }
 
     @ViewBuilder
     private var holderBadge: some View {
         switch account.holder {
-        case .personal?: ReleaseBadge(text: AccountHolder.personal.title, symbol: "person", color: .orange)
-        case .company?: ReleaseBadge(text: AccountHolder.company.title, symbol: "building.2", color: .green)
-        case nil: ReleaseBadge(text: String(localized: "Holder not recorded"), symbol: "questionmark.circle", color: .gray)
+        case .personal?: ReleaseBadge(text: AccountHolder.personal.title, symbol: "person", color: .statusWarn)
+        case .company?: ReleaseBadge(text: AccountHolder.company.title, symbol: "building.2", color: .statusGood)
+        case nil: ReleaseBadge(text: String(localized: "Holder not recorded"), symbol: "questionmark.circle", color: .statusUnknown)
         }
     }
 }
@@ -524,7 +526,7 @@ struct ObligationAddSheet: View {
                 due = new
             }))
             if due != nil, !duePicked {
-                Text("Pick the day the source states.").font(.caption).foregroundStyle(.orange)
+                Text("Pick the day the source states.").font(.caption).foregroundStyle(.statusWarn)
             }
             TextField("If it is missed (optional)", text: $consequence, axis: .vertical)
             TextField("Source", text: $source, axis: .vertical)
@@ -576,7 +578,7 @@ struct ObligationDateSheet: View {
             DatePicker("Due", selection: Binding(get: { date }, set: { date = $0; picked = true }), displayedComponents: .date)
             if !picked {
                 Text(obligation.due == nil ? "Pick the day the source states." : "Pick the new day the source states.")
-                    .font(.caption).foregroundStyle(.orange)
+                    .font(.caption).foregroundStyle(.statusWarn)
             }
             TextField("Source of the date", text: $source, axis: .vertical)
             Text("Required: where the date comes from (the renewal email, the account page). It replaces the recorded date; the record's own source stays shown.")
@@ -670,7 +672,7 @@ struct AccountEditSheet: View {
                 renewal = new
             }))
             if renewal != nil, !renewalPicked, account.renewal == nil {
-                Text("Pick the day the source states.").font(.caption).foregroundStyle(.orange)
+                Text("Pick the day the source states.").font(.caption).foregroundStyle(.statusWarn)
             }
             if renewalChanged, renewal != nil {
                 TextField("Source of the renewal date", text: $renewalSource, axis: .vertical)
@@ -694,7 +696,7 @@ struct AccountEditSheet: View {
             }
             if clearing {
                 Text("A recorded value is not removed here: it stays, with its source, until you record a new one.")
-                    .font(.caption).foregroundStyle(.orange)
+                    .font(.caption).foregroundStyle(.statusWarn)
             }
             Text("Each value needs its source (the account page, an invoice). A value already recorded keeps its own source until you replace it.")
                 .font(.caption).foregroundStyle(.secondary)

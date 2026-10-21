@@ -54,12 +54,12 @@ struct OversightView: View {
             }
             .disabled(model.isSyncingOversight)
             if let err = model.lastOversightSync?.report.listError {
-                Text(verbatim: err).font(.caption).foregroundStyle(.red)
+                Text(verbatim: err).font(.caption).foregroundStyle(.statusBad)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+        .cardSurface()
     }
 
     // MARK: Header (0 → 100 health score)
@@ -85,7 +85,7 @@ struct OversightView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+        .cardSurface()
     }
 
     // MARK: Local workspace (macOS)
@@ -123,7 +123,7 @@ struct OversightView: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+        .cardSurface()
         #else
         EmptyView()
         #endif
@@ -135,21 +135,21 @@ struct OversightView: View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12)], spacing: 12) {
             MetricTile(title: "Repositories", value: s.totalRepos, symbol: "folder")
             MetricTile(title: "Open security alerts", value: s.openSecurityAlerts, symbol: "exclamationmark.shield",
-                       tint: s.openSecurityAlerts > 0 ? .red : .green)
+                       tint: s.openSecurityAlerts > 0 ? .statusBad : .statusGood)
             MetricTile(title: "Repos with alerts", value: s.reposWithOpenAlerts, symbol: "shield.lefthalf.filled",
-                       tint: s.reposWithOpenAlerts > 0 ? .red : .secondary)
+                       tint: s.reposWithOpenAlerts > 0 ? .statusBad : .secondary)
             MetricTile(title: "Failing CI", value: s.reposWithFailingCI, symbol: "xmark.octagon",
-                       tint: s.reposWithFailingCI > 0 ? .red : .secondary)
+                       tint: s.reposWithFailingCI > 0 ? .statusBad : .secondary)
             MetricTile(title: "Unprotected branches", value: s.unprotectedDefaultBranches, symbol: "lock.open",
-                       tint: s.unprotectedDefaultBranches > 0 ? .orange : .secondary)
+                       tint: s.unprotectedDefaultBranches > 0 ? .statusWarn : .secondary)
             MetricTile(title: "Stale (30d+)", value: s.staleRepos, symbol: "clock.badge.exclamationmark",
-                       tint: s.staleRepos > 0 ? .orange : .secondary)
+                       tint: s.staleRepos > 0 ? .statusWarn : .secondary)
             MetricTile(title: "Open pull requests", value: s.totalOpenPullRequests, symbol: "arrow.triangle.pull", tint: .indigo)
             MetricTile(title: "Open issues", value: s.totalOpenIssues, symbol: "exclamationmark.triangle", tint: .indigo)
             MetricTile(title: "Uncommitted (local)", value: s.reposWithUncommittedChanges, symbol: "pencil.and.list.clipboard",
-                       tint: s.reposWithUncommittedChanges > 0 ? .orange : .secondary)
+                       tint: s.reposWithUncommittedChanges > 0 ? .statusWarn : .secondary)
             MetricTile(title: "Diverged from origin", value: s.reposDivergedFromOrigin, symbol: "arrow.triangle.branch",
-                       tint: s.reposDivergedFromOrigin > 0 ? .orange : .secondary)
+                       tint: s.reposDivergedFromOrigin > 0 ? .statusWarn : .secondary)
         }
     }
 
@@ -161,7 +161,7 @@ struct OversightView: View {
                 ForEach(model.recentOversightChanges.prefix(8)) { change in
                     HStack(alignment: .firstTextBaseline, spacing: 6) {
                         Image(systemName: change.isImportant ? "bell.badge.fill" : "bell")
-                            .foregroundStyle(change.isImportant ? .orange : .secondary)
+                            .foregroundStyle(change.isImportant ? .statusWarn : .secondary)
                         VStack(alignment: .leading, spacing: 1) {
                             Text(verbatim: change.message).font(.callout)
                             Text(change.detectedAt, style: .relative).font(.caption).foregroundStyle(.secondary)
@@ -201,11 +201,11 @@ struct HealthScoreRing: View {
     let score: Int?
 
     private var color: Color {
-        guard let score else { return .gray }
+        guard let score else { return .statusUnknown }
         switch score {
-        case 80...: return .green
-        case 50..<80: return .orange
-        default: return .red
+        case 80...: return .statusGood
+        case 50..<80: return .statusWarn
+        default: return .statusBad
         }
     }
 
@@ -240,8 +240,8 @@ struct HealthChip: View {
                 Circle().fill(health.color).frame(width: 7, height: 7)
                 Text("\(count) \(health.title)").font(.caption)
             }
-            .padding(.horizontal, 7).padding(.vertical, 2)
-            .background(health.color.opacity(0.12), in: Capsule())
+            .padding(.horizontal, 8).padding(.vertical, 3)
+            .pillBackground(health.color)
         }
     }
 }
@@ -287,7 +287,7 @@ struct OversightRepoRow: View {
                 securityLine
                 localLine
                 if let err = repo.scanError {
-                    Text(verbatim: err).font(.caption2).foregroundStyle(.red).lineLimit(2)
+                    Text(verbatim: err).font(.caption2).foregroundStyle(.statusBad).lineLimit(2)
                 }
             }
             Spacer(minLength: 0)
@@ -309,16 +309,16 @@ struct OversightRepoRow: View {
                     Text("detached").font(.caption).foregroundStyle(.secondary)
                 }
                 switch local.syncState {
-                case .diverged: StatusBadge(text: "Diverged from origin", color: .orange)
-                case .inSync: StatusBadge(text: "In sync with origin", color: .green)
+                case .diverged: StatusBadge(text: "Diverged from origin", color: .statusWarn)
+                case .inSync: StatusBadge(text: "In sync with origin", color: .statusGood)
                 case .noRemoteRef: StatusBadge(text: "No remote branch", color: .secondary)
                 case .unknown: EmptyView()
                 }
                 if let modified = local.modifiedTrackedFiles {
                     if modified > 0 {
-                        StatusBadge(text: "\(modified) uncommitted", color: .orange)
+                        StatusBadge(text: "\(modified) uncommitted", color: .statusWarn)
                     } else {
-                        StatusBadge(text: "Clean", color: .green)
+                        StatusBadge(text: "Clean", color: .statusGood)
                     }
                 } else {
                     StatusBadge(text: "Changes unknown", color: .secondary)
@@ -334,7 +334,7 @@ struct OversightRepoRow: View {
                 alertChip(L("Secrets"), sec.secretScanningAlerts)
                 alertChip(L("Code scan"), sec.codeScanningAlerts)
                 if sec.defaultBranchProtected == false {
-                    StatusBadge(text: "Branch unprotected", color: .orange)
+                    StatusBadge(text: "Branch unprotected", color: .statusWarn)
                 }
             }
         }
@@ -343,7 +343,7 @@ struct OversightRepoRow: View {
     /// `nil` count renders nothing (Unknown); 0 renders a green "clear"; >0 renders a red alert count.
     @ViewBuilder private func alertChip(_ label: String, _ count: Int?) -> some View {
         if let count {
-            StatusBadge(text: "\(label) \(count)", color: count > 0 ? .red : .green)
+            StatusBadge(text: "\(label) \(count)", color: count > 0 ? .statusBad : .statusGood)
         }
     }
 
@@ -361,10 +361,10 @@ struct OversightRepoRow: View {
 extension OversightHealth {
     var color: Color {
         switch self {
-        case .critical: .red
-        case .attention: .orange
-        case .healthy: .green
-        case .unknown: .gray
+        case .critical: .statusBad
+        case .attention: .statusWarn
+        case .healthy: .statusGood
+        case .unknown: .statusUnknown
         }
     }
 }

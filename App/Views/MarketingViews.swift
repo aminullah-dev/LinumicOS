@@ -88,7 +88,7 @@ private struct ContentCard: View {
             }
         }
         .padding(10)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 8))
+        .cardSurface(.inner)
         .contentShape(Rectangle())
         .onTapGesture(count: 2, perform: onOpen)
         .contextMenu { Button("Open…", action: onOpen) }
@@ -144,7 +144,7 @@ private struct ContentEditor: View {
                         Button(LocalizedStringKey(actionTitle(target))) { move(to: target) }
                     }
                 }
-                if let error { Label(error, systemImage: "exclamationmark.circle").foregroundStyle(.orange) }
+                if let error { Label(error, systemImage: "exclamationmark.circle").foregroundStyle(.statusWarn) }
                 Text("Nothing is posted automatically. Publish on the network yourself, then record it here.")
                     .font(.caption).foregroundStyle(.secondary)
             }
@@ -183,11 +183,11 @@ extension ContentStatus {
     var color: Color {
         switch self {
         case .idea: .purple
-        case .draft: .gray
-        case .inReview: .orange
+        case .draft: .statusUnknown
+        case .inReview: .statusWarn
         case .approved: .teal
-        case .scheduled: .blue
-        case .published: .green
+        case .scheduled: .statusInfo
+        case .published: .statusGood
         case .cancelled: .secondary
         }
     }

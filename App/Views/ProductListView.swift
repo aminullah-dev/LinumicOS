@@ -55,7 +55,7 @@ struct ProductListView: View {
                             VerificationBadge(status: p.overallVerification, compact: true)
                             if let st = p.status.value { StatusBadge(text: st.title, color: st.color) }
                             let n = p.needsConfirmation.count
-                            if n > 0 { Label("\(n)", systemImage: "person.badge.clock").font(.caption).foregroundStyle(.orange).accessibilityLabel("\(n) items need your confirmation") }
+                            if n > 0 { Label("\(n)", systemImage: "person.badge.clock").font(.caption).foregroundStyle(.statusWarn).accessibilityLabel("\(n) items need your confirmation") }
                         }
                         .padding(.top, 2)
                     }

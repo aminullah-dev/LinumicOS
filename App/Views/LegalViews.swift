@@ -13,8 +13,7 @@ struct LegalView: View {
         let company = model.company
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
-                Text("Read-only. The drafts' text is never shown, kept or sent: only each marker's file and line, and the Asasnama files by name and date.")
-                    .font(.callout).foregroundStyle(.secondary)
+                PageHeader(.legal, subtitle: Text("Read-only. The drafts' text is never shown, kept or sent: only each marker's file and line, and the Asasnama files by name and date."))
                 LegalCompanyCard(company: company)
                 if LegalModel.readsFolder {
                     LegalMarkersCard(reading: model.reading, access: model.access, isReading: model.isReading)
@@ -57,7 +56,7 @@ private struct LegalCompanyCard: View {
     let company: CompanyStatus
 
     var body: some View {
-        StripeCard(tint: .blue) {
+        StripeCard(tint: .statusInfo) {
             Label("Company", systemImage: "building.columns").font(.headline)
             fact(title: String(localized: "Registration"), company.registration)
             Divider()
@@ -115,7 +114,7 @@ private struct LegalMarkersCard: View {
     let isReading: Bool
 
     var body: some View {
-        StripeCard(tint: .orange) {
+        StripeCard(tint: .statusWarn) {
             HStack {
                 Label("Markers in the legal drafts", systemImage: "text.badge.checkmark").font(.headline)
                 Spacer()
@@ -126,7 +125,7 @@ private struct LegalMarkersCard: View {
                     ForEach(LegalMarkerKind.allCases) { kind in
                         let n = reading.count(kind)
                         ReleaseBadge(text: reading.isComplete ? "\(kind.label) \(n.formatted())" : String(localized: "\(kind.label) at least \(n.formatted())"),
-                                     symbol: n == 0 ? "checkmark.circle" : "exclamationmark.circle", color: n == 0 ? .green : .orange)
+                                     symbol: n == 0 ? "checkmark.circle" : "exclamationmark.circle", color: n == 0 ? .statusGood : .statusWarn)
                             .help(Text(verbatim: kind.title))
                     }
                 }
@@ -135,7 +134,7 @@ private struct LegalMarkersCard: View {
                 }
                 ForEach(reading.unreadFiles) { file in
                     Label { Text(unreadText(file)).font(.caption) } icon: {
-                        Image(systemName: "questionmark.circle").foregroundStyle(.orange)
+                        Image(systemName: "questionmark.circle").foregroundStyle(.statusWarn)
                     }
                 }
                 if reading.skipped > 0 {
@@ -217,7 +216,7 @@ private struct LegalAsasnamaCard: View {
                     }
                 }
                 ForEach(reading.searched.filter { $0.state != .read }) { s in
-                    Text(verbatim: searchedText(s)).font(.caption).foregroundStyle(.orange)
+                    Text(verbatim: searchedText(s)).font(.caption).foregroundStyle(.statusWarn)
                 }
                 ReleaseSourceLine(source: String(localized: "Names and modification dates"), at: reading.readAt)
             } else {
@@ -241,10 +240,10 @@ private struct LegalAccessCard: View {
     @Environment(LegalModel.self) private var model
 
     var body: some View {
-        StripeCard(tint: .gray) {
+        StripeCard(tint: .statusUnknown) {
             Label("Access", systemImage: "lock.shield").font(.headline)
             LabeledContent {
-                StatusBadge(text: stateText, color: model.access?.canRead == true ? .green : .orange)
+                StatusBadge(text: stateText, color: model.access?.canRead == true ? .statusGood : .statusWarn)
             } label: {
                 Text(verbatim: model.legalFolderDisplay).font(.callout.monospaced())
             }
@@ -263,7 +262,7 @@ private struct LegalAccessCard: View {
                 HStack {
                     Text(verbatim: folder).font(.caption.monospaced())
                     if model.unresolvedAsasnama.contains(folder) {
-                        StatusBadge(text: "Could not be resolved", color: .orange)
+                        StatusBadge(text: "Could not be resolved", color: .statusWarn)
                     }
                     Spacer()
                     Button("Remove", role: .destructive) { model.removeAsasnamaFolder(folder) }.buttonStyle(.borderless)

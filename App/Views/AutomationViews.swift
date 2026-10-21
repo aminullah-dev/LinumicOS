@@ -6,9 +6,9 @@ import SwiftUI
 extension AutomationHealth.Level {
     var color: Color {
         switch self {
-        case .ok: .green
-        case .attention: .orange
-        case .failing: .red
+        case .ok: .statusGood
+        case .attention: .statusWarn
+        case .failing: .statusBad
         }
     }
 
@@ -33,9 +33,9 @@ extension AutomationOutcome {
 
     var color: Color {
         switch self {
-        case .succeeded: .green
-        case .partial: .orange
-        case .failed: .red
+        case .succeeded: .statusGood
+        case .partial: .statusWarn
+        case .failed: .statusBad
         case .skipped: .secondary
         }
     }
@@ -167,7 +167,7 @@ struct AutomationView: View {
                     }
                 }
                 .padding(.vertical, 4)
-                .background(.background.secondary, in: RoundedRectangle(cornerRadius: 14))
+                .cardSurface()
             }
         }
     }
@@ -191,7 +191,7 @@ struct AutomationStatusCard: View {
             }
             FitRow(spacing: 8) {
                 StatusBadge(text: engine.online ? String(localized: "Online") : String(localized: "Offline"),
-                            color: engine.online ? .green : .orange)
+                            color: engine.online ? .statusGood : .statusWarn)
                 if engine.lowPower { StatusBadge(text: String(localized: "Low Power Mode: half speed"), color: .yellow) }
                 if NotificationGate.quietHours.contains(now) { StatusBadge(text: String(localized: "Quiet hours"), color: .indigo) }
                 if let job = engine.running {
@@ -208,14 +208,14 @@ struct AutomationStatusCard: View {
                 Label {
                     Text("\(L(AutomationCatalog.spec(f.job).title)): \(f.message)").font(.callout)
                 } icon: {
-                    Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(f.count >= AutomationHealth.failingAfter ? .red : .orange)
+                    Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(f.count >= AutomationHealth.failingAfter ? .statusBad : .statusWarn)
                 }
             }
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 16))
-        .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(health.level.color.opacity(health.level == .ok ? 0 : 0.35)))
+        .cardSurface(.large)
+        .overlay(RoundedRectangle(cornerRadius: Theme.Radius.large, style: .continuous).strokeBorder(health.level.color.opacity(health.level == .ok ? 0 : 0.35)))
     }
 
     private func headline(_ h: AutomationHealth) -> String {
@@ -283,7 +283,7 @@ struct AutomationJobCard: View {
                     StatusBadge(text: run.outcome.title, color: run.outcome.color)
                     Text(relative(run.finishedAt, now: now)).font(.caption).foregroundStyle(.secondary)
                     if (state?.consecutiveFailures ?? 0) > 1 {
-                        Text("\(state!.consecutiveFailures)× in a row").font(.caption).foregroundStyle(.red)
+                        Text("\(state!.consecutiveFailures)× in a row").font(.caption).foregroundStyle(.statusBad)
                     }
                 }
                 if let note = run.outcome.note {
@@ -312,7 +312,7 @@ struct AutomationJobCard: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 14))
+        .cardSurface()
         .opacity(enabled ? 1 : 0.6)
     }
 
@@ -320,7 +320,7 @@ struct AutomationJobCard: View {
     @ViewBuilder private var backupFolderLine: some View {
         if let s = engine.backupFolder {
             if let error = s.listError {
-                Label { Text("Backups/ could not be read: \(error)") } icon: { Image(systemName: "xmark.octagon.fill").foregroundStyle(.red) }
+                Label { Text("Backups/ could not be read: \(error)") } icon: { Image(systemName: "xmark.octagon.fill").foregroundStyle(.statusBad) }
                     .font(.caption)
             } else if let newest = s.newest {
                 Label {
@@ -328,11 +328,11 @@ struct AutomationJobCard: View {
                                     : "In Backups/ now: \(newest.name) (\(s.files) in all), does not restore")
                 } icon: {
                     Image(systemName: s.restores ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
-                        .foregroundStyle(s.restores ? .green : .red)
+                        .foregroundStyle(s.restores ? .statusGood : .statusBad)
                 }
                 .font(.caption)
             } else {
-                Label { Text("Backups/ is empty now.") } icon: { Image(systemName: "xmark.octagon.fill").foregroundStyle(.red) }
+                Label { Text("Backups/ is empty now.") } icon: { Image(systemName: "xmark.octagon.fill").foregroundStyle(.statusBad) }
                     .font(.caption)
             }
         } else {
@@ -404,11 +404,11 @@ struct AutomationPreferencesCard: View {
                 }
                 if loginItemNeedsApproval {
                     HStack {
-                        Text("macOS needs your approval in Login Items.").font(.caption).foregroundStyle(.orange)
+                        Text("macOS needs your approval in Login Items.").font(.caption).foregroundStyle(.statusWarn)
                         Button("Open Login Items") { LoginItem.openSystemSettings() }.controlSize(.small)
                     }
                 }
-                if let loginItemError { Text(verbatim: loginItemError).font(.caption).foregroundStyle(.red) }
+                if let loginItemError { Text(verbatim: loginItemError).font(.caption).foregroundStyle(.statusBad) }
                 Toggle(isOn: $showMenuBar) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Show in the menu bar")
@@ -445,7 +445,7 @@ struct AutomationPreferencesCard: View {
             }
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 14))
+            .cardSurface()
         }
     }
 
@@ -534,7 +534,7 @@ struct AutomationStatusStrip: View {
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+            .cardSurface()
         }
         .buttonStyle(.plain)
     }
@@ -600,7 +600,7 @@ struct MenuBarPanel: View {
                 .font(.caption).foregroundStyle(.secondary)
             }
             Spacer()
-            if !engine.online { StatusBadge(text: String(localized: "Offline"), color: .orange) }
+            if !engine.online { StatusBadge(text: String(localized: "Offline"), color: .statusWarn) }
         }
     }
 
@@ -633,7 +633,7 @@ struct MenuBarPanel: View {
                 ForEach(items) { item in
                     Button { open(.releaseCenter) } label: {
                         HStack(alignment: .firstTextBaseline, spacing: 6) {
-                            Circle().fill(item.severity == .high ? Color.red : item.severity == .normal ? .orange : .secondary)
+                            Circle().fill(item.severity == .high ? Color.statusBad : item.severity == .normal ? .statusWarn : .secondary)
                                 .frame(width: 6, height: 6)
                             Text(verbatim: "\(item.subject): \(item.title)").font(.callout).lineLimit(1)
                             Spacer(minLength: 0)
@@ -741,7 +741,7 @@ struct SentinelCard: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 16))
+        .cardSurface(.large)
     }
 
     @ViewBuilder private var content: some View {
@@ -753,23 +753,23 @@ struct SentinelCard: View {
         } else if let summary = sentinel.summary {
             FitRow(spacing: 8) {
                 switch summary.health {
-                case .notRunning: StatusBadge(text: String(localized: "No round yet"), color: .orange)
-                case .stale: StatusBadge(text: String(localized: "Schedule stopped?"), color: .red)
-                case .down(let n): StatusBadge(text: String(localized: "\(n) down"), color: .red)
+                case .notRunning: StatusBadge(text: String(localized: "No round yet"), color: .statusWarn)
+                case .stale: StatusBadge(text: String(localized: "Schedule stopped?"), color: .statusBad)
+                case .down(let n): StatusBadge(text: String(localized: "\(n) down"), color: .statusBad)
                 case .slow(let n): StatusBadge(text: String(localized: "\(n) slow"), color: .yellow)
-                case .allUp: StatusBadge(text: String(localized: "All up"), color: .green)
+                case .allUp: StatusBadge(text: String(localized: "All up"), color: .statusGood)
                 }
                 if let at = summary.lastRoundAt {
                     Text("Last server round \(relativeText(at))").font(.callout).foregroundStyle(.secondary)
                 }
                 if let snap = summary.lastSnapshotAt {
                     Text("Cloud backup \(snap.formatted(date: .abbreviated, time: .omitted))")
-                        .font(.callout).foregroundStyle(summary.snapshotOverdue ? .orange : .secondary)
+                        .font(.callout).foregroundStyle(summary.snapshotOverdue ? .statusWarn : .secondary)
                 }
             }
             ForEach(summary.down) { status in
                 Text(verbatim: "\(title(of: status.targetID)): \(status.lastFailure ?? "")")
-                    .font(.callout).foregroundStyle(.red).lineLimit(2)
+                    .font(.callout).foregroundStyle(.statusBad).lineLimit(2)
             }
             let open = sentinel.unacknowledged
             if !open.isEmpty {
@@ -777,7 +777,7 @@ struct SentinelCard: View {
                     Text("Not acknowledged").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
                     ForEach(open.prefix(8)) { event in
                         HStack(alignment: .firstTextBaseline, spacing: 8) {
-                            Circle().fill(event.severity == .critical ? Color.red : event.severity == .warning ? .orange : .secondary)
+                            Circle().fill(event.severity == .critical ? Color.statusBad : event.severity == .warning ? .statusWarn : .secondary)
                                 .frame(width: 7, height: 7)
                             VStack(alignment: .leading, spacing: 1) {
                                 Text(verbatim: sentinel.line(for: event)).font(.callout)
@@ -790,7 +790,7 @@ struct SentinelCard: View {
                 }
             }
         } else if let error = sentinel.loadError {
-            Text(verbatim: error).foregroundStyle(.red)
+            Text(verbatim: error).foregroundStyle(.statusBad)
         } else {
             Text("Not read yet.").foregroundStyle(.secondary)
         }

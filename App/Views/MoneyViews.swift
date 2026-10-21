@@ -67,15 +67,13 @@ struct MoneyPage: View {
     // MARK: Header and summary
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Read-only. Every figure says where and when it was read. Amounts stay in their own currency: never converted, never added across currencies.")
-                .font(.callout).foregroundStyle(.secondary)
+        PageHeader(.money, subtitle: Text("Read-only. Every figure says where and when it was read. Amounts stay in their own currency: never converted, never added across currencies.")) {
             FitRow(spacing: 8) {
                 if let env = input.worktrack.environment, env != "production" {
-                    ReleaseBadge(text: String(localized: "WorkTrack: \(env), not production"), symbol: "theatermasks", color: .blue)
+                    ReleaseBadge(text: String(localized: "WorkTrack: \(env), not production"), symbol: "theatermasks", color: .statusInfo)
                 }
                 if let env = input.safeBeauty.environment, env != "production" {
-                    ReleaseBadge(text: String(localized: "SafeBeauty: \(env), not production"), symbol: "theatermasks", color: .blue)
+                    ReleaseBadge(text: String(localized: "SafeBeauty: \(env), not production"), symbol: "theatermasks", color: .statusInfo)
                 }
                 if isReading { ProgressView().controlSize(.small) }
             }
@@ -85,16 +83,16 @@ struct MoneyPage: View {
     /// One row of four on a wide pane (about 900 pt and up: four cards of at least 206 pt and the page's padding), two
     /// by two below that. The cards of a row share its height.
     private var summary: some View {
-        let received = MoneySummaryCard(question: .received, symbol: "arrow.down.circle", tint: .green,
+        let received = MoneySummaryCard(question: .received, symbol: "arrow.down.circle", tint: AreaTint.green.color,
                                         figures: [(report.figure(.worktrackHesabPayReceived), String(localized: "HesabPay")),
                                                   (report.figure(.worktrackInvoicesPaid), String(localized: "By hand"))])
-        let onTheWay = MoneySummaryCard(question: .onTheWay, symbol: "clock.arrow.circlepath", tint: .blue,
+        let onTheWay = MoneySummaryCard(question: .onTheWay, symbol: "clock.arrow.circlepath", tint: AreaTint.blue.color,
                                         figures: [(report.figure(.worktrackRenewalsExpected), String(localized: "Renewals (forecast)")),
                                                   (report.figure(.worktrackInvoicesOutstanding), String(localized: "Invoices sent"))])
-        let salons = MoneySummaryCard(question: .owedToSalons, symbol: "building.2", tint: .orange,
+        let salons = MoneySummaryCard(question: .owedToSalons, symbol: "building.2", tint: AreaTint.orange.color,
                                       figures: [(report.figure(.safeBeautyOwedToSalons), String(localized: "We owe")),
                                                 (report.figure(.safeBeautyOwedBySalons), String(localized: "They owe us"))])
-        let wePay = MoneySummaryCard(question: .wePay, symbol: "creditcard", tint: .purple,
+        let wePay = MoneySummaryCard(question: .wePay, symbol: "creditcard", tint: AreaTint.purple.color,
                                      figures: [(report.figure(.accountCosts), String(localized: "As each bill says"))])
         return ViewThatFits(in: .horizontal) {
             HStack(alignment: .top, spacing: 12) {
@@ -134,7 +132,7 @@ struct MoneyPage: View {
                     MoneyNote(String(localized: "Left out: \(revenue.excluded.companyCount) TEST or DUPLICATE companies (\(revenue.excluded.orderCount) orders, \(amount))."))
                 }
                 MoneyNote(String(localized: "Paid orders of a TEST company that was purged count as earned again: WorkTrack leaves out only companies that still exist. Mark test companies TEST; do not purge one that paid until WorkTrack is fixed."),
-                          symbol: "exclamationmark.triangle", tint: .orange)
+                          symbol: "exclamationmark.triangle", tint: .statusWarn)
                 MoneyNote(String(localized: "Pending HesabPay checkouts are not counted: WorkTrack has no route that lists them across companies."))
                 MoneyNote(String(localized: "Who paid each HesabPay order is on that company's page in WorkTrack customers."))
             }
@@ -213,10 +211,10 @@ struct MoneyPage: View {
         }
         if let n = c.invoicesCompanyMissing, n > 0 {
             MoneyNote(String(localized: "\(n) invoices belong to a WorkTrack company that is not in the company list (deleted, or past its limit); they are left out."),
-                      symbol: "exclamationmark.triangle", tint: .orange)
+                      symbol: "exclamationmark.triangle", tint: .statusWarn)
         }
         if let n = c.invoicesAccountMissing, n > 0 {
-            MoneyNote(String(localized: "\(n) invoices name a CRM account that was not in the list read; they are counted."), symbol: "exclamationmark.triangle", tint: .orange)
+            MoneyNote(String(localized: "\(n) invoices name a CRM account that was not in the list read; they are counted."), symbol: "exclamationmark.triangle", tint: .statusWarn)
         }
         if let n = c.invoicesNotLinked, n > 0 {
             MoneyNote(String(localized: "\(n) invoices belong to CRM accounts not linked to a WorkTrack company; they are counted."))
@@ -332,7 +330,7 @@ private struct MoneySummaryCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Label { Text(verbatim: question.title) } icon: { Image(systemName: symbol).foregroundStyle(tint) }
+            Label { Text(verbatim: question.title) } icon: { IconTile(symbol: symbol, tint: tint, size: 22) }
                 .font(.subheadline.weight(.semibold))
                 .accessibilityAddTraits(.isHeader)
             ForEach(Array(figures.enumerated()), id: \.offset) { _, pair in
@@ -350,9 +348,7 @@ private struct MoneySummaryCard: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, minHeight: 120, maxHeight: .infinity, alignment: .topLeading)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(.primary.opacity(0.08), lineWidth: 1))
-        .shadow(color: .black.opacity(0.07), radius: 12, y: 4)
+        .frostedCard(tint: tint)
     }
 }
 
@@ -377,7 +373,7 @@ private struct MoneyAmountsText: View {
                 }
             }
         case .unknown:
-            ReleaseBadge(text: String(localized: "Unknown"), symbol: "questionmark.circle", color: .gray)
+            ReleaseBadge(text: String(localized: "Unknown"), symbol: "questionmark.circle", color: .statusUnknown)
         }
     }
 
@@ -399,10 +395,10 @@ private struct MoneyFigureRow: View {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(verbatim: figure.id.title).font(.headline)
                 if figure.isForecast {
-                    ReleaseBadge(text: String(localized: "Forecast"), symbol: "chart.line.uptrend.xyaxis", color: .blue)
+                    ReleaseBadge(text: String(localized: "Forecast"), symbol: "chart.line.uptrend.xyaxis", color: .statusInfo)
                 }
                 if figure.isKnown, !figure.source.isProduction, let env = figure.source.environment {
-                    ReleaseBadge(text: env, symbol: "theatermasks", color: .blue)
+                    ReleaseBadge(text: env, symbol: "theatermasks", color: .statusInfo)
                 }
                 Spacer(minLength: 8)
                 if let count = countText { Text(verbatim: count).font(.caption).foregroundStyle(.secondary).monospacedDigit() }
@@ -412,7 +408,7 @@ private struct MoneyFigureRow: View {
                 Text(verbatim: reason.text).font(.callout).foregroundStyle(.secondary).textSelection(.enabled)
             }
             if let caveat = figure.completeness.caveat, figure.isKnown {
-                Label { Text(verbatim: caveat) } icon: { Image(systemName: "exclamationmark.triangle").foregroundStyle(.orange) }
+                Label { Text(verbatim: caveat) } icon: { Image(systemName: "exclamationmark.triangle").foregroundStyle(.statusWarn) }
                     .font(.caption)
             }
             MoneySourceLine(source: figure.source, isKnown: figure.isKnown)
@@ -470,7 +466,7 @@ private struct MoneySection<Content: View>: View {
             VStack(alignment: .leading, spacing: 10) { content }
                 .padding(14)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
-                .background(.background.secondary, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .cardSurface(.large)
         }
     }
 }
@@ -523,7 +519,7 @@ private struct MoneyInvoiceList: View {
                         // Under the name, not beside the amount: on iPhone the name keeps the row's width.
                         if let days = r.daysPastDue {
                             HStack(spacing: 6) {
-                                ReleaseBadge(text: String(localized: "Overdue"), symbol: "exclamationmark.circle.fill", color: .red)
+                                ReleaseBadge(text: String(localized: "Overdue"), symbol: "exclamationmark.circle.fill", color: .statusBad)
                                 Text("\(days) days").font(.caption).foregroundStyle(.secondary).monospacedDigit()
                             }
                         }

@@ -28,14 +28,7 @@ struct StatusBadge: View {
     let color: Color
 
     var body: some View {
-        Text(LocalizedStringKey(text))
-            .font(.caption.weight(.medium))
-            .foregroundStyle(.primary)
-            .padding(.horizontal, 7)
-            .padding(.vertical, 2)
-            .background(color.opacity(0.15), in: Capsule())
-            .overlay(Capsule().strokeBorder(color.opacity(0.5), lineWidth: 1))
-            .fixedSize()
+        PillLabel(text: Text(LocalizedStringKey(text)), color: color, font: .caption.weight(.medium))
             .accessibilityLabel(text)
     }
 }
@@ -65,30 +58,21 @@ struct ReviewPhaseBadge: View {
     let phase: ReviewPhase
 
     var body: some View {
-        HStack(spacing: 4) {
-            Image(systemName: phase.symbol).foregroundStyle(phase.color)
-            Text(phase.title).foregroundStyle(.primary)
-        }
-        .font(.caption.weight(.semibold))
-        .padding(.horizontal, 7)
-        .padding(.vertical, 2)
-        .background(phase.color.opacity(0.14), in: Capsule())
-        .overlay(Capsule().strokeBorder(phase.color.opacity(0.5), lineWidth: 1))
-        .fixedSize()
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("Review: \(phase.title)"))
+        PillLabel(text: Text(phase.title), symbol: phase.symbol, color: phase.color)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Review: \(phase.title)"))
     }
 }
 
 extension ReviewPhase {
     var color: Color {
         switch self {
-        case .live: .green
+        case .live: .statusGood
         case .notSubmitted: .yellow
-        case .pending: .orange
-        case .testing: .blue
-        case .rejected: .red
-        case .unknown: .gray
+        case .pending: .statusWarn
+        case .testing: .statusInfo
+        case .rejected: .statusBad
+        case .unknown: .statusUnknown
         }
     }
 
@@ -108,11 +92,11 @@ extension ProductStatus {
     var color: Color {
         switch self {
         case .idea: .purple
-        case .development: .blue
-        case .active: .green
+        case .development: .statusInfo
+        case .active: .statusGood
         case .maintenance: .teal
         case .completed: .indigo
-        case .paused: .orange
+        case .paused: .statusWarn
         case .retired: .secondary
         }
     }
@@ -121,9 +105,9 @@ extension ProductStatus {
 extension ProductPriority {
     var color: Color {
         switch self {
-        case .high: .red
-        case .normal: .blue
-        case .low: .gray
+        case .high: .statusBad
+        case .normal: .statusInfo
+        case .low: .statusUnknown
         case .sidelined: .secondary
         }
     }
@@ -132,10 +116,10 @@ extension ProductPriority {
 extension VerificationStatus {
     var color: Color {
         switch self {
-        case .verified: .green
-        case .partiallyVerified: .orange
-        case .unknown: .gray
-        case .conflicting: .red
+        case .verified: .statusGood
+        case .partiallyVerified: .statusWarn
+        case .unknown: .statusUnknown
+        case .conflicting: .statusBad
         }
     }
 
@@ -165,20 +149,11 @@ struct VerificationBadge: View {
     var compact = false
 
     var body: some View {
-        // Meaning is carried by icon + text, never color alone. The text uses the primary
-        // color so it keeps at least 4.5:1 contrast in light and dark mode. Color goes on the icon and border.
-        HStack(spacing: 4) {
-            Image(systemName: status.symbol).foregroundStyle(status.color)
-            Text(compact ? status.title : status.badgeText).foregroundStyle(.primary)
-        }
-        .font(.caption.weight(.semibold))
-        .padding(.horizontal, 7)
-        .padding(.vertical, 2)
-        .background(status.color.opacity(0.14), in: Capsule())
-        .overlay(Capsule().strokeBorder(status.color.opacity(0.55), lineWidth: 1))
-        .fixedSize()
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("Verification: \(status.title)"))
+        // Meaning is carried by icon + text, never color alone. The text takes the status colour only where that keeps
+        // at least 4.5:1 on the pill in light and dark mode (PillTone); otherwise it is the primary colour.
+        PillLabel(text: Text(compact ? status.title : status.badgeText), symbol: status.symbol, color: status.color)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Verification: \(status.title)"))
     }
 }
 
@@ -304,10 +279,10 @@ extension RepositorySnapshot.CIConclusion {
     }
     var color: Color {
         switch self {
-        case .success: .green
-        case .failure: .red
+        case .success: .statusGood
+        case .failure: .statusBad
         case .cancelled, .none: .secondary
-        case .inProgress: .blue
+        case .inProgress: .statusInfo
         }
     }
 }
@@ -315,13 +290,13 @@ extension RepositorySnapshot.CIConclusion {
 extension ReleaseStage {
     var color: Color {
         switch self {
-        case .planning: .gray
-        case .development: .blue
+        case .planning: .statusUnknown
+        case .development: .statusInfo
         case .internalTesting, .beta: .indigo
-        case .review: .orange
-        case .released: .green
+        case .review: .statusWarn
+        case .released: .statusGood
         case .deprecated: .secondary
-        case .blocked: .red
+        case .blocked: .statusBad
         }
     }
 }
@@ -329,10 +304,10 @@ extension ReleaseStage {
 extension IssueSeverity {
     var color: Color {
         switch self {
-        case .low: .gray
+        case .low: .statusUnknown
         case .medium: .yellow
-        case .high: .orange
-        case .critical: .red
+        case .high: .statusWarn
+        case .critical: .statusBad
         }
     }
 }
@@ -340,11 +315,11 @@ extension IssueSeverity {
 extension DeploymentStatus {
     var color: Color {
         switch self {
-        case .unknown: .gray
-        case .healthy: .green
-        case .degraded: .orange
-        case .failed: .red
-        case .inProgress: .blue
+        case .unknown: .statusUnknown
+        case .healthy: .statusGood
+        case .degraded: .statusWarn
+        case .failed: .statusBad
+        case .inProgress: .statusInfo
         }
     }
 }
@@ -353,9 +328,9 @@ extension RoadmapStatus {
     var color: Color {
         switch self {
         case .idea: .purple
-        case .planned: .gray
-        case .inProgress: .blue
-        case .done: .green
+        case .planned: .statusUnknown
+        case .inProgress: .statusInfo
+        case .done: .statusGood
         case .dropped: .secondary
         }
     }

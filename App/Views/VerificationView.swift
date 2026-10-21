@@ -48,7 +48,7 @@ struct VerificationView: View {
                         }
                         .padding(12)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+                        .cardSurface()
                         .accessibilityElement(children: .ignore)
                         .accessibilityLabel("\(s.countsByVerification[status, default: 0]) products \(status.title)")
                     }
@@ -100,7 +100,7 @@ struct VerificationView: View {
                             Divider()
                         }
                     }
-                    .background(.background.secondary, in: RoundedRectangle(cornerRadius: 8))
+                    .cardSurface(.inner)
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
@@ -113,7 +113,7 @@ struct VerificationView: View {
                                 Text(item.location).font(.caption.monospaced()).textSelection(.enabled)
                                 Text(item.findings).font(.callout).textSelection(.enabled)
                                 if let q = item.question {
-                                    Label(q, systemImage: "questionmark.bubble").font(.callout.weight(.medium)).foregroundStyle(.orange)
+                                    Label(q, systemImage: "questionmark.bubble").font(.callout.weight(.medium)).foregroundStyle(.statusWarn)
                                 }
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)

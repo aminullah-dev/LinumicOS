@@ -84,27 +84,19 @@ private struct AnswerCard: View {
             }
         }
         .padding(12)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+        .cardSurface()
     }
 }
 
 private struct KindBadge: View {
     let kind: AnswerKind
-    private var color: Color { kind == .verified ? .green : kind == .derived ? .blue : .gray }
+    private var color: Color { kind == .verified ? .statusGood : kind == .derived ? .statusInfo : .statusUnknown }
     private var symbol: String { kind == .verified ? "checkmark.seal.fill" : kind == .derived ? "function" : "questionmark.circle" }
 
     var body: some View {
-        HStack(spacing: 3) {
-            Image(systemName: symbol).foregroundStyle(color)
-            Text(kind.title.uppercased()).foregroundStyle(.primary)
-        }
-        .font(.caption2.weight(.semibold))
-        .padding(.horizontal, 6).padding(.vertical, 2)
-        .background(color.opacity(0.14), in: Capsule())
-        .overlay(Capsule().strokeBorder(color.opacity(0.55), lineWidth: 1))
-        .fixedSize()
-        .frame(width: 90, alignment: .leading)
-        .accessibilityLabel(kind.title)
+        PillLabel(text: Text(kind.title.uppercased()), symbol: symbol, color: color, font: .caption2.weight(.semibold))
+            .frame(width: 90, alignment: .leading)
+            .accessibilityLabel(kind.title)
     }
 }
 

@@ -6,9 +6,9 @@ import SwiftUI
 extension BriefSeverity {
     var color: Color {
         switch self {
-        case .high: .red
-        case .normal: .orange
-        case .info: .blue
+        case .high: .statusBad
+        case .normal: .statusWarn
+        case .info: .statusInfo
         }
     }
 
@@ -62,22 +62,19 @@ struct DailyBriefView: View {
     }
 
     private func header(_ brief: DailyBrief) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(brief.generatedAt.formatted(date: .complete, time: .omitted))
-                .font(.title2.weight(.semibold))
-                .accessibilityAddTraits(.isHeader)
+        PageHeader(.brief, subtitle: Text(brief.generatedAt.formatted(date: .complete, time: .omitted))) {
             FitRow(spacing: 8) {
                 let high = brief.attention.count { $0.severity == .high }
                 let normal = brief.attention.count { $0.severity == .normal }
                 if brief.attention.isEmpty {
-                    ReleaseBadge(text: String(localized: "Nothing needs you"), symbol: "checkmark.circle.fill", color: .green)
+                    ReleaseBadge(text: String(localized: "Nothing needs you"), symbol: "checkmark.circle.fill", color: .statusGood)
                 } else {
-                    if high > 0 { ReleaseBadge(text: String(localized: "\(high) now"), symbol: BriefSeverity.high.symbol, color: .red) }
-                    if normal > 0 { ReleaseBadge(text: String(localized: "\(normal) soon"), symbol: BriefSeverity.normal.symbol, color: .orange) }
+                    if high > 0 { ReleaseBadge(text: String(localized: "\(high) now"), symbol: BriefSeverity.high.symbol, color: .statusBad) }
+                    if normal > 0 { ReleaseBadge(text: String(localized: "\(normal) soon"), symbol: BriefSeverity.normal.symbol, color: .statusWarn) }
                 }
                 let never = brief.neverRead.filter { $0 != .changes }.count
                 if never > 0 {
-                    ReleaseBadge(text: String(localized: "\(never) sources not read"), symbol: "questionmark.circle", color: .gray)
+                    ReleaseBadge(text: String(localized: "\(never) sources not read"), symbol: "questionmark.circle", color: .statusUnknown)
                 }
             }
             Group {
@@ -103,10 +100,10 @@ struct BriefSectionCard: View {
 
     private var tint: Color {
         switch section.state {
-        case .neverRead: .gray
-        case .unavailable: .red
-        case .allClear: .green
-        case .items: section.highest?.color ?? .green
+        case .neverRead: .statusUnknown
+        case .unavailable: .statusBad
+        case .allClear: .statusGood
+        case .items: section.highest?.color ?? .statusGood
         }
     }
 
@@ -124,7 +121,7 @@ struct BriefSectionCard: View {
                 Label { Text(verbatim: why) } icon: { Image(systemName: "questionmark.circle").foregroundStyle(.secondary) }
                     .font(.callout).foregroundStyle(.secondary)
             case .unavailable(let why):
-                Label { Text(verbatim: why) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.red) }
+                Label { Text(verbatim: why) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) }
                     .font(.callout)
             case .allClear, .items:
                 ForEach(section.lines) { line in
@@ -148,17 +145,17 @@ struct BriefSectionCard: View {
     private var stateBadge: some View {
         switch section.state {
         case .neverRead:
-            ReleaseBadge(text: String(localized: "Not read"), symbol: "questionmark.circle", color: .gray)
+            ReleaseBadge(text: String(localized: "Not read"), symbol: "questionmark.circle", color: .statusUnknown)
         case .unavailable:
-            ReleaseBadge(text: String(localized: "Could not read"), symbol: "exclamationmark.triangle.fill", color: .red)
+            ReleaseBadge(text: String(localized: "Could not read"), symbol: "exclamationmark.triangle.fill", color: .statusBad)
         case .allClear:
-            ReleaseBadge(text: String(localized: "All clear"), symbol: "checkmark.circle.fill", color: .green)
+            ReleaseBadge(text: String(localized: "All clear"), symbol: "checkmark.circle.fill", color: .statusGood)
         case .items:
             if section.attentionCount > 0 {
                 ReleaseBadge(text: String(localized: "\(section.attentionCount) need you"),
-                             symbol: section.highest?.symbol ?? "circle", color: section.highest?.color ?? .orange)
+                             symbol: section.highest?.symbol ?? "circle", color: section.highest?.color ?? .statusWarn)
             } else {
-                ReleaseBadge(text: String(localized: "\(section.lines.count) for information"), symbol: BriefSeverity.info.symbol, color: .blue)
+                ReleaseBadge(text: String(localized: "\(section.lines.count) for information"), symbol: BriefSeverity.info.symbol, color: .statusInfo)
             }
         }
     }
@@ -205,6 +202,8 @@ struct BriefLineRow: View {
             .help("Open the screen this line comes from")
             .minTapTarget()
         }
+        .padding(.vertical, 2)
+        .hoverHighlight()
         .accessibilityElement(children: .contain)
     }
 }

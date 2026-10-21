@@ -25,7 +25,7 @@ struct DashboardView: View {
                     Button { router.sidebar = .verification } label: {
                         HStack {
                             Image(systemName: s.conflictingItems > 0 ? "exclamationmark.triangle.fill" : "person.badge.clock")
-                                .foregroundStyle(s.conflictingItems > 0 ? .red : .orange)
+                                .foregroundStyle(s.conflictingItems > 0 ? .statusBad : .statusWarn)
                             if s.conflictingItems > 0 {
                                 Text("\(s.pendingConfirmations) facts need your confirmation, \(s.conflictingItems) of them conflicting. Open Verification →")
                             } else {
@@ -34,7 +34,7 @@ struct DashboardView: View {
                             Spacer()
                         }
                         .padding(10)
-                        .background((s.conflictingItems > 0 ? Color.red : Color.orange).opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
+                        .background((s.conflictingItems > 0 ? Color.statusBad : Color.statusWarn).opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
                     }
                     .buttonStyle(.plain)
                 }
@@ -62,7 +62,7 @@ struct DashboardView: View {
                         }
                         .padding(10)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+                        .cardSurface()
                         .accessibilityElement(children: .ignore)
                         .accessibilityLabel("\(s.countsByVerification[status, default: 0]) products \(status.title)")
                     }
@@ -70,12 +70,12 @@ struct DashboardView: View {
 
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 12)], spacing: 12) {
                     MetricTile(title: "Total products", value: s.totalProducts, symbol: "shippingbox")
-                    MetricTile(title: "Active (recorded)", value: s.activeCount, symbol: "checkmark.circle", tint: .green)
-                    MetricTile(title: "In development (recorded)", value: s.inDevelopmentCount, symbol: "hammer", tint: .blue)
-                    MetricTile(title: "Status unknown", value: s.unknownStatusCount, symbol: "questionmark.circle", tint: .gray)
+                    MetricTile(title: "Active (recorded)", value: s.activeCount, symbol: "checkmark.circle", tint: .statusGood)
+                    MetricTile(title: "In development (recorded)", value: s.inDevelopmentCount, symbol: "hammer", tint: .statusInfo)
+                    MetricTile(title: "Status unknown", value: s.unknownStatusCount, symbol: "questionmark.circle", tint: .statusUnknown)
                     MetricTile(title: "Upcoming releases", value: s.upcomingReleases.count, symbol: "tag", tint: .indigo)
-                    MetricTile(title: "Blocked releases", value: s.blockedReleases.count, symbol: "xmark.octagon", tint: s.blockedReleases.isEmpty ? .secondary : .red)
-                    MetricTile(title: "Critical issues", value: s.openCriticalIssues.count, symbol: "exclamationmark.triangle", tint: s.openCriticalIssues.isEmpty ? .secondary : .red)
+                    MetricTile(title: "Blocked releases", value: s.blockedReleases.count, symbol: "xmark.octagon", tint: s.blockedReleases.isEmpty ? .secondary : .statusBad)
+                    MetricTile(title: "Critical issues", value: s.openCriticalIssues.count, symbol: "exclamationmark.triangle", tint: s.openCriticalIssues.isEmpty ? .secondary : .statusBad)
                 }
 
                 AdaptiveStack {
@@ -154,7 +154,7 @@ struct DashboardView: View {
                                 Button { router.open(productID: change.productID) } label: {
                                     HStack(alignment: .firstTextBaseline, spacing: 6) {
                                         Image(systemName: change.isImportant ? "bell.badge.fill" : "bell")
-                                            .foregroundStyle(change.isImportant ? .orange : .secondary)
+                                            .foregroundStyle(change.isImportant ? .statusWarn : .secondary)
                                         VStack(alignment: .leading, spacing: 1) {
                                             Text(verbatim: change.message).font(.callout)
                                             Text(change.detectedAt, style: .relative).font(.caption).foregroundStyle(.secondary)
@@ -199,7 +199,7 @@ struct DashboardView: View {
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+            .cardSurface()
         }
         .buttonStyle(.plain)
     }
@@ -226,7 +226,7 @@ struct DashboardView: View {
                             HealthChip(health: .attention, count: o.attentionRepos)
                             HealthChip(health: .unknown, count: o.neverScanned)
                             if o.openSecurityAlerts > 0 {
-                                StatusBadge(text: "\(o.openSecurityAlerts) security alerts", color: .red)
+                                StatusBadge(text: "\(o.openSecurityAlerts) security alerts", color: .statusBad)
                             }
                         }
                     }
@@ -236,7 +236,7 @@ struct DashboardView: View {
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+            .cardSurface()
         }
         .buttonStyle(.plain)
     }
@@ -261,7 +261,7 @@ struct DashboardView: View {
                             Text("\(p.displayName): \(s.activeByProduct[p, default: 0]) active").font(.callout).monospacedDigit()
                         }
                         if !s.expired.isEmpty {
-                            StatusBadge(text: String(localized: "\(s.expired.count) expired"), color: .red)
+                            StatusBadge(text: String(localized: "\(s.expired.count) expired"), color: .statusBad)
                         }
                     }
                     if s.expiringSoon.isEmpty {
@@ -269,7 +269,7 @@ struct DashboardView: View {
                     } else {
                         ForEach(s.expiringSoon.prefix(5)) { r in
                             HStack(alignment: .firstTextBaseline, spacing: 6) {
-                                Image(systemName: "clock.badge.exclamationmark").foregroundStyle(.orange)
+                                Image(systemName: "clock.badge.exclamationmark").foregroundStyle(.statusWarn)
                                 Text(verbatim: "\(r.customer) · \(r.product.displayName)")
                                 Spacer(minLength: 4)
                                 LicenceExpiryText(record: r).foregroundStyle(.secondary)
@@ -281,7 +281,7 @@ struct DashboardView: View {
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+            .cardSurface()
         }
         .buttonStyle(.plain)
     }
@@ -302,14 +302,14 @@ struct DashboardView: View {
                     Text("Not signed in. Open WorkTrack customers to sign in with your vendor account →")
                         .font(.callout).foregroundStyle(.secondary)
                 } else if let error = worktrack.loadError {
-                    Label(error, systemImage: "exclamationmark.triangle.fill").font(.callout).foregroundStyle(.red)
+                    Label(error, systemImage: "exclamationmark.triangle.fill").font(.callout).foregroundStyle(.statusBad)
                 } else if worktrack.lastRead == nil {
                     Text(worktrack.isRefreshing ? "Reading from WorkTrack…" : "Not read yet.").font(.callout).foregroundStyle(.secondary)
                 } else {
                     HStack(spacing: 16) {
                         Text("\(s.total) companies").font(.callout).monospacedDigit()
                         if !s.expired.isEmpty {
-                            StatusBadge(text: String(localized: "\(s.expired.count) expired"), color: .red)
+                            StatusBadge(text: String(localized: "\(s.expired.count) expired"), color: .statusBad)
                         }
                     }
                     if s.expiringSoon.isEmpty {
@@ -317,7 +317,7 @@ struct DashboardView: View {
                     } else {
                         ForEach(s.expiringSoon.prefix(5)) { c in
                             HStack(alignment: .firstTextBaseline, spacing: 6) {
-                                Image(systemName: "clock.badge.exclamationmark").foregroundStyle(.orange)
+                                Image(systemName: "clock.badge.exclamationmark").foregroundStyle(.statusWarn)
                                 Text(verbatim: "\(c.name) · \(c.license.plan.rawValue)")
                                 Spacer(minLength: 4)
                                 WorkTrackExpiryText(company: c).foregroundStyle(.secondary)
@@ -332,7 +332,7 @@ struct DashboardView: View {
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+            .cardSurface()
         }
         .buttonStyle(.plain)
     }
@@ -362,7 +362,7 @@ struct DashboardView: View {
                         if let c = line.count {
                             if !c.isProduction { OpsEnvironmentBadge(rawEnvironment: c.environment) }
                             Text(verbatim: "\(c.count)").font(.title3.weight(.semibold)).monospacedDigit()
-                                .foregroundStyle(c.count > 0 ? .orange : .secondary)
+                                .foregroundStyle(c.count > 0 ? .statusWarn : .secondary)
                         } else if operations.isSignedIn(line.queue.product) {
                             Text("Not read yet").font(.callout).foregroundStyle(.secondary)
                         } else {
@@ -383,7 +383,7 @@ struct DashboardView: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+        .cardSurface()
     }
 
     /// Website messages not marked seen: a waiting item, because the form's emails don't reach the owner.
@@ -399,7 +399,7 @@ struct DashboardView: View {
                 Spacer(minLength: 6)
                 if let n = siteMessages.newCount {
                     Text(verbatim: "\(n)").font(.title3.weight(.semibold)).monospacedDigit()
-                        .foregroundStyle(n > 0 ? .orange : .secondary)
+                        .foregroundStyle(n > 0 ? .statusWarn : .secondary)
                 } else if siteMessages.isConfigured {
                     Text("Not read yet").font(.callout).foregroundStyle(.secondary)
                 } else {
@@ -453,7 +453,7 @@ struct MetricTile: View {
     let title: String
     let value: Int
     let symbol: String
-    var tint: Color = .accentColor
+    var tint: Color = .brandAccent
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -467,7 +467,8 @@ struct MetricTile: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+        .cardSurface(tint: tint)
+        .overlay(alignment: .leading) { AccentEdge(tint: tint) }
         .accessibilityElement(children: .combine)
     }
 }
@@ -483,7 +484,7 @@ struct DashboardPanel<Content: View>: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .topLeading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+        .cardSurface()
     }
 }
 

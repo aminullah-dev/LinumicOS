@@ -19,7 +19,7 @@ struct ContentView: View {
                 ForEach(SidebarSection.all) { section in
                     if section.isArchive, let title = section.title {
                         // Collapsed until opened; the choice is kept on this device.
-                        Section(isExpanded: $archiveExpanded) { rows(section.items) } header: { Text(LocalizedStringKey(title)) }
+                        Section(isExpanded: $archiveExpanded) { rows(section.items, muted: true) } header: { Text(LocalizedStringKey(title)) }
                     } else if let title = section.title {
                         Section(LocalizedStringKey(title)) { rows(section.items) }
                     } else {
@@ -64,15 +64,20 @@ struct ContentView: View {
         }
     }
 
-    private func rows(_ items: [SidebarItem]) -> some View {
+    /// Each row with its tile in the area's tint, as in System Settings; the Archive's tiles are muted.
+    private func rows(_ items: [SidebarItem], muted: Bool = false) -> some View {
         ForEach(items) { item in
             // An archived page says what covers it now.
             if let covered = SidebarArchive.coveredBy(item.rawValue) {
-                Label(item.title, systemImage: item.symbol).tag(item).help(Text(verbatim: covered))
+                row(item, muted: muted).tag(item).help(Text(verbatim: covered))
             } else {
-                Label(item.title, systemImage: item.symbol).tag(item)
+                row(item, muted: muted).tag(item)
             }
         }
+    }
+
+    private func row(_ item: SidebarItem, muted: Bool) -> some View {
+        Label { Text(verbatim: item.title) } icon: { SidebarTile(item: item, muted: muted) }
     }
 
     @ViewBuilder

@@ -77,3 +77,6 @@ targets:
         GENERATE_INFOPLIST_FILE: NO
         # App/Resources/Assets.xcassets: the Linumic monogram, drawn by tools/design/make_app_icon.py.
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        # The Linumic slate blue for buttons, toggles, links and the selection; with the colour tokens in Theme/, written
+        # and contrast-checked by tools/design/make_colors.py (light, dark and Increase Contrast variants).
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor

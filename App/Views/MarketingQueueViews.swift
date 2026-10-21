@@ -72,7 +72,7 @@ private struct MarketingBrandCard: View {
     let open: (String) -> Void
 
     var body: some View {
-        StripeCard(tint: brand.changedSince.isEmpty ? .accentColor : .orange) {
+        StripeCard(tint: brand.changedSince.isEmpty ? .brandAccent : .statusWarn) {
             HStack(alignment: .firstTextBaseline) {
                 Text(verbatim: brand.brand).font(.title3.weight(.semibold))
                 Spacer()
@@ -124,7 +124,7 @@ private struct MarketingObligationRow: View {
                 Text(verbatim: ObligationsBriefRules.text(o, today: today)).fixedSize(horizontal: false, vertical: true)
                 if changed {
                     ReleaseBadge(text: String(localized: "The ledger changed after this was recorded: verify"),
-                                 symbol: "exclamationmark.triangle", color: .orange)
+                                 symbol: "exclamationmark.triangle", color: .statusWarn)
                 }
                 if let consequence = o.displayConsequence {
                     Text("If missed: \(consequence)").font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)

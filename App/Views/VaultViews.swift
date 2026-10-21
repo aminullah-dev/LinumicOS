@@ -23,7 +23,7 @@ struct VaultView: View {
                 Section { VaultLockCard() }
                 if let error = vault.loadError {
                     Section {
-                        Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red)
+                        Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad)
                     }
                 }
                 if vault.entries.isEmpty, vault.loadError == nil {
@@ -99,9 +99,9 @@ struct VaultLockCard: View {
         HStack(alignment: .center, spacing: 14) {
             Image(systemName: vault.isUnlocked ? "lock.open.fill" : "lock.fill")
                 .font(.title2)
-                .foregroundStyle(vault.isUnlocked ? Color.orange : Color.accentColor)
+                .foregroundStyle(vault.isUnlocked ? Color.statusWarn : Color.brandAccent)
                 .frame(width: 40, height: 40)
-                .background((vault.isUnlocked ? Color.orange : Color.accentColor).opacity(0.14), in: RoundedRectangle(cornerRadius: 10))
+                .background((vault.isUnlocked ? Color.statusWarn : Color.brandAccent).opacity(0.14), in: RoundedRectangle(cornerRadius: 10))
                 .contentTransition(.symbolEffect(.replace))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 3) {
@@ -294,18 +294,12 @@ struct VaultEnvironmentBadge: View {
 
     var body: some View {
         let color: Color = switch environment {
-        case .production: .red
-        case .demo, .staging: .blue
-        case .local: .gray
+        case .production: .statusBad
+        case .demo, .staging: .statusInfo
+        case .local: .statusUnknown
         case .any: .secondary
         }
-        Text(verbatim: environment.title)
-            .font(.caption2.weight(.semibold))
-            .padding(.horizontal, 6)
-            .padding(.vertical, 1)
-            .background(color.opacity(0.12), in: Capsule())
-            .overlay(Capsule().strokeBorder(color.opacity(0.45), lineWidth: 1))
-            .fixedSize()
+        PillLabel(text: Text(verbatim: environment.title), color: color, font: .caption2.weight(.semibold))
             .accessibilityLabel(Text("Environment: \(environment.title)"))
     }
 }
@@ -316,7 +310,7 @@ struct VaultCopyNotice: View {
 
     var body: some View {
         if let text = vault.copyNotice {
-            Label { Text(verbatim: text) } icon: { Image(systemName: "checkmark.circle.fill").foregroundStyle(.green) }
+            Label { Text(verbatim: text) } icon: { Image(systemName: "checkmark.circle.fill").foregroundStyle(.statusGood) }
                 .font(.callout.weight(.medium))
                 .padding(.horizontal, 14)
                 .padding(.vertical, 9)

@@ -6,12 +6,12 @@ import SwiftUI
 extension AppStoreVersionPhase {
     var color: Color {
         switch self {
-        case .live: .green
-        case .pendingDeveloperRelease: .orange
-        case .rejected: .red
-        case .waitingForReview, .inReview, .pendingAppleRelease, .processing: .blue
+        case .live: .statusGood
+        case .pendingDeveloperRelease: .statusWarn
+        case .rejected: .statusBad
+        case .waitingForReview, .inReview, .pendingAppleRelease, .processing: .statusInfo
         case .preparing, .developerRejected: .yellow
-        case .historical, .unknown: .gray
+        case .historical, .unknown: .statusUnknown
         }
     }
 
@@ -34,11 +34,11 @@ extension AppStoreVersionPhase {
 extension PlayTrackStatus {
     var color: Color {
         switch self {
-        case .completed: .green
-        case .inProgress: .blue
-        case .halted: .red
+        case .completed: .statusGood
+        case .inProgress: .statusInfo
+        case .halted: .statusBad
         case .draft: .yellow
-        case .unknown: .gray
+        case .unknown: .statusUnknown
         }
     }
 
@@ -56,10 +56,10 @@ extension PlayTrackStatus {
 extension CIRollup {
     var color: Color {
         switch self {
-        case .success: .green
-        case .failure: .red
-        case .pending: .blue
-        case .none: .gray
+        case .success: .statusGood
+        case .failure: .statusBad
+        case .pending: .statusInfo
+        case .none: .statusUnknown
         }
     }
 
@@ -76,9 +76,9 @@ extension CIRollup {
 extension WaitingItem.Severity {
     var color: Color {
         switch self {
-        case .high: .red
-        case .normal: .orange
-        case .info: .blue
+        case .high: .statusBad
+        case .normal: .statusWarn
+        case .info: .statusInfo
         }
     }
 
@@ -106,17 +106,8 @@ struct ReleaseBadge: View {
     let color: Color
 
     var body: some View {
-        HStack(spacing: 4) {
-            Image(systemName: symbol).foregroundStyle(color).accessibilityHidden(true)
-            Text(verbatim: text).foregroundStyle(.primary)
-        }
-        .font(.caption.weight(.semibold))
-        .padding(.horizontal, 7)
-        .padding(.vertical, 2)
-        .background(color.opacity(0.14), in: Capsule())
-        .overlay(Capsule().strokeBorder(color.opacity(0.55), lineWidth: 1))
-        .fixedSize()
-        .accessibilityElement(children: .combine)
+        PillLabel(text: Text(verbatim: text), symbol: symbol, color: color)
+            .accessibilityElement(children: .combine)
     }
 }
 
@@ -140,11 +131,8 @@ struct StripeCard<Content: View>: View {
         VStack(alignment: .leading, spacing: 8) { content }
             .padding(12)
             .frame(maxWidth: .infinity, alignment: .topLeading)
-            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
-            .overlay(alignment: .leading) {
-                UnevenRoundedRectangle(topLeadingRadius: 10, bottomLeadingRadius: 10).fill(tint).frame(width: 4)
-                    .accessibilityHidden(true)
-            }
+            .cardSurface()
+            .overlay(alignment: .leading) { AccentEdge(tint: tint) }
     }
 }
 
@@ -280,7 +268,7 @@ struct ReleaseCenterView: View {
             Label(LocalizedStringKey(title), systemImage: symbol).font(.title3.weight(.semibold))
                 .accessibilityAddTraits(.isHeader)
             if let note {
-                Label { Text(verbatim: note) } icon: { Image(systemName: "exclamationmark.circle").foregroundStyle(.orange) }
+                Label { Text(verbatim: note) } icon: { Image(systemName: "exclamationmark.circle").foregroundStyle(.statusWarn) }
                     .font(.callout)
             }
         }
@@ -294,7 +282,7 @@ struct ReleaseCenterView: View {
                     .accessibilityAddTraits(.isHeader)
                 Text(verbatim: items.count.formatted()).font(.callout.weight(.semibold)).monospacedDigit()
                     .padding(.horizontal, 8).padding(.vertical, 2)
-                    .background((items.isEmpty ? Color.green : .orange).opacity(0.15), in: Capsule())
+                    .pillBackground(items.isEmpty ? .statusGood : .statusWarn)
             }
             if items.isEmpty {
                 Text("Nothing waits on you in what was last read.").foregroundStyle(.secondary)
@@ -318,16 +306,16 @@ struct ReleaseCenterView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 6) {
                         switch r.outcome {
-                        case .verified: Image(systemName: "checkmark.circle.fill").foregroundStyle(.green).accessibilityLabel(Text("Verified"))
-                        case .unverified: Image(systemName: "questionmark.circle.fill").foregroundStyle(.orange).accessibilityLabel(Text("Not verified"))
-                        case .failed: Image(systemName: "xmark.octagon.fill").foregroundStyle(.red).accessibilityLabel(Text("Failed"))
+                        case .verified: Image(systemName: "checkmark.circle.fill").foregroundStyle(.statusGood).accessibilityLabel(Text("Verified"))
+                        case .unverified: Image(systemName: "questionmark.circle.fill").foregroundStyle(.statusWarn).accessibilityLabel(Text("Not verified"))
+                        case .failed: Image(systemName: "xmark.octagon.fill").foregroundStyle(.statusBad).accessibilityLabel(Text("Failed"))
                         case .notSent: Image(systemName: "minus.circle.fill").foregroundStyle(.secondary).accessibilityLabel(Text("Nothing was sent"))
                         }
                         Text(verbatim: "\(r.appName) \(r.versionString)").fontWeight(.medium)
                     }
                     Text(verbatim: "\(r.action) · \(r.stateBefore) → \(r.stateAfter ?? "?") · \(r.at.formatted(date: .abbreviated, time: .shortened))")
                         .font(.caption).foregroundStyle(.secondary)
-                    if let m = r.message { Text(verbatim: m).font(.caption).foregroundStyle(r.outcome == .verified ? Color.secondary : .red) }
+                    if let m = r.message { Text(verbatim: m).font(.caption).foregroundStyle(r.outcome == .verified ? Color.secondary : .statusBad) }
                 }
                 .accessibilityElement(children: .combine)
             }
@@ -374,7 +362,7 @@ struct AppStoreCard: View {
     }
 
     var body: some View {
-        StripeCard(tint: status.error != nil ? .gray : (headline?.color ?? .gray)) {
+        StripeCard(tint: status.error != nil ? .statusUnknown : (headline?.color ?? .statusUnknown)) {
             HStack(alignment: .firstTextBaseline) {
                 Text(verbatim: status.app.name).font(.headline).lineLimit(2)
                 Spacer(minLength: 0)
@@ -382,7 +370,7 @@ struct AppStoreCard: View {
             Text(verbatim: status.app.appIdentifier).font(.caption.monospaced()).foregroundStyle(.secondary)
                 .environment(\.layoutDirection, .leftToRight)
             if let error = status.error {
-                Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.red) }
+                Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) }
                     .font(.callout)
             } else {
                 ForEach(status.platforms, id: \.self) { platform in platformBlock(platform) }
@@ -464,7 +452,7 @@ struct AppStoreCard: View {
                 HStack(spacing: 6) {
                     Text(verbatim: "\(b.version ?? "?") (\(b.number))").monospacedDigit()
                     Text(verbatim: b.processingState ?? "?").font(.caption.monospaced())
-                        .foregroundStyle(b.processingFailed ? Color.red : .secondary)
+                        .foregroundStyle(b.processingFailed ? Color.statusBad : .secondary)
                     Spacer(minLength: 0)
                     Text(verbatim: shortTime(b.uploadedAt)).foregroundStyle(.secondary)
                 }
@@ -481,12 +469,12 @@ struct PlayCard: View {
 
     var body: some View {
         let live = status.tracks.first { $0.track == "production" }?.releases.contains { $0.status == .completed } ?? false
-        StripeCard(tint: status.error != nil ? .gray : (status.tracks.flatMap(\.releases).contains { $0.status == .halted } ? .red : live ? .green : .blue)) {
+        StripeCard(tint: status.error != nil ? .statusUnknown : (status.tracks.flatMap(\.releases).contains { $0.status == .halted } ? .statusBad : live ? .statusGood : .statusInfo)) {
             Text(verbatim: status.app.name).font(.headline).lineLimit(2)
             Text(verbatim: status.app.appIdentifier).font(.caption.monospaced()).foregroundStyle(.secondary)
                 .environment(\.layoutDirection, .leftToRight)
             if let error = status.error {
-                Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.red) }
+                Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) }
                     .font(.callout)
             } else if status.tracks.allSatisfy({ $0.releases.isEmpty }) {
                 Text("No releases on any track.").foregroundStyle(.secondary)
@@ -498,7 +486,7 @@ struct PlayCard: View {
                 }
             }
             if let note = status.detailNote {
-                Text(verbatim: note).font(.caption).foregroundStyle(.orange)
+                Text(verbatim: note).font(.caption).foregroundStyle(.statusWarn)
             }
             ReleaseSourceLine(source: status.endpoint, at: status.fetchedAt)
         }
@@ -532,7 +520,7 @@ struct RepoCard: View {
     let status: RepoReleaseStatus
 
     var body: some View {
-        StripeCard(tint: status.error != nil ? .gray : status.mainCI.color) {
+        StripeCard(tint: status.error != nil ? .statusUnknown : status.mainCI.color) {
             HStack(alignment: .firstTextBaseline) {
                 Link(destination: status.repo.url) { Text(verbatim: status.repo.slug).font(.headline) }
                     .environment(\.layoutDirection, .leftToRight)
@@ -540,7 +528,7 @@ struct RepoCard: View {
             }
             Text(verbatim: status.repo.productName).font(.caption).foregroundStyle(.secondary)
             if let error = status.error {
-                Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.red) }
+                Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) }
                     .font(.callout)
             } else {
                 FitRow(spacing: 8) {
@@ -591,14 +579,14 @@ struct RepoCard: View {
                     }
                     Text(LocalizedStringKey(PullStack.mergeHint)).font(.caption).foregroundStyle(.secondary)
                     if !stack.targetsDefaultBranch {
-                        Text("The bottom PR targets \(stack.rootBase), not \(status.defaultBranch ?? "main").").font(.caption).foregroundStyle(.orange)
+                        Text("The bottom PR targets \(stack.rootBase), not \(status.defaultBranch ?? "main").").font(.caption).foregroundStyle(.statusWarn)
                     }
                     if stack.isBranched {
-                        Text("Two PRs build on the same PR; merge order is shown depth-first.").font(.caption).foregroundStyle(.orange)
+                        Text("Two PRs build on the same PR; merge order is shown depth-first.").font(.caption).foregroundStyle(.statusWarn)
                     }
                 }
                 .padding(8)
-                .background(Color.accentColor.opacity(0.06), in: RoundedRectangle(cornerRadius: 8))
+                .background(Color.brandAccent.opacity(0.06), in: RoundedRectangle(cornerRadius: 8))
             }
             ForEach(others.prefix(8)) { PullRow(pr: $0, position: nil) }
             if others.count > 8 {
@@ -631,7 +619,7 @@ struct PullRow: View {
                 ReleaseBadge(text: pr.ci.title, symbol: pr.ci.symbol, color: pr.ci.color)
                 ReleaseBadge(text: pr.isDraft ? L("Draft") : pr.mergeableTitle,
                              symbol: pr.isCleanlyMergeable ? "arrow.triangle.merge" : "exclamationmark.circle",
-                             color: pr.isCleanlyMergeable ? .green : .orange)
+                             color: pr.isCleanlyMergeable ? .statusGood : .statusWarn)
                 if pr.isBot { Text("bot").font(.caption).foregroundStyle(.secondary) }
             }
         }
@@ -653,7 +641,7 @@ struct WaitingOnYouCard: View {
                     Image(systemName: SidebarItem.releaseCenter.symbol).foregroundStyle(.secondary)
                     Text("Releases: waiting on you").font(.headline)
                     Text(verbatim: items.count.formatted()).font(.headline).monospacedDigit()
-                        .foregroundStyle(items.contains { $0.severity == .high } ? .red : items.isEmpty ? .green : .orange)
+                        .foregroundStyle(items.contains { $0.severity == .high } ? .statusBad : items.isEmpty ? .statusGood : .statusWarn)
                     Spacer()
                     Image(systemName: "chevron.right").foregroundStyle(.tertiary)
                 }
@@ -678,7 +666,7 @@ struct WaitingOnYouCard: View {
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+            .cardSurface()
         }
         .buttonStyle(.plain)
     }

@@ -62,7 +62,7 @@ struct SalesPage: View {
                         followUps(wt)
                         signups(wt)
                     } else {
-                        SalesCard(title: "Who to call", symbol: "phone.arrow.up.right", tint: .orange) {
+                        SalesCard(title: "Who to call", symbol: "phone.arrow.up.right", tint: .statusWarn) {
                             SalesUnknownText(reason: report.worktrack.reason ?? "")
                             Button { router.go(.worktrackCustomers) } label: { Label("Open WorkTrack customers", systemImage: "person.2.badge.key") }
                                 .buttonStyle(.borderless)
@@ -106,14 +106,12 @@ struct SalesPage: View {
     // MARK: Header
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Read-only. Linumic OS never writes to the CRM; change dates and stages in the WorkTrack console.")
-                .font(.callout).foregroundStyle(.secondary)
+        PageHeader(.sales, subtitle: Text("Read-only. Linumic OS never writes to the CRM; change dates and stages in the WorkTrack console.")) {
             FitRow(spacing: 8) {
                 SalesPill(text: String(localized: "Today in Kabul: \(SalesFormat.day(report.kabulToday)) (\(salesIsolated(report.kabulToday)))"),
                           symbol: "calendar", color: .teal)
                 if let wt = report.worktrack.value, !wt.isProduction {
-                    SalesPill(text: String(localized: "WorkTrack: \(wt.environment), not production"), symbol: "theatermasks", color: .blue)
+                    SalesPill(text: String(localized: "WorkTrack: \(wt.environment), not production"), symbol: "theatermasks", color: .statusInfo)
                 }
                 if isReading { ProgressView().controlSize(.small) }
                 Spacer(minLength: 0)
@@ -134,16 +132,16 @@ struct SalesPage: View {
         // is unknown, never "none".
         let missing = SalesBrief.accountsCaveats(wt)
         let atLeast = !missing.isEmpty
-        SalesCard(title: "Call today", symbol: "phone.fill", tint: .green, count: wt.callToday.count, atLeast: atLeast, caption: source) {
+        SalesCard(title: "Call today", symbol: "phone.fill", tint: .statusGood, count: wt.callToday.count, atLeast: atLeast, caption: source) {
             SalesCompleteness(isEmpty: wt.callToday.isEmpty, empty: "No follow-up is due today.", missing: missing)
             ForEach(wt.callToday) { f in row(f.account, due: f.due, wt: wt) }
         }
-        SalesCard(title: "This week", symbol: "calendar", tint: .blue, count: wt.thisWeek.count, atLeast: atLeast, caption: source) {
+        SalesCard(title: "This week", symbol: "calendar", tint: .statusInfo, count: wt.thisWeek.count, atLeast: atLeast, caption: source) {
             SalesCompleteness(isEmpty: wt.thisWeek.isEmpty, empty: "No follow-up in the next 7 days.", missing: missing)
             ForEach(wt.thisWeek) { f in row(f.account, due: f.due, wt: wt) }
         }
         if !wt.dateUnknown.isEmpty {
-            SalesCard(title: "Date could not be read", symbol: "exclamationmark.triangle", tint: .orange, count: wt.dateUnknown.count,
+            SalesCard(title: "Date could not be read", symbol: "exclamationmark.triangle", tint: .statusWarn, count: wt.dateUnknown.count,
                       atLeast: atLeast, caption: source) {
                 SalesNote(String(localized: "The next-action date is not a real day. WorkTrack's own Today tab may still list it; fix the date in the console."))
                 ForEach(wt.dateUnknown) { f in row(f.account, due: f.due, wt: wt) }
@@ -158,7 +156,7 @@ struct SalesPage: View {
         }
         if !wt.later.isEmpty {
             SalesCard(title: "Later", symbol: "calendar.badge.clock", tint: .secondary, count: wt.later.count, atLeast: atLeast, caption: source) {
-                ForEach(missing, id: \.self) { SalesNote($0, symbol: "exclamationmark.triangle", tint: .orange) }
+                ForEach(missing, id: \.self) { SalesNote($0, symbol: "exclamationmark.triangle", tint: .statusWarn) }
                 ForEach(wt.later) { f in row(f.account, due: f.due, wt: wt) }
             }
         }
@@ -207,7 +205,7 @@ struct SalesPage: View {
     /// From the company list alone: its source and read time are the list's, whatever the CRM accounts' state.
     private var renewals: some View {
         let read = report.renewals.value
-        return SalesCard(title: "Renewals and trials ending", symbol: "arrow.triangle.2.circlepath", tint: .orange,
+        return SalesCard(title: "Renewals and trials ending", symbol: "arrow.triangle.2.circlepath", tint: .statusWarn,
                          count: read?.list.rows.count, atLeast: read?.list.isComplete == false,
                          caption: read.map { salesSource("GET /v1/vendor/companies", environment: $0.environment, at: $0.readAt) }) {
             switch report.renewals {
@@ -283,7 +281,7 @@ struct SalesPage: View {
     }
 
     private var unknown: some View {
-        SalesCard(title: "Unknown", symbol: "questionmark.diamond", tint: .gray, count: unknownReasons.count) {
+        SalesCard(title: "Unknown", symbol: "questionmark.diamond", tint: .statusUnknown, count: unknownReasons.count) {
             if unknownReasons.isEmpty { SalesEmptyText("Every part of this page was read.") }
             ForEach(Array(unknownReasons.enumerated()), id: \.offset) { _, reason in
                 Label { Text(verbatim: reason) } icon: { Image(systemName: "questionmark.circle").foregroundStyle(.secondary) }
@@ -374,7 +372,8 @@ private struct SalesAccountRow: View {
         }
         .padding(10)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(isHighlighted ? Color.accentColor.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .hoverHighlight(cornerRadius: Theme.Radius.card)
+        .background(isHighlighted ? Color.brandAccent.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous))
         .sheet(isPresented: $drafting) {
             SalesDraftSheet(name: draftName.name, nameSource: draftName.source,
                             kinds: SalesDraft.kinds(followUp: account.company.company, today: today),
@@ -393,7 +392,7 @@ private struct SalesAccountRow: View {
                 .font(.caption).foregroundStyle(.secondary)
         case .notListed:
             Label { Text("The linked company is not in the company list (deleted, or past its limit), so whether it is a TEST company is unknown.") }
-                icon: { Image(systemName: "exclamationmark.triangle").foregroundStyle(.orange) }
+                icon: { Image(systemName: "exclamationmark.triangle").foregroundStyle(.statusWarn) }
                 .font(.caption).foregroundStyle(.secondary)
         }
     }
@@ -409,10 +408,10 @@ private struct SalesAccountRow: View {
 
     private func dueColor(_ due: SalesDue) -> Color {
         switch due {
-        case .dueNow(0): .green
-        case .dueNow: .red
-        case .dueSoon, .later: .blue
-        case .dateUnknown: .orange
+        case .dueNow(0): .statusGood
+        case .dueNow: .statusBad
+        case .dueSoon, .later: .statusInfo
+        case .dateUnknown: .statusWarn
         }
     }
 
@@ -440,7 +439,7 @@ private struct SalesSignupRow: View {
                 case .newSignup(let day):
                     SalesPill(text: String(localized: "Signed up \(SalesFormat.day(day))"), symbol: "sparkles", color: .mint)
                 case .selfServe:
-                    SalesPill(text: String(localized: "Bought a plan itself"), symbol: "cart", color: .green)
+                    SalesPill(text: String(localized: "Bought a plan itself"), symbol: "cart", color: .statusGood)
                 }
                 if signup.isOnDeskAsRenewal {
                     SalesPill(text: String(localized: "On the Desk as a trial ending"), symbol: "checklist", color: .secondary)
@@ -470,7 +469,8 @@ private struct SalesSignupRow: View {
         }
         .padding(10)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(isHighlighted ? Color.accentColor.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .hoverHighlight(cornerRadius: Theme.Radius.card)
+        .background(isHighlighted ? Color.brandAccent.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous))
         .sheet(isPresented: $drafting) {
             SalesDraftSheet(name: name, nameSource: .companies, kinds: [.welcome], license: nil, accountID: nil, today: today)
         }
@@ -494,13 +494,13 @@ private struct SalesRenewalRow: View {
                 // Days are "left" only while the licence is in force: an EXPIRED or SUSPENDED one shows its status and last day.
                 switch renewal.timing {
                 case .daysLeft(let days):
-                    SalesPill(text: String(localized: "\(days) days left"), symbol: "clock", color: days <= 7 ? .orange : .blue)
+                    SalesPill(text: String(localized: "\(days) days left"), symbol: "clock", color: days <= 7 ? .statusWarn : .statusInfo)
                 case .ended(let days):
-                    SalesPill(text: String(localized: "Ended \(days) days ago"), symbol: "clock", color: .red)
+                    SalesPill(text: String(localized: "Ended \(days) days ago"), symbol: "clock", color: .statusBad)
                 case .notInForce, .dayUnknown:
                     EmptyView()
                 }
-                if c.license.status != .active { SalesPill(text: salesIsolated(c.license.status.rawValue), symbol: "pause.circle", color: .orange) }
+                if c.license.status != .active { SalesPill(text: salesIsolated(c.license.status.rawValue), symbol: "pause.circle", color: .statusWarn) }
             }
             if let last = c.license.expiresAt {
                 switch renewal.timing {
@@ -587,7 +587,7 @@ private struct SalesContactsView: View {
             } else {
                 ProgressView().controlSize(.small)
             }
-            if let copied { SalesNote(copied, symbol: "checkmark.circle", tint: .green) }
+            if let copied { SalesNote(copied, symbol: "checkmark.circle", tint: .statusGood) }
         }
         .padding(16)
         #if os(macOS)
@@ -609,7 +609,7 @@ private struct SalesContactsView: View {
             if contacts.rows.isEmpty { SalesEmptyText("No contact on file") }
             ForEach(contacts.rows) { c in contactRow(c) }
             if contacts.skipped > 0 {
-                SalesNote(String(localized: "\(contacts.skipped) contacts could not be read."), symbol: "exclamationmark.triangle", tint: .orange)
+                SalesNote(String(localized: "\(contacts.skipped) contacts could not be read."), symbol: "exclamationmark.triangle", tint: .statusWarn)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -724,7 +724,7 @@ private struct SalesDraftSheet: View {
                 Section {
                     if copied {
                         SalesNote(String(localized: "Copied. Nothing was sent; paste it yourself. The clipboard is cleared in 2 minutes."),
-                                  symbol: "checkmark.circle", tint: .green)
+                                  symbol: "checkmark.circle", tint: .statusGood)
                     } else {
                         Text("Nothing is sent from here. Copy, then paste it into your own message.").font(.caption).foregroundStyle(.secondary)
                     }
@@ -797,10 +797,10 @@ struct SalesShapeSheet: View {
                         LabeledContent("Rows") { Text(report.rows, format: .number) }
                         LabeledContent("Read") { Text(report.readAt.formatted(date: .abbreviated, time: .shortened)) }
                         if report.differences.isEmpty {
-                            Label("The answer is what Sales expects.", systemImage: "checkmark.seal.fill").foregroundStyle(.green)
+                            Label("The answer is what Sales expects.", systemImage: "checkmark.seal.fill").foregroundStyle(.statusGood)
                         }
                         ForEach(Array(report.differences.enumerated()), id: \.offset) { _, d in
-                            Label { Text(verbatim: d) } icon: { Image(systemName: "xmark.octagon.fill") }.foregroundStyle(.red)
+                            Label { Text(verbatim: d) } icon: { Image(systemName: "xmark.octagon.fill") }.foregroundStyle(.statusBad)
                         }
                     }
                     Section("Fields") {
@@ -810,11 +810,11 @@ struct SalesShapeSheet: View {
                                     Text(verbatim: f.name).font(.callout.monospaced()).environment(\.layoutDirection, .leftToRight)
                                     Spacer()
                                     if f.differing > 0 {
-                                        Text(verbatim: String(localized: "\(f.differing) differ")).foregroundStyle(.red).font(.caption)
+                                        Text(verbatim: String(localized: "\(f.differing) differ")).foregroundStyle(.statusBad).font(.caption)
                                     }
                                 }
                                 Text(verbatim: String(localized: "Expected: \(f.expected.text). Present in \(f.present), null in \(f.null); \(typesText(f.types))"))
-                                    .font(.caption).foregroundStyle(f.differing > 0 ? .red : .secondary)
+                                    .font(.caption).foregroundStyle(f.differing > 0 ? .statusBad : .secondary)
                             }
                         }
                     }
@@ -857,7 +857,7 @@ private func salesSource(_ reference: String, environment: String, at: Date) -> 
 private struct SalesCard<Content: View>: View {
     let title: LocalizedStringKey
     let symbol: String
-    var tint: Color = .accentColor
+    var tint: Color = .brandAccent
     var count: Int?
     /// The count is a floor: rows past a limit, or set aside, were not read.
     var atLeast = false
@@ -875,7 +875,7 @@ private struct SalesCard<Content: View>: View {
                     Text(verbatim: atLeast ? String(localized: "At least \(count.formatted())") : count.formatted())
                         .font(.caption.weight(.semibold)).monospacedDigit()
                         .padding(.horizontal, 8).padding(.vertical, 2)
-                        .background(tint.opacity(0.15), in: Capsule())
+                        .pillBackground(tint)
                         .accessibilityLabel(atLeast ? Text("at least \(count) items") : Text("\(count) items"))
                 }
                 Spacer(minLength: 0)
@@ -889,9 +889,7 @@ private struct SalesCard<Content: View>: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .topLeading)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(.primary.opacity(0.08), lineWidth: 1))
-        .shadow(color: .black.opacity(0.07), radius: 12, y: 4)
+        .frostedCard(tint: tint)
     }
 }
 
@@ -902,16 +900,17 @@ private struct SalesPill: View {
     let symbol: String
     let color: Color
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.self) private var environment
 
     var body: some View {
         HStack(spacing: 4) {
             Image(systemName: symbol).foregroundStyle(color).accessibilityHidden(true)
-            Text(verbatim: text).foregroundStyle(.primary)
+            Text(verbatim: text).foregroundStyle(PillTone.text(color, in: environment))
         }
         .font(.caption.weight(.medium))
         .padding(.horizontal, 8)
         .padding(.vertical, 3)
-        .background(color.opacity(0.13), in: RoundedRectangle(cornerRadius: typeSize.isAccessibilitySize ? 10 : 20, style: .continuous))
+        .pillBackground(color, radius: typeSize.isAccessibilitySize ? 10 : nil)
         .fixedSize(horizontal: !typeSize.isAccessibilitySize, vertical: true)
         .accessibilityElement(children: .combine)
     }
@@ -941,7 +940,7 @@ private struct SalesUnknownText: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            SalesPill(text: String(localized: "Unknown"), symbol: "questionmark.circle", color: .gray)
+            SalesPill(text: String(localized: "Unknown"), symbol: "questionmark.circle", color: .statusUnknown)
             #if os(macOS)
             Text(verbatim: reason).font(.callout).foregroundStyle(.secondary).textSelection(.enabled)
             #else
@@ -973,7 +972,7 @@ private struct SalesCompleteness: View {
         } else if isEmpty {
             SalesUnknownText(reason: missing.joined(separator: " "))
         } else {
-            ForEach(missing, id: \.self) { SalesNote($0, symbol: "exclamationmark.triangle", tint: .orange) }
+            ForEach(missing, id: \.self) { SalesNote($0, symbol: "exclamationmark.triangle", tint: .statusWarn) }
         }
     }
 }
