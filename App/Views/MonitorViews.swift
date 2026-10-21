@@ -6,10 +6,10 @@ import SwiftUI
 extension MonitorState {
     var color: Color {
         switch self {
-        case .up: .green
-        case .degraded: .orange
-        case .down: .red
-        case .unknown: .gray
+        case .up: .statusGood
+        case .degraded: .statusWarn
+        case .down: .statusBad
+        case .unknown: .statusUnknown
         }
     }
 
@@ -47,10 +47,10 @@ extension MonitorReason {
 extension ExpiryLevel {
     var color: Color {
         switch self {
-        case .ok: .green
+        case .ok: .statusGood
         case .within30: .yellow
-        case .within14: .orange
-        case .within7, .expired: .red
+        case .within14: .statusWarn
+        case .within7, .expired: .statusBad
         }
     }
 
@@ -69,18 +69,9 @@ struct MonitorStateBadge: View {
     let state: MonitorState
 
     var body: some View {
-        HStack(spacing: 4) {
-            Image(systemName: state.symbol).foregroundStyle(state.color)
-            Text(state.title).foregroundStyle(.primary)
-        }
-        .font(.caption.weight(.semibold))
-        .padding(.horizontal, 7)
-        .padding(.vertical, 2)
-        .background(state.color.opacity(0.14), in: Capsule())
-        .overlay(Capsule().strokeBorder(state.color.opacity(0.55), lineWidth: 1))
-        .fixedSize()
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("Status: \(state.title)"))
+        PillLabel(text: Text(verbatim: state.title), symbol: state.symbol, color: state.color)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Status: \(state.title)"))
     }
 }
 
@@ -93,7 +84,7 @@ struct ExpiryDaysLabel: View {
         HStack(spacing: 3) {
             Image(systemName: level.symbol).foregroundStyle(level.color).imageScale(.small).accessibilityHidden(true)
             if level == .expired {
-                Text("Expired").foregroundStyle(.red)
+                Text("Expired").foregroundStyle(.statusBad)
             } else {
                 Text("\(days) days").monospacedDigit()
             }
@@ -104,7 +95,7 @@ struct ExpiryDaysLabel: View {
 /// Latency over the last 24 hours, oldest on the left. Gaps are checks without an answer.
 struct LatencySparkline: View {
     let values: [Int?]
-    var tint: Color = .accentColor
+    var tint: Color = .brandAccent
 
     var body: some View {
         let known = values.compactMap { $0 }
@@ -122,7 +113,7 @@ struct LatencySparkline: View {
                     var tick = Path()
                     tick.move(to: CGPoint(x: x, y: size.height))
                     tick.addLine(to: CGPoint(x: x, y: size.height - 5))
-                    context.stroke(tick, with: .color(.red), lineWidth: 1.5)
+                    context.stroke(tick, with: .color(.statusBad), lineWidth: 1.5)
                     continue
                 }
                 let y = size.height - CGFloat(Double(value) / top) * (size.height - 2) - 1
@@ -187,15 +178,29 @@ struct MonitorView: View {
     }
 
     private func header(_ s: MonitorSummary) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            FitRow(spacing: 8) {
-                MonitorCountChip(state: .up, count: s.up)
-                MonitorCountChip(state: .degraded, count: s.degraded)
-                MonitorCountChip(state: .down, count: s.down)
-                if s.notChecked > 0 { MonitorCountChip(state: .unknown, count: s.notChecked) }
-                if s.expiryWarnings > 0 {
-                    StatusBadge(text: String(localized: "\(s.expiryWarnings) expiry warnings"), color: .orange)
+        PageHeader(.monitor) {
+            // One row of number cards on a wide pane, two by two on a phone.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 10) {
+                    count(.up, s.up)
+                    count(.degraded, s.degraded)
+                    count(.down, s.down)
+                    // Not checked stays grey: an endpoint that was not checked is never counted as up.
+                    if s.notChecked > 0 { count(.unknown, s.notChecked) }
                 }
+                Grid(horizontalSpacing: 10, verticalSpacing: 10) {
+                    GridRow {
+                        count(.up, s.up, fills: true)
+                        count(.degraded, s.degraded, fills: true)
+                    }
+                    GridRow {
+                        count(.down, s.down, fills: true)
+                        if s.notChecked > 0 { count(.unknown, s.notChecked, fills: true) } else { Color.clear.gridCellUnsizedAxes([.horizontal, .vertical]) }
+                    }
+                }
+            }
+            if s.expiryWarnings > 0 {
+                StatusBadge(text: String(localized: "\(s.expiryWarnings) expiry warnings"), color: .statusWarn)
             }
             HStack(spacing: 8) {
                 if monitor.isChecking {
@@ -220,6 +225,12 @@ struct MonitorView: View {
         }
     }
 
+    /// One count as a number card, tinted by its state while it is above zero.
+    private func count(_ state: MonitorState, _ n: Int, fills: Bool = false) -> some View {
+        KPITile(value: n.formatted(), label: state.title, symbol: state.symbol,
+                tint: n > 0 ? state.color : .statusUnknown, fills: fills)
+    }
+
     @ViewBuilder
     private var cachePanel: some View {
         DashboardPanel(title: "Caching of the home page") {
@@ -234,7 +245,7 @@ struct MonitorView: View {
                     Label {
                         Text("Pages may be cached for \(maxAge / 86_400) days, so an edit can take that long to reach visitors who already have the page. The GoDaddy CDN sets this and the plan has no setting for it; purge the cache from the GoDaddy dashboard after an important edit. For information only.")
                     } icon: {
-                        Image(systemName: "info.circle.fill").foregroundStyle(.orange)
+                        Image(systemName: "info.circle.fill").foregroundStyle(.statusWarn)
                     }
                     .font(.callout)
                 } else {
@@ -273,7 +284,7 @@ struct MonitorView: View {
                         UnknownLabel()
                     }
                     if let error = monitor.snapshot.domainErrors[domain.name] {
-                        Label(error, systemImage: "exclamationmark.triangle.fill").font(.caption).foregroundStyle(.red)
+                        Label(error, systemImage: "exclamationmark.triangle.fill").font(.caption).foregroundStyle(.statusBad)
                     }
                 }
             }
@@ -300,7 +311,7 @@ struct MonitorCountChip: View {
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 3)
-        .background(state.color.opacity(count > 0 && state != .up ? 0.14 : 0.06), in: Capsule())
+        .pillBackground(state.color)
         .accessibilityElement(children: .combine)
     }
 }
@@ -316,7 +327,7 @@ struct MonitorCard: View {
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 MonitorStateBadge(state: state)
                 Text(L(target.name)).font(.headline).lineLimit(2)
-                if target.environment == .demo { StatusBadge(text: "Demo", color: .blue) }
+                if target.environment == .demo { StatusBadge(text: "Demo", color: .statusInfo) }
                 Spacer(minLength: 0)
             }
             Text(verbatim: target.url.absoluteString)
@@ -349,7 +360,7 @@ struct MonitorCard: View {
             }
             .font(.callout)
 
-            LatencySparkline(values: monitor.latencies(for: target), tint: state == .down ? .red : .accentColor)
+            LatencySparkline(values: monitor.latencies(for: target), tint: state == .down ? .statusBad : .brandAccent)
 
             if let r = result {
                 VStack(alignment: .leading, spacing: 2) {
@@ -373,12 +384,9 @@ struct MonitorCard: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .topLeading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
-        .overlay(alignment: .leading) {
-            // A status stripe on the leading edge (mirrors in Dari).
-            UnevenRoundedRectangle(topLeadingRadius: 10, bottomLeadingRadius: 10).fill(state.color).frame(width: 4)
-                .accessibilityHidden(true)
-        }
+        .cardSurface()
+        // A status stripe on the leading edge (mirrors in Dari).
+        .overlay(alignment: .leading) { AccentEdge(tint: state.color) }
     }
 }
 
@@ -417,7 +425,7 @@ struct MonitorStatusStrip: View {
                     let down = monitor.targets.filter { monitor.result(for: $0)?.state == .down }
                     if !down.isEmpty {
                         Text(verbatim: down.map { "\($0.product.title): \(L($0.name))" }.joined(separator: " · "))
-                            .font(.callout).foregroundStyle(.red)
+                            .font(.callout).foregroundStyle(.statusBad)
                     }
                     if let at = s.lastRoundAt {
                         Text("Checked \(at.formatted(date: .omitted, time: .shortened)), public endpoints only")
@@ -427,7 +435,7 @@ struct MonitorStatusStrip: View {
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+            .cardSurface()
         }
         .buttonStyle(.plain)
     }

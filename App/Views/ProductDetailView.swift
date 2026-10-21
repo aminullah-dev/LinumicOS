@@ -98,10 +98,10 @@ struct ProductDetailView: View {
                 let pending = p.needsConfirmation
                 let conflicts = pending.filter { $0.verification.status == .conflicting }.count
                 if conflicts > 0 {
-                    Label("\(conflicts) conflicting", systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red)
+                    Label("\(conflicts) conflicting", systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad)
                 }
                 Label("\(pending.count) items need your confirmation", systemImage: "person.badge.clock")
-                    .foregroundStyle(pending.isEmpty ? Color.secondary : Color.orange)
+                    .foregroundStyle(pending.isEmpty ? Color.secondary : Color.statusWarn)
                 Text("Last verified \(p.lastVerifiedAt?.shortDate ?? String(localized: "never"))").foregroundStyle(.secondary)
             }
             .font(.callout)
@@ -181,7 +181,7 @@ struct ProductDetailView: View {
                           onDelete: { r in model.update(p.id) { $0.issues.removeAll { $0.id == r.id } } }) { i in
                 HStack {
                     Image(systemName: i.isOpen ? "circle" : "checkmark.circle.fill")
-                        .foregroundStyle(i.isOpen ? Color.primary : Color.green)
+                        .foregroundStyle(i.isOpen ? Color.primary : Color.statusGood)
                     Text(i.title).strikethrough(!i.isOpen)
                     Spacer()
                     StatusBadge(text: i.severity.title, color: i.severity.color)
@@ -337,7 +337,7 @@ private struct OverviewTab: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 } label: {
-                    Label("Record problems", systemImage: "exclamationmark.octagon").foregroundStyle(.red)
+                    Label("Record problems", systemImage: "exclamationmark.octagon").foregroundStyle(.statusBad)
                 }
             }
     }
@@ -358,7 +358,7 @@ private struct RepositoryRow: View {
                     Text(repository.name).bold()
                 }
                 StatusBadge(text: repository.type.title, color: .indigo)
-                if let vis = repository.gitHub?.visibility { StatusBadge(text: vis.title, color: vis == .public ? .teal : .gray) }
+                if let vis = repository.gitHub?.visibility { StatusBadge(text: vis.title, color: vis == .public ? .teal : .statusUnknown) }
                 Spacer()
                 Text("Link").font(.caption).foregroundStyle(.secondary)
                 EvidenceButton(verification: repository.link)
@@ -396,7 +396,7 @@ private struct RepositoryRow: View {
                         Text("\(String(commit.sha.prefix(7))) \(commit.date?.shortDate ?? "") — \(commit.message)")
                             .font(.caption).foregroundStyle(.secondary).lineLimit(1)
                     }
-                    if !c.notes.isEmpty { Text(c.notes).font(.caption).foregroundStyle(.orange) }
+                    if !c.notes.isEmpty { Text(c.notes).font(.caption).foregroundStyle(.statusWarn) }
                 }
             }
             if !platforms.isEmpty {
@@ -557,7 +557,7 @@ private struct ReviewRow: View {
             HStack(spacing: 6) {
                 // Stars as text plus a label, so the rating isn't carried by the glyphs alone.
                 Text(String(repeating: "★", count: max(0, min(5, review.rating))) + String(repeating: "☆", count: max(0, 5 - review.rating)))
-                    .foregroundStyle(review.rating <= 2 ? .orange : .yellow)
+                    .foregroundStyle(review.rating <= 2 ? .statusWarn : .yellow)
                     .accessibilityLabel(Text("\(review.rating) of 5 stars"))
                 if let title = review.title { Text(title).bold() }
                 Spacer(minLength: 0)
@@ -579,15 +579,15 @@ private struct TestBuildRow: View {
             if let p = build.platform { Text(p == "MAC_OS" ? "macOS" : p == "IOS" ? "iOS" : p).foregroundStyle(.secondary) }
             Spacer(minLength: 0)
             if build.expired {
-                StatusBadge(text: "Expired", color: .gray)
+                StatusBadge(text: "Expired", color: .statusUnknown)
             } else if build.processingState == "VALID" {
                 if let days = build.daysUntilExpiry(from: .now) {
-                    StatusBadge(text: String(localized: "Expires in \(days) days"), color: .orange)
+                    StatusBadge(text: String(localized: "Expires in \(days) days"), color: .statusWarn)
                 } else if let expires = build.expiresAt {
                     Text("Expires \(expires.shortDate)").foregroundStyle(.secondary)
                 }
             } else {
-                StatusBadge(text: build.processingState.map(humanizeState) ?? String(localized: "Unknown"), color: .blue)
+                StatusBadge(text: build.processingState.map(humanizeState) ?? String(localized: "Unknown"), color: .statusInfo)
             }
         }
         .font(.caption)
@@ -661,7 +661,7 @@ struct RecordSection<Item: Identifiable, Row: View>: View {
                         Divider()
                     }
                 }
-                .background(.background.secondary, in: RoundedRectangle(cornerRadius: 8))
+                .cardSurface(.inner)
                 Text("Double-click a row to edit. Right-click for more actions. Click a badge to see its evidence.")
                     .font(.caption).foregroundStyle(.secondary)
             }

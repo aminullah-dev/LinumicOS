@@ -22,7 +22,7 @@ struct ContinuityView: View {
             VStack(alignment: .leading, spacing: 22) {
                 statusCard
                 if let error = model.loadError {
-                    Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange) }
+                    Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.statusWarn) }
                         .font(.callout)
                 }
                 if model.isAvailable {
@@ -60,7 +60,7 @@ struct ContinuityView: View {
     private var statusCard: some View {
         let offMac = model.log.lastVerifiedOffMac
         let onMac = model.log.lastVerified.flatMap { $0.isKnownOffThisMac ? nil : $0 }
-        let tint: Color = offMac != nil ? .green : .red
+        let tint: Color = offMac != nil ? .statusGood : .statusBad
         return StripeCard(tint: tint) {
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Image(systemName: offMac != nil ? "lock.doc.fill" : "lock.doc").font(.title2).foregroundStyle(tint)
@@ -83,10 +83,10 @@ struct ContinuityView: View {
                     if let onMac, onMac.createdAt > (offMac?.createdAt ?? .distantPast) {
                         if onMac.uploadNotChecked {
                             Text("A newer export, \(onMac.fileName), is in the cloud folder \(onMac.folder). From this Mac it can't be seen whether it was uploaded, so it counts once you open it on another computer and record it (“Opened outside this Mac…”).")
-                                .font(.callout).foregroundStyle(.orange).fixedSize(horizontal: false, vertical: true)
+                                .font(.callout).foregroundStyle(.statusWarn).fixedSize(horizontal: false, vertical: true)
                         } else {
                             Text("A newer export, \(onMac.fileName), is in \(onMac.folder) (\(onMac.folderKind.title)): not off this Mac, so it does not count here.")
-                                .font(.callout).foregroundStyle(.orange).fixedSize(horizontal: false, vertical: true)
+                                .font(.callout).foregroundStyle(.statusWarn).fixedSize(horizontal: false, vertical: true)
                         }
                     }
                 }
@@ -105,7 +105,7 @@ struct ContinuityView: View {
                     Text(verbatim: path).font(.callout.monospaced()).textSelection(.enabled).lineLimit(2)
                     if let kind = model.folderKind {
                         ReleaseBadge(text: kind.title, symbol: kind.isOffThisMac ? "checkmark.circle" : "exclamationmark.triangle",
-                                     color: kind.isOffThisMac ? .green : .orange)
+                                     color: kind.isOffThisMac ? .statusGood : .statusWarn)
                     }
                 } else {
                     Text("No folder chosen.").foregroundStyle(.secondary)
@@ -117,7 +117,7 @@ struct ContinuityView: View {
             }
             if model.folderPath != nil, let problem = model.folderProblem {
                 Text(verbatim: problem)
-                    .font(.caption).foregroundStyle(.orange).fixedSize(horizontal: false, vertical: true)
+                    .font(.caption).foregroundStyle(.statusWarn).fixedSize(horizontal: false, vertical: true)
             }
             if model.folderPath != nil, model.folderKind == .cloud {
                 Text("This Mac holds a copy of a cloud folder and uploads it when it can (not while sync is paused, the account is signed out or the storage is full). An export here counts as off this Mac once you open it on another computer and record it.")
@@ -128,7 +128,7 @@ struct ContinuityView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 16))
+        .cardSurface(.large)
     }
 
     // MARK: Export
@@ -145,7 +145,7 @@ struct ContinuityView: View {
             SecureField("Passphrase again", text: $confirmation)
                 .textFieldStyle(.roundedBorder)
             if !passphrase.isEmpty || !confirmation.isEmpty, let problem {
-                Label { Text(verbatim: problem) } icon: { Image(systemName: "info.circle").foregroundStyle(.orange) }
+                Label { Text(verbatim: problem) } icon: { Image(systemName: "info.circle").foregroundStyle(.statusWarn) }
                     .font(.caption)
             }
             HStack(spacing: 10) {
@@ -170,7 +170,7 @@ struct ContinuityView: View {
             let required = ContinuityModel.requiredNotRead(inventory: inventory, obligations: obligations)
             if !required.isEmpty {
                 Label { Text("No export until \(required.map(\.title).joined(separator: ", ")) is read: an export without it would count as the copy off this Mac while it does not hold it. Wait until it has loaded, or fix what its screen reports.") } icon: {
-                    Image(systemName: "xmark.octagon").foregroundStyle(.red)
+                    Image(systemName: "xmark.octagon").foregroundStyle(.statusBad)
                 }
                 .font(.caption)
             }
@@ -179,7 +179,7 @@ struct ContinuityView: View {
                            keys.loadError == nil ? nil : ContinuityBundle.Part.keysRegistry.title].compactMap { $0 }
             if !notRead.isEmpty {
                 Label { Text("Not loaded, so left out of this export and marked as not read: \(notRead.joined(separator: ", ")).") } icon: {
-                    Image(systemName: "exclamationmark.triangle").foregroundStyle(.orange)
+                    Image(systemName: "exclamationmark.triangle").foregroundStyle(.statusWarn)
                 }
                 .font(.caption)
             }
@@ -213,14 +213,14 @@ struct ContinuityView: View {
                         Text("SHA-256 of the decrypted file: \(r.plaintextSHA256)").font(.caption.monospaced()).textSelection(.enabled)
                     }
                 } icon: {
-                    Image(systemName: "checkmark.seal.fill").foregroundStyle(.green)
+                    Image(systemName: "checkmark.seal.fill").foregroundStyle(.statusGood)
                 }
                 .font(.callout)
             }
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 16))
+        .cardSurface(.large)
     }
 
     // MARK: Contents
@@ -242,7 +242,7 @@ struct ContinuityView: View {
         .font(.callout)
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 16))
+        .cardSurface(.large)
     }
 
     // MARK: Log
@@ -254,13 +254,13 @@ struct ContinuityView: View {
                 Text("None yet.").foregroundStyle(.secondary)
             }
             ForEach(model.log.exports) { r in
-                StripeCard(tint: r.isVerified ? (r.isKnownOffThisMac ? .green : .orange) : .red) {
+                StripeCard(tint: r.isVerified ? (r.isKnownOffThisMac ? .statusGood : .statusWarn) : .statusBad) {
                     HStack(alignment: .firstTextBaseline) {
                         Text(verbatim: r.fileName).font(.callout.monospaced()).textSelection(.enabled)
                         Spacer(minLength: 6)
-                        ReleaseBadge(text: r.folderKind.title, symbol: "folder", color: r.isKnownOffThisMac ? .green : .orange)
+                        ReleaseBadge(text: r.folderKind.title, symbol: "folder", color: r.isKnownOffThisMac ? .statusGood : .statusWarn)
                         if r.uploadNotChecked {
-                            ReleaseBadge(text: String(localized: "Upload not checked"), symbol: "icloud.slash", color: .orange)
+                            ReleaseBadge(text: String(localized: "Upload not checked"), symbol: "icloud.slash", color: .statusWarn)
                                 .help("Read back from this Mac's copy of the cloud folder. It counts as off this Mac once it is opened on another computer.")
                         }
                     }
@@ -268,14 +268,14 @@ struct ContinuityView: View {
                         .font(.caption).foregroundStyle(.secondary)
                     if let at = r.lastVerifiedAt {
                         Label { Text("Read back and matched, \(at.formatted(date: .abbreviated, time: .shortened))") } icon: {
-                            Image(systemName: "checkmark.seal").foregroundStyle(.green)
+                            Image(systemName: "checkmark.seal").foregroundStyle(.statusGood)
                         }
                         .font(.caption)
                     }
                     Text("SHA-256 (decrypted): \(r.plaintextSHA256)").font(.caption2.monospaced()).foregroundStyle(.tertiary).textSelection(.enabled)
                     ForEach(Array(r.outsideChecks.enumerated()), id: \.offset) { _, c in
                         Label { Text("Opened outside this Mac \(c.on.start().formatted(date: .abbreviated, time: .omitted)): \(c.evidence)") } icon: {
-                            Image(systemName: "laptopcomputer").foregroundStyle(.blue)
+                            Image(systemName: "laptopcomputer").foregroundStyle(.statusInfo)
                         }
                         .font(.caption)
                     }
@@ -311,7 +311,7 @@ struct ContinuityView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 16))
+        .cardSurface(.large)
     }
 }
 

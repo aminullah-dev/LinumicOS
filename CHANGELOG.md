@@ -5,6 +5,26 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed: a moderate visual uplift: colour tokens, sidebar tiles, page headers, pills and cards (2026-10-20)
+- **Why:** the owner asked for "a bit more colour and polish" while keeping a calm, native Mac app.
+- Colour tokens in one table, `tools/design/make_colors.py`, written to the asset catalogue (`AccentColor`, `Theme/`)
+  with light, dark and Increase Contrast variants and checked for contrast (CI runs `--check`): the brand accent (the
+  Linumic slate blue, from the ink's hue), status good / warn / bad / info / unknown, and twelve area tints. Unknown is
+  a neutral grey, never green. `App/Views/Theme.swift` names them, with radius and spacing tokens.
+- Sidebar: each page has a rounded tile in its area's tint with a white SF Symbol, as in System Settings, sized to the
+  Mac's sidebar icon size. The Archive's tiles are muted grey.
+- Main pages (Desk, Brief, Obligations, Money, Sales, Legal & company, Products, Agents, Monitor) open with a header:
+  a soft band in the area's tint, the page's tile and title, and the page's own summary inside it.
+- Status pills share one shape (`PillLabel`): a tinted capsule whose text takes the status colour when that keeps
+  4.5:1, otherwise the primary colour. Cards share one surface (`.cardSurface()`) with a hairline edge and a soft
+  shadow; Money's summary and the Sales cards are frosted with a wash of their tint; Monitor's counts are number cards;
+  product cards and Monitor cards carry their state on the leading edge.
+- Buttons, toggles and highlights use the brand accent whatever the system accent is. Rows that act get a gentle hover
+  highlight (instant with Reduce Motion). Header bands and frosted cards turn solid with Reduce Transparency; pills,
+  cards and headers get clear edges with Increase Contrast.
+- Fixed on the way: the Obligations header's buttons stack on an iPhone instead of wrapping letter by letter.
+- No behaviour, data or strings changed.
+
 ### Added: explicit Data API grants for every Supabase table, before Supabase's 2026-10-30 change (2026-10-20)
 - **Why:** from 2026-10-30 Supabase stops granting new tables in `public` to `anon`, `authenticated` and
   `service_role` on its own. Live tables keep their grants. A replay of the migrations (a new project, a preview

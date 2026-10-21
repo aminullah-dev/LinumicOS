@@ -128,7 +128,7 @@ struct CommandPaletteView: View {
         HStack(spacing: 10) {
             Image(systemName: item.symbol)
                 .frame(width: 22)
-                .foregroundStyle(selected ? Color.accentColor : .secondary)
+                .foregroundStyle(selected ? Color.brandAccent : .secondary)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 1) {
                 Text(verbatim: item.title).lineLimit(1)
@@ -144,7 +144,7 @@ struct CommandPaletteView: View {
         .padding(.vertical, 3)
         .padding(.horizontal, 6)
         .contentShape(Rectangle())
-        .background(selected ? Color.accentColor.opacity(0.14) : .clear, in: RoundedRectangle(cornerRadius: 6))
+        .background(selected ? Color.brandAccent.opacity(0.14) : .clear, in: RoundedRectangle(cornerRadius: 6))
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
     }

@@ -43,7 +43,7 @@ struct IntegrationsSettingsView: View {
             #endif
             Section {
                 LabeledContent {
-                    StatusBadge(text: hasToken ? "Token saved" : "Public repositories only", color: hasToken ? .green : .orange)
+                    StatusBadge(text: hasToken ? "Token saved" : "Public repositories only", color: hasToken ? .statusGood : .statusWarn)
                 } label: {
                     Label("GitHub (read-only)", systemImage: "chevron.left.forwardslash.chevron.right")
                     Text("Reads repository metadata, commits, releases, PRs, issues and CI. It never writes.")
@@ -208,7 +208,7 @@ struct IntegrationsSettingsView: View {
             Section {
                 ForEach(integrations, id: \.name) { i in
                     LabeledContent {
-                        StatusBadge(text: "Not connected", color: .gray)
+                        StatusBadge(text: "Not connected", color: .statusUnknown)
                     } label: {
                         Label(LocalizedStringKey(i.name), systemImage: i.symbol)
                         Text(LocalizedStringKey(i.plan))
@@ -304,7 +304,7 @@ private struct StoreConsoleSection: View {
     var body: some View {
         Section {
             LabeledContent {
-                StatusBadge(text: connected ? String(localized: "Connected (read-only)") : String(localized: "Not connected"), color: connected ? .green : .gray)
+                StatusBadge(text: connected ? String(localized: "Connected (read-only)") : String(localized: "Not connected"), color: connected ? .statusGood : .statusUnknown)
             } label: {
                 Label(isApple ? "App Store Connect" : "Google Play Console", systemImage: isApple ? "applelogo" : "play.rectangle")
                 Text(isApple ? "Reads versions and review states of your apps. It never changes anything." : "Reads the releases on each track and their review state. It never creates an edit or changes anything.")
@@ -595,13 +595,13 @@ private struct CloudAccountSection: View {
             .merging(state.vendors.refused) { a, _ in a }.merging(state.seedRefused) { a, _ in a }
             .sorted { $0.key < $1.key }.prefix(6)), id: \.key) { id, why in
             Label { Text("Not accepted by the server: \(id): \(why)") } icon: {
-                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.statusWarn)
             }
             .font(.caption)
         }
         if let why = state.ledgerRefused {
             Label { Text("The ledger reading was not accepted: \(why)") } icon: {
-                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.statusWarn)
             }
             .font(.caption)
         }
@@ -615,7 +615,7 @@ private struct CloudAccountSection: View {
                 Text(skew > 0 ? String(localized: "This device's clock is \(by) ahead of the server's. The times of your marks and the order of an account's facts come from each device's clock: set the date and time automatically.")
                               : String(localized: "This device's clock is \(by) behind the server's. The times of your marks and the order of an account's facts come from each device's clock: set the date and time automatically."))
             } icon: {
-                Image(systemName: "clock.badge.exclamationmark").foregroundStyle(.orange)
+                Image(systemName: "clock.badge.exclamationmark").foregroundStyle(.statusWarn)
             }
             .font(.caption)
         }
@@ -645,11 +645,11 @@ private struct CloudAccountSection: View {
         switch model.cloudStatus {
         case .synced(let at)?:
             Label(String(localized: "Synced \(at.formatted(date: .omitted, time: .shortened))"), systemImage: "checkmark.icloud")
-                .foregroundStyle(.green)
+                .foregroundStyle(.statusGood)
         case .offline(let reason)?:
-            Label(reason, systemImage: "icloud.slash").foregroundStyle(.orange)
+            Label(reason, systemImage: "icloud.slash").foregroundStyle(.statusWarn)
         case .pendingUpload(let reason)?:
-            Label(String(localized: "Changes waiting to upload: \(reason)"), systemImage: "arrow.clockwise.icloud").foregroundStyle(.orange)
+            Label(String(localized: "Changes waiting to upload: \(reason)"), systemImage: "arrow.clockwise.icloud").foregroundStyle(.statusWarn)
         case nil:
             Label("Not synced yet", systemImage: "icloud").foregroundStyle(.secondary)
         }

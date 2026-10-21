@@ -14,29 +14,20 @@ struct LicenceStateBadge: View {
 
     private var look: (text: String, symbol: String, color: Color) {
         switch record.status {
-        case .void: (String(localized: "Void"), "xmark.circle", .gray)
+        case .void: (String(localized: "Void"), "xmark.circle", .statusUnknown)
         case .superseded: (String(localized: "Superseded"), "arrow.triangle.2.circlepath", .indigo)
         case .active:
-            if record.isExpired() { (String(localized: "Expired"), "exclamationmark.octagon.fill", .red) }
-            else if record.isExpiring(within: 30) { (String(localized: "Expiring"), "clock.badge.exclamationmark", .orange) }
-            else { (String(localized: "Active"), "checkmark.seal.fill", .green) }
+            if record.isExpired() { (String(localized: "Expired"), "exclamationmark.octagon.fill", .statusBad) }
+            else if record.isExpiring(within: 30) { (String(localized: "Expiring"), "clock.badge.exclamationmark", .statusWarn) }
+            else { (String(localized: "Active"), "checkmark.seal.fill", .statusGood) }
         }
     }
 
     var body: some View {
         let l = look
-        HStack(spacing: 4) {
-            Image(systemName: l.symbol).foregroundStyle(l.color)
-            Text(verbatim: l.text).foregroundStyle(.primary)
-        }
-        .font(.caption.weight(.semibold))
-        .padding(.horizontal, 7)
-        .padding(.vertical, 2)
-        .background(l.color.opacity(0.14), in: Capsule())
-        .overlay(Capsule().strokeBorder(l.color.opacity(0.5), lineWidth: 1))
-        .fixedSize()
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("Licence status: \(l.text)"))
+        PillLabel(text: Text(verbatim: l.text), symbol: l.symbol, color: l.color)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Licence status: \(l.text)"))
     }
 }
 
@@ -236,7 +227,7 @@ struct LicencesView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Expiring in 30 days").font(.subheadline).foregroundStyle(.secondary)
                     Text(s.expiringSoon.count, format: .number).font(.title3.weight(.semibold)).monospacedDigit()
-                        .foregroundStyle(s.expiringSoon.isEmpty ? Color.primary : .orange)
+                        .foregroundStyle(s.expiringSoon.isEmpty ? Color.primary : .statusWarn)
                 }
                 .accessibilityElement(children: .combine)
                 Spacer(minLength: 0)
@@ -244,7 +235,7 @@ struct LicencesView: View {
             syncLine
             if !licences.conflicts.isEmpty {
                 Label("These licence ids exist on the server with different contents, so the server copy was kept: \(licences.conflicts.joined(separator: ", ")).", systemImage: "exclamationmark.triangle.fill")
-                    .font(.caption).foregroundStyle(.red)
+                    .font(.caption).foregroundStyle(.statusBad)
             }
         }
         .padding(.vertical, 4)
@@ -324,7 +315,7 @@ private struct SigningKeyRow: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 10) {
                 Text(verbatim: product.displayName).fontWeight(.medium)
-                StatusBadge(text: present ? String(localized: "Key present") : String(localized: "Key missing"), color: present ? .green : .orange)
+                StatusBadge(text: present ? String(localized: "Key present") : String(localized: "Key missing"), color: present ? .statusGood : .statusWarn)
                 Spacer()
                 if present {
                     Button("Remove…", role: .destructive) { confirmRemove = true }
@@ -338,7 +329,7 @@ private struct SigningKeyRow: View {
                 .textSelection(.enabled)
                 .help(KeyFingerprint.sha256Hex(product.productionPublicKey))
             if let message {
-                Text(verbatim: message).font(.caption).foregroundStyle(.red)
+                Text(verbatim: message).font(.caption).foregroundStyle(.statusBad)
             }
         }
         .padding(.vertical, 2)
@@ -483,10 +474,10 @@ struct LicenceDetailView: View {
     @ViewBuilder private func keyVerification(_ key: String, product: LicenceProduct) -> some View {
         if (try? LicenceKey.verify(key, product: product)) != nil {
             Label("Signature verified with the \(product.displayName) public key built into the app.", systemImage: "checkmark.seal.fill")
-                .font(.caption).foregroundStyle(.green)
+                .font(.caption).foregroundStyle(.statusGood)
         } else {
             Label("This key doesn't verify with the built-in \(product.displayName) public key.", systemImage: "exclamationmark.triangle.fill")
-                .font(.caption).foregroundStyle(.red)
+                .font(.caption).foregroundStyle(.statusBad)
         }
     }
 }
@@ -512,7 +503,7 @@ private struct KeyActions: View {
                     Label("Share", systemImage: "square.and.arrow.up")
                 }
             }
-            if let error { Text(verbatim: error).font(.caption).foregroundStyle(.red) }
+            if let error { Text(verbatim: error).font(.caption).foregroundStyle(.statusBad) }
         }
         #if os(iOS)
         .fileExporter(isPresented: $isExporting, document: LicenceTextDocument(text: key + "\n"),
@@ -606,7 +597,7 @@ struct IssueLicenceSheet: View {
             if !licences.hasKey(product) {
                 Section {
                     Label("No \(product.displayName) signing key on this Mac. Import it under Licences › Signing keys first.", systemImage: "key.slash")
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(.statusWarn)
                 }
             }
             Section {
@@ -649,7 +640,7 @@ struct IssueLicenceSheet: View {
                 TextField("Notes (ledger only, not in the key)", text: $notes, axis: .vertical).lineLimit(2...4)
             }
             if let error {
-                Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.red) }
+                Section { Label(error, systemImage: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) }
             }
         }
         .formStyle(.grouped)
@@ -660,18 +651,18 @@ struct IssueLicenceSheet: View {
         case .valid(let code):
             if code == "*" {
                 Label("Any machine (*): the key works on every device. Use only when you mean it.", systemImage: "exclamationmark.circle")
-                    .font(.caption).foregroundStyle(.orange)
+                    .font(.caption).foregroundStyle(.statusWarn)
             } else {
-                Label("Valid: \(ltr(code))", systemImage: "checkmark.circle.fill").font(.caption).foregroundStyle(.green)
+                Label("Valid: \(ltr(code))", systemImage: "checkmark.circle.fill").font(.caption).foregroundStyle(.statusGood)
             }
         case .empty:
             EmptyView()
         case .incomplete(let n):
             Label("\(n) of 16 characters", systemImage: "ellipsis.circle").font(.caption).foregroundStyle(.secondary)
         case .tooLong(let n):
-            Label("\(n) characters; a machine code has 16", systemImage: "xmark.circle.fill").font(.caption).foregroundStyle(.red)
+            Label("\(n) characters; a machine code has 16", systemImage: "xmark.circle.fill").font(.caption).foregroundStyle(.statusBad)
         case .invalidCharacter(let c):
-            Label("“\(String(c))” can't appear in a machine code", systemImage: "xmark.circle.fill").font(.caption).foregroundStyle(.red)
+            Label("“\(String(c))” can't appear in a machine code", systemImage: "xmark.circle.fill").font(.caption).foregroundStyle(.statusBad)
         }
     }
 
@@ -723,7 +714,7 @@ private struct IssuedKeyView: View {
             if let key = record.keyText {
                 Section {
                     Label("Signed and verified with the built-in public key. Send this key (or the .lnmlic file) to the customer.", systemImage: "checkmark.seal.fill")
-                        .font(.caption).foregroundStyle(.green)
+                        .font(.caption).foregroundStyle(.statusGood)
                     Text(verbatim: key)
                         .font(.caption.monospaced())
                         .textSelection(.enabled)

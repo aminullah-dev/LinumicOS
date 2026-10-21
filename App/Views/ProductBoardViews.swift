@@ -102,12 +102,12 @@ struct ProductBoardView: View {
     }
 
     private func header(_ report: ProductsReport) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        PageHeader(.productBoard) {
             FitRow(spacing: 8) {
                 BoardPill(text: String(localized: "\(report.notLevel.count) not level"), symbol: "exclamationmark.triangle.fill",
-                          color: report.notLevel.isEmpty ? .gray : .orange)
-                BoardPill(text: String(localized: "\(report.level.count) level"), symbol: "checkmark.circle.fill", color: .green)
-                BoardPill(text: String(localized: "\(report.unknown.count) level unknown"), symbol: "questionmark.circle.fill", color: .gray)
+                          color: report.notLevel.isEmpty ? .statusUnknown : .statusWarn)
+                BoardPill(text: String(localized: "\(report.level.count) level"), symbol: "checkmark.circle.fill", color: .statusGood)
+                BoardPill(text: String(localized: "\(report.unknown.count) level unknown"), symbol: "questionmark.circle.fill", color: .statusUnknown)
             }
             Group {
                 if let last = products.file.lastRefresh {
@@ -120,15 +120,12 @@ struct ProductBoardView: View {
             if let report = products.lastReport, !report.failed.isEmpty {
                 ForEach(report.failed.sorted(by: { $0.key < $1.key }).prefix(4), id: \.key) { repo, message in
                     Label { Text(verbatim: "\(repo): \(message)") } icon: {
-                        Image(systemName: "exclamationmark.triangle").foregroundStyle(.orange)
+                        Image(systemName: "exclamationmark.triangle").foregroundStyle(.statusWarn)
                     }
                     .font(.caption)
                 }
             }
         }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 }
 
@@ -150,7 +147,7 @@ struct ProductBoardCard: View {
                 VStack(alignment: .leading, spacing: 3) {
                     ForEach(findings.prefix(3)) { f in
                         Label { Text(verbatim: f.text).monospacedDigit() } icon: {
-                            Image(systemName: "arrow.triangle.branch").foregroundStyle(.orange)
+                            Image(systemName: "arrow.triangle.branch").foregroundStyle(.statusWarn)
                         }
                         .font(.callout)
                     }
@@ -176,8 +173,11 @@ struct ProductBoardCard: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .cardSurface()
+        // The level on the leading edge: green, orange, or grey when it is not known.
+        .overlay(alignment: .leading) { AccentEdge(tint: card.level.tint) }
+        .contentShape(RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous))
+        .hoverHighlight(cornerRadius: Theme.Radius.card)
     }
 
     /// The compared platforms (the apps people install), one row each: store, build, main.
@@ -214,11 +214,11 @@ struct ProductBoardCard: View {
         switch card.pulls {
         case .known(let p, let source, let at):
             BoardPill(text: p.byAgents > 0 ? String(localized: "\(p.open) open PRs, \(p.byAgents) by agents") : String(localized: "\(p.open) open PRs"),
-                      symbol: "arrow.triangle.pull", color: p.open > 0 ? .blue : .gray, help: BoardText.source(source, at))
+                      symbol: "arrow.triangle.pull", color: p.open > 0 ? .statusInfo : .statusUnknown, help: BoardText.source(source, at))
         case .none(let why, _, _):
-            BoardPill(text: String(localized: "No repository"), symbol: "arrow.triangle.pull", color: .gray, help: why)
+            BoardPill(text: String(localized: "No repository"), symbol: "arrow.triangle.pull", color: .statusUnknown, help: why)
         case .unknown(let why):
-            BoardPill(text: String(localized: "PRs unknown"), symbol: "arrow.triangle.pull", color: .gray, help: why)
+            BoardPill(text: String(localized: "PRs unknown"), symbol: "arrow.triangle.pull", color: .statusUnknown, help: why)
         }
     }
 
@@ -227,12 +227,12 @@ struct ProductBoardCard: View {
         case .known(let ci, let source, let at):
             let failing = !ci.failing.isEmpty
             return BoardPill(text: failing ? String(localized: "CI failing") : (ci.passing.isEmpty ? String(localized: "No CI runs") : String(localized: "CI passing")),
-                             symbol: failing ? "xmark.octagon.fill" : "checkmark.seal.fill", color: failing ? .red : (ci.passing.isEmpty ? .gray : .green),
+                             symbol: failing ? "xmark.octagon.fill" : "checkmark.seal.fill", color: failing ? .statusBad : (ci.passing.isEmpty ? .statusUnknown : .statusGood),
                              help: BoardText.source(source, at))
         case .none(let why, _, _):
-            return BoardPill(text: String(localized: "No repository"), symbol: "gearshape.2", color: .gray, help: why)
+            return BoardPill(text: String(localized: "No repository"), symbol: "gearshape.2", color: .statusUnknown, help: why)
         case .unknown(let why):
-            return BoardPill(text: String(localized: "CI unknown"), symbol: "gearshape.2", color: .gray, help: why)
+            return BoardPill(text: String(localized: "CI unknown"), symbol: "gearshape.2", color: .statusUnknown, help: why)
         }
     }
 
@@ -240,9 +240,9 @@ struct ProductBoardCard: View {
         switch value {
         case .known(let l, let source, let at):
             BoardPill(text: String(localized: "\(l.active) licences active"), symbol: "key.horizontal",
-                      color: l.expired > 0 ? .red : (l.expiringSoon > 0 ? .orange : .teal), help: BoardText.source(source, at))
+                      color: l.expired > 0 ? .statusBad : (l.expiringSoon > 0 ? .statusWarn : .teal), help: BoardText.source(source, at))
         case .none(let why, _, _), .unknown(let why):
-            BoardPill(text: String(localized: "Licences unknown"), symbol: "key.horizontal", color: .gray, help: why)
+            BoardPill(text: String(localized: "Licences unknown"), symbol: "key.horizontal", color: .statusUnknown, help: why)
         }
     }
 
@@ -253,12 +253,12 @@ struct ProductBoardCard: View {
             BoardPill(text: h.unchecked == h.total ? String(localized: "Not checked yet")
                           : (h.down > 0 ? String(localized: "\(h.down) of \(h.total) down") : String(localized: "\(h.up + h.degraded) of \(h.total) up")),
                       symbol: "waveform.path.ecg",
-                      color: h.down > 0 ? .red : (h.degraded > 0 || h.unchecked > 0 ? (h.unchecked == h.total ? .gray : .orange) : .green),
+                      color: h.down > 0 ? .statusBad : (h.degraded > 0 || h.unchecked > 0 ? (h.unchecked == h.total ? .statusUnknown : .statusWarn) : .statusGood),
                       help: BoardText.source(source, at) + (h.unchecked > 0 ? " · " + String(localized: "\(h.unchecked) not checked") : ""))
         case .none(let why, _, _):
-            BoardPill(text: String(localized: "Not monitored"), symbol: "waveform.path.ecg", color: .gray, help: why)
+            BoardPill(text: String(localized: "Not monitored"), symbol: "waveform.path.ecg", color: .statusUnknown, help: why)
         case .unknown(let why):
-            BoardPill(text: String(localized: "Health unknown"), symbol: "waveform.path.ecg", color: .gray, help: why)
+            BoardPill(text: String(localized: "Health unknown"), symbol: "waveform.path.ecg", color: .statusUnknown, help: why)
         }
     }
 }
@@ -422,17 +422,28 @@ struct ProductBoardDetail: View {
 // MARK: - Pieces
 
 /// "Level", "Not level", "Level unknown", "Nothing shipped yet", with an icon so color is never the only sign.
+extension ProductLevelState {
+    /// Level is green, not level orange; unknown and nothing shipped stay grey, never green.
+    var tint: Color {
+        switch self {
+        case .level: .statusGood
+        case .notLevel: .statusWarn
+        case .unknown, .nothingShipped: .statusUnknown
+        }
+    }
+}
+
 struct LevelBadge: View {
     let state: ProductLevelState
 
     var body: some View {
-        let (symbol, color): (String, Color) = switch state {
-        case .level: ("checkmark.circle.fill", .green)
-        case .notLevel: ("exclamationmark.triangle.fill", .orange)
-        case .unknown: ("questionmark.circle.fill", .gray)
-        case .nothingShipped: ("circle.dashed", .gray)
+        let symbol = switch state {
+        case .level: "checkmark.circle.fill"
+        case .notLevel: "exclamationmark.triangle.fill"
+        case .unknown: "questionmark.circle.fill"
+        case .nothingShipped: "circle.dashed"
         }
-        BoardPill(text: state.title, symbol: symbol, color: color)
+        BoardPill(text: state.title, symbol: symbol, color: state.tint)
     }
 }
 
@@ -442,16 +453,17 @@ struct BoardPill: View {
     let color: Color
     var help: String?
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.self) private var environment
 
     var body: some View {
         HStack(spacing: 4) {
             Image(systemName: symbol).foregroundStyle(color).accessibilityHidden(true)
-            Text(verbatim: text).foregroundStyle(.primary)
+            Text(verbatim: text).foregroundStyle(PillTone.text(color, in: environment))
         }
         .font(.caption.weight(.medium))
         .padding(.horizontal, 8)
         .padding(.vertical, 3)
-        .background(color.opacity(0.13), in: RoundedRectangle(cornerRadius: typeSize.isAccessibilitySize ? 10 : 20, style: .continuous))
+        .pillBackground(color, radius: typeSize.isAccessibilitySize ? 10 : nil)
         .fixedSize(horizontal: !typeSize.isAccessibilitySize, vertical: true)
         .accessibilityElement(children: .combine)
         .help(Text(verbatim: help ?? text))

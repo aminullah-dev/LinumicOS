@@ -42,8 +42,8 @@ struct MarketIntelligenceView: View {
                             HStack {
                                 Text(f.statement).fontWeight(.medium)
                                 Spacer()
-                                StatusBadge(text: f.kind.title, color: f.kind == .verified ? .green : .blue)
-                                StatusBadge(text: f.review.title, color: f.review == .reviewed ? .green : .orange)
+                                StatusBadge(text: f.kind.title, color: f.kind == .verified ? .statusGood : .statusInfo)
+                                StatusBadge(text: f.review.title, color: f.review == .reviewed ? .statusGood : .statusWarn)
                             }
                             if f.kind == .derived { Text("Method: \(f.method)").font(.caption).foregroundStyle(.secondary) }
                             Text(verbatim: String(localized: "Evidence:") + " " + m.evidence(for: f).map { "“\($0.excerpt.prefix(60))” (\(m.source(for: $0)?.name ?? "?"), \($0.collectedAt.shortDate))" }.joined(separator: "; "))
@@ -116,7 +116,7 @@ struct MarketIntelligenceView: View {
             }
             if let hint { Text(LocalizedStringKey(hint)).font(.caption).foregroundStyle(.secondary) }
             VStack(spacing: 0) { content() }
-                .background(.background.secondary, in: RoundedRectangle(cornerRadius: 8))
+                .cardSurface(.inner)
         }
     }
 }
@@ -241,7 +241,7 @@ struct MarketFindingEditor: View {
                                                  set: { on in if on { draft.productIDs.append(p.id) } else { draft.productIDs.removeAll { $0 == p.id } } }))
                 }
             }
-            if let blocker { Section { Label(blocker, systemImage: "exclamationmark.circle").foregroundStyle(.orange) } }
+            if let blocker { Section { Label(blocker, systemImage: "exclamationmark.circle").foregroundStyle(.statusWarn) } }
         }
         .frame(minHeight: 620)
     }

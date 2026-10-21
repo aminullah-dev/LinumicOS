@@ -161,7 +161,7 @@ struct AllRepositoriesView: View {
         .toolbar {
             if let sync = model.lastGitHubSync, !sync.report.failed.isEmpty {
                 Label("\(sync.report.failed.count) failed", systemImage: "exclamationmark.triangle")
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(.statusWarn)
                     .help(sync.report.failed.map { "\($0.key): \($0.value)" }.sorted().joined(separator: "\n"))
             }
             Button {

@@ -66,7 +66,7 @@ struct PlatformsView: View {
                 DriftCountChip(kind: .releaseBehindMain, count: s.withReleaseDrift)
                 DriftCountChip(kind: .storeBehindMain, count: s.withStoreDrift)
                 if s.notRead > 0 {
-                    StatusBadge(text: String(localized: "\(s.notRead) not read yet"), color: .gray)
+                    StatusBadge(text: String(localized: "\(s.notRead) not read yet"), color: .statusUnknown)
                 }
             }
             Group {
@@ -79,14 +79,14 @@ struct PlatformsView: View {
             .font(.caption).foregroundStyle(.secondary)
             if let report = hub.lastReport, !report.failed.isEmpty {
                 ForEach(report.failed.sorted(by: { $0.key < $1.key }), id: \.key) { slug, message in
-                    Label { Text(verbatim: "\(slug): \(message)") } icon: { Image(systemName: "exclamationmark.triangle").foregroundStyle(.orange) }
+                    Label { Text(verbatim: "\(slug): \(message)") } icon: { Image(systemName: "exclamationmark.triangle").foregroundStyle(.statusWarn) }
                         .font(.caption)
                 }
             }
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+        .cardSurface()
     }
 }
 
@@ -140,7 +140,7 @@ struct PlatformCard: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+        .cardSurface()
         .contentShape(RoundedRectangle(cornerRadius: 12))
     }
 
@@ -194,7 +194,7 @@ struct PlatformCard: View {
             let passing = runs.filter { $0.outcome == .success }.count
             HStack(spacing: 4) {
                 Image(systemName: failing > 0 ? RepositorySnapshot.CIConclusion.failure.symbol : RepositorySnapshot.CIConclusion.success.symbol)
-                    .foregroundStyle(failing > 0 ? .red : .green)
+                    .foregroundStyle(failing > 0 ? .statusBad : .statusGood)
                     .accessibilityHidden(true)
                 Text("\(passing) passing, \(failing) failing, \(row.workflows.count - runs.count) not run on main")
             }
@@ -208,18 +208,9 @@ struct BusinessModelBadge: View {
     let model: BusinessModel
 
     var body: some View {
-        HStack(spacing: 4) {
-            Image(systemName: symbol).foregroundStyle(color)
-            Text(model.title).foregroundStyle(.primary)
-        }
-        .font(.caption.weight(.semibold))
-        .padding(.horizontal, 7)
-        .padding(.vertical, 2)
-        .background(color.opacity(0.14), in: Capsule())
-        .overlay(Capsule().strokeBorder(color.opacity(0.5), lineWidth: 1))
-        .fixedSize()
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("Business model: \(model.title)"))
+        PillLabel(text: Text(model.title), symbol: symbol, color: color)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Business model: \(model.title)"))
     }
 
     private var symbol: String {
@@ -235,8 +226,8 @@ struct BusinessModelBadge: View {
         switch model {
         case .selfServe: .teal
         case .licence: .indigo
-        case .consumer: .blue
-        case .unknown: .gray
+        case .consumer: .statusInfo
+        case .unknown: .statusUnknown
         }
     }
 }
@@ -252,9 +243,9 @@ extension DriftFlag.Kind {
 
     var color: Color {
         switch self {
-        case .releaseBehindMain: .orange
+        case .releaseBehindMain: .statusWarn
         case .storeBehindMain: .yellow
-        case .ciFailing: .red
+        case .ciFailing: .statusBad
         }
     }
 
@@ -274,16 +265,10 @@ struct DriftCountChip: View {
     var showsTitle = true
 
     var body: some View {
-        HStack(spacing: 4) {
-            Image(systemName: count > 0 ? kind.symbol : "checkmark.circle").foregroundStyle(count > 0 ? kind.color : .green)
-            Text(verbatim: "\(count.formatted()) \(kind.shortTitle)")
-        }
-        .font(.caption.weight(.medium))
-        .padding(.horizontal, 7).padding(.vertical, 2)
-        .background((count > 0 ? kind.color : .green).opacity(0.12), in: Capsule())
-        .fixedSize()
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: "\(kind.title): \(count)"))
+        PillLabel(text: Text(verbatim: "\(count.formatted()) \(kind.shortTitle)"), symbol: count > 0 ? kind.symbol : "checkmark.circle",
+                  color: count > 0 ? kind.color : .statusGood, font: .caption.weight(.medium))
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(verbatim: "\(kind.title): \(count)"))
     }
 }
 

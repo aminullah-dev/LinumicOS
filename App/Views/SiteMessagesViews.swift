@@ -19,7 +19,7 @@ struct SiteMessagesView: View {
                     let new = model.new
                     if new.isEmpty {
                         Label("No new messages. Everything read so far is marked seen.", systemImage: "checkmark.circle.fill")
-                            .foregroundStyle(.green)
+                            .foregroundStyle(.statusGood)
                     }
                     ForEach(reading.messages) { m in
                         SiteMessageCard(message: m, isSeen: model.isSeen(m),
@@ -52,9 +52,9 @@ struct SiteMessagesView: View {
         VStack(alignment: .leading, spacing: 8) {
             FitRow(spacing: 8) {
                 if let n = model.newCount {
-                    ReleaseBadge(text: String(localized: "\(n) new"), symbol: "envelope.badge", color: n > 0 ? .orange : .green)
+                    ReleaseBadge(text: String(localized: "\(n) new"), symbol: "envelope.badge", color: n > 0 ? .statusWarn : .statusGood)
                 } else {
-                    ReleaseBadge(text: String(localized: "Not read"), symbol: "questionmark.circle", color: .gray)
+                    ReleaseBadge(text: String(localized: "Not read"), symbol: "questionmark.circle", color: .statusUnknown)
                 }
                 if !model.new.isEmpty {
                     Button("Mark all seen") { model.markAllSeen() }
@@ -66,7 +66,7 @@ struct SiteMessagesView: View {
                 .buttonStyle(.borderless).minTapTarget()
             }
             if let error = model.loadError {
-                Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.red) }
+                Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) }
                     .font(.callout)
             }
         }
@@ -81,7 +81,7 @@ struct SiteMessagesView: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+        .cardSurface()
     }
 }
 
@@ -91,13 +91,13 @@ struct SiteMessageCard: View {
     let toggleSeen: () -> Void
 
     var body: some View {
-        StripeCard(tint: isSeen ? .gray : .orange) {
+        StripeCard(tint: isSeen ? .statusUnknown : .statusWarn) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(verbatim: message.sender).font(.headline).textSelection(.enabled)
                 Spacer(minLength: 8)
-                if !isSeen { ReleaseBadge(text: String(localized: "New"), symbol: "envelope.badge", color: .orange) }
+                if !isSeen { ReleaseBadge(text: String(localized: "New"), symbol: "envelope.badge", color: .statusWarn) }
                 if message.isUnreadInWordPress {
-                    ReleaseBadge(text: String(localized: "Unread in WordPress"), symbol: "circle.fill", color: .blue)
+                    ReleaseBadge(text: String(localized: "Unread in WordPress"), symbol: "circle.fill", color: .statusInfo)
                 }
             }
             FitRow(spacing: 6) {
@@ -143,7 +143,7 @@ struct SiteMessagesSettingsSection: View {
     var body: some View {
         Section {
             LabeledContent {
-                StatusBadge(text: model.isConfigured ? "Password saved" : "Not connected", color: model.isConfigured ? .green : .gray)
+                StatusBadge(text: model.isConfigured ? "Password saved" : "Not connected", color: model.isConfigured ? .statusGood : .statusUnknown)
             } label: {
                 Label("linumic.com (WordPress)", systemImage: "envelope")
                 Text("Reads contact-form entries through SureForms' read-only abilities. It never changes WordPress.")
