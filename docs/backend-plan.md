@@ -1,10 +1,19 @@
 # Backend Plan
 
-**Status (2026-10-19):** the owner chose **Supabase** (2026-09-23). The app uses it through Sign in with Apple and
+**Status (2026-10-23):** the owner chose **Supabase** (2026-09-23). The app uses it through Sign in with Apple and
 `HybridInventoryStore` (since 2026-09-23), keeps the licence ledger (2026-10-09) and the oversight register there, and
 the Sentinel runs on it (deployed 2026-10-19, [sentinel.md](sentinel.md)). Integration credentials are still in each
-device's Keychain. The company OS tables (Desk state, obligations, accounts) come in its Phase 3, each migration only
-after the owner approves it ([company-os-roadmap.md](company-os-roadmap.md)).
+device's Keychain. The company OS tables shipped through Phases 1–7 (merged 2026-10-19 → 2026-10-20): Desk sync,
+obligations and accounts, and continuity each have a migration below, and each ran on the live project only after the
+owner approved it ([company-os-roadmap.md](company-os-roadmap.md)). Money, Sales, Legal & company, the marketing
+queue, Products and Agents (Phases 4–7) are **read-only** and add no backend tables — they read the existing stores,
+GitHub, the stores and the owner's ledgers on the device.
+
+On the device, the **automation engine** (`App/AutomationEngine.swift`, LinumicCore `Automation`, PR #13 merged
+2026-10-19) owns the schedules: health checks every 5 minutes, oversight and platform refreshes, the daily local
+inventory backup, the Desk ledger read and the Supabase Desk-sync push. It is separate from the Sentinel, which runs
+the same health, licence and snapshot checks on the server with pg_cron so they continue while the Mac is closed
+([automation.md](automation.md), [sentinel.md](sentinel.md)).
 
 | | |
 |---|---|
@@ -45,7 +54,9 @@ after the owner approves it ([company-os-roadmap.md](company-os-roadmap.md)).
 - The first **Sync Now** (Settings → Account → Cloud) uploads the local inventory.
 - Scheduled server work now exists for health checks, licences and inventory snapshots (the Sentinel, pg_cron + an
   Edge Function, 2026-10-19). Scheduled GitHub and store syncs on the server, and integration keys in Supabase Vault,
-  are not built: those reads run on the device.
+  are not built: those reads run on the device, driven by the device automation engine (above).
+- 2026-10-20: every `public` table's Data API grants are written out explicitly (migration `explicit_data_api_grants`,
+  PR #33), ahead of Supabase changing the default on 2026-10-30; a CI guard fails if a new table ships without them.
 
 ## When to build it
 
