@@ -1,8 +1,9 @@
 import CryptoKit
 import Foundation
 
-// Minimal Supabase client for Linumic OS: native Sign in with Apple (GoTrue id_token
-// grant), session refresh, and the two inventory RPCs. No third-party dependency.
+// Minimal Supabase client for Linumic OS: email + password sign-in (GoTrue password grant), the legacy
+// native Sign in with Apple (id_token grant), session refresh, and the two inventory RPCs.
+// Password sign-in needs no Apple capability, so the app notarises as a Developer ID build. No third-party dependency.
 // Only the *publishable* key is used here. The service-role key never belongs in the app.
 
 public struct SupabaseConfig: Sendable, Equatable {
@@ -87,6 +88,16 @@ public actor SupabaseSessionManager {
         return s
     }
 
+    /// Signs in with an email and password (GoTrue password grant) and stores the session. Reading or writing
+    /// Linumic OS data still requires being listed in `app_admins`. No Apple capability or redirect is needed, so
+    /// the macOS build notarises as a Developer ID app, and staff sign in with their own email, no Apple ID required.
+    @discardableResult
+    public func signInWithPassword(email: String, password: String) async throws -> SupabaseSession {
+        let s = try await tokenRequest(grant: "password", body: ["email": email, "password": password])
+        try store(s)
+        return s
+    }
+
     /// A valid access token, refreshed if it expires within a minute.
     public func accessToken() async throws -> String {
         guard let s = session else { throw SupabaseError.notSignedIn }
@@ -133,6 +144,11 @@ public actor SupabaseSessionManager {
         request.httpBody = try JSONEncoder().encode(body)
         let (data, response) = try await transport.send(request)
         guard (200..<300).contains(response.statusCode) else { throw SupabaseREST.error(from: data, status: response.statusCode) }
+        return try session(from: data)
+    }
+
+    /// Builds a session from a GoTrue token/verify response (both return the same shape).
+    private func session(from data: Data) throws -> SupabaseSession {
         let t = try JSONDecoder().decode(TokenResponse.self, from: data)
         let expiry = t.expires_at.map(Date.init(timeIntervalSince1970:)) ?? now().addingTimeInterval(t.expires_in ?? 3600)
         return SupabaseSession(accessToken: t.access_token, refreshToken: t.refresh_token, expiresAt: expiry, userID: t.user.id, email: t.user.email)
@@ -149,6 +165,8 @@ enum SupabaseREST {
 
     static func error(from data: Data, status: Int) -> SupabaseError {
         let body = try? JSONDecoder().decode(ErrorBody.self, from: data)
+        // RLS refusals (export/import) are "not an admin". A password sign-in failure is a 400 (invalid_grant),
+        // so it keeps GoTrue's own "Invalid login credentials" message instead.
         if status == 401 || status == 403 || body?.code == "42501" { return .notAuthorized }
         let message = body?.message ?? body?.msg ?? body?.error_description ?? String(decoding: data.prefix(200), as: UTF8.self)
         return .server(status: status, message: message)

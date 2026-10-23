@@ -62,7 +62,6 @@ targets:
         # picker, granted by the owner on 2026-10-19. A sandbox exception: fine for this privately signed app, not for the
         # Mac App Store. The app still opens only the files on LedgerAllowList inside it.
         com.apple.security.temporary-exception.files.home-relative-path.read-only: [/Projects/Multiplatform/]
-        com.apple.developer.applesignin: [Default]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.linumic.commandcenter

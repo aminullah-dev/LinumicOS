@@ -75,6 +75,32 @@ struct SupabaseAuthTests {
         #expect(AppleSignInNonce.sha256("abc") == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")
         #expect(AppleSignInNonce.make().count == 64)
     }
+
+    @Test func passwordSignInUsesThePasswordGrantAndStoresSession() async throws {
+        let secrets = MemorySecrets()
+        let t = Recorder { _ in (200, token("p1", expiresAt: 2_000_000_000)) }
+        let manager = SupabaseSessionManager(config: config, secrets: secrets, transport: t)
+        let session = try await manager.signInWithPassword(email: "owner@example.com", password: "s3cret")
+        #expect(session.userID == "user-1")
+        let r = try #require(t.requests.first)
+        #expect(r.url?.absoluteString == "https://sample.supabase.co/auth/v1/token?grant_type=password")
+        #expect(r.value(forHTTPHeaderField: "apikey") == "sb_publishable_SAMPLE")
+        let body = try JSONDecoder().decode([String: String].self, from: r.httpBody!)
+        #expect(body == ["email": "owner@example.com", "password": "s3cret"])
+        // Persisted: a new manager on the same Keychain is already signed in.
+        let reloaded = SupabaseSessionManager(config: config, secrets: secrets, transport: t)
+        #expect(await reloaded.current?.accessToken == "p1")
+    }
+
+    @Test func aWrongPasswordKeepsItsMessageAndDoesNotSignIn() async throws {
+        let t = Recorder { _ in (400, #"{"error":"invalid_grant","error_description":"Invalid login credentials"}"#) }
+        let manager = SupabaseSessionManager(config: config, secrets: MemorySecrets(), transport: t)
+        // A 400 invalid_grant keeps GoTrue's own message, not the RLS "not an admin" mapping.
+        await #expect(throws: SupabaseError.server(status: 400, message: "Invalid login credentials")) {
+            try await manager.signInWithPassword(email: "owner@example.com", password: "wrong")
+        }
+        #expect(await manager.current == nil)
+    }
 }
 
 @Suite("Supabase inventory store")

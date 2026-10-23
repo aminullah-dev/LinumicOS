@@ -10,7 +10,7 @@ Mac client (SwiftUI, menu bar)       iOS/iPadOS client (same target)       Web c
                           HybridInventoryStore
                      ┌───────────────┴────────────────┐
              JSONFileInventoryStore            RemoteInventoryStore
-             (local cache, this device)        (Supabase RPCs, Sign in with Apple)
+             (local cache, this device)        (Supabase RPCs, email + password sign-in)
                                                        │
                                      Supabase (Postgres, RLS, audit; licences,
                                      oversight, Sentinel: pg_cron + Edge Function)

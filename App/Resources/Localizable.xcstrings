@@ -31424,16 +31424,6 @@
         }
       }
     },
-    "Not checked yet": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز بررسی نشده"
-          }
-        }
-      }
-    },
     "Not opened": {
       "localizations": {
         "fa-AF": {
@@ -32090,6 +32080,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "اجازه‌های فقط‌خواندنی برای «بررسی»: %@"
+          }
+        }
+      }
+    },
+    "Sign in": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ورود"
           }
         }
       }
