@@ -162,7 +162,7 @@ development-signed, not notarized app). It is the row `signing.apple-development
 | Microsoft 365 (contact@linumic.com) | not recorded | M/linumic-site.md:107 |
 | Hetzner (VELRO server) | not recorded | Velro/PRIORITIES.md:9 |
 | Google Cloud and Firebase | not recorded | M/worktrack-strengthen-platform.md:13; M/safebeauty-marketing.md:49 |
-| Supabase (Free plan) | not recorded | docs/backend-plan.md:11 (the Organization row); M/linumic-command-center.md:48 |
+| Supabase (Free plan) | not recorded | docs/backend-plan.md:20 (the Organization row); M/linumic-command-center.md:48 |
 | GitHub (aminullah-dev) | personal | GitHub API `users/aminullah-dev`: type User (read 2026-10-19); NA:67 |
 | Meta ad account (act 1061522111943056) | personal | M/safebeauty-marketing.md:29 |
 | ElevenLabs | not recorded | M/be-paya-game.md:17 |

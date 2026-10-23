@@ -134,7 +134,7 @@ public enum ObligationSeed {
                           recordedOn: KeyDay("2026-10-06"), origin: .seed),
             VendorAccount(id: "supabase", name: "Supabase",
                           purpose: "Linumic OS's backend: inventory sync, the licence ledger and the Sentinel. Free plan.",
-                          source: "~/Projects/Multiplatform/Linumic/LinumicCommandCenter/docs/backend-plan.md:11 (the Organization row: mjkdmjrjalelcmqwdwok, Free plan); \(lcc):48",
+                          source: "~/Projects/Multiplatform/Linumic/LinumicCommandCenter/docs/backend-plan.md:20 (the Organization row: mjkdmjrjalelcmqwdwok, Free plan); \(lcc):48",
                           recordedOn: d23, origin: .seed),
             VendorAccount(id: "github", name: "GitHub (aminullah-dev)",
                           purpose: "Every product's repositories.",
