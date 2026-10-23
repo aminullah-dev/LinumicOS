@@ -1,7 +1,6 @@
 #if os(macOS)
 import AppKit
 #endif
-import AuthenticationServices
 import LinumicCore
 import SwiftUI
 import UniformTypeIdentifiers
@@ -520,8 +519,9 @@ enum AppLanguage: String, CaseIterable, Identifiable {
 private struct CloudAccountSection: View {
     @Environment(InventoryModel.self) private var model
     @Environment(DeskSyncModel.self) private var deskSync
-    @Environment(\.colorScheme) private var colorScheme
-    @State private var rawNonce = ""
+    @State private var email = ""
+    @State private var password = ""
+    @State private var sending = false
     @State private var sendsLedgers = DeskSyncModel.sendsLedgers
 
     var body: some View {
@@ -529,7 +529,7 @@ private struct CloudAccountSection: View {
             if !model.isCloudAvailable {
                 Text("Cloud sync isn't configured in this build.").foregroundStyle(.secondary)
             } else if let user = model.cloudUser {
-                LabeledContent("Signed in") { Text(verbatim: user.email ?? "Apple ID") }
+                LabeledContent("Signed in") { Text(verbatim: user.email ?? user.userID) }
                 LabeledContent("User ID") {
                     Text(verbatim: user.userID).font(.caption.monospaced()).textSelection(.enabled)
                 }
@@ -551,36 +551,44 @@ private struct CloudAccountSection: View {
             } else {
                 Text("Local only. Sign in to keep the inventory on the Linumic server (Supabase) and use it on Mac and iPhone.")
                     .foregroundStyle(.secondary)
-                SignInWithAppleButton(.signIn) { request in
-                    rawNonce = AppleSignInNonce.make()
-                    request.requestedScopes = [.email]
-                    request.nonce = AppleSignInNonce.sha256(rawNonce)
-                } onCompletion: { result in
-                    switch result {
-                    case .success(let authorization):
-                        guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
-                              let token = credential.identityToken.flatMap({ String(data: $0, encoding: .utf8) }) else {
-                            model.errorMessage = String(localized: "Apple didn't return an identity token.")
-                            return
-                        }
-                        let nonce = rawNonce
-                        Task {
-                            await model.signInWithApple(idToken: token, rawNonce: nonce)
-                            await deskSync.sync()
-                        }
-                    case .failure(let error):
-                        if (error as? ASAuthorizationError)?.code != .canceled {
-                            model.errorMessage = String(localized: "Sign in failed: \(error.localizedDescription)")
-                        }
-                    }
-                }
-                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-                .frame(height: 34)
+                emailSignIn
             }
         } header: {
             Text("Cloud")
         } footer: {
             Text("Only accounts added as admins on the server can read or change data. Everything is also kept on this device, so it works offline.")
+        }
+    }
+
+    /// Email + password sign-in (Supabase password grant). No Apple capability or redirect, so the app can be a
+    /// notarised Developer ID build. Any account can sign in, but only accounts listed in `app_admins` on the
+    /// server see data.
+    @ViewBuilder
+    private var emailSignIn: some View {
+        TextField("Email", text: $email)
+            .autocorrectionDisabled(true)
+            #if os(iOS)
+            .textInputAutocapitalization(.never)
+            .keyboardType(.emailAddress)
+            #endif
+        SecureField("Password", text: $password)
+            .onSubmit { signIn() }
+        Button {
+            signIn()
+        } label: {
+            if sending { ProgressView().controlSize(.small) } else { Text("Sign in") }
+        }
+        .disabled(sending || !email.contains("@") || password.isEmpty)
+    }
+
+    private func signIn() {
+        guard !sending, email.contains("@"), !password.isEmpty else { return }
+        Task {
+            sending = true
+            await model.signInWithEmail(email: email, password: password)
+            if model.cloudUser != nil { password = "" }
+            sending = false
+            await deskSync.sync()
         }
     }
 

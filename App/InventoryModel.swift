@@ -111,6 +111,20 @@ final class InventoryModel {
         }
     }
 
+    /// Signs in with an email and password, then syncs. On first connection the local inventory is uploaded.
+    func signInWithEmail(email: String, password: String) async {
+        guard let sessionManager, let config = Self.supabaseConfig else { return }
+        do {
+            cloudUser = try await sessionManager.signInWithPassword(
+                email: email.trimmingCharacters(in: .whitespacesAndNewlines),
+                password: password)
+            useCloud(sessionManager, config: config)
+            await syncNow()
+        } catch {
+            errorMessage = String(localized: "Sign in failed: \(error.localizedDescription)")
+        }
+    }
+
     /// Pulls from the server (pushing any pending local edits first) and refreshes the screen.
     func syncNow() async {
         guard let hybrid, !isSyncing else { return }

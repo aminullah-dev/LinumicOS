@@ -377,8 +377,11 @@ post as Linumic, so it is treated as a production system.
 
 ## Backend phase (design)
 
-- **Authentication:** Sign in with Apple or passkeys for Linumic staff, with
-  short-lived access tokens. The Mac client keeps its refresh token in the Keychain.
+- **Authentication:** email + password (Supabase GoTrue password grant) for Linumic staff, with short-lived access
+  tokens. The Mac client keeps its refresh token in the Keychain. This was chosen over native Sign in with Apple so
+  the macOS build carries no `com.apple.developer.applesignin` entitlement and can ship as a notarised Developer ID
+  app; it also lets staff sign in with their own account (each added to `app_admins`), without every person needing
+  an Apple ID, and without configuring an email provider just to sign in.
 - **Role-based access:** `owner`, `admin`, `developer`, `marketing`, `viewer`.
   Permissions are checked on the server (row-level security or API middleware),
   never only in the client.

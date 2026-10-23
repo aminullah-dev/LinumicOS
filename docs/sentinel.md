@@ -110,7 +110,7 @@ Suggested display (the app layer decides):
   8 days.
 - **Drift:** `missingFromServer` and `unknownToApp` should both be empty. A non-empty list means `MonitorCatalog` and
   `supabase/functions/sentinel/targets.ts` disagree. `SentinelParityTests` fails the build in that case.
-- `SupabaseError.notAuthorized` means the signed-in Apple ID is not in `app_admins`.
+- `SupabaseError.notAuthorized` means the signed-in account is not in `app_admins`.
 
 ## Deployed (2026-10-19 00:57 UTC)
 
