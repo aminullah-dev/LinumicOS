@@ -116,8 +116,8 @@ struct ObligationSeedTests {
             .deletingLastPathComponent().deletingLastPathComponent()
         let lines = try String(contentsOf: root.appending(path: "docs/backend-plan.md"), encoding: .utf8).components(separatedBy: "\n")
         let supabase = try #require(ObligationSeed.accounts.first { $0.id == "supabase" })
-        #expect(supabase.source.contains("backend-plan.md:11"))
-        #expect(lines[10].contains("Organization") && lines[10].contains("mjkdmjrjalelcmqwdwok") && lines[10].contains("Free plan"))
+        #expect(supabase.source.contains("backend-plan.md:20"))
+        #expect(lines[19].contains("Organization") && lines[19].contains("mjkdmjrjalelcmqwdwok") && lines[19].contains("Free plan"))
     }
 }
 
