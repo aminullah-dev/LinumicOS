@@ -41,18 +41,21 @@ TOKENS = [
     ("StatusInfo",         "text",   "#215DAB", "#7CB2F8", "#18447F", "#C5DDFC"),
     ("StatusUnknown",      "text",   "#5D5D65", "#AFAFB6", "#45454A", "#DBDBDE"),
     # Area tints (sidebar tiles, page headers, number cards). Ink is the brand; Graphite is the muted Archive.
+    # Harmonised 2026-10-31: one family, not a rainbow. Each keeps its hue (so money stays green, Monitor pink…) but
+    # all share the same moderate saturation and the same white-glyph contrast weight (~4.4 light / 4.0 dark / 5.7 /
+    # 5.4 HC), so the tiles and page headers read as one palette. Ink (the brand slate) is left as it was.
     ("AreaInk",            "tile",   "#2B3A52", "#3F5574", "#202C3E", "#2B3A52"),
-    ("AreaBlue",           "tile",   "#2D72D9", "#3A7FE2", "#1F57AA", "#2D63B8"),
-    ("AreaIndigo",         "tile",   "#5450CF", "#615DDB", "#3F3BAA", "#4945B8"),
-    ("AreaPurple",         "tile",   "#8A4BC9", "#9558D3", "#6C35A3", "#7740AE"),
-    ("AreaPink",           "tile",   "#CC3F7D", "#D44C89", "#A42C62", "#AE336A"),
-    ("AreaRed",            "tile",   "#D23F38", "#DA4A43", "#A82C26", "#B0322B"),
-    ("AreaOrange",         "tile",   "#C65E0C", "#CF6A17", "#9A4705", "#A34E09"),
-    ("AreaAmber",          "tile",   "#B07408", "#B97E0E", "#865703", "#8E5D05"),
-    ("AreaGreen",          "tile",   "#24924A", "#2C9C53", "#1A7038", "#1D763C"),
-    ("AreaTeal",           "tile",   "#15838F", "#1A8D99", "#0F646D", "#126B75"),
-    ("AreaBrown",          "tile",   "#8E6440", "#9A6F4A", "#6E4C2F", "#765234"),
-    ("AreaGraphite",       "tile",   "#787B82", "#6E7178", "#55585E", "#5C5F66"),
+    ("AreaBlue",           "tile",   "#4479C7", "#4E80CA", "#3566B0", "#366AB6"),
+    ("AreaIndigo",         "tile",   "#716DCE", "#7875D1", "#5C58C7", "#605CC9"),
+    ("AreaPurple",         "tile",   "#955FCA", "#9B68CD", "#8547C2", "#884CC3"),
+    ("AreaPink",           "tile",   "#C74C82", "#CA578A", "#B3386E", "#B83A72"),
+    ("AreaRed",            "tile",   "#C9524C", "#CD5C56", "#B53C36", "#BC3E38"),
+    ("AreaOrange",         "tile",   "#AC6832", "#B66E35", "#93582B", "#985C2C"),
+    ("AreaAmber",          "tile",   "#95742B", "#9D792D", "#7F6225", "#836526"),
+    ("AreaGreen",          "tile",   "#2B884B", "#2E9050", "#257540", "#267842"),
+    ("AreaTeal",           "tile",   "#29848D", "#2C8B96", "#237179", "#24757D"),
+    ("AreaBrown",          "tile",   "#9E6E44", "#A77448", "#865E3A", "#8B613C"),
+    ("AreaGraphite",       "tile",   "#747883", "#7B7F8A", "#63666F", "#676A74"),
 ]
 
 
