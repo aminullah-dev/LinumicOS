@@ -39,7 +39,7 @@ struct ContinuityView: View {
                 recipeCard
             }
             .padding(20)
-            .frame(maxWidth: 900, alignment: .leading)
+            .frame(maxWidth: 1000, alignment: .leading)
         }
         .navigationTitle(SidebarItem.continuity.title)
         .sheet(item: $checking) { record in

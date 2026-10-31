@@ -36,7 +36,7 @@ struct SiteMessagesView: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
             .padding(20)
-            .frame(maxWidth: 900, alignment: .leading)
+            .frame(maxWidth: 1000, alignment: .leading)
         }
         .navigationTitle(SidebarItem.siteMessages.title)
         .toolbar {
