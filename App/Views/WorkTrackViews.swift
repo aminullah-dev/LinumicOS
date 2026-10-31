@@ -111,6 +111,7 @@ struct WorkTrackCustomersView: View {
                     signedOut
                 }
             }
+            .pageBandInset(.worktrackCustomers)
             .navigationTitle("WorkTrack customers")
             .navigationDestination(for: String.self) { WorkTrackCompanyView(companyID: $0) }
             .toolbar { toolbar }
