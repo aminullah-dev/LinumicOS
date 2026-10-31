@@ -742,12 +742,14 @@ enum MacPresence {
     static var hidesDock: Bool { UserDefaults.standard.bool(forKey: hideDockKey) }
     static var startsHidden: Bool { UserDefaults.standard.bool(forKey: startHiddenKey) }
 
-    /// The app's own document windows (not the menu bar panel, sheets or alerts).
+    /// The app's own document windows (not the menu bar panel, sheets or alerts). Touches `NSApp`, so main-actor.
+    @MainActor
     static var mainWindows: [NSWindow] {
         NSApp.windows.filter { $0.isVisible && $0.canBecomeMain && !($0 is NSPanel) }
     }
 
-    /// Back to a normal app with a Dock icon, in front.
+    /// Back to a normal app with a Dock icon, in front. Touches `NSApp`, so main-actor.
+    @MainActor
     static func activate() {
         NSApp.setActivationPolicy(.regular)
         NSApp.activate()
