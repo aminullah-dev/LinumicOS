@@ -21,6 +21,7 @@ struct PlatformsView: View {
         let summary = hub.summary
         return ScrollView {
             VStack(alignment: .leading, spacing: 16) {
+                PageHeader(.platforms)
                 header(summary)
                 if rows.isEmpty {
                     ContentUnavailableView("No platforms", systemImage: SidebarItem.platforms.symbol,

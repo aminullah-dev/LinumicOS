@@ -86,6 +86,11 @@ struct LicencesView: View {
     var body: some View {
         NavigationStack(path: $path) {
             List {
+                Section {
+                    PageHeader(.licences)
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
+                }
                 Section { overview }
                 #if os(macOS)
                 Section {

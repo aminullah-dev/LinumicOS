@@ -20,6 +20,7 @@ struct ContinuityView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
+                PageHeader(.continuity)
                 statusCard
                 if let error = model.loadError {
                     Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.statusWarn) }

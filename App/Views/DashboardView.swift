@@ -21,6 +21,7 @@ struct DashboardView: View {
         let s = model.summary
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
+                PageHeader(.dashboard)
                 if s.pendingConfirmations > 0 {
                     Button { router.sidebar = .verification } label: {
                         HStack {

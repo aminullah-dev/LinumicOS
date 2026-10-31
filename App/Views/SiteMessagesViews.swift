@@ -12,6 +12,7 @@ struct SiteMessagesView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
+                PageHeader(.siteMessages)
                 header
                 if !model.isConfigured {
                     notConnected

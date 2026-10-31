@@ -102,6 +102,7 @@ struct KeysView: View {
         let reminders = keys.reminders
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
+                PageHeader(.keys)
                 header
                 if let error = keys.loadError {
                     Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.statusBad) }

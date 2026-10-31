@@ -108,6 +108,7 @@ struct AutomationView: View {
         TimelineView(.periodic(from: .now, by: 30)) { context in
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
+                    PageHeader(.automation)
                     AutomationStatusCard(now: context.date)
                     SentinelCard(now: context.date)
                     jobs(now: context.date)

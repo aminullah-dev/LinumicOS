@@ -10,6 +10,7 @@ struct OversightView: View {
         let summary = model.oversightSummary
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
+                PageHeader(.oversight)
                 if model.oversight.isEmpty {
                     emptyState
                 } else {
