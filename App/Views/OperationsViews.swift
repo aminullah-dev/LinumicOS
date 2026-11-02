@@ -595,6 +595,7 @@ struct TalarSignInSheet: View {
                     SecureField("Password", text: $password)
                         .textContentType(.password)
                         .onSubmit { Task { await signIn() } }
+                    PasteSecretButton(text: $password)
                 } footer: {
                     Text("A Talar platform admin account (Firebase email and password with the role \"admin\" claim). Use one that owns no organisation: creating or joining one replaces the claim. The password goes to Firebase once and is not stored.")
                 }
@@ -869,6 +870,7 @@ struct SafeBeautySignInSheet: View {
                     SecureField("Password", text: $password)
                         .textContentType(.password)
                         .onSubmit { Task { await signIn() } }
+                    PasteSecretButton(text: $password)
                 } footer: {
                     Text("The same phone and password as the SafeBeauty admin console. 0700…, 700… and +93700… all work; an international number needs its +. SafeBeauty allows 10 attempts per number every 15 minutes. Nothing typed here is stored.")
                 }

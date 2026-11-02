@@ -423,3 +423,45 @@ struct EditorSheet<Content: View>: View {
 extension Date {
     var shortDate: String { formatted(date: .abbreviated, time: .omitted) }
 }
+
+// MARK: - Secrets without the field
+
+/// Fills a secret field from the clipboard without focusing it. On the owner's Mac clicking the GitHub token field
+/// crashed the app (2026-11-02, a stack overflow inside SwiftUI's accessibility on the main thread, set off by another
+/// process asking about the field), so a key can be entered without ever touching the field. It only fills the same
+/// state the field holds: saving stays with the page's own button. The clipboard is emptied once the value is taken, so
+/// the secret doesn't stay there.
+struct PasteSecretButton: View {
+    @Binding var text: String
+    @State private var empty = false
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Button("Paste from clipboard", systemImage: "doc.on.clipboard") { paste() }
+            if !text.isEmpty {
+                Label("Filled", systemImage: "checkmark.circle.fill").font(.caption).foregroundStyle(.statusGood)
+            } else if empty {
+                Text("The clipboard holds no text.").font(.caption).foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private func paste() {
+        #if os(macOS)
+        let value = NSPasteboard.general.string(forType: .string)
+        #else
+        let value = UIPasteboard.general.string
+        #endif
+        guard let value = value?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty else {
+            empty = true
+            return
+        }
+        empty = false
+        text = value
+        #if os(macOS)
+        NSPasteboard.general.clearContents()
+        #else
+        UIPasteboard.general.string = ""
+        #endif
+    }
+}

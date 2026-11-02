@@ -2288,6 +2288,16 @@
         }
       }
     },
+    "Filled": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پر شد"
+          }
+        }
+      }
+    },
     "Firebase Cloud Functions": {
       "localizations": {
         "fa-AF": {
@@ -3118,6 +3128,16 @@
         }
       }
     },
+    "Paste from clipboard": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چسباندن از کلیپ‌بورد"
+          }
+        }
+      }
+    },
     "Platforms not level: %d": {
       "localizations": {
         "fa-AF": {
@@ -3464,6 +3484,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "وب و بک‌اند Talar"
+          }
+        }
+      }
+    },
+    "The clipboard holds no text.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیپ‌بورد متنی ندارد."
           }
         }
       }
