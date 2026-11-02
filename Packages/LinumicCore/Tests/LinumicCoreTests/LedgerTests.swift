@@ -258,7 +258,12 @@ struct LedgerReaderTests {
         #expect(!LedgerAllowList.allows("Projects/Multiplatform/Velro/NEXT-ACTIONS-2026-10-19.md"))
         #expect(!LedgerAllowList.allows("Projects/Multiplatform/NEXT-ACTIONS-latest.md"))
         #expect(!LedgerAllowList.allows("Projects/Multiplatform/AfghanJama/PRIORITIES.md"))
-        #expect(LedgerAllowList.priorities.count == 7)
+        #expect(LedgerAllowList.priorities.count == 6)
+        // Archived and off this Mac (2026-11-02).
+        #expect(!LedgerAllowList.allows("Projects/Multiplatform/DukanPro/PRIORITIES.md"))
+        // Its ledger holds private notes and the repository is public, so it lives outside the repository.
+        #expect(!LedgerAllowList.allows("Projects/Multiplatform/Linumic/LinumicCommandCenter/PRIORITIES.md"))
+        #expect(LedgerAllowList.allows("Projects/Multiplatform/Linumic/PRIORITIES-LinumicOS.md"))
         #expect(!LedgerAllowList.allows("Games/BE-PAYA/PRIORITIES.md"))
     }
 
@@ -267,18 +272,18 @@ struct LedgerReaderTests {
         fs.files["\(home)/Projects/Multiplatform/PRIORITIES.md"] = "آخرین بازبینی: 2026-10-10\n## P0\n- [ ] یک"
         fs.files["\(home)/Projects/Multiplatform/WorkTrack/PRIORITIES.md"] = try text("ledger-priorities-sample")
         fs.links.insert("\(home)/Projects/Multiplatform/Velro/PRIORITIES.md")
-        fs.files["\(home)/Projects/Multiplatform/DukanPro/PRIORITIES.md"] = "x"
-        fs.sizes["\(home)/Projects/Multiplatform/DukanPro/PRIORITIES.md"] = 5_000_000
+        fs.files["\(home)/Projects/Multiplatform/Linumic/PRIORITIES-LinumicOS.md"] = "x"
+        fs.sizes["\(home)/Projects/Multiplatform/Linumic/PRIORITIES-LinumicOS.md"] = 5_000_000
         fs.files["\(home)/Projects/Multiplatform/NEXT-ACTIONS-2026-10-09.md"] = "old"
         fs.files["\(home)/Projects/Multiplatform/NEXT-ACTIONS-2026-10-12.md"] = try text("next-actions-sample")
         // Only ~/Projects/Multiplatform is granted.
         let reading = LedgerReader.read(home: home, granted: ["\(home)/Projects/Multiplatform/"], fs: fs, now: now)
-        #expect(reading.files.count == 8)
+        #expect(reading.files.count == 7)
         #expect(reading.file("bepaya") == nil)   // the game is not a ledger (owner, 2026-10-19)
         #expect(reading.file("talar")?.status == .notFound)
         #expect(reading.file("safebeauty")?.status == .notFound)
         guard case .unreadable = reading.file("velro")?.status else { Issue.record("a link is not followed"); return }
-        guard case .unreadable = reading.file("dukanpro")?.status else { Issue.record("too large"); return }
+        guard case .unreadable = reading.file("linumicos")?.status else { Issue.record("too large"); return }
         guard case .read(.priorities(let wt)) = reading.file("worktrack")?.status else { Issue.record("WorkTrack read"); return }
         #expect(wt.items.count == 10)
         let next = try #require(reading.file("next-actions"))

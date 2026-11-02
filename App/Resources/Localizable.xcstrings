@@ -1488,6 +1488,16 @@
         }
       }
     },
+    "%lld of %lld sources are out of date": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld از %2$lld منبع به‌روز نیست"
+          }
+        }
+      }
+    },
     "%lld of %lld up": {
       "localizations": {
         "fa-AF": {
@@ -1768,6 +1778,16 @@
         }
       }
     },
+    "%lld sources are out of date": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld منبع به‌روز نیست"
+          }
+        }
+      }
+    },
     "%lld up": {
       "localizations": {
         "fa-AF": {
@@ -1928,6 +1948,16 @@
         }
       }
     },
+    "Build results are shown on Releases and Platforms, read from GitHub Actions. This page holds no records of its own.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نتیجهٔ ساخت‌ها در انتشارها و پلتفرم‌ها نشان داده می‌شود و از GitHub Actions خوانده می‌شود. این صفحه رکورد خودش را ندارد."
+          }
+        }
+      }
+    },
     "Built versions differ: %@": {
       "localizations": {
         "fa-AF": {
@@ -2014,6 +2044,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "کنسول شرکت"
+          }
+        }
+      }
+    },
+    "Connect": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وصل کردن"
           }
         }
       }
@@ -2164,6 +2204,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "از سطر فروشگاه در فهرست محصولات"
+          }
+        }
+      }
+    },
+    "From the last reading of the public store pages, or live from the consoles once their read-only keys are added in Settings → Integrations.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از آخرین خواندن صفحه‌های عمومی فروشگاه‌ها، یا زنده از کنسول‌ها وقتی کلیدهای فقط‌خواندنی آن‌ها در تنظیمات ← یکپارچه‌سازی‌ها اضافه شود."
           }
         }
       }
@@ -3178,6 +3228,16 @@
         }
       }
     },
+    "See why": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دیدن علت"
+          }
+        }
+      }
+    },
     "Server": {
       "localizations": {
         "fa-AF": {
@@ -3234,6 +3294,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "وب و بک‌اند Talar"
+          }
+        }
+      }
+    },
+    "The folder is granted and the file is not there. The repository may be on a branch that doesn't have it. Not “0 open”: unknown until it is found.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دسترسی به پوشه داده شده، ولی فایل آنجا نیست. شاید مخزن روی شاخه‌ای است که این فایل را ندارد. این «۰ باز» نیست: تا پیدا نشود، نامعلوم است."
           }
         }
       }
@@ -3404,6 +3474,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "وب، دسکتاپ و سرور"
+          }
+        }
+      }
+    },
+    "What they feed has never been read on this device.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آنچه از این منبع‌ها می‌آید، در این دستگاه هرگز خوانده نشده است."
+          }
+        }
+      }
+    },
+    "What they feed is shown as last read. Oldest good reading: %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آنچه از این منبع‌ها می‌آید، همان خواندن قبلی است. قدیمی‌ترین خواندن سالم: %@."
           }
         }
       }
@@ -9130,16 +9220,6 @@
         }
       }
     },
-    "Build status will come from CI (GitHub Actions) once the read-only GitHub integration is connected.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "وضعیت بیلد پس از وصل شدن GitHub (فقط‌خواندنی) از CI (GitHub Actions) نشان داده می‌شود."
-          }
-        }
-      }
-    },
     "Builds": {
       "localizations": {
         "fa-AF": {
@@ -10891,16 +10971,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "از %@."
-          }
-        }
-      }
-    },
-    "From public store pages and the owner's App Store Connect screenshot (2026-09-23), or live from the consoles once their read-only keys are added in Settings → Integrations.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "از صفحه‌های عمومی فروشگاه و اسکرین‌شات App Store Connect مالک (۲۰۲۶-۰۹-۲۳)، یا به‌صورت زنده از کنسول‌ها وقتی کلیدهای فقط‌خواندنی‌شان در تنظیمات ← اتصال‌ها اضافه شوند."
           }
         }
       }
@@ -28440,16 +28510,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "هنوز باز طبق %@"
-          }
-        }
-      }
-    },
-    "The folder is granted and the file is not there. Not “0 open”: unknown until it is found.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "به پوشه اجازه داده شده و فایل در آن نیست. «۰ باز» نیست: تا پیدا شدن، نامعلوم است."
           }
         }
       }

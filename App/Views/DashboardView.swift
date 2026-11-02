@@ -136,7 +136,7 @@ struct DashboardView: View {
                     DashboardPanel(title: "Store status") {
                         LabeledContent("Products on the App Store") { Text(s.productsWithAppStoreListing, format: .number) }
                         LabeledContent("Products on Google Play") { Text(s.productsWithGooglePlayListing, format: .number) }
-                        Text("From public store pages and the owner's App Store Connect screenshot (2026-09-23), or live from the consoles once their read-only keys are added in Settings → Integrations.")
+                        Text("From the last reading of the public store pages, or live from the consoles once their read-only keys are added in Settings → Integrations.")
                             .font(.caption).foregroundStyle(.secondary)
                     }
                     DashboardPanel(title: "GitHub") {

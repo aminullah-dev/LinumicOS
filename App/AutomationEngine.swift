@@ -104,6 +104,17 @@ final class AutomationEngine {
     }
 
     var health: AutomationHealth { AutomationHealth(ledger: ledger, specs: specs) }
+
+    /// Which readings are current. On iPhone and iPad the Mac-only jobs (local files) always answer "not connected",
+    /// which says nothing about the data, so they aren't counted there.
+    func freshness(now: Date) -> DataFreshness {
+        #if os(macOS)
+        DataFreshness(ledger: ledger, specs: specs, now: now, lowPower: lowPower)
+        #else
+        let macOnly: Set<AutomationJobID> = [.keys, .legal, .ledgers]
+        return DataFreshness(ledger: ledger, specs: specs.filter { !macOnly.contains($0.id) }, now: now, lowPower: lowPower)
+        #endif
+    }
     var isPaused: Bool { conditions.isPaused(at: .now) }
     func state(_ job: AutomationJobID) -> AutomationJobState? { ledger.states[job] }
     func isEnabled(_ job: AutomationJobID) -> Bool { !ledger.disabled.contains(job) }

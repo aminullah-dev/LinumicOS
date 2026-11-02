@@ -130,7 +130,7 @@ November, before 27 October). All three are read the same way: the due day is th
 
 PRIORITIES.md:15 is the root `~/Projects/Multiplatform/PRIORITIES.md` («0.2.0 (2) با امضای توسعه در /Applications
 (notarize نشده)»). The licence rows' 30-day grace is `Linumic/licensing/PROTOCOL.md:75` (GRACE_EXPIRY); the continuity
-row cites `Linumic/LinumicCommandCenter/PRIORITIES.md:52-54` with its words quoted, since that file's lines move.
+row cites `Linumic/PRIORITIES-LinumicOS.md:52-54` with its words quoted, since that file's lines move.
 
 **The 2027-09-23 date.** The roadmap's Phase 2 names "Developer ID, 2027-09-23". NA:147 says «پروفایل تا ۲۰۲۷-۰۹-۲۳
 اعتبار دارد» (the profile is valid until 2027-09-23), and on this Mac (read 2026-10-19):

@@ -503,6 +503,48 @@ struct QuietHoursEditor: View {
     }
 }
 
+// MARK: - Data freshness
+
+/// Says out loud when what the app shows is old. Nothing shows when every reading is current.
+struct DataFreshnessBanner: View {
+    @Environment(AutomationEngine.self) private var engine
+    @Environment(Router.self) private var router
+    let now: Date
+
+    var body: some View {
+        let freshness = engine.freshness(now: now)
+        let problems = freshness.problems
+        if !problems.isEmpty {
+            let color: Color = freshness.needsConnection ? .statusBad : .statusWarn
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(color)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("\(problems.count) of \(freshness.counted.count) sources are out of date").font(.headline)
+                    Text(verbatim: problems.map { L(AutomationCatalog.spec($0.job).title) }.joined(separator: " · "))
+                        .font(.callout).foregroundStyle(.secondary)
+                    Group {
+                        if let oldest = freshness.oldestGood {
+                            Text("What they feed is shown as last read. Oldest good reading: \(oldest.shortDate).")
+                        } else {
+                            Text("What they feed has never been read on this device.")
+                        }
+                    }
+                    .font(.caption).foregroundStyle(.secondary)
+                }
+                Spacer(minLength: 8)
+                if freshness.needsConnection {
+                    Button("Connect") { router.go(.integrations) }
+                } else {
+                    Button("See why") { router.go(.automation) }
+                }
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .cardSurface()
+        }
+    }
+}
+
 // MARK: - Dashboard strip
 
 struct AutomationStatusStrip: View {
@@ -519,10 +561,12 @@ struct AutomationStatusStrip: View {
                     Group {
                         if engine.isPaused {
                             Text("Paused")
-                        } else if health.failing.isEmpty {
-                            Text("\(engine.specs.count - engine.ledger.disabled.count) jobs on schedule")
-                        } else {
+                        } else if !health.failing.isEmpty {
                             Text(verbatim: health.failing.map { L(AutomationCatalog.spec($0.job).title) }.joined(separator: " · "))
+                        } else if case let stale = engine.freshness(now: .now).problems.count, stale > 0 {
+                            Text("\(stale) sources are out of date")
+                        } else {
+                            Text("\(engine.specs.count - engine.ledger.disabled.count) jobs on schedule")
                         }
                     }
                     .font(.callout).foregroundStyle(health.failing.isEmpty ? Color.secondary : health.level.color)

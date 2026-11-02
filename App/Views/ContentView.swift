@@ -112,7 +112,7 @@ struct ContentView: View {
         case .repositories: AllRepositoriesView()
         case .deployments: AllDeploymentsView()
         case .builds:
-            NotIntegratedView(item: item, message: "Build status will come from CI (GitHub Actions) once the read-only GitHub integration is connected.")
+            NotIntegratedView(item: item, message: "Build results are shown on Releases and Platforms, read from GitHub Actions. This page holds no records of its own.")
         case .appStore: StoreListingsView(store: .appStore)
         case .googlePlay: StoreListingsView(store: .googlePlay)
         case .marketingQueue: MarketingQueueView()
