@@ -411,6 +411,7 @@ struct WorkTrackSignInSheet: View {
                     SecureField("Password", text: $password)
                         .textContentType(.password)
                         .onSubmit { Task { await signIn() } }
+                    PasteSecretButton(text: $password)
                 } footer: {
                     Text("Your WorkTrack vendor account (Firebase email and password, with the vendor claim and a verified email). The password goes to Firebase once and is not stored; only the refresh token is kept, in this device's Keychain.")
                 }

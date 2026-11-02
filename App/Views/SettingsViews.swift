@@ -48,7 +48,7 @@ struct IntegrationsSettingsView: View {
                     Text("Reads repository metadata, commits, releases, PRs, issues and CI. It never writes.")
                 }
                 SecureField("Personal access token", text: $tokenInput, prompt: Text(hasToken ? "•••••••• (stored in Keychain)" : "github_pat_…"))
-                    .textContentType(.password)
+                PasteSecretButton(text: $tokenInput)
                 HStack {
                     Button("Save to Keychain") { saveToken() }
                         .disabled(tokenInput.trimmingCharacters(in: .whitespaces).isEmpty)
@@ -573,6 +573,7 @@ private struct CloudAccountSection: View {
             #endif
         SecureField("Password", text: $password)
             .onSubmit { signIn() }
+        PasteSecretButton(text: $password)
         Button {
             signIn()
         } label: {

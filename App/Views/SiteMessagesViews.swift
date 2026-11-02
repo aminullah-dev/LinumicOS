@@ -156,7 +156,7 @@ struct SiteMessagesSettingsSection: View {
                 .textContentType(.username)
                 .autocorrectionDisabled()
             SecureField("Application password", text: $password, prompt: Text(model.isConfigured ? "•••• •••• (stored in Keychain)" : "xxxx xxxx xxxx xxxx xxxx xxxx"))
-                .textContentType(.password)
+            PasteSecretButton(text: $password)
             HStack {
                 Button("Save to Keychain") { save() }
                     .disabled(username.trimmingCharacters(in: .whitespaces).isEmpty || password.isEmpty)
