@@ -3,7 +3,7 @@ import Foundation
 // MARK: - Which files the Desk may read
 //
 // The owner grants two folders once (read-only security-scoped bookmarks, `LCCLedgerBookmarks`). Those folders also
-// hold code, keys and `.env` files, so the app reads only the files named here: the eight PRIORITIES.md files and the
+// hold code, keys and `.env` files, so the app reads only the files named here: the PRIORITIES.md files and the
 // newest NEXT-ACTIONS-<day>.md directly in ~/Projects/Multiplatform. Nothing else is opened, and nothing is written.
 
 /// One ledger the Desk reads, by its path relative to the home folder.
@@ -38,14 +38,15 @@ public enum LedgerAllowList {
     /// BE-PAYA (the game) was left out on the owner's word, 2026-10-19.
     public static let folders = ["Projects/Multiplatform"]
 
+    /// DukanPro left this list on 2026-11-02: it is archived and no longer on this Mac, so it read as a failure every round.
     public static let priorities: [LedgerSource] = [
         LedgerSource("shared", "Projects/Multiplatform/PRIORITIES.md", .shared),
         LedgerSource("worktrack", "Projects/Multiplatform/WorkTrack/PRIORITIES.md", .worktrack),
         LedgerSource("safebeauty", "Projects/Multiplatform/Safe beauty/PRIORITIES.md", .safeBeauty),
         LedgerSource("talar", "Projects/Multiplatform/Talar/PRIORITIES.md", .talar),
         LedgerSource("velro", "Projects/Multiplatform/Velro/PRIORITIES.md", .velro),
-        LedgerSource("dukanpro", "Projects/Multiplatform/DukanPro/PRIORITIES.md", .dukanPro),
-        LedgerSource("linumicos", "Projects/Multiplatform/Linumic/LinumicCommandCenter/PRIORITIES.md", .linumicOS),
+        // Outside the repository: LinumicOS is public and this ledger holds private notes, so it is never committed.
+        LedgerSource("linumicos", "Projects/Multiplatform/Linumic/PRIORITIES-LinumicOS.md", .linumicOS),
     ]
 
     public static let nextActions = LedgerSource("next-actions", "Projects/Multiplatform", .shared, kind: .nextActions)

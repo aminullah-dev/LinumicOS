@@ -116,6 +116,7 @@ struct DeskView: View {
                     }
                 }
             }
+            DataFreshnessBanner(now: now)
             ledgerLine(desk, now: now)
             DeskSyncStatusLine()
             DeskBackupCard()

@@ -546,7 +546,7 @@ public enum ObligationsBuilder {
 
     /// Where the continuity gap is recorded: the P0 lines of Linumic OS's PRIORITIES file. Cited by line range and
     /// quoted, because that file is edited often and its lines move.
-    static let continuitySource = "~/Projects/Multiplatform/Linumic/LinumicCommandCenter/PRIORITIES.md:52-54 (P0: «Supabase رایگان PITR ندارد»; 2026-10-19: «هنوز هیچ نسخه‌ای بیرون از این مک نیست»)"
+    static let continuitySource = "~/Projects/Multiplatform/Linumic/PRIORITIES-LinumicOS.md:52-54 (P0: «Supabase رایگان PITR ندارد»; 2026-10-19: «هنوز هیچ نسخه‌ای بیرون از این مک نیست»)"
 
     static let continuityConsequence = "Without it, the inventory and the licence ledger are on this Mac and in Supabase, which keeps no point-in-time backup on the free plan; the obligations and the keys registry are only on this Mac."
 
