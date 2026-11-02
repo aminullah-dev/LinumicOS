@@ -67,7 +67,7 @@ struct DeskView: View {
                         .font(.caption).foregroundStyle(.secondary)
                 }
                 .padding(20)
-                .frame(maxWidth: 940, alignment: .leading)
+                .frame(maxWidth: 1000, alignment: .leading)
             }
             .onChange(of: router.request, initial: true) {
                 guard case .deskItem(let id)? = router.take({ if case .deskItem = $0 { true } else { false } }) else { return }

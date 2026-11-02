@@ -16,6 +16,7 @@ struct MarketingQueueView: View {
         let today = KeyDay(.now)
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
+                PageHeader(.marketingQueue)
                 Text("Read-only, and nothing is ever posted from here. The end of each brand's scheduled queue and the clock change are obligations, with their sources, so they reach the Desk and the reminders. The ledgers' text is never read: Verify opens a ledger in its own app, and you correct a date or record Done on the Obligations screen.")
                     .font(.callout).foregroundStyle(.secondary)
                 ForEach(brands) { brand in

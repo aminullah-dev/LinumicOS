@@ -135,13 +135,19 @@ struct SidebarSection: Identifiable {
         .map { SidebarSection(title: $0.title, items: $0.items.compactMap(SidebarItem.init(rawValue:)), isArchive: $0.isArchive) }
 
     /// Every page by area, before the Archive takes its pages out.
+    ///
+    /// The sidebar reads as one command centre: a short untitled "today" group at the top (Desk is home), then a
+    /// labelled zone per job — the company's money and obligations, its products, shipping, health, marketing, and the
+    /// vault — ending in Settings. Every `SidebarItem` appears exactly once; the six archived pages are listed in their
+    /// natural zone and `SidebarArchive.arrange` relocates them to the collapsed Archive at the end.
     static let grouped: [SidebarSection] = [
-        SidebarSection(title: nil, items: [.desk, .obligations, .money, .sales, .legal, .dashboard, .brief, .monitor, .automation, .releaseCenter, .platforms, .productBoard, .agents, .oversight, .licences, .worktrackCustomers, .operations, .siteMessages, .vault, .keys, .continuity]),
-        SidebarSection(title: "Products", items: [.allProducts, .verification, .releases, .roadmap, .issues]),
-        SidebarSection(title: "Development", items: [.repositories, .builds, .deployments]),
-        SidebarSection(title: "Stores", items: [.appStore, .googlePlay]),
-        SidebarSection(title: "Marketing", items: [.marketingQueue, .socialMedia, .contentCalendar]),
-        SidebarSection(title: "Intelligence", items: [.marketIntelligence, .aiAssistant]),
+        SidebarSection(title: nil, items: [.desk, .brief, .dashboard]),
+        SidebarSection(title: "Company", items: [.obligations, .money, .sales, .licences, .legal]),
+        SidebarSection(title: "Products", items: [.productBoard, .allProducts, .verification, .platforms, .operations, .worktrackCustomers, .releases, .roadmap, .issues]),
+        SidebarSection(title: "Build & Ship", items: [.releaseCenter, .repositories, .appStore, .googlePlay, .automation, .agents, .builds, .deployments]),
+        SidebarSection(title: "Health", items: [.monitor, .oversight, .siteMessages]),
+        SidebarSection(title: "Marketing", items: [.marketingQueue, .contentCalendar, .marketIntelligence, .aiAssistant, .socialMedia]),
+        SidebarSection(title: "Security & Backups", items: [.vault, .keys, .continuity]),
         SidebarSection(title: "Settings", items: [.integrations, .security, .account]),
     ]
 }

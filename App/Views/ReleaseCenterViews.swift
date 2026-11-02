@@ -159,6 +159,7 @@ struct ReleaseCenterView: View {
         let s = releases.snapshot
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
+                PageHeader(.releaseCenter)
                 header(s)
                 waitingSection(releases.waiting)
                 sectionTitle("App Store", symbol: "applelogo", readAt: s.appStoreReadAt, note: s.appStoreNote)

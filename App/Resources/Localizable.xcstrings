@@ -32093,6 +32093,26 @@
           }
         }
       }
+    },
+    "Build & Ship": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ساخت و انتشار"
+          }
+        }
+      }
+    },
+    "Security & Backups": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امنیت و پشتیبان"
+          }
+        }
+      }
     }
   },
   "version": "1.1"

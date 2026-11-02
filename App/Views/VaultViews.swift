@@ -20,6 +20,11 @@ struct VaultView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    PageHeader(.vault)
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
+                }
                 Section { VaultLockCard() }
                 if let error = vault.loadError {
                     Section {

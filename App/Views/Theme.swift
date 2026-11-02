@@ -226,6 +226,21 @@ extension PageHeader where Content == EmptyView {
     }
 }
 
+extension View {
+    /// Pins the page's header band above content that manages its own scroll (the tabbed consoles, Operations and
+    /// WorkTrack customers), so every page opens with the same band in the same place. The opaque backing keeps
+    /// scrolled rows from showing through; the 20pt side inset matches the scrolling pages.
+    func pageBandInset(_ item: SidebarItem) -> some View {
+        safeAreaInset(edge: .top, spacing: 0) {
+            PageHeader(item)
+                .padding(.horizontal, 20)
+                .padding(.top, 16)
+                .padding(.bottom, 8)
+                .background(.background)
+        }
+    }
+}
+
 /// The header's background: the tint fading down over the page.
 private struct HeaderBand: View {
     let tint: Color

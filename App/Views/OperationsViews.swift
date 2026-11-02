@@ -146,6 +146,7 @@ struct OperationsView: View {
                 .padding(.vertical, 8)
                 .background(.bar)
             }
+            .pageBandInset(.operations)
             .navigationTitle("Operations")
             .navigationDestination(for: OpsRoute.self) { route in
                 switch route {

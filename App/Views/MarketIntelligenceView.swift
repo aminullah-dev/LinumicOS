@@ -22,6 +22,7 @@ struct MarketIntelligenceView: View {
         let m = model.market
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
+                PageHeader(.marketIntelligence)
                 Text("Market intelligence for Afghanistan. Every evidence item names its source and collection date, every finding cites evidence, and derived findings state their method. Nothing here is generated.")
                     .font(.callout).foregroundStyle(.secondary)
 

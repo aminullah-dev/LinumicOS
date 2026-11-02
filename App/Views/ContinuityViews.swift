@@ -20,6 +20,7 @@ struct ContinuityView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
+                PageHeader(.continuity)
                 statusCard
                 if let error = model.loadError {
                     Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.statusWarn) }
@@ -38,7 +39,7 @@ struct ContinuityView: View {
                 recipeCard
             }
             .padding(20)
-            .frame(maxWidth: 900, alignment: .leading)
+            .frame(maxWidth: 1000, alignment: .leading)
         }
         .navigationTitle(SidebarItem.continuity.title)
         .sheet(item: $checking) { record in
