@@ -130,12 +130,14 @@ struct SidebarSection: Identifiable {
     let items: [SidebarItem]
     /// The Archive (Phase 6): shown collapsed until opened.
     var isArchive = false
+    /// Working pages kept out of the daily view: shown collapsed until opened.
+    var isMore = false
     var id: String { title ?? "root" }
 
     /// The sidebar as shown: the pages by area, with the six archived manual pages moved into a last, collapsed group
     /// (`SidebarArchive`, LinumicCore). No page or record is removed.
-    static let all: [SidebarSection] = SidebarArchive.arrange(grouped.map { SidebarGroup(title: $0.title, items: $0.items.map(\.rawValue)) })
-        .map { SidebarSection(title: $0.title, items: $0.items.compactMap(SidebarItem.init(rawValue:)), isArchive: $0.isArchive) }
+    static let all: [SidebarSection] = SidebarMore.arrange(SidebarArchive.arrange(grouped.map { SidebarGroup(title: $0.title, items: $0.items.map(\.rawValue)) }))
+        .map { SidebarSection(title: $0.title, items: $0.items.compactMap(SidebarItem.init(rawValue:)), isArchive: $0.isArchive, isMore: $0.isMore) }
 
     /// Every page by area, before the Archive takes its pages out.
     ///

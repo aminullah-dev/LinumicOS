@@ -273,12 +273,14 @@ struct ProductBoardCard: View {
 struct ProductBoardDetail: View {
     let productID: String
     @Environment(ProductsModel.self) private var products
+    @Environment(DeskModel.self) private var desk
     @Environment(Router.self) private var router
 
     var body: some View {
         if let card = products.report().card(productID) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
+                    waitingPanel(card)
                     levelPanel(card)
                     ForEach(card.tracks) { track in trackPanel(track) }
                     pullsPanel(card)
@@ -293,6 +295,17 @@ struct ProductBoardDetail: View {
             .navigationTitle(Text(verbatim: card.product.title))
         } else {
             ContentUnavailableView("Not found", systemImage: "questionmark.circle")
+        }
+    }
+
+    /// What waits on the owner for this project, from the Desk. Nothing shows when nothing does.
+    @ViewBuilder
+    private func waitingPanel(_ card: ProductCard) -> some View {
+        let rows = desk.desk().open.filter { $0.item.ownerAction && $0.item.domain == card.product.deskDomain }
+        if !rows.isEmpty {
+            DashboardPanel(title: "Waiting on you") {
+                ForEach(rows) { CenterDeskRow(row: $0) }
+            }
         }
     }
 
