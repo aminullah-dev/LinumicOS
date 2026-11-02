@@ -1064,6 +1064,26 @@
         }
       }
     },
+    "%d checks degraded": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d بررسی ضعیف"
+          }
+        }
+      }
+    },
+    "%d checks down": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d بررسی از کار افتاده"
+          }
+        }
+      }
+    },
     "%d dependency updates are ready to merge": {
       "localizations": {
         "fa-AF": {
@@ -1080,6 +1100,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "%d پیام قبلی دیده‌شده علامت خورده است."
+          }
+        }
+      }
+    },
+    "%d licences expired": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d لایسنس منقضی شده"
+          }
+        }
+      }
+    },
+    "%d licences expiring soon": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d لایسنس به‌زودی منقضی می‌شود"
           }
         }
       }
@@ -1568,6 +1608,26 @@
         }
       }
     },
+    "%lld projects with a problem": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld پروژه با مشکل"
+          }
+        }
+      }
+    },
+    "%lld projects with a problem, as last read": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld پروژه با مشکل، طبق آخرین خواندن"
+          }
+        }
+      }
+    },
     "%lld PRs": {
       "localizations": {
         "fa-AF": {
@@ -1798,6 +1858,26 @@
         }
       }
     },
+    "%lld waiting on you": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مورد منتظر شماست"
+          }
+        }
+      }
+    },
+    "%lld with no known problem": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld پروژه بدون مشکلِ شناخته‌شده"
+          }
+        }
+      }
+    },
     "Admin and provider consoles (Firebase Hosting)": {
       "localizations": {
         "fa-AF": {
@@ -1864,6 +1944,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "ایجنت‌ها: درخواست‌های ادغام در GitHub با عنوان [agent:<slug>] یا شاخهٔ agent/<slug>/ (فقط خواندنی)"
+          }
+        }
+      }
+    },
+    "All %lld on the Desk": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر %lld مورد در میز کار"
+          }
+        }
+      }
+    },
+    "Also today": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "امروز همچنین"
           }
         }
       }
@@ -1964,6 +2064,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "نسخه‌های ساخته‌شده فرق دارند: %@"
+          }
+        }
+      }
+    },
+    "CI failing: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI ناموفق: %@"
           }
         }
       }
@@ -2308,6 +2418,16 @@
         }
       }
     },
+    "In focus": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در تمرکز"
+          }
+        }
+      }
+    },
     "In the store": {
       "localizations": {
         "fa-AF": {
@@ -2418,6 +2538,16 @@
         }
       }
     },
+    "Last read %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین خواندن: %@"
+          }
+        }
+      }
+    },
     "Level across platforms": {
       "localizations": {
         "fa-AF": {
@@ -2464,6 +2594,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "اپ مک"
+          }
+        }
+      }
+    },
+    "Management center": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرکز مدیریت"
           }
         }
       }
@@ -2818,6 +2958,16 @@
         }
       }
     },
+    "Not read yet, so unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز خوانده نشده، پس نامعلوم است"
+          }
+        }
+      }
+    },
     "Not read yet: the products are built from the Platforms and Release Center readings and the commits on main.": {
       "localizations": {
         "fa-AF": {
@@ -2844,6 +2994,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "روی مسیر production چیزی نیست."
+          }
+        }
+      }
+    },
+    "Nothing on the Desk says it needs you today or this week.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ موردی در میز کار نمی‌گوید امروز یا این هفته به شما نیاز دارد."
           }
         }
       }
@@ -2954,6 +3114,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "همهٔ مقدارهای این محصول را با منبعشان باز می‌کند"
+          }
+        }
+      }
+    },
+    "Platforms not level: %d": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پلتفرم‌ها هم‌سطح نیستند: %d"
           }
         }
       }

@@ -3,7 +3,7 @@ import SwiftUI
 
 // MARK: - Desk screen (میز کار)
 
-/// The home screen: what needs the owner today, this week and later, grouped by product (WorkTrack, then SafeBeauty,
+/// The full list: what needs the owner today, this week and later, grouped by product (WorkTrack, then SafeBeauty,
 /// then the others). Every row says where it was read and when, and opens the place to act. Built on this device from
 /// the Daily Brief and the ledgers; nothing here writes anywhere except the owner's marks in desk-state.json.
 struct DeskView: View {

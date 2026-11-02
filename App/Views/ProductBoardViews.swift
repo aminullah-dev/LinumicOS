@@ -133,6 +133,8 @@ struct ProductBoardView: View {
 
 struct ProductBoardCard: View {
     let card: ProductCard
+    /// Desk rows of this product that wait on the owner, on the management centre; 0 shows nothing.
+    var waiting = 0
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -162,6 +164,9 @@ struct ProductBoardCard: View {
             }
             platforms
             FitRow(spacing: 6) {
+                if waiting > 0 {
+                    PillLabel(text: Text("\(waiting) waiting"), symbol: "person.fill.checkmark", color: .statusWarn)
+                }
                 pullsPill
                 ciPill
                 if let licences = card.licences { licencePill(licences) }
