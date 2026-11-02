@@ -5,6 +5,7 @@ struct ContentView: View {
     @Environment(InventoryModel.self) private var model
     @Environment(Router.self) private var router
     @AppStorage("LCCSidebarArchiveExpanded") private var archiveExpanded = false
+    @AppStorage("LCCSidebarMoreExpanded") private var moreExpanded = false
 
     var body: some View {
         @Bindable var router = router
@@ -17,7 +18,13 @@ struct ContentView: View {
                 set: { router.sidebar = $0; router.productPath = [] }
             )) {
                 ForEach(SidebarSection.all) { section in
-                    if section.isArchive, let title = section.title {
+                    if section.isMore, let title = section.title {
+                        // Collapsed until opened, and open while its page is showing, so the selection is never hidden.
+                        Section(isExpanded: Binding(
+                            get: { moreExpanded || section.items.contains { $0 == router.sidebar } },
+                            set: { moreExpanded = $0 }
+                        )) { rows(section.items) } header: { Text(LocalizedStringKey(title)) }
+                    } else if section.isArchive, let title = section.title {
                         // Collapsed until opened; the choice is kept on this device.
                         Section(isExpanded: $archiveExpanded) { rows(section.items, muted: true) } header: { Text(LocalizedStringKey(title)) }
                     } else if let title = section.title {

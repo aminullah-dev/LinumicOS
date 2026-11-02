@@ -141,15 +141,15 @@ struct SidebarArchiveTests {
         SidebarGroup(title: "Settings", items: ["integrations", "security", "account"]),
     ]
 
-    @Test func theSixManualPagesMoveToALastCollapsedGroup() {
+    @Test func theManualPagesMoveToALastCollapsedGroup() {
         let arranged = SidebarArchive.arrange(groups)
         let archive = arranged.last
         #expect(archive?.isArchive == true && archive?.title == "Archive")
-        #expect(archive?.items == ["releases", "roadmap", "issues", "builds", "deployments", "socialMedia"])
+        #expect(archive?.items == ["releases", "roadmap", "issues", "builds", "deployments", "socialMedia", "contentCalendar", "marketIntelligence"])
         #expect(arranged.dropLast().allSatisfy { !$0.isArchive })
         #expect(arranged.first { $0.title == "Products" }?.items == ["allProducts", "verification"])
         #expect(arranged.first { $0.title == "Development" }?.items == ["repositories"])
-        #expect(arranged.first { $0.title == "Marketing" }?.items == ["marketingQueue", "contentCalendar"])
+        #expect(arranged.first { $0.title == "Marketing" }?.items == ["marketingQueue"])
     }
 
     @Test func noPageIsLostOrAddedAndTheOthersKeepTheirPlace() {
@@ -167,8 +167,32 @@ struct SidebarArchiveTests {
     }
 
     @Test func everyArchivedPageSaysWhatCoversItNow() {
-        #expect(SidebarArchive.ids.count == 6)
+        #expect(SidebarArchive.ids.count == 8)
         for id in SidebarArchive.ids { #expect(SidebarArchive.coveredBy(id) != nil) }
         #expect(SidebarArchive.coveredBy("desk") == nil)
+    }
+
+    @Test func morePagesGoBeforeTheArchiveAndNoneIsLost() {
+        let archived = SidebarArchive.arrange(groups)
+        let arranged = SidebarMore.arrange(archived)
+        #expect(arranged.last?.isArchive == true)
+        let more = arranged[arranged.count - 2]
+        #expect(more.isMore && more.title == "More")
+        #expect(more.items.first == "brief" && more.items.contains("automation") && more.items.contains("appStore"))
+        let before = groups.flatMap(\.items)
+        let after = arranged.flatMap(\.items)
+        #expect(after.count == before.count && Set(after) == Set(before), "every page once, none removed")
+        #expect(arranged.dropLast(2).allSatisfy { g in g.items.allSatisfy { !SidebarMore.contains($0) && !SidebarArchive.isArchived($0) } })
+    }
+
+    @Test func moreNeverInventsAPageAndAGroupLeftEmptyIsDropped() {
+        let out = SidebarMore.arrange([SidebarGroup(title: "Stores", items: ["appStore"]), SidebarGroup(title: "Kept", items: ["center"])])
+        #expect(out.map(\.title) == ["Kept", "More"])
+        #expect(out.last?.items == ["appStore"])
+        #expect(SidebarMore.arrange([SidebarGroup(title: nil, items: ["center"])]).count == 1)
+    }
+
+    @Test func noPageIsBothMoreAndArchived() {
+        #expect(Set(SidebarMore.ids).isDisjoint(with: SidebarArchive.ids))
     }
 }

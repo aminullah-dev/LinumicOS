@@ -2428,6 +2428,16 @@
         }
       }
     },
+    "Holds no records on this device yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز در این دستگاه رکوردی ندارد."
+          }
+        }
+      }
+    },
     "In focus": {
       "localizations": {
         "fa-AF": {
