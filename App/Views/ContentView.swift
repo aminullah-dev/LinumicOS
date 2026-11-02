@@ -83,6 +83,7 @@ struct ContentView: View {
     @ViewBuilder
     private func detail(for item: SidebarItem) -> some View {
         switch item {
+        case .center: CenterView()
         case .desk: DeskView()
         case .obligations: ObligationsView()
         case .money: MoneyView()

@@ -3,6 +3,7 @@ import LinumicCore
 import Observation
 
 enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
+    case center
     case desk
     case obligations
     case money
@@ -35,6 +36,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
+        case .center: L("Management center")
         case .desk: L("Desk")
         case .obligations: L("Obligations & accounts")
         case .money: L("Money")
@@ -79,6 +81,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
 
     var symbol: String {
         switch self {
+        case .center: "rectangle.3.group"
         case .desk: "checklist"
         case .obligations: "calendar.badge.exclamationmark"
         case .money: "banknote"
@@ -136,12 +139,12 @@ struct SidebarSection: Identifiable {
 
     /// Every page by area, before the Archive takes its pages out.
     ///
-    /// The sidebar reads as one command centre: a short untitled "today" group at the top (Desk is home), then a
+    /// The sidebar reads as one command centre: a short untitled "today" group at the top (the management centre is home), then a
     /// labelled zone per job — the company's money and obligations, its products, shipping, health, marketing, and the
     /// vault — ending in Settings. Every `SidebarItem` appears exactly once; the six archived pages are listed in their
     /// natural zone and `SidebarArchive.arrange` relocates them to the collapsed Archive at the end.
     static let grouped: [SidebarSection] = [
-        SidebarSection(title: nil, items: [.desk, .brief, .dashboard]),
+        SidebarSection(title: nil, items: [.center, .desk, .brief, .dashboard]),
         SidebarSection(title: "Company", items: [.obligations, .money, .sales, .licences, .legal]),
         SidebarSection(title: "Products", items: [.productBoard, .allProducts, .verification, .platforms, .operations, .worktrackCustomers, .releases, .roadmap, .issues]),
         SidebarSection(title: "Build & Ship", items: [.releaseCenter, .repositories, .appStore, .googlePlay, .automation, .agents, .builds, .deployments]),
@@ -183,8 +186,8 @@ enum RouterRequest: Equatable {
 @MainActor
 @Observable
 final class Router {
-    /// The Desk is the home screen.
-    var sidebar: SidebarItem? = .desk
+    /// The management centre is the home screen.
+    var sidebar: SidebarItem? = .center
     var productPath: [String] = []
     var isPalettePresented = false
     var request: RouterRequest?

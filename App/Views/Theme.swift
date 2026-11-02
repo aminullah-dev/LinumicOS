@@ -63,7 +63,7 @@ extension SidebarItem {
     /// main pages avoid the pure status red so a header never reads as an alarm.
     var tint: AreaTint {
         switch self {
-        case .desk: .ink
+        case .center, .desk: .ink
         case .obligations: .orange
         case .money: .green
         case .sales: .teal
