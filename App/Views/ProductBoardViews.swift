@@ -293,6 +293,18 @@ struct ProductBoardDetail: View {
                 .frame(maxWidth: 1000, alignment: .leading)
             }
             .navigationTitle(Text(verbatim: card.product.title))
+            .toolbar {
+                ToolbarItem {
+                    // Where this project sits on the management centre. Nothing else about it changes.
+                    Picker("Show on the management center as", selection: Binding(
+                        get: { products.tiers.tier(forProduct: productID) },
+                        set: { products.setTier($0, forProduct: productID) }
+                    )) {
+                        ForEach(CenterTier.allCases, id: \.self) { Text(verbatim: $0.title).tag($0) }
+                    }
+                    .pickerStyle(.menu)
+                }
+            }
         } else {
             ContentUnavailableView("Not found", systemImage: "questionmark.circle")
         }

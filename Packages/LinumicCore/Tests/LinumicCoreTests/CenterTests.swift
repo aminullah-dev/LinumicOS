@@ -103,4 +103,95 @@ struct CenterTests {
         let r = CenterBuilder.build(desk: desk(), products: report([card("velro")]), tier: { _ in .focus })
         #expect(r.focus.map(\.id) == ["velro"])
     }
+
+    // MARK: Tiers
+
+    @Test func aChoiceOverridesTheDefaultAndChoosingTheDefaultClearsIt() {
+        var tiers = ProjectTiers()
+        #expect(tiers.tier(forProduct: "velro") == .maintenance)
+        tiers.set(.focus, forProduct: "velro")
+        #expect(tiers.tier(forProduct: "velro") == .focus)
+        #expect(tiers.chosen == ["velro": .focus])
+        tiers.set(.maintenance, forProduct: "velro")
+        #expect(tiers.chosen.isEmpty)
+    }
+
+    @Test func tiersSurviveTheFileAndABadFileMeansNoChoices() throws {
+        let url = FileManager.default.temporaryDirectory.appending(path: "tiers-\(UUID().uuidString).json")
+        defer { try? FileManager.default.removeItem(at: url) }
+        let store = ProjectTiersStore(fileURL: url)
+        #expect(store.load() == ProjectTiers())
+        var tiers = ProjectTiers()
+        tiers.set(.archived, forProduct: "velro")
+        try store.save(tiers)
+        #expect(store.load().tier(forProduct: "velro") == .archived)
+        try Data("not json".utf8).write(to: url)
+        #expect(store.load() == ProjectTiers())
+    }
+
+    // MARK: Projects added from the inventory
+
+    private func listing(_ store: AppStore, _ id: String?) -> StoreListing {
+        var l = StoreListing(store: store)
+        l.appIdentifier = id
+        return l
+    }
+
+    @Test func anInventoryProductNotInTheCatalogGetsACardWithoutABuild() {
+        var product = Product(id: "newapp", name: "New App")
+        product.storeListings = [listing(.appStore, "com.new.app"), listing(.googlePlay, "com.new.app"), listing(.appStore, nil), listing(.appStore, "com.new.app")]
+        let all = ProductsCatalog.all(inventory: [product], catalog: [])
+        #expect(all.map(\.id) == ["newapp"])
+        #expect(all[0].inventoryID == "newapp")
+        #expect(all[0].slots.map(\.platform) == [.iOS, .android], "one slot per platform and identifier, none without an identifier")
+        #expect(all[0].slots.allSatisfy { $0.compared && $0.noVersionFile != nil })
+        #expect(CenterTier.default(forProduct: "newapp") == .maintenance)
+    }
+
+    @Test func aProductWithNoListingStillGetsACard() {
+        let all = ProductsCatalog.all(inventory: [Product(id: "idea", name: "Idea")], catalog: [])
+        #expect(all.map(\.id) == ["idea"] && all[0].tracks.isEmpty)
+    }
+
+    @Test func aCataloguedProductIsNotListedTwice() {
+        let all = ProductsCatalog.all(inventory: [Product(id: "worktrack", name: "WorkTrack")])
+        #expect(all.count(where: { $0.inventoryID == "worktrack" }) == 1)
+        #expect(all.count == ProductsCatalog.products.count)
+    }
+
+    @Test func anAddedProductsCommitsAreReadButAnArchivedOnesAreNot() {
+        let added = Product(id: "newapp", name: "New App")
+        let book = Product(id: "soder-hakem", name: "SODER-HAKEM")
+        let ids = ProductsCatalog.read(inventory: [added, book]).map(\.id)
+        #expect(ids.contains("newapp") && !ids.contains("soder-hakem"))
+        #expect(ids.contains("dukanpro"), "a catalogued product stays read whatever its tier")
+    }
+
+    @Test func aConsoleAppWithoutAnInventoryListingIsUnknownUntilReadNotAbsent() throws {
+        // In App Review on 2026-11-02: saying "not in a store" would be false, so unread stays unknown.
+        let input = ProductsInput(now: now, products: [], tracking: [], releases: ReleaseCenterSnapshot(),
+                                  licences: BriefLicenceInput(isLoaded: false, records: [], lastSyncedAt: nil), monitor: MonitorSnapshot())
+        let card = try #require(ProductsBuilder.build(input).card("pashtolikman"))
+        let slot = try #require(card.slots.first)
+        #expect(slot.live.isUnknown)
+        #expect(slot.build.isUnknown)
+    }
+
+    @Test func aProductNotReadFromAConsoleStillSaysItIsNotInAStore() throws {
+        var added = Product(id: "newapp", name: "New App")
+        added.storeListings = []
+        let product = CompanyProduct(id: "x", title: "X", inventoryID: nil, tracks: [ProductTrack(id: "app", title: "X", slots: [
+            ProductSlot(id: "x.app.ios", platform: .iOS, label: "X", appIdentifier: "com.x.app", noVersionFile: "n", build: .store, compared: true, source: "t"),
+        ])], source: "t")
+        let input = ProductsInput(now: now, products: [added], tracking: [], releases: ReleaseCenterSnapshot(),
+                                  licences: BriefLicenceInput(isLoaded: false, records: [], lastSyncedAt: nil), monitor: MonitorSnapshot(), catalog: [product])
+        let slot = try #require(ProductsBuilder.build(input).card("x")?.slots.first)
+        guard case .none = slot.live else { Issue.record("no listing and not a console app reads as not in a store"); return }
+    }
+
+    @Test func pashtoLikmanIsReadFromTheStore() throws {
+        let product = try #require(ProductsCatalog.product("pashtolikman"))
+        #expect(product.slots.map(\.appIdentifier) == ["com.pashtokey.app"])
+        #expect(ReleaseCatalog.apps(from: []).contains { $0.appIdentifier == "com.pashtokey.app" && $0.store == .appStore })
+    }
 }

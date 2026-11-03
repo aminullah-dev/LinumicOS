@@ -15,13 +15,60 @@ public enum CenterTier: String, Codable, CaseIterable, Sendable, Hashable {
     /// Not shown on the centre.
     case archived
 
-    /// The owner's list: only Linumic OS, KhayatYar and WorkTrack are in focus; DukanPro is archived and off this Mac.
+    /// The owner's list: only Linumic OS, KhayatYar and WorkTrack are in focus. DukanPro is archived and off this Mac; the
+    /// book is finished, Tailoring Workshop ERP is sidelined for KhayatYar, and the Pashto research ships no app.
     public static func `default`(forProduct id: String) -> CenterTier {
         switch id {
         case "linumicos", "khayatyar", "worktrack": .focus
-        case "dukanpro": .archived
+        case "dukanpro", "soder-hakem", "tailoring-workshop-erp", "the-digital-infrastructure-of-the-pashto-language": .archived
         default: .maintenance
         }
+    }
+
+    public var title: String {
+        switch self {
+        case .focus: L("In focus")
+        case .maintenance: L("Maintenance")
+        case .archived: L("Archive")
+        }
+    }
+}
+
+/// The owner's choices of tier, one per project that differs from the default. Only choices are kept, so a project with
+/// none follows the default if it changes.
+public struct ProjectTiers: Codable, Hashable, Sendable {
+    public static let currentSchemaVersion = 1
+    public var schemaVersion = ProjectTiers.currentSchemaVersion
+    public private(set) var chosen: [String: CenterTier] = [:]
+
+    public init() {}
+
+    public func tier(forProduct id: String) -> CenterTier { chosen[id] ?? CenterTier.default(forProduct: id) }
+
+    /// Choosing the default clears the choice.
+    public mutating func set(_ tier: CenterTier, forProduct id: String) {
+        chosen[id] = tier == CenterTier.default(forProduct: id) ? nil : tier
+    }
+}
+
+public struct ProjectTiersStore: Sendable {
+    public let fileURL: URL
+
+    public init(fileURL: URL) { self.fileURL = fileURL }
+
+    public static func defaultFileURL() throws -> URL {
+        try JSONFileInventoryStore.defaultFileURL().deletingLastPathComponent().appending(path: "project-tiers.json")
+    }
+
+    /// A missing or unreadable file is no choices: the defaults still give a working page.
+    public func load() -> ProjectTiers {
+        guard let data = try? Data(contentsOf: fileURL) else { return ProjectTiers() }
+        return (try? InventoryCoding.decoder().decode(ProjectTiers.self, from: data)) ?? ProjectTiers()
+    }
+
+    public func save(_ tiers: ProjectTiers) throws {
+        try FileManager.default.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try InventoryCoding.encoder().encode(tiers).write(to: fileURL, options: [.atomic])
     }
 }
 
