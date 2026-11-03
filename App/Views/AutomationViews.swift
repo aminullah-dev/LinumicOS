@@ -193,8 +193,8 @@ struct AutomationStatusCard: View {
             FitRow(spacing: 8) {
                 StatusBadge(text: engine.online ? String(localized: "Online") : String(localized: "Offline"),
                             color: engine.online ? .statusGood : .statusWarn)
-                if engine.lowPower { StatusBadge(text: String(localized: "Low Power Mode: half speed"), color: .yellow) }
-                if NotificationGate.quietHours.contains(now) { StatusBadge(text: String(localized: "Quiet hours"), color: .indigo) }
+                if engine.lowPower { StatusBadge(text: String(localized: "Low Power Mode: half speed"), color: .statusWarn) }
+                if NotificationGate.quietHours.contains(now) { StatusBadge(text: String(localized: "Quiet hours"), color: .statusInfo) }
                 if let job = engine.running {
                     HStack(spacing: 6) {
                         ProgressView().controlSize(.small)
@@ -801,7 +801,7 @@ struct SentinelCard: View {
                 case .notRunning: StatusBadge(text: String(localized: "No round yet"), color: .statusWarn)
                 case .stale: StatusBadge(text: String(localized: "Schedule stopped?"), color: .statusBad)
                 case .down(let n): StatusBadge(text: String(localized: "\(n) down"), color: .statusBad)
-                case .slow(let n): StatusBadge(text: String(localized: "\(n) slow"), color: .yellow)
+                case .slow(let n): StatusBadge(text: String(localized: "\(n) slow"), color: .statusWarn)
                 case .allUp: StatusBadge(text: String(localized: "All up"), color: .statusGood)
                 }
                 if let at = summary.lastRoundAt {

@@ -1608,6 +1608,16 @@
         }
       }
     },
+    "%lld PR": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld PR"
+          }
+        }
+      }
+    },
     "%lld projects with a problem": {
       "localizations": {
         "fa-AF": {
@@ -1754,6 +1764,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld درخواست ادغام در انتظار بازبینی"
+          }
+        }
+      }
+    },
+    "%lld pull requests waiting for you": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld درخواست ادغام منتظر شماست"
           }
         }
       }
@@ -2068,6 +2088,16 @@
         }
       }
     },
+    "CI ?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI ؟"
+          }
+        }
+      }
+    },
     "CI failing: %@": {
       "localizations": {
         "fa-AF": {
@@ -2104,6 +2134,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "وضعیت CI نامعلوم"
+          }
+        }
+      }
+    },
+    "Close the card": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بستن کارت"
           }
         }
       }
@@ -3138,6 +3178,16 @@
         }
       }
     },
+    "Open the card": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن کارت"
+          }
+        }
+      }
+    },
     "Open the Desk": {
       "localizations": {
         "fa-AF": {
@@ -3194,6 +3244,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "پلتفرم‌ها هم‌سطح نیستند: %d"
+          }
+        }
+      }
+    },
+    "PR ?": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PR ؟"
           }
         }
       }

@@ -74,7 +74,7 @@ struct DashboardView: View {
                     MetricTile(title: "Active (recorded)", value: s.activeCount, symbol: "checkmark.circle", tint: .statusGood)
                     MetricTile(title: "In development (recorded)", value: s.inDevelopmentCount, symbol: "hammer", tint: .statusInfo)
                     MetricTile(title: "Status unknown", value: s.unknownStatusCount, symbol: "questionmark.circle", tint: .statusUnknown)
-                    MetricTile(title: "Upcoming releases", value: s.upcomingReleases.count, symbol: "tag", tint: .indigo)
+                    MetricTile(title: "Upcoming releases", value: s.upcomingReleases.count, symbol: "tag", tint: .statusInfo)
                     MetricTile(title: "Blocked releases", value: s.blockedReleases.count, symbol: "xmark.octagon", tint: s.blockedReleases.isEmpty ? .secondary : .statusBad)
                     MetricTile(title: "Critical issues", value: s.openCriticalIssues.count, symbol: "exclamationmark.triangle", tint: s.openCriticalIssues.isEmpty ? .secondary : .statusBad)
                 }

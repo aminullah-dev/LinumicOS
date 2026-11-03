@@ -101,6 +101,12 @@ struct CenterView: View {
                     .buttonStyle(.borderless)
                 }
             }
+            if !report.pullRows.isEmpty {
+                Button { router.go(.releaseCenter) } label: {
+                    Label { Text("\(report.pullRows.count) pull requests waiting for you") } icon: { Image(systemName: "arrow.triangle.pull") }
+                }
+                .buttonStyle(.borderless)
+            }
         }
     }
 
@@ -196,7 +202,7 @@ struct CenterDeskRow: View {
                     .foregroundStyle(row.item.severity.color)
                     .accessibilityLabel(Text(verbatim: row.item.severity.title))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(verbatim: row.item.title).font(.callout).lineLimit(2).multilineTextAlignment(.leading)
+                    DirectionalText(row.item.title).font(.callout).lineLimit(2).multilineTextAlignment(.leading)
                     HStack(spacing: 6) {
                         Text(verbatim: row.item.domain.name)
                         // An old reading says how old, so a line that may already be done isn't taken as today's news.
@@ -231,7 +237,7 @@ struct CenterProjectRow: View {
                     Text(verbatim: project.card.product.title).font(.callout.weight(.semibold))
                     if let first = project.attention.first {
                         Text(verbatim: project.attention.count > 1 ? "\(first.text) +\(project.attention.count - 1)" : first.text)
-                            .font(.caption).foregroundStyle(.statusBad).lineLimit(2)
+                            .font(.caption).foregroundStyle(first.isSerious ? Color.statusBad : Color.statusWarn).lineLimit(2)
                     } else if project.isUnread {
                         Text("Not read yet, so unknown").font(.caption).foregroundStyle(.secondary)
                     }

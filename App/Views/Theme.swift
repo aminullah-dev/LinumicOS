@@ -59,50 +59,9 @@ enum AreaTint {
 }
 
 extension SidebarItem {
-    /// Each page's tint, like the tiles of System Settings: neighbours differ, settings-like pages are graphite, and the
-    /// main pages avoid the pure status red so a header never reads as an alarm.
-    var tint: AreaTint {
-        switch self {
-        case .center, .desk: .ink
-        case .obligations: .orange
-        case .money: .green
-        case .sales: .teal
-        case .legal: .brown
-        case .dashboard: .blue
-        case .brief: .amber
-        case .monitor: .pink
-        case .automation: .graphite
-        case .releaseCenter: .blue
-        case .platforms: .indigo
-        case .productBoard: .purple
-        case .agents: .teal
-        case .oversight: .blue
-        case .licences: .amber
-        case .worktrackCustomers: .teal
-        case .operations: .orange
-        case .siteMessages: .blue
-        case .vault: .graphite
-        case .keys: .green
-        case .continuity: .indigo
-        case .allProducts: .purple
-        case .verification: .green
-        case .releases: .indigo
-        case .roadmap: .teal
-        case .issues: .orange
-        case .repositories: .graphite
-        case .builds: .brown
-        case .deployments: .indigo
-        case .appStore: .blue
-        case .googlePlay: .green
-        case .marketingQueue: .pink
-        case .socialMedia: .purple
-        case .contentCalendar: .red
-        case .marketIntelligence: .indigo
-        case .aiAssistant: .purple
-        case .integrations: .graphite
-        case .security: .blue
-        case .account: .graphite
-        }
+    /// Every page has the one brand tile. The colour budget is four: the accent, and green, amber and red, which only ever
+    /// mean a status. A page's tile is not a status, so it stays in the brand's ink (owner, 2026-11-02).
+    var tint: AreaTint { .ink
     }
 }
 

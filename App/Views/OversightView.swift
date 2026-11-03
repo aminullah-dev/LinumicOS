@@ -145,8 +145,8 @@ struct OversightView: View {
                        tint: s.unprotectedDefaultBranches > 0 ? .statusWarn : .secondary)
             MetricTile(title: "Stale (30d+)", value: s.staleRepos, symbol: "clock.badge.exclamationmark",
                        tint: s.staleRepos > 0 ? .statusWarn : .secondary)
-            MetricTile(title: "Open pull requests", value: s.totalOpenPullRequests, symbol: "arrow.triangle.pull", tint: .indigo)
-            MetricTile(title: "Open issues", value: s.totalOpenIssues, symbol: "exclamationmark.triangle", tint: .indigo)
+            MetricTile(title: "Open pull requests", value: s.totalOpenPullRequests, symbol: "arrow.triangle.pull", tint: .statusInfo)
+            MetricTile(title: "Open issues", value: s.totalOpenIssues, symbol: "exclamationmark.triangle", tint: .statusInfo)
             MetricTile(title: "Uncommitted (local)", value: s.reposWithUncommittedChanges, symbol: "pencil.and.list.clipboard",
                        tint: s.reposWithUncommittedChanges > 0 ? .statusWarn : .secondary)
             MetricTile(title: "Diverged from origin", value: s.reposDivergedFromOrigin, symbol: "arrow.triangle.branch",

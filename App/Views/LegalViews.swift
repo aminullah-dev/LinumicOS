@@ -196,7 +196,7 @@ private struct LegalAsasnamaCard: View {
     let reading: LegalReading?
 
     var body: some View {
-        StripeCard(tint: .purple) {
+        StripeCard(tint: .statusInfo) {
             Label("Asasnama (articles of association)", systemImage: "doc.text.magnifyingglass").font(.headline)
             Text("Only the names and dates are read; the files are never opened. Whether there is a partner is your decision (roadmap §6, decision 1).")
                 .font(.caption).foregroundStyle(.secondary)

@@ -78,7 +78,7 @@ struct MarketIntelligenceView: View {
                         VStack(alignment: .leading, spacing: 3) {
                             HStack {
                                 Text(src.name).fontWeight(.medium)
-                                StatusBadge(text: src.kind.title, color: .indigo)
+                                StatusBadge(text: src.kind.title, color: .statusInfo)
                                 Spacer()
                                 if let url = src.url { Link("Open", destination: url) }
                             }

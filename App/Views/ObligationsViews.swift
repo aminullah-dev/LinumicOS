@@ -320,7 +320,7 @@ struct ObligationRowView: View {
                     ReleaseBadge(text: o.area.title, symbol: "tag", color: .statusUnknown)
                     timingBadge
                     ReleaseBadge(text: o.origin.label, symbol: o.origin.isLive ? "dot.radiowaves.left.and.right" : "doc.text",
-                                 color: o.origin.isLive ? .teal : .statusUnknown)
+                                 color: o.origin.isLive ? .statusInfo : .statusUnknown)
                 }
                 if let consequence = o.displayConsequence {
                     Text("If missed: \(consequence)").font(.caption).foregroundStyle(.secondary)
@@ -368,7 +368,7 @@ struct ObligationRowView: View {
             ReleaseBadge(text: String(localized: "\(dateText) · today"), symbol: "calendar.badge.exclamationmark", color: .statusBad)
         case .due(let days, _):
             ReleaseBadge(text: String(localized: "\(dateText) · in \(days) days"), symbol: "calendar",
-                         color: days <= 7 ? .statusWarn : (days <= 30 ? .yellow : .statusInfo))
+                         color: days <= 7 ? .statusWarn : (days <= 30 ? .statusWarn : .statusInfo))
         case .closed:
             ReleaseBadge(text: dateText, symbol: "calendar", color: .statusGood)
         }

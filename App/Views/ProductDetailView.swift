@@ -153,7 +153,7 @@ struct ProductDetailView: View {
                     if let build = r.buildNumber { Text("(\(build))").foregroundStyle(.secondary) }
                     Text(r.platform.title)
                     Text(r.environment.title).foregroundStyle(.secondary)
-                    if r.isReleaseCandidate { StatusBadge(text: "RC", color: .indigo) }
+                    if r.isReleaseCandidate { StatusBadge(text: "RC", color: .statusInfo) }
                     Spacer()
                     if let d = r.releaseDate { Text(d.shortDate).foregroundStyle(.secondary) }
                     StatusBadge(text: r.stage.title, color: r.stage.color)
@@ -357,8 +357,8 @@ private struct RepositoryRow: View {
                 } else {
                     Text(repository.name).bold()
                 }
-                StatusBadge(text: repository.type.title, color: .indigo)
-                if let vis = repository.gitHub?.visibility { StatusBadge(text: vis.title, color: vis == .public ? .teal : .statusUnknown) }
+                StatusBadge(text: repository.type.title, color: .statusInfo)
+                if let vis = repository.gitHub?.visibility { StatusBadge(text: vis.title, color: vis == .public ? .statusInfo : .statusUnknown) }
                 Spacer()
                 Text("Link").font(.caption).foregroundStyle(.secondary)
                 EvidenceButton(verification: repository.link)
@@ -469,7 +469,7 @@ private struct VerificationTab: View {
                         ForEach(product.sources) { s in
                             VStack(alignment: .leading, spacing: 2) {
                                 HStack(alignment: .firstTextBaseline) {
-                                    StatusBadge(text: s.sourceType.title, color: s.sourceType.isLocal ? .indigo : .teal)
+                                    StatusBadge(text: s.sourceType.title, color: s.sourceType.isLocal ? .statusInfo : .statusInfo)
                                     Text(s.sourceReference).font(.caption.monospaced()).textSelection(.enabled)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .fixedSize(horizontal: false, vertical: true)
@@ -557,7 +557,7 @@ private struct ReviewRow: View {
             HStack(spacing: 6) {
                 // Stars as text plus a label, so the rating isn't carried by the glyphs alone.
                 Text(String(repeating: "★", count: max(0, min(5, review.rating))) + String(repeating: "☆", count: max(0, 5 - review.rating)))
-                    .foregroundStyle(review.rating <= 2 ? .statusWarn : .yellow)
+                    .foregroundStyle(review.rating <= 2 ? .statusWarn : .statusWarn)
                     .accessibilityLabel(Text("\(review.rating) of 5 stars"))
                 if let title = review.title { Text(title).bold() }
                 Spacer(minLength: 0)

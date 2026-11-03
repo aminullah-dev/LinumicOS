@@ -6,6 +6,10 @@
 # tiles and page headers. Each has four variants: light, dark, and both again for Increase Contrast. The App names
 # them in App/Views/Theme.swift. Standard library only.
 #
+# The app keeps to four colours, chosen by the owner on 2026-11-02 from a palette he sent: petroleum blue #003B4E (brand,
+# links, tiles), olive #5A6B44 (good), sand #AF906A (warning) and terracotta #AC4E3A (bad), each moved in lightness only as
+# far as the contrast rules below need, plus a neutral grey for unknown.
+#
 # The brand is the Linumic ink (#17202C on light, #EEF2F7 on dark: Documents/Linumic-Social/Linumic-Logos/README.md,
 # tools/design/make_app_icon.py). Its hue, a slate blue near 214°, gives the accent and the Desk tile.
 #
@@ -33,18 +37,18 @@ PILL_ALPHA = 0.14
 
 #        name               role      light      dark       light HC   dark HC
 TOKENS = [
-    ("AccentColor",        "accent", "#2D5E9D", "#6695D3", "#224675", "#8DB0DE"),
+    ("AccentColor",       "accent",  "#005068", "#589DB6", "#003B4E", "#A4D2E2"),
     # Status: good, warn, bad, info, and unknown, which is neutral grey and never green.
-    ("StatusGood",         "text",   "#196C38", "#2EC666", "#134F29", "#96ECB6"),
-    ("StatusWarn",         "text",   "#934B04", "#FF9419", "#6C3703", "#FFD4A4"),
-    ("StatusBad",          "text",   "#B1271D", "#FF8E85", "#841D15", "#FFCFCC"),
-    ("StatusInfo",         "text",   "#215DAB", "#7CB2F8", "#18447F", "#C5DDFC"),
+    ("StatusGood",        "text",    "#50603C", "#A7BC8B", "#3C4A2C", "#D2E0BE"),
+    ("StatusWarn",        "text",    "#73592F", "#D9BD92", "#523F20", "#EDDDC2"),
+    ("StatusBad",         "text",    "#9A412F", "#EE9F8C", "#722C20", "#FAD6CD"),
+    ("StatusInfo",        "text",    "#005068", "#7DBDD4", "#003B4E", "#BFE0EC"),
     ("StatusUnknown",      "text",   "#5D5D65", "#AFAFB6", "#45454A", "#DBDBDE"),
     # Area tints (sidebar tiles, page headers, number cards). Ink is the brand; Graphite is the muted Archive.
     # Harmonised 2026-10-31: one family, not a rainbow. Each keeps its hue (so money stays green, Monitor pink…) but
     # all share the same moderate saturation and the same white-glyph contrast weight (~4.4 light / 4.0 dark / 5.7 /
     # 5.4 HC), so the tiles and page headers read as one palette. Ink (the brand slate) is left as it was.
-    ("AreaInk",            "tile",   "#2B3A52", "#3F5574", "#202C3E", "#2B3A52"),
+    ("AreaInk",           "tile",    "#003B4E", "#1F5F75", "#002C3A", "#003B4E"),
     ("AreaBlue",           "tile",   "#4479C7", "#4E80CA", "#3566B0", "#366AB6"),
     ("AreaIndigo",         "tile",   "#716DCE", "#7875D1", "#5C58C7", "#605CC9"),
     ("AreaPurple",         "tile",   "#955FCA", "#9B68CD", "#8547C2", "#884CC3"),

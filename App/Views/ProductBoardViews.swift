@@ -135,54 +135,91 @@ struct ProductBoardCard: View {
     let card: ProductCard
     /// Desk rows of this product that wait on the owner, on the management centre; 0 shows nothing.
     var waiting = 0
+    @State private var isOpen = false
+    /// Every card is this tall until it is opened (owner, 2026-11-02): one size, and the detail one click away.
+    @ScaledMetric(relativeTo: .body) private var closedHeight: CGFloat = 132
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text(verbatim: card.product.title).font(.headline)
+                Text(verbatim: card.product.title).font(.headline).lineLimit(1)
                 Spacer(minLength: 4)
                 LevelBadge(state: card.level)
-                Image(systemName: "chevron.forward").foregroundStyle(.tertiary).accessibilityHidden(true)
-            }
-            switch card.level {
-            case .notLevel(let findings):
-                VStack(alignment: .leading, spacing: 3) {
-                    ForEach(findings.prefix(3)) { f in
-                        Label { Text(verbatim: f.text).monospacedDigit() } icon: {
-                            Image(systemName: "arrow.triangle.branch").foregroundStyle(.statusWarn)
-                        }
-                        .font(.callout)
-                    }
-                    if findings.count > 3 {
-                        Text("and \(findings.count - 3) more").font(.caption).foregroundStyle(.secondary)
-                    }
+                Button { withAnimation(.snappy) { isOpen.toggle() } } label: {
+                    Image(systemName: isOpen ? "chevron.up" : "chevron.down")
+                        .frame(width: 24, height: 24)
+                        .contentShape(Rectangle())
                 }
-            case .unknown(let reasons):
-                Text(verbatim: reasons.first ?? "").font(.caption).foregroundStyle(.secondary).lineLimit(2)
-            case .level, .nothingShipped:
-                EmptyView()
+                .buttonStyle(.plain)
+                .foregroundStyle(.secondary)
+                .accessibilityLabel(isOpen ? Text("Close the card") : Text("Open the card"))
+                .help(isOpen ? Text("Close the card") : Text("Open the card"))
             }
-            platforms
-            FitRow(spacing: 6) {
-                if waiting > 0 {
-                    PillLabel(text: Text("\(waiting) waiting"), symbol: "person.fill.checkmark", color: .statusWarn)
-                }
-                pullsPill
-                ciPill
-                if let licences = card.licences { licencePill(licences) }
-                healthPill
-            }
-            if let at = card.readAt {
-                Text("Newest reading \(at.formatted(date: .abbreviated, time: .shortened))").font(.caption2).foregroundStyle(.secondary)
+            summary
+            closedPills
+            if isOpen {
+                details.transition(.opacity)
             }
         }
         .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: isOpen ? nil : closedHeight, maxHeight: isOpen ? nil : closedHeight, alignment: .topLeading)
+        .clipped()
         .cardSurface()
-        // The level on the leading edge: green, orange, or grey when it is not known.
+        // The level on the leading edge: green, amber, or grey when it is not known.
         .overlay(alignment: .leading) { AccentEdge(tint: card.level.tint) }
         .contentShape(RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous))
         .hoverHighlight(cornerRadius: Theme.Radius.card)
+    }
+
+    /// The one line a closed card says about its level.
+    @ViewBuilder
+    private var summary: some View {
+        switch card.level {
+        case .notLevel(let findings):
+            if let first = findings.first {
+                Label { DirectionalText(first.text).monospacedDigit().lineLimit(1) } icon: {
+                    Image(systemName: "arrow.triangle.branch").foregroundStyle(.statusWarn)
+                }
+                .font(.callout)
+            }
+        case .unknown(let reasons):
+            DirectionalText(reasons.first ?? "").font(.caption).foregroundStyle(.secondary).lineLimit(1)
+        case .level, .nothingShipped:
+            EmptyView()
+        }
+    }
+
+    /// What an open card adds.
+    @ViewBuilder
+    private var details: some View {
+        Divider()
+        switch card.level {
+        case .notLevel(let findings) where findings.count > 1:
+            VStack(alignment: .leading, spacing: 3) {
+                ForEach(findings.dropFirst()) { f in
+                    Label { DirectionalText(f.text).monospacedDigit() } icon: {
+                        Image(systemName: "arrow.triangle.branch").foregroundStyle(.statusWarn)
+                    }
+                    .font(.callout)
+                }
+            }
+        case .unknown(let reasons) where reasons.count > 1:
+            VStack(alignment: .leading, spacing: 3) {
+                ForEach(reasons.dropFirst(), id: \.self) { DirectionalText($0).font(.caption).foregroundStyle(.secondary) }
+            }
+        default:
+            EmptyView()
+        }
+        platforms
+        FitRow(spacing: 6) {
+            pullsPill
+            ciPill
+            healthPill
+        }
+        if let licences = card.licences { licencePill(licences) }
+        if let at = card.readAt {
+            Text("Newest reading \(at.formatted(date: .abbreviated, time: .shortened))").font(.caption2).foregroundStyle(.secondary)
+        }
     }
 
     /// The compared platforms (the apps people install), one row each: store, build, main.
@@ -215,6 +252,37 @@ struct ProductBoardCard: View {
         .font(.callout)
     }
 
+    /// The four things a closed card always says, short enough to stay on one line whatever the card's width. The full
+    /// sentence is the pill's help and the open card.
+    private var closedPills: some View {
+        HStack(spacing: 6) {
+            if waiting > 0 {
+                BoardPill(text: waiting.formatted(), symbol: "person.fill.checkmark", color: .statusWarn, help: String(localized: "\(waiting) waiting"))
+            }
+            switch card.pulls {
+            case .known(let p, let source, let at):
+                BoardPill(text: String(localized: "\(p.open) PR"), symbol: "arrow.triangle.pull",
+                          color: p.open > 0 ? .statusInfo : .statusUnknown, help: BoardText.source(source, at))
+            case .none(let why, _, _), .unknown(let why):
+                BoardPill(text: "PR ?", symbol: "arrow.triangle.pull", color: .statusUnknown, help: why)
+            }
+            switch card.ci {
+            case .known(let ci, let source, let at):
+                BoardPill(text: "CI", symbol: !ci.failing.isEmpty ? "xmark.octagon.fill" : "checkmark.seal.fill",
+                          color: !ci.failing.isEmpty ? .statusBad : (ci.passing.isEmpty ? .statusUnknown : .statusGood), help: BoardText.source(source, at))
+            case .none(let why, _, _), .unknown(let why):
+                BoardPill(text: "CI ?", symbol: "gearshape.2", color: .statusUnknown, help: why)
+            }
+            switch card.health {
+            case .known(let h, let source, let at):
+                BoardPill(text: "\(h.up.formatted())/\(h.total.formatted())", symbol: "waveform.path.ecg",
+                          color: h.down > 0 ? .statusBad : (h.degraded > 0 ? .statusWarn : (h.unchecked > 0 ? .statusUnknown : .statusGood)), help: BoardText.source(source, at))
+            case .none(let why, _, _), .unknown(let why):
+                BoardPill(text: "–", symbol: "waveform.path.ecg", color: .statusUnknown, help: why)
+            }
+        }
+    }
+
     private var pullsPill: some View {
         switch card.pulls {
         case .known(let p, let source, let at):
@@ -245,7 +313,7 @@ struct ProductBoardCard: View {
         switch value {
         case .known(let l, let source, let at):
             BoardPill(text: String(localized: "\(l.active) licences active"), symbol: "key.horizontal",
-                      color: l.expired > 0 ? .statusBad : (l.expiringSoon > 0 ? .statusWarn : .teal), help: BoardText.source(source, at))
+                      color: l.expired > 0 ? .statusBad : (l.expiringSoon > 0 ? .statusWarn : .statusInfo), help: BoardText.source(source, at))
         case .none(let why, _, _), .unknown(let why):
             BoardPill(text: String(localized: "Licences unknown"), symbol: "key.horizontal", color: .statusUnknown, help: why)
         }

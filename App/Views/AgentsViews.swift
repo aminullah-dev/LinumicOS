@@ -104,7 +104,7 @@ struct AgentsView: View {
     private func header(_ report: AgentsReport) -> some View {
         PageHeader(.agents) {
             FitRow(spacing: 8) {
-                BoardPill(text: String(localized: "\(report.registry.agents.count) agents, every 2 days"), symbol: "clock.arrow.2.circlepath", color: .teal)
+                BoardPill(text: String(localized: "\(report.registry.agents.count) agents, every 2 days"), symbol: "clock.arrow.2.circlepath", color: .statusInfo)
                 BoardPill(text: String(localized: "\(report.waiting.count) pull requests waiting for review"), symbol: "arrow.triangle.pull",
                           color: report.waiting.isEmpty ? .statusUnknown : .statusWarn)
                 BoardPill(text: String(localized: "\(report.quiet.count) quiet for more than \(report.registry.rules.quietAfterDays) days"),

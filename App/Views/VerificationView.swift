@@ -120,7 +120,7 @@ struct VerificationView: View {
                         } label: {
                             HStack {
                                 Text(item.name).bold()
-                                StatusBadge(text: item.kind.title, color: .purple)
+                                StatusBadge(text: item.kind.title, color: .statusInfo)
                                 Spacer()
                                 EvidenceButton(verification: item.verification)
                             }

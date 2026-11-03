@@ -92,6 +92,13 @@ struct CenterTests {
         #expect(r.alsoToday.map(\.item.title) == ["t-fact"])
     }
 
+    @Test func theWorstWaitsFirstAndTheDesksOrderHoldsOtherwise() {
+        let r = CenterBuilder.build(desk: desk(today: [row("a", owner: true, bucket: .today), row("b", owner: true, bucket: .today, severity: .high), row("c", owner: true, bucket: .today)],
+                                               thisWeek: [row("d", owner: true, bucket: .thisWeek, severity: .high)]),
+                                    products: report([]))
+        #expect(r.waiting.map(\.item.title) == ["b", "d", "a", "c"])
+    }
+
     @Test func aProjectsWaitingComesFromItsOwnDomain() {
         let r = CenterBuilder.build(desk: desk(today: [row("mine", domain: "WorkTrack", owner: true, bucket: .today),
                                                        row("other", domain: "VELRO", owner: true, bucket: .today)]),
@@ -220,5 +227,28 @@ struct CenterTests {
         var d = desk()
         d.sources = [source("older", .read(open: 1, ticked: 0, skipped: [], reviewedOn: KeyDay("2020-01-01")))]
         #expect(CenterBuilder.build(desk: d, products: report([])).overdueLedgers.isEmpty)
+    }
+
+    // MARK: What counts
+
+    @Test func platformsNotLevelAreALookNotAProblem() {
+        let r = CenterBuilder.build(desk: desk(), products: report([card("velro", level: .notLevel([]))]))
+        #expect(r.maintenanceAttention.map(\.id) == ["velro"])
+        #expect(r.maintenanceAttention[0].needsLook && !r.maintenanceAttention[0].hasProblem)
+        #expect(r.problemCount == 0)
+    }
+
+    @Test func pullRequestsAreOneLineNotOneRowEach() {
+        let pull = row("x", domain: "WorkTrack", owner: true, bucket: .today)
+        var ready = pull
+        ready.item.subjectKey = "pullReady|aminullah-dev/WorkTrack|https://x/1"
+        var agents = pull
+        agents.item.subjectKey = "agents.waiting.worktrack-web"
+        agents.item.title = "agents"
+        let task = row("task", domain: "WorkTrack", owner: true, bucket: .today)
+        let r = CenterBuilder.build(desk: desk(today: [ready, agents, task]), products: report([card("worktrack", title: "WorkTrack")]))
+        #expect(r.waiting.map(\.item.title) == ["task"])
+        #expect(r.pullRows.count == 2)
+        #expect(r.focus[0].waiting.count == 3, "the project's own count keeps its pull requests")
     }
 }
