@@ -20,12 +20,13 @@ struct CenterView: View {
     var body: some View {
         // Reading `monitor.now` re-renders every minute, so day counts and freshness stay current.
         let now = max(.now, monitor.now)
-        let report = CenterBuilder.build(desk: deskModel.desk(now: now), products: products.report(now: now),
+        let report = CenterBuilder.build(desk: deskModel.desk(now: now), products: products.report(now: now), today: KeyDay(now),
                                          tier: products.tiers.tier(forProduct:))
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.Spacing.l) {
                 header(report, now: now)
                 DataFreshnessBanner(now: now)
+                weeklyReview(report, now: now)
                 waiting(report)
                 focus(report)
                 maintenance(report)
@@ -51,6 +52,29 @@ struct CenterView: View {
                     ReleaseBadge(text: String(localized: "\(stale) sources are out of date"), symbol: "clock.badge.exclamationmark", color: .statusUnknown)
                 }
             }
+        }
+    }
+
+    // MARK: Weekly review
+
+    /// Why the waiting list may be longer than the truth: its ledgers haven't been reviewed. Only says; the ledgers are
+    /// edited where they are, and this app never writes to them.
+    @ViewBuilder
+    private func weeklyReview(_ report: CenterReport, now: Date) -> some View {
+        if let oldest = report.overdueLedgers.first {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "calendar.badge.clock").foregroundStyle(.statusWarn).accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Weekly review: \(report.overdueLedgers.count) ledgers are due").font(.headline)
+                    Text("Oldest review: \(oldest.reviewedOn.start().shortDate), \(oldest.reviewedOn.days(until: KeyDay(now))) days ago. Some items waiting on you may already be done.")
+                        .font(.callout).foregroundStyle(.secondary)
+                }
+                Spacer(minLength: 8)
+                Button("Open the Desk") { router.go(.desk) }
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .cardSurface()
         }
     }
 

@@ -194,4 +194,31 @@ struct CenterTests {
         #expect(product.slots.map(\.appIdentifier) == ["com.pashtokey.app"])
         #expect(ReleaseCatalog.apps(from: []).contains { $0.appIdentifier == "com.pashtokey.app" && $0.store == .appStore })
     }
+
+    // MARK: Weekly review
+
+    private func source(_ id: String, _ state: DeskSourceStatus.State) -> DeskSourceStatus {
+        DeskSourceStatus(source: LedgerSource(id, "Projects/Multiplatform/\(id)/PRIORITIES.md", .named(id)), displayPath: "~/\(id)", state: state, readAt: now)
+    }
+
+    @Test func aLedgerOverAWeekOldIsDueOldestFirst() throws {
+        let today = try #require(KeyDay("2026-11-02"))
+        var d = desk()
+        d.sources = [
+            source("week", .read(open: 1, ticked: 0, skipped: [], reviewedOn: KeyDay("2026-10-26"))),   // exactly 7 days: not yet
+            source("newer", .read(open: 1, ticked: 0, skipped: [], reviewedOn: KeyDay("2026-10-25"))),
+            source("older", .read(open: 1, ticked: 0, skipped: [], reviewedOn: KeyDay("2026-10-19"))),
+            source("noDay", .read(open: 1, ticked: 0, skipped: [], reviewedOn: nil)),
+            source("report", .report(today: 1, thisWeek: 0, skipped: [], day: KeyDay("2026-10-01"))),
+            source("missing", .notFound),
+        ]
+        let overdue = CenterBuilder.build(desk: d, products: report([]), today: today).overdueLedgers
+        #expect(overdue.map(\.path) == ["~/older", "~/newer"])
+    }
+
+    @Test func withoutTodayNothingIsDue() {
+        var d = desk()
+        d.sources = [source("older", .read(open: 1, ticked: 0, skipped: [], reviewedOn: KeyDay("2020-01-01")))]
+        #expect(CenterBuilder.build(desk: d, products: report([])).overdueLedgers.isEmpty)
+    }
 }

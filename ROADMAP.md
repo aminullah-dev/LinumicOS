@@ -71,9 +71,17 @@ the app.
 ## Company OS (docs/company-os-roadmap.md)
 
 - [x] Phase 1: the Desk and the ledgers (PR #21, merged 2026-10-19)
-- [ ] Phase 2: obligations and accounts, the encrypted continuity export, the daily backup counted from `Backups/`
-  (built; the owner's steps are in the pull request)
-- [ ] Phases 3 to 6: sync and reminders with the Mac off, money, sales, legal and marketing
+- [x] Phases 2 to 7: obligations, sync, money, sales, legal, marketing and products (built; `docs/company-os-roadmap.md` says what was verified on real data)
+
+## Management centre (2026-11)
+
+- [x] Trust: a banner names the sources that are out of date (`DataFreshness`, #39)
+- [x] The centre is the home page: waiting on you, projects by tier, stale readings (`CenterBuilder`, #40)
+- [x] The sidebar shows the daily pages; the rest is under More (#42)
+- [x] Keychain: secrets saved by the Developer ID build can be read back (#43)
+- [x] Projects: choose a tier; a new inventory product gets a card without a build (#44)
+- [x] The weekly review and 0.3.0
+- [ ] Read with the Mac off: credentials stay on each device, so most reads stop when the Mac is off
 
 ## Clients
 
