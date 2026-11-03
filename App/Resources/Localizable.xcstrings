@@ -3048,6 +3048,16 @@
         }
       }
     },
+    "Oldest review: %@, %lld days ago. Some items waiting on you may already be done.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قدیمی‌ترین بازبینی: %1$@، %2$lld روز پیش. شاید بعضی موردهای منتظر شما تمام شده باشند."
+          }
+        }
+      }
+    },
     "On main": {
       "localizations": {
         "fa-AF": {
@@ -3124,6 +3134,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "باز کردن انتشارها"
+          }
+        }
+      }
+    },
+    "Open the Desk": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن میز کار"
           }
         }
       }
@@ -3714,6 +3734,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "وب، دسکتاپ و سرور"
+          }
+        }
+      }
+    },
+    "Weekly review: %lld ledgers are due": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرور هفتگی: %lld دفتر نوبت بازبینی دارد"
           }
         }
       }

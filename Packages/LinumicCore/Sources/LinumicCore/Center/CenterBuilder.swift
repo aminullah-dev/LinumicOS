@@ -98,6 +98,13 @@ public struct CenterProject: Hashable, Sendable, Identifiable {
     public var isUnread: Bool { card.ci.isUnknown && card.health.isUnknown }
 }
 
+/// One ledger and the day it was last reviewed.
+public struct CenterLedgerReview: Hashable, Sendable, Identifiable {
+    public var path: String
+    public var reviewedOn: KeyDay
+    public var id: String { path }
+}
+
 public struct CenterReport: Hashable, Sendable {
     /// Open Desk rows, today first, that say the owner has to act.
     public var waiting: [DeskRow]
@@ -110,12 +117,19 @@ public struct CenterReport: Hashable, Sendable {
     /// Maintenance projects with no known problem.
     public var maintenanceQuiet: [CenterProject]
 
+    /// Ledgers not reviewed for `CenterBuilder.reviewAfterDays`, oldest first. Their open items may already be done, so
+    /// this says why a long waiting list can't be taken at its word. A ledger with no review day isn't listed: unknown.
+    public var overdueLedgers: [CenterLedgerReview] = []
+
     /// Projects with something known to be wrong, in any shown tier.
     public var problemCount: Int { (focus + maintenanceAttention).count(where: \.hasProblem) }
 }
 
 public enum CenterBuilder {
-    public static func build(desk: Desk, products: ProductsReport,
+    /// The owner's weekly review: a ledger older than this is due.
+    public static let reviewAfterDays = 7
+
+    public static func build(desk: Desk, products: ProductsReport, today: KeyDay? = nil,
                              tier: (String) -> CenterTier = CenterTier.default(forProduct:)) -> CenterReport {
         let open = desk.today + desk.thisWeek
         let waiting = open.filter(\.item.ownerAction)
@@ -138,7 +152,17 @@ public enum CenterBuilder {
         }
         // The worst first: a project that is down outranks one with a failing test.
         attention.sort { rank($0) < rank($1) }
-        return CenterReport(waiting: waiting, alsoToday: alsoToday, focus: focus, maintenanceAttention: attention, maintenanceQuiet: quiet)
+        return CenterReport(waiting: waiting, alsoToday: alsoToday, focus: focus, maintenanceAttention: attention, maintenanceQuiet: quiet,
+                            overdueLedgers: overdueLedgers(desk, today: today))
+    }
+
+    static func overdueLedgers(_ desk: Desk, today: KeyDay?) -> [CenterLedgerReview] {
+        guard let today else { return [] }
+        return desk.sources.compactMap { source -> CenterLedgerReview? in
+            guard case .read(_, _, _, let reviewedOn?) = source.state, reviewedOn.days(until: today) > reviewAfterDays else { return nil }
+            return CenterLedgerReview(path: source.displayPath, reviewedOn: reviewedOn)
+        }
+        .sorted { ($0.reviewedOn, $0.path) < ($1.reviewedOn, $1.path) }
     }
 
     static func attentions(_ card: ProductCard) -> [CenterAttention] {

@@ -20,6 +20,10 @@ mkdir -p "$OUT" && rm -rf "$OUT/LinumicOS.xcarchive" "$OUT/export" "$OUT"/Linumi
 
 xcodegen generate >/dev/null
 swift test --package-path Packages/LinumicCore >/dev/null
+# The same checks CI runs, so a release can't ship what CI would refuse.
+tools/test/persian-calendar.sh >/dev/null
+python3 tools/l10n/check_catalog.py --source-only >/dev/null
+python3 tools/design/make_colors.py --check >/dev/null
 xcodebuild -project LinumicOS.xcodeproj -scheme LinumicOS -configuration Release -destination 'generic/platform=macOS' \
   -archivePath "$OUT/LinumicOS.xcarchive" -allowProvisioningUpdates archive | tail -1
 xcodebuild -exportArchive -archivePath "$OUT/LinumicOS.xcarchive" -exportPath "$OUT/export" \

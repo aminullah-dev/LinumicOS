@@ -8,13 +8,14 @@ assistant templates via `LF(...)`) aren't extracted, so this script also scans t
 Usage (from the repository root, after a build so .stringsdata exists):
     python3 tools/l10n/check_catalog.py            # report
     python3 tools/l10n/check_catalog.py --add      # add missing keys (untranslated) to the catalog
+    python3 tools/l10n/check_catalog.py --source-only   # ignore build output (stale .stringsdata holds strings since removed)
 """
 import glob, json, re, sys
 
 CATALOG = "App/Resources/Localizable.xcstrings"
 cat = json.load(open(CATALOG))
 keys = set()
-for f in glob.glob("build/DerivedData/**/*.stringsdata", recursive=True):
+for f in [] if "--source-only" in sys.argv else glob.glob("build/DerivedData/**/*.stringsdata", recursive=True):
     if "AppShortcuts" in f:
         continue
     for entries in json.load(open(f)).get("tables", {}).values():
