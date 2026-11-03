@@ -45,7 +45,9 @@ public struct VaultStore: Sendable {
 
     /// The store the app uses: this device's Keychain, in the Vault's own service.
     public static func keychain() -> VaultStore {
-        VaultStore(secrets: KeychainSecretStore(service: keychainService))
+        // A build under another bundle identifier (a local preview) keeps a vault of its own, so it never reads, or asks
+        // the owner's password for, the real vault.
+        VaultStore(secrets: KeychainSecretStore(service: KeychainSecretStore.isPreviewBuild ? keychainService + ".preview" : keychainService))
     }
 
     /// Reads the index. On first use (or when a newer template set exists) it adds the empty templates once and
