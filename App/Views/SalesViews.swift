@@ -109,7 +109,7 @@ struct SalesPage: View {
         PageHeader(.sales, subtitle: Text("Read-only. Linumic OS never writes to the CRM; change dates and stages in the WorkTrack console.")) {
             FitRow(spacing: 8) {
                 SalesPill(text: String(localized: "Today in Kabul: \(SalesFormat.day(report.kabulToday)) (\(salesIsolated(report.kabulToday)))"),
-                          symbol: "calendar", color: .teal)
+                          symbol: "calendar", color: .statusInfo)
                 if let wt = report.worktrack.value, !wt.isProduction {
                     SalesPill(text: String(localized: "WorkTrack: \(wt.environment), not production"), symbol: "theatermasks", color: .statusInfo)
                 }
@@ -147,7 +147,7 @@ struct SalesPage: View {
                 ForEach(wt.dateUnknown) { f in row(f.account, due: f.due, wt: wt) }
             }
         }
-        SalesCard(title: "No next step", symbol: "questionmark.circle", tint: .purple, count: wt.noNextStep.count, atLeast: atLeast, caption: source) {
+        SalesCard(title: "No next step", symbol: "questionmark.circle", tint: .statusInfo, count: wt.noNextStep.count, atLeast: atLeast, caption: source) {
             if !wt.noNextStep.isEmpty {
                 SalesNote(String(localized: "Open accounts with no next-action date. WorkTrack's own Today tab does not show them; set the date in the console."))
             }
@@ -172,7 +172,7 @@ struct SalesPage: View {
     private func signups(_ wt: SalesWorkTrack) -> some View {
         let source = salesSource("GET /v1/vendor/companies, /v1/vendor/crm/accounts", environment: wt.environment,
                                  at: max(wt.accountsReadAt, wt.companiesReadAt))
-        return SalesCard(title: "New signups without a CRM account", symbol: "person.badge.plus", tint: .mint,
+        return SalesCard(title: "New signups without a CRM account", symbol: "person.badge.plus", tint: .statusInfo,
                          count: wt.signups.value?.rows.count, atLeast: wt.signups.value?.isComplete == false, caption: source) {
             switch wt.signups {
             case .unknown(let reason):
@@ -226,7 +226,7 @@ struct SalesPage: View {
     }
 
     private var siteMessages: some View {
-        SalesCard(title: "Website messages", symbol: "envelope", tint: .indigo, count: report.siteMessages.value?.new.count,
+        SalesCard(title: "Website messages", symbol: "envelope", tint: .statusInfo, count: report.siteMessages.value?.new.count,
                   caption: report.siteMessages.value.map { String(localized: "\(SiteMessagesSource.sourceText) · read \($0.readAt.formatted(date: .abbreviated, time: .shortened))") }) {
             switch report.siteMessages {
             case .unknown(let reason):
@@ -243,7 +243,7 @@ struct SalesPage: View {
     }
 
     private var kyc: some View {
-        SalesCard(title: "SafeBeauty: providers waiting for KYC", symbol: "person.text.rectangle", tint: .pink,
+        SalesCard(title: "SafeBeauty: providers waiting for KYC", symbol: "person.text.rectangle", tint: .statusInfo,
                   caption: report.kyc.value.map { k in
                       String(localized: "SafeBeauty (\(k.environment)) · Firestore users, kycStatus PENDING · read \(k.readAt.formatted(date: .abbreviated, time: .shortened))")
                   }) {
@@ -437,7 +437,7 @@ private struct SalesSignupRow: View {
                 Text(verbatim: name).fontWeight(.semibold)
                 switch signup.reason {
                 case .newSignup(let day):
-                    SalesPill(text: String(localized: "Signed up \(SalesFormat.day(day))"), symbol: "sparkles", color: .mint)
+                    SalesPill(text: String(localized: "Signed up \(SalesFormat.day(day))"), symbol: "sparkles", color: .statusInfo)
                 case .selfServe:
                     SalesPill(text: String(localized: "Bought a plan itself"), symbol: "cart", color: .statusGood)
                 }
@@ -620,7 +620,7 @@ private struct SalesContactsView: View {
             FitRow(spacing: 8) {
                 Text(verbatim: c.name).fontWeight(.semibold)
                 if let role = c.role, !role.isEmpty { Text(verbatim: role).font(.caption).foregroundStyle(.secondary) }
-                if c.primary { SalesPill(text: String(localized: "Primary"), symbol: "star.fill", color: .yellow) }
+                if c.primary { SalesPill(text: String(localized: "Primary"), symbol: "star.fill", color: .statusWarn) }
             }
             if let phone = c.phone?.trimmingCharacters(in: .whitespaces), !phone.isEmpty {
                 FitRow(spacing: 10) {

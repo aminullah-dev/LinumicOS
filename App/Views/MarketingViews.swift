@@ -73,7 +73,7 @@ private struct ContentCard: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
                 Text(item.title).fontWeight(.medium)
-                StatusBadge(text: item.kind.title, color: .indigo)
+                StatusBadge(text: item.kind.title, color: .statusInfo)
                 Spacer()
                 if let d = item.scheduledFor { Label(d.formatted(date: .abbreviated, time: .shortened), systemImage: "calendar").font(.caption) }
             }

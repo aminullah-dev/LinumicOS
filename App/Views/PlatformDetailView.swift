@@ -258,7 +258,7 @@ struct PlatformDetailView: View {
         let expired = s.expired.filter { $0.product == product }.count
         return Button { router.sidebar = .licences } label: {
             HStack(spacing: 10) {
-                Image(systemName: "key.horizontal").foregroundStyle(.indigo).accessibilityHidden(true)
+                Image(systemName: "key.horizontal").foregroundStyle(.statusInfo).accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Licences").font(.headline)
                     Text("\(s.activeByProduct[product, default: 0]) active · \(expiring) ending within 30 days · \(expired) expired")

@@ -40,7 +40,7 @@ struct RatingLabel: View {
     var body: some View {
         if let rating = insights?.rating, let count = insights?.ratingCount, count > 0 {
             HStack(spacing: 3) {
-                Image(systemName: "star.fill").foregroundStyle(.yellow).imageScale(.small)
+                Image(systemName: "star.fill").foregroundStyle(.statusWarn).imageScale(.small)
                 Text(rating.formatted(.number.precision(.fractionLength(1)))).monospacedDigit()
                 Text(verbatim: "(\(count.formatted()))").foregroundStyle(.secondary).monospacedDigit()
             }
@@ -463,5 +463,21 @@ struct PasteSecretButton: View {
         #else
         UIPasteboard.general.string = ""
         #endif
+    }
+}
+
+// MARK: - Mixed Dari and English
+
+/// A line from a ledger or the Brief, whose first word may be English ("WorkTrack: …"). Text takes its direction from
+/// its first strong letter, so in Dari that line ran left to right with its words out of order. The mark makes the line
+/// follow the app's direction, and changes nothing on screen otherwise.
+struct DirectionalText: View {
+    @Environment(\.layoutDirection) private var direction
+    let text: String
+
+    init(_ text: String) { self.text = text }
+
+    var body: some View {
+        Text(verbatim: direction == .rightToLeft ? "\u{200F}" + text : "\u{200E}" + text)
     }
 }

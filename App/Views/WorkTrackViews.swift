@@ -77,7 +77,7 @@ struct WorkTrackMarks: View {
 
     var body: some View {
         if let f = company.flags {
-            StatusBadge(text: f.isTest ? String(localized: "TEST") : String(localized: "DUPLICATE"), color: .purple)
+            StatusBadge(text: f.isTest ? String(localized: "TEST") : String(localized: "DUPLICATE"), color: .statusInfo)
         }
         if company.deletion != nil {
             StatusBadge(text: String(localized: "Closure scheduled"), color: .statusBad)

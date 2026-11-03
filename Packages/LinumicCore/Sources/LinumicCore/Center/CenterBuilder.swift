@@ -82,6 +82,14 @@ public struct CenterAttention: Hashable, Sendable, Identifiable {
     public var kind: Kind
     public var text: String
     public var id: Kind { kind }
+
+    /// Something is broken or about to be. Versions that differ between platforms are worth a look but aren't a fault.
+    public var isSerious: Bool {
+        switch kind {
+        case .healthDown, .ciFailing, .licenceExpired: true
+        case .healthDegraded, .licenceExpiring, .notLevel: false
+        }
+    }
 }
 
 public struct CenterProject: Hashable, Sendable, Identifiable {
@@ -92,7 +100,10 @@ public struct CenterProject: Hashable, Sendable, Identifiable {
     public var attention: [CenterAttention]
 
     public var id: String { card.id }
-    public var hasProblem: Bool { !attention.isEmpty }
+    /// Something to look at, serious or not: it lifts a maintenance project onto the page.
+    public var needsLook: Bool { !attention.isEmpty }
+    /// Something broken: what the page counts as a problem.
+    public var hasProblem: Bool { attention.contains(where: \.isSerious) }
 
     /// Neither CI nor health could be read, so "no known problem" says little about this project.
     public var isUnread: Bool { card.ci.isUnknown && card.health.isUnknown }
@@ -106,8 +117,11 @@ public struct CenterLedgerReview: Hashable, Sendable, Identifiable {
 }
 
 public struct CenterReport: Hashable, Sendable {
-    /// Open Desk rows, today first, that say the owner has to act.
+    /// Open Desk rows, the worst first, that say the owner has to act. Pull requests and agents' reviews aren't here: one
+    /// row each would bury everything else, so they are counted in `pullRows`.
     public var waiting: [DeskRow]
+    /// Pull requests ready to merge and agents' reviews, shown as one line that opens Releases.
+    public var pullRows: [DeskRow] = []
     /// Other rows due today: true, but not the owner's to do.
     public var alsoToday: [DeskRow]
     /// Always shown, in the catalog's order.
@@ -131,8 +145,13 @@ public enum CenterBuilder {
 
     public static func build(desk: Desk, products: ProductsReport, today: KeyDay? = nil,
                              tier: (String) -> CenterTier = CenterTier.default(forProduct:)) -> CenterReport {
+        // The worst first, then as the Desk lists them: red never sits below amber on the first screen.
         let open = desk.today + desk.thisWeek
-        let waiting = open.filter(\.item.ownerAction)
+        let owner = open.enumerated().filter(\.element.item.ownerAction)
+            .sorted { ($0.element.item.severity.rawValue, $0.offset) < ($1.element.item.severity.rawValue, $1.offset) }
+            .map(\.element)
+        let waiting = owner.filter { !isPullRow($0) }
+        let pullRows = owner.filter(isPullRow)
         let alsoToday = desk.today.filter { !$0.item.ownerAction }
 
         var focus: [CenterProject] = []
@@ -141,19 +160,25 @@ public enum CenterBuilder {
         for card in products.cards {
             let projectTier = tier(card.id)
             let project = CenterProject(card: card, tier: projectTier,
-                                        waiting: waiting.filter { $0.item.domain == card.product.deskDomain },
+                                        waiting: owner.filter { $0.item.domain == card.product.deskDomain },
                                         attention: attentions(card))
             switch projectTier {
             case .focus: focus.append(project)
             case .archived: break
             case .maintenance:
-                if project.hasProblem || !project.waiting.isEmpty { attention.append(project) } else { quiet.append(project) }
+                if project.needsLook || !project.waiting.isEmpty { attention.append(project) } else { quiet.append(project) }
             }
         }
         // The worst first: a project that is down outranks one with a failing test.
         attention.sort { rank($0) < rank($1) }
-        return CenterReport(waiting: waiting, alsoToday: alsoToday, focus: focus, maintenanceAttention: attention, maintenanceQuiet: quiet,
+        return CenterReport(waiting: waiting, pullRows: pullRows, alsoToday: alsoToday, focus: focus, maintenanceAttention: attention, maintenanceQuiet: quiet,
                             overdueLedgers: overdueLedgers(desk, today: today))
+    }
+
+    /// A Desk row that comes from a pull request waiting to merge or an agent's pull requests waiting for review.
+    static func isPullRow(_ row: DeskRow) -> Bool {
+        let key = row.item.subjectKey
+        return key.hasPrefix("agents.waiting") || ["pullReady|", "stackReady|", "dependencyUpdatesReady|"].contains { key.contains($0) }
     }
 
     static func overdueLedgers(_ desk: Desk, today: KeyDay?) -> [CenterLedgerReview] {

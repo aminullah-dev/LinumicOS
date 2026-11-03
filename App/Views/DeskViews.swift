@@ -203,7 +203,7 @@ struct DeskView: View {
                     HStack(spacing: 6) {
                         Text(verbatim: group.domain.displayTitle).font(.headline)
                         if group.domain.isFocus {
-                            Image(systemName: "star.fill").font(.caption).foregroundStyle(.yellow)
+                            Image(systemName: "star.fill").font(.caption).foregroundStyle(.statusWarn)
                                 .accessibilityLabel(Text("Focus product"))
                         }
                         Spacer()
@@ -282,7 +282,7 @@ struct DeskRowView: View {
                         ReleaseBadge(text: String(localized: "Stale"), symbol: "clock.badge.exclamationmark", color: .statusWarn)
                     }
                     if item.ownerAction {
-                        ReleaseBadge(text: String(localized: "Yours"), symbol: "person", color: .purple)
+                        ReleaseBadge(text: String(localized: "Yours"), symbol: "person", color: .statusInfo)
                     }
                     if item.readOn == .macOS, !DeskModel.supportsLedgers {
                         ReleaseBadge(text: String(localized: "The Mac's reading"), symbol: "laptopcomputer", color: .statusUnknown)
