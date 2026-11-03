@@ -62,7 +62,20 @@ public enum ReleaseCatalog {
     public static let extraRepos: [ReleaseRepo] = [
         ReleaseRepo(slug: "aminullah-dev/LinumicOS", productName: "Linumic OS",
                     source: "git remote of ~/Projects/Multiplatform/Linumic/LinumicCommandCenter (2026-10-09)"),
+        ReleaseRepo(slug: "aminullah-dev/PashtoKey", productName: "Pashto Likman",
+                    source: "git remote of ~/PashtoKey (2026-11-02)"),
     ]
+
+    /// Store apps that aren't an inventory product's listing.
+    /// Pashto Likman: PRODUCT_BUNDLE_IDENTIFIER in ~/PashtoKey/ios/PashtoKey.xcodeproj (2026-11-02).
+    public static let extraApps: [ReleaseApp] = [
+        ReleaseApp(store: .appStore, appIdentifier: "com.pashtokey.app", name: "Pashto Likman", productID: "pashtolikman",
+                   productName: "Pashto Likman", source: "PRODUCT_BUNDLE_IDENTIFIER in ~/PashtoKey/ios/PashtoKey.xcodeproj (2026-11-02)"),
+    ]
+
+    static func isExtraApp(store: AppStore, appIdentifier: String) -> Bool {
+        extraApps.contains { $0.store == store && $0.appIdentifier == appIdentifier }
+    }
 
     /// Every App Store and Google Play listing in the inventory that has an identifier. A listing without one can't
     /// be read from a console, so it is left out rather than guessed.
@@ -78,6 +91,7 @@ public enum ReleaseCatalog {
                 if seen.insert(app.id).inserted { out.append(app) }
             }
         }
+        for extra in extraApps where seen.insert(extra.id).inserted { out.append(extra) }
         return out.sorted { ($0.store.rawValue, $0.productName, $0.name) < ($1.store.rawValue, $1.productName, $1.name) }
     }
 

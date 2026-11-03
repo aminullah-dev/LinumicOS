@@ -236,7 +236,8 @@ public enum ProductsBuilder {
         guard let store = slot.store, let appID = slot.appIdentifier else {
             return .none(L("Not in a store."), source: slot.source, readAt: nil)
         }
-        guard let listing else {
+        // An app read from the console without an inventory listing (Pashto Likman) is not "not in a store".
+        guard listing != nil || ReleaseCatalog.isExtraApp(store: store, appIdentifier: appID) else {
             return .none(LF("Not in a store: the inventory has no %1$@ listing for %2$@.", store.title, appID), source: L("Inventory store listings"), readAt: nil)
         }
         let releases = ctx.input.releases
@@ -249,6 +250,7 @@ public enum ProductsBuilder {
                 }
                 return .none(LF("No version is live on the App Store for %@.", slot.platform.title), source: status.endpoint, readAt: status.fetchedAt)
             }
+            guard let listing else { return .unknown(appStoreReason(appID, releases)) }
             return listingVersion(listing, why: appStoreReason(appID, releases))
         case .googlePlay:
             if let status = releases.play.first(where: { $0.app.appIdentifier == appID }), status.error == nil {
@@ -260,6 +262,7 @@ public enum ProductsBuilder {
                                            detail: playDetail(release)),
                               source: status.endpoint, readAt: status.fetchedAt)
             }
+            guard let listing else { return .unknown(playReason(appID, releases)) }
             return listingVersion(listing, why: playReason(appID, releases))
         }
     }
@@ -316,7 +319,7 @@ public enum ProductsBuilder {
             return releaseAssetBuild(repo: repo, suffixes: suffixes, contains: contains, ctx)
         case .store:
             guard let store = slot.store, let appID = slot.appIdentifier else { return .none(L("Not in a store."), source: slot.source, readAt: nil) }
-            guard listing != nil else {
+            guard listing != nil || ReleaseCatalog.isExtraApp(store: store, appIdentifier: appID) else {
                 return .unknown(LF("No %1$@ listing for %2$@ in the inventory, so its builds are not read.", store.title, appID))
             }
             let releases = ctx.input.releases

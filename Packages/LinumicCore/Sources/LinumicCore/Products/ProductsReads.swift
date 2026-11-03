@@ -136,7 +136,7 @@ public enum ProductsSync {
             }
         }
 
-        for repo in historyRepos(products: products) {
+        for repo in historyRepos(products: products, catalog: ProductsCatalog.read(inventory: products)) {
             if let stop { out.historyErrors[repo] = stop; report.failed[repo] = stop; continue }
             do {
                 let history = try await client.mainHistory(slug: repo)

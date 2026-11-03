@@ -20,7 +20,8 @@ struct CenterView: View {
     var body: some View {
         // Reading `monitor.now` re-renders every minute, so day counts and freshness stay current.
         let now = max(.now, monitor.now)
-        let report = CenterBuilder.build(desk: deskModel.desk(now: now), products: products.report(now: now))
+        let report = CenterBuilder.build(desk: deskModel.desk(now: now), products: products.report(now: now),
+                                         tier: products.tiers.tier(forProduct:))
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.Spacing.l) {
                 header(report, now: now)

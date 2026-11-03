@@ -92,7 +92,7 @@ private func input(running: RunningBuild? = RunningBuild(platform: .macOS, versi
 struct ProductsBuilderTests {
     @Test func theCatalogueCoversEveryProductAndReusesTheInventory() throws {
         let catalog = ProductsCatalog.products
-        #expect(catalog.map(\.title) == ["WorkTrack", "SafeBeauty", "VELRO", "Talar", "KhayatYar", "MediFlow", "NerkhTimes", "Namazia", "DukanPro", "Linumic OS"])
+        #expect(catalog.map(\.title) == ["WorkTrack", "SafeBeauty", "VELRO", "Talar", "KhayatYar", "MediFlow", "NerkhTimes", "Namazia", "DukanPro", "Linumic OS", "Pashto Likman"])
         let inventory = try SeedInventory.load().products
         let specs = Set((PlatformCatalog.profiles.flatMap(\.versionFiles) + ProductsCatalog.extraVersionFiles).map(\.id))
         for product in catalog {
@@ -109,7 +109,7 @@ struct ProductsBuilderTests {
                     #expect(record.platforms.contains { $0.platform == slot.platform }, "\(slot.id): the inventory lists \(slot.platform)")
                 }
             } else {
-                #expect(product.id == "linumicos" && product.extraRepos == ["aminullah-dev/LinumicOS"])
+                #expect(["linumicos": ["aminullah-dev/LinumicOS"], "pashtolikman": ["aminullah-dev/PashtoKey"]][product.id] == product.extraRepos)
             }
             #expect(Set(product.slots.map(\.id)).count == product.slots.count)
         }

@@ -2198,6 +2198,16 @@
         }
       }
     },
+    "Could not save the project's tier: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جایگاه پروژه ذخیره نشد: %@"
+          }
+        }
+      }
+    },
     "Created less than %lld days ago, and none opened yet.": {
       "localizations": {
         "fa-AF": {
@@ -3138,6 +3148,16 @@
         }
       }
     },
+    "Pashto Likman": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pashto Likman"
+          }
+        }
+      }
+    },
     "Paste from clipboard": {
       "localizations": {
         "fa-AF": {
@@ -3444,6 +3464,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "سرور"
+          }
+        }
+      }
+    },
+    "Show on the management center as": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نمایش در مرکز مدیریت به‌عنوان"
           }
         }
       }

@@ -154,8 +154,37 @@ public enum ProductsCatalog {
     static let noDeployedVersion = "The deployed version is not published, so it is not read."
 
     public static let products: [CompanyProduct] = [
-        workTrack, safeBeauty, velro, talar, khayatYar, mediFlow, nerkhTimes, namazia, dukanPro, linumicOS,
+        workTrack, safeBeauty, velro, talar, khayatYar, mediFlow, nerkhTimes, namazia, dukanPro, linumicOS, pashtoLikman,
     ]
+
+    /// The catalog plus a card for every inventory product it doesn't list, so a product added in the app shows up without
+    /// a new build. Its store listings are its platforms; its version on main isn't known, so it says so.
+    public static func all(inventory: [Product], catalog: [CompanyProduct] = products) -> [CompanyProduct] {
+        let listed = Set(catalog.compactMap(\.inventoryID))
+        return catalog + inventory.filter { !listed.contains($0.id) }.map(derived)
+    }
+
+    /// What the GitHub reads cover: everything on the page except an inventory product archived by default, which nobody
+    /// looks at and would only spend the rate limit. A catalogued product stays read whatever its tier.
+    public static func read(inventory: [Product]) -> [CompanyProduct] {
+        all(inventory: inventory).filter { product($0.id) != nil || CenterTier.default(forProduct: $0.id) != .archived }
+    }
+
+    static let notCatalogued = "No version file is catalogued for a product added from the inventory."
+
+    static func derived(_ product: Product) -> CompanyProduct {
+        let source = "Inventory product \(product.id)"
+        var seen = Set<String>()
+        let slots: [ProductSlot] = product.storeListings.compactMap { listing in
+            guard let id = listing.appIdentifier?.trimmingCharacters(in: .whitespaces), !id.isEmpty else { return nil }
+            let platform: Platform = listing.store == .googlePlay ? .android : .iOS
+            guard seen.insert("\(platform.rawValue)|\(id)").inserted else { return nil }
+            return ProductSlot(id: "\(product.id).app.\(platform.rawValue).\(id)", platform: platform, label: listing.appName ?? id, appIdentifier: id,
+                               noVersionFile: notCatalogued, build: .store, compared: true, source: source)
+        }
+        return CompanyProduct(id: product.id, title: product.name, inventoryID: product.id,
+                              tracks: slots.isEmpty ? [] : [ProductTrack(id: "app", title: product.name, slots: slots)], source: source)
+    }
 
     public static func product(_ id: String) -> CompanyProduct? { products.first { $0.id == id } }
 
@@ -347,6 +376,17 @@ public enum ProductsCatalog {
                      compared: false, source: "\(inventory): backend"),
             ]),
         ], source: "Inventory product dukanpro")
+    }()
+
+    /// Pashto Likman, the Pashto keyboard: iPhone only, submitted to App Review on 2026-11-02 (owner). Not an inventory product.
+    static let pashtoLikman: CompanyProduct = {
+        let source = "~/PashtoKey/ios/PashtoKey.xcodeproj (PRODUCT_BUNDLE_IDENTIFIER, 2026-11-02); git remote aminullah-dev/PashtoKey"
+        return CompanyProduct(id: "pashtolikman", title: "Pashto Likman", inventoryID: nil, tracks: [
+            ProductTrack(id: "app", title: "Pashto Likman", slots: [
+                slot("pashtolikman", "app", .iOS, "iPhone app and keyboard", id: "com.pashtokey.app", noVersionFile: "No version file is catalogued for this app yet.",
+                     build: .store, compared: true, source: source),
+            ]),
+        ], extraRepos: ["aminullah-dev/PashtoKey"], source: source)
     }()
 
     static let linumicOS: CompanyProduct = {

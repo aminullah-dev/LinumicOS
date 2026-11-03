@@ -476,7 +476,9 @@ struct ReleaseCenterRulesTests {
     @Test func catalogComesFromTheInventory() throws {
         let seed = try SeedInventory.load()
         let apps = ReleaseCatalog.apps(from: seed.products)
-        let ios = apps.filter { $0.store == .appStore }.map(\.appIdentifier).sorted()
+        // Pashto Likman is not an inventory product; it is added on its own (`ReleaseCatalog.extraApps`).
+        #expect(apps.contains { $0.appIdentifier == "com.pashtokey.app" })
+        let ios = apps.filter { $0.store == .appStore && $0.appIdentifier != "com.pashtokey.app" }.map(\.appIdentifier).sorted()
         let android = apps.filter { $0.store == .googlePlay }.map(\.appIdentifier).sorted()
         // The same seven bundle ids App Store Connect listed on 2026-10-09 (GET /v1/apps).
         #expect(ios == ["af.market.nerkhtimes", "af.namazia.app", "af.velro.driver", "af.velro.ops", "af.velro.passenger", "app.worktrack", "com.safebeauty.app"])

@@ -12,6 +12,8 @@ import Observation
 @Observable
 final class ProductsModel {
     private(set) var file: ProductsFile
+    /// The owner's tier choices for the management centre.
+    private(set) var tiers: ProjectTiers
     private(set) var isRefreshing = false
     private(set) var lastReport: ProductsSync.Report?
     var errorMessage: String?
@@ -22,6 +24,7 @@ final class ProductsModel {
     private let licences: LicenceModel
     private let monitor: MonitorModel
     private let store: ProductsStore?
+    private let tiersStore: ProjectTiersStore?
     /// ETags for this session only (not saved: the file keeps observations, never a response body).
     private let cache = GitHubResponseCache()
 
@@ -35,6 +38,8 @@ final class ProductsModel {
         self.monitor = monitor
         store = (try? ProductsStore.defaultFileURL()).map(ProductsStore.init(fileURL:))
         file = store?.load() ?? ProductsFile()
+        tiersStore = (try? ProjectTiersStore.defaultFileURL()).map(ProjectTiersStore.init(fileURL:))
+        tiers = tiersStore?.load() ?? ProjectTiers()
     }
 
     /// This app's own build: Linumic OS is not in a store, so the build running here is the one that is known.
@@ -48,11 +53,18 @@ final class ProductsModel {
         return RunningBuild(platform: platform, version: version, build: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String)
     }
 
+    func setTier(_ tier: CenterTier, forProduct id: String) {
+        tiers.set(tier, forProduct: id)
+        do { try tiersStore?.save(tiers) } catch {
+            errorMessage = String(localized: "Could not save the project's tier: \(error.localizedDescription)")
+        }
+    }
+
     func input(now: Date = .now) -> ProductsInput {
         ProductsInput(now: now, products: inventory.products, tracking: platforms.tracking + file.extraTracking, releases: releases.snapshot,
                       licences: BriefLicenceInput(isLoaded: licences.isLoaded, records: licences.records, lastSyncedAt: licences.lastSyncedAt),
                       monitor: monitor.snapshot, monitorTargets: monitor.targets, history: file.history, historyErrors: file.historyErrors,
-                      runningApp: Self.runningBuild)
+                      runningApp: Self.runningBuild, catalog: ProductsCatalog.all(inventory: inventory.products))
     }
 
     /// The Products page as of now. Derived every time, never stored.
