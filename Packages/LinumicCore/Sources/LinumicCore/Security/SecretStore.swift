@@ -64,9 +64,14 @@ public struct KeychainError: Error, LocalizedError, Equatable {
 /// Keychain-backed generic-password store. Items are device-only, available only
 /// while the device is unlocked, and never synced to iCloud.
 ///
-/// It prefers the data-protection keychain. Builds signed without a team (ad-hoc local
-/// development) lack the entitlement for it (`errSecMissingEntitlement`), and those fall
-/// back to the login keychain, which is still device-local and encrypted.
+/// It prefers the data-protection keychain. Builds without the entitlement for it (ad-hoc local
+/// development, and the Developer ID build, which has no provisioning profile) fall back to the
+/// login keychain, which is still device-local and encrypted.
+///
+/// Without the entitlement the two directions fail differently (checked 2026-11-02 under an ad-hoc
+/// and a Developer ID signature): a write or delete says `errSecMissingEntitlement`, but a read says
+/// `errSecItemNotFound`. So "not found" in the data-protection keychain must still look in the login
+/// keychain, or a secret this app just saved reads as missing.
 public struct KeychainSecretStore: SecretStore, AccountSecretStore {
     public let service: String
     private let useDataProtection: Bool
@@ -99,10 +104,12 @@ public struct KeychainSecretStore: SecretStore, AccountSecretStore {
     public func delete(_ key: SecretKey) throws { try delete(account: key.rawValue) }
 
     public func read(account key: String) throws -> String? {
-        do { return try readOnce(key) } catch let e as KeychainError where e.status == errSecMissingEntitlement {
-            guard let fallback else { throw e }
-            return try fallback.read(account: key)
+        do {
+            if let value = try readOnce(key) { return value }
+        } catch let e as KeychainError where e.status == errSecMissingEntitlement {
+            guard fallback != nil else { throw e }
         }
+        return try fallback?.read(account: key)
     }
 
     public func write(_ value: String, account key: String) throws {
@@ -114,9 +121,10 @@ public struct KeychainSecretStore: SecretStore, AccountSecretStore {
 
     public func delete(account key: String) throws {
         do { try deleteOnce(key) } catch let e as KeychainError where e.status == errSecMissingEntitlement {
-            guard let fallback else { throw e }
-            try fallback.delete(account: key)
+            guard fallback != nil else { throw e }
         }
+        // Reads look in both, so a deleted secret has to leave both.
+        try fallback?.delete(account: key)
     }
 
     private func readOnce(_ key: String) throws -> String? {
