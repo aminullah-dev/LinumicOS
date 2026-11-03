@@ -28,8 +28,13 @@ struct StatusBadge: View {
     let color: Color
 
     var body: some View {
+        // One element of its own, labelled once. With only `.accessibilityLabel` on the pill, a badge that is the content
+        // of a LabeledContent (Settings → Integrations) had two labels: its own override and the row's label that macOS
+        // exposes onto the content. Resolving one asked for the other, forever: a main-thread stack overflow whenever an
+        // accessibility client looked at the page (found 2026-11-02; seven crash reports, reproduced on a preview build).
         PillLabel(text: Text(LocalizedStringKey(text)), color: color, font: .caption.weight(.medium))
-            .accessibilityLabel(text)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(LocalizedStringKey(text)))
     }
 }
 

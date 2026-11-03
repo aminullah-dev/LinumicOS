@@ -76,9 +76,20 @@ public struct KeychainSecretStore: SecretStore, AccountSecretStore {
     public let service: String
     private let useDataProtection: Bool
 
-    public init(service: String = "com.linumic.commandcenter") {
+    public init(service: String = KeychainSecretStore.defaultService) {
         self.init(service: service, useDataProtection: true)
     }
+
+    /// The app's own items. A build under another bundle identifier (a local preview, `com.linumic.commandcenter.preview`)
+    /// gets items of its own, so running it never reads, or asks the owner's password for, the real app's secrets.
+    public static var defaultService: String {
+        isPreviewBuild ? (Bundle.main.bundleIdentifier ?? realService) : realService
+    }
+
+    static let realService = "com.linumic.commandcenter"
+
+    /// Running under a bundle identifier that extends the real one, such as `com.linumic.commandcenter.preview`.
+    public static var isPreviewBuild: Bool { Bundle.main.bundleIdentifier?.hasPrefix(realService + ".") == true }
 
     private init(service: String, useDataProtection: Bool) {
         self.service = service
