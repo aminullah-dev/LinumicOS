@@ -126,73 +126,82 @@ struct MarketingQueueTests {
     }
 }
 
-@Suite("Sidebar: the Archive group")
+@Suite("Sidebar: five daily pages, More and the Archive")
 struct SidebarArchiveTests {
-    /// The sidebar's groups as the app lists them (Navigation.swift, `SidebarSection.grouped`), by page id.
+    /// The sidebar's pages by area as the app lists them (Navigation.swift, `SidebarSection.grouped`), by page id.
     private let groups: [SidebarGroup] = [
-        SidebarGroup(title: nil, items: ["desk", "obligations", "money", "sales", "legal", "dashboard", "brief", "monitor", "automation",
-                                         "releaseCenter", "platforms", "productBoard", "agents", "oversight", "licences", "worktrackCustomers", "operations",
-                                         "siteMessages", "vault", "keys", "continuity"]),
-        SidebarGroup(title: "Products", items: ["allProducts", "verification", "releases", "roadmap", "issues"]),
-        SidebarGroup(title: "Development", items: ["repositories", "builds", "deployments"]),
-        SidebarGroup(title: "Stores", items: ["appStore", "googlePlay"]),
-        SidebarGroup(title: "Marketing", items: ["marketingQueue", "socialMedia", "contentCalendar"]),
-        SidebarGroup(title: "Intelligence", items: ["marketIntelligence", "aiAssistant"]),
+        SidebarGroup(title: nil, items: ["center", "desk", "brief", "dashboard"]),
+        SidebarGroup(title: "Company", items: ["obligations", "money", "sales", "licences", "legal"]),
+        SidebarGroup(title: "Projects", items: ["productBoard", "releaseCenter", "platforms", "operations", "worktrackCustomers", "allProducts",
+                                                "verification", "releases", "roadmap", "issues"]),
+        SidebarGroup(title: "Build & Ship", items: ["automation", "agents", "repositories", "appStore", "googlePlay", "builds", "deployments"]),
+        SidebarGroup(title: "Health", items: ["monitor", "oversight", "siteMessages"]),
+        SidebarGroup(title: "Marketing", items: ["marketingQueue", "contentCalendar", "marketIntelligence", "aiAssistant", "socialMedia"]),
+        SidebarGroup(title: "Security & Backups", items: ["keys", "vault", "continuity"]),
         SidebarGroup(title: "Settings", items: ["integrations", "security", "account"]),
     ]
 
-    @Test func theManualPagesMoveToALastCollapsedGroup() {
-        let arranged = SidebarArchive.arrange(groups)
-        let archive = arranged.last
-        #expect(archive?.isArchive == true && archive?.title == "Archive")
-        #expect(archive?.items == ["releases", "roadmap", "issues", "builds", "deployments", "socialMedia", "contentCalendar", "marketIntelligence"])
-        #expect(arranged.dropLast().allSatisfy { !$0.isArchive })
-        #expect(arranged.first { $0.title == "Products" }?.items == ["allProducts", "verification"])
-        #expect(arranged.first { $0.title == "Development" }?.items == ["repositories"])
-        #expect(arranged.first { $0.title == "Marketing" }?.items == ["marketingQueue"])
+    private var arranged: [SidebarGroup] { SidebarMore.arrange(SidebarArchive.arrange(groups)) }
+
+    @Test func theSidebarShowsFiveDailyPagesThenMoreThenTheArchive() {
+        let out = arranged
+        #expect(out.count == 3)
+        #expect(out[0].title == nil && !out[0].isMore && !out[0].isArchive)
+        #expect(out[0].items == ["center", "desk", "productBoard", "keys", "automation"])
+        #expect(out[1].isMore && out[1].title == "More")
+        #expect(out[2].isArchive && out[2].title == "Archive")
+        #expect(out[2].items == ["brief", "dashboard", "releases", "roadmap", "issues", "builds", "deployments", "socialMedia", "contentCalendar",
+                                 "marketIntelligence"])
     }
 
-    @Test func noPageIsLostOrAddedAndTheOthersKeepTheirPlace() {
-        let arranged = SidebarArchive.arrange(groups)
+    @Test func morePagesKeepTheirAreasOrderSoAnAreaStaysTogether() {
+        let more = arranged[1].items
+        #expect(more.count == 25)
+        #expect(Array(more.prefix(5)) == ["obligations", "money", "sales", "licences", "legal"])
+        #expect(Array(more.suffix(3)) == ["integrations", "security", "account"])
+        #expect(more.firstIndex(of: "monitor")! < more.firstIndex(of: "oversight")!)
+        #expect(!more.contains("automation") && !more.contains("brief"))
+    }
+
+    @Test func noPageIsLostOrAddedAndEachShowsOnce() {
         let before = groups.flatMap(\.items)
         let after = arranged.flatMap(\.items)
         #expect(after.count == before.count && Set(after) == Set(before), "every page once, none removed")
-        #expect(after.filter { !SidebarArchive.isArchived($0) } == before.filter { !SidebarArchive.isArchived($0) })
-        // A group left with no page is dropped; one that never held an archived page is untouched.
+        #expect(before.count == 40)
+        for id in before {
+            let homes = [SidebarDaily.contains(id), SidebarMore.contains(id), SidebarArchive.isArchived(id)].filter { $0 }
+            #expect(homes.count == 1, "\(id) has exactly one place")
+        }
+    }
+
+    @Test func theArchiveTakesItsPagesOutOfTheirGroups() {
+        let archived = SidebarArchive.arrange(groups)
+        #expect(archived.last?.isArchive == true)
+        #expect(archived.dropLast().allSatisfy { g in g.items.allSatisfy { !SidebarArchive.isArchived($0) } })
+        #expect(archived.first { $0.title == "Marketing" }?.items == ["marketingQueue", "aiAssistant"])
+        // A group left with no page is dropped; the Archive never invents a page that was not in the sidebar.
         let lone = SidebarArchive.arrange([SidebarGroup(title: "Old", items: ["roadmap", "issues"]), SidebarGroup(title: "Kept", items: ["desk"])])
         #expect(lone.map(\.title) == ["Kept", "Archive"])
-        // The Archive never invents a page that was not in the sidebar.
         #expect(SidebarArchive.arrange([SidebarGroup(title: nil, items: ["desk", "builds"])]).last?.items == ["builds"])
         #expect(SidebarArchive.arrange([SidebarGroup(title: nil, items: ["desk"])]).count == 1)
     }
 
     @Test func everyArchivedPageSaysWhatCoversItNow() {
-        #expect(SidebarArchive.ids.count == 8)
+        #expect(SidebarArchive.ids.count == 10)
         for id in SidebarArchive.ids { #expect(SidebarArchive.coveredBy(id) != nil) }
         #expect(SidebarArchive.coveredBy("desk") == nil)
     }
 
-    @Test func morePagesGoBeforeTheArchiveAndNoneIsLost() {
-        let archived = SidebarArchive.arrange(groups)
-        let arranged = SidebarMore.arrange(archived)
-        #expect(arranged.last?.isArchive == true)
-        let more = arranged[arranged.count - 2]
-        #expect(more.isMore && more.title == "More")
-        #expect(more.items.first == "brief" && more.items.contains("automation") && more.items.contains("appStore"))
-        let before = groups.flatMap(\.items)
-        let after = arranged.flatMap(\.items)
-        #expect(after.count == before.count && Set(after) == Set(before), "every page once, none removed")
-        #expect(arranged.dropLast(2).allSatisfy { g in g.items.allSatisfy { !SidebarMore.contains($0) && !SidebarArchive.isArchived($0) } })
-    }
-
-    @Test func moreNeverInventsAPageAndAGroupLeftEmptyIsDropped() {
+    @Test func moreNeverInventsAPageAndAnEmptyGroupIsNotShown() {
         let out = SidebarMore.arrange([SidebarGroup(title: "Stores", items: ["appStore"]), SidebarGroup(title: "Kept", items: ["center"])])
-        #expect(out.map(\.title) == ["Kept", "More"])
-        #expect(out.last?.items == ["appStore"])
+        #expect(out.map(\.title) == [nil, "More"])
+        #expect(out[0].items == ["center"] && out[1].items == ["appStore"])
         #expect(SidebarMore.arrange([SidebarGroup(title: nil, items: ["center"])]).count == 1)
+        #expect(SidebarMore.arrange([SidebarGroup(title: "Stores", items: ["appStore"])]).map(\.title) == ["More"])
     }
 
-    @Test func noPageIsBothMoreAndArchived() {
-        #expect(Set(SidebarMore.ids).isDisjoint(with: SidebarArchive.ids))
+    @Test func noDailyPageIsArchived() {
+        #expect(Set(SidebarDaily.ids).isDisjoint(with: SidebarArchive.ids))
+        #expect(SidebarDaily.ids.count == 5)
     }
 }
