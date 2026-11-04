@@ -1,0 +1,8 @@
+[
+  {"name": "v1.13.0", "commit": {"sha": "e7ed4e6076d7b624a83929c20a7643d1ef14b055"}},
+  {"name": "v1.12.1", "commit": {"sha": "1868ec33d282655b23d47efd4a70d0d52ea25d74"}},
+  {"name": "v1.12.0", "commit": {"sha": "6c0028bf0c77bf6a65584b09f1dd34e2f8dad90d"}},
+  {"name": "v1.10.0", "commit": {"sha": "840c937a4800ecd27fb19596e325593e3b8e1bd3"}},
+  {"name": "v1.8.0", "commit": {"sha": "6c363f22585ab1861de16b83e4eedef2d7337138"}},
+  {"name": "v1.7.0", "commit": {"sha": "66faced147b70e54992ea0738f8ad23de0bce2c4"}}
+]
