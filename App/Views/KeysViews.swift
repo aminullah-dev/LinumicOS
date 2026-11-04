@@ -632,10 +632,11 @@ struct RestoreGuidePanel: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Read-only. Run these yourself in Terminal; the app runs nothing. openssl asks for the passphrase (Keychain item “Linumic license backup passphrase”, the private Notion page or the paper copy); it never goes on the command line.")
                     .font(.callout).foregroundStyle(.secondary)
-                step(1, "Download the backup file from Google Drive, folder Mohem.", command: nil)
-                step(2, "Make an empty private folder, move the downloaded file into it, and go there.", command: KeysRestoreGuide.makeFolderCommand())
+                step(1, "Get the backup file from where its card says: Google Drive (folder Mohem) or one of the external drives.", command: nil)
+                step(2, "Make an empty private folder, put the backup file in it, and go there.", command: KeysRestoreGuide.makeFolderCommand())
                 ForEach(backups) { b in
-                    step(3, LocalizedStringKey("Decrypt and unpack \(b.fileName):"), command: KeysRestoreGuide.decryptCommand(b))
+                    step(3, b.archive == .singleFile ? LocalizedStringKey("Decrypt \(b.fileName):") : LocalizedStringKey("Decrypt and unpack \(b.fileName):"),
+                         command: KeysRestoreGuide.decryptCommand(b))
                 }
                 step(4, "Check that the keys are there (names only), then mark the restore test done here.", command: "ls -la")
                 step(5, "Delete the folder afterwards, so no plain copy of the keys stays on disk.", command: KeysRestoreGuide.cleanupCommand())
