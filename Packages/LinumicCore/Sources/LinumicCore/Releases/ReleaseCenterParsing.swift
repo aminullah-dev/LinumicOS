@@ -211,6 +211,27 @@ public enum ReleaseCenterParser {
         guard let t = try decodeResponse([T].self, from: data, decoder: gitHubDecoder, what: "tags").first else { return nil }
         return GitHubReleaseRef(kind: .tag, tag: t.name, url: URL(string: "https://github.com/\(slug)/releases/tag/\(t.name)"))
     }
+
+    /// `GET /repos/{r}/tags?per_page=100`: the tag with the highest version number, with its commit. A name that is not a
+    /// version (`salon-desktop`, `android-app`, `v1.14.0-rc1`) is never a release here.
+    public static func gitHubVersionTags(_ data: Data, slug: String) throws -> VersionTagsReading {
+        struct T: Decodable {
+            struct C: Decodable { let sha: String? }
+            let name: String
+            let commit: C?
+        }
+        let tags = try decodeResponse([T].self, from: data, decoder: gitHubDecoder, what: "tags")
+        var best: (tag: T, version: SemanticVersion)?
+        for tag in tags {
+            guard let v = SemanticVersion(tag.name) else { continue }
+            if best == nil || best!.version < v { best = (tag, v) }
+        }
+        let newest = best.map {
+            GitHubReleaseRef(kind: .tag, tag: $0.tag.name, url: URL(string: "https://github.com/\(slug)/releases/tag/\($0.tag.name)"),
+                             commit: $0.tag.commit?.sha)
+        }
+        return VersionTagsReading(newest: newest, tagCount: tags.count)
+    }
 }
 
 /// Google encodes int64 as a JSON string ("22"); accept a number or a string.
