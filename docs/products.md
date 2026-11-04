@@ -107,6 +107,38 @@ repository not read yet, a store record instead of a console reading) makes the 
 reason listed, unless a rule already found it not level: Unknown is never "level" and never zero. **Nothing shipped
 yet**: no compared platform has a build or a store version (DukanPro today).
 
+## Installed on this Mac
+
+On 2026-11-03 the owner's Mac held KhayatYar 1.12.1, a test build, in /Applications while tag v1.13.0 already existed,
+and nobody noticed until a customer build was made. A project's **Releases** tab now starts with **Installed on this
+Mac**: each of its Mac apps as /Applications holds it, against the product's newest release (`LinumicCore/Releases/
+InstalledApps.swift`, Mac only).
+
+- **Which apps** (`InstalledAppCatalog`, each tied to a platform of the catalogue above): KhayatYar
+  (`com.afghanjama.khayatyar`, tags of aminullah-dev/AfghanJama), Linumic OS (`com.linumic.commandcenter`) and MediFlow
+  (`com.mediflow.mediflow`). VELRO Ops and the WorkTrack console shell are not there: their releases are a store version
+  and an unversioned deploy, not a tag.
+- **What is read:** a listing of /Applications and each app's `Contents/Info.plist` (`CFBundleIdentifier`,
+  `CFBundleShortVersionString`, `CFBundleVersion`, and `LinumicBuildChannel` and `LinumicBuildCommit` when the app sets
+  them). The app is never run and its data is never opened. An app is "not installed" only when /Applications was
+  listed and its folder is not in it; a folder that can't be listed, an Info.plist that can't be read and another app
+  under the same name are unknown, with why. Read at launch, when the app comes to the front and after each products
+  reading; kept in memory only.
+- **The newest release:** the highest version among the repository's version tags and its latest GitHub release, from
+  the Release Center's reading (docs/integrations.md). A reading from before the tags were read can only say "behind".
+- **The verdict** (`InstalledAppCheck.compare`): **Current** (the newest release's version, and the app records that it
+  was built from its tag: channel `release`, or the tag's own commit), **Same version** (the version, but the app does
+  not record how it was built, so it is grey, never green), **Behind** (older than the newest release, and "a test build"
+  when the app says so), **Test build** (the newest version, but the channel is not `release` or the commit is not the
+  tag's), **Unreleased build** (newer than every release, or the product has none yet, as Linumic OS today), **Not
+  installed**, **Unknown**. Versions compare as numbers (`SemanticVersion`: 1.9.0 is behind 1.10.0).
+- **On the Center:** only Behind and Test build, as one line in "Waiting on you" ("KhayatYar on this Mac is 1.12.1,
+  behind v1.13.0") that opens the project's Releases tab; while it is there the Center is not "All clear".
+- **KhayatYar today** records its channel and commit inside the app (`BuildInfo`, AfghanJama `core/build.gradle.kts`),
+  not in its Info.plist, so a KhayatYar test build of the newest version reads as "Same version". Writing the two keys
+  into its Info.plist (Compose Desktop `macOS { infoPlist { extraKeysRawXml } }`) would let this tell them apart; that is
+  a change to KhayatYar, not made here.
+
 ## Daily Brief, Desk and Command Palette
 
 - **Brief section "Products"** (after Releases): one line per product not level, "KhayatYar: platforms not level",

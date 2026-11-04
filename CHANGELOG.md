@@ -5,6 +5,25 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: installed on this Mac, against the newest release (2026-11-04)
+- **Why:** on 2026-11-03 the owner's Mac held KhayatYar 1.12.1, a test build, while tag v1.13.0 existed, and nobody
+  noticed until a customer build was made.
+- **Releases tab of a project:** "Installed on this Mac" shows each of its Mac apps from /Applications (KhayatYar,
+  Linumic OS, MediFlow) against the product's newest release: Current, Same version, Behind, Test build, Unreleased
+  build, Not installed or Unknown, each reading with its source and time. Only the Info.plist is read; no app is run and
+  no data container is opened; no entitlement was added (the sandbox allows it, checked with the app's entitlements).
+- **Center:** one line in "Waiting on you" when an app is behind or a test build, opening that project's Releases tab;
+  "All clear" waits for it.
+- **Releases (GitHub):** the tags are read every time (`/tags?per_page=100`, once per repository), and the newest
+  release is the highest version among the tags and the latest release. Before, only `/releases/latest` was read, which
+  for KhayatYar still said v1.12.1.
+- Same version is grey, never green: KhayatYar records its build channel inside the app, not in its Info.plist, so
+  this can't yet tell its test build of 1.13.0 from the release. It reads `LinumicBuildChannel` and
+  `LinumicBuildCommit` when an app sets them (docs/products.md).
+- Tests: the comparison (1.12.1 against v1.13.0, 1.9.0 against v1.10.0, a test build of the same version by channel and
+  by commit, no release, missing and unreadable data), the tag parse on KhayatYar's real tag list, the reader, and the
+  Center line. Dari for every new string.
+
 ### Changed: five daily pages, an alerts-first centre and a page per project with tabs (2026-11-04)
 - **Why:** the owner found the app too crowded (40 pages, 15 rows under 8 headings in the sidebar, the Centre, Desk,
   Brief and Dashboard overlapping) and asked for it to stay calm the way a very large company's operations console does.

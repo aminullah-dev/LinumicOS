@@ -11,7 +11,8 @@ Afghanistan.
 
 **Status:** MVP. **The sidebar** (since 2026-11-04) shows five daily pages: the **Center** (home, alerts first: what
 waits on the owner, which project has a problem, which readings are out of date, or "All clear"), the Desk, **Projects**
-(a page per project with Overview, Releases, Code and Health tabs), Keys & Backups and Automation. Every other page is
+(a page per project with Overview, Releases, Code and Health tabs; Releases also says whether the copy of each Mac app
+in /Applications is the newest release), Keys & Backups and Automation. Every other page is
 under a collapsed **More**, the empty or folded ones (the Brief and the Dashboard among them) under **Archive**, and all
 of them are one ⌘K away in the Command Palette. No page or record was removed. **Desk**: one list of what needs the owner today, this week and
 later, grouped by product (WorkTrack first, then SafeBeauty), built on this device from the Daily Brief and the owner's

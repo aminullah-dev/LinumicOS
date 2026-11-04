@@ -53,6 +53,12 @@ post as Linumic, so it is treated as a production system.
   Apple answers 403 and the app says so (nothing changes). Upgrading means creating a new App Manager key (Apple can't
   raise an existing key's role) and replacing it in Settings; the reads keep working with either. The last reading is
   cached in `release-center.json` (versions, builds, tracks, PR titles and CI states; no tokens, no keys).
+- **Installed on this Mac (since 2026-11-04):** the app lists `/Applications` and reads the `Contents/Info.plist` of the
+  catalogued product apps (KhayatYar, Linumic OS, MediFlow), five keys of it, nothing else: no app is run and no data
+  container is opened. No entitlement was added. Checked on 2026-11-04 with a throwaway app signed with exactly this
+  app's entitlements: inside the sandbox (its home was its own container, and reading `~/.zshrc` was refused) it listed
+  `/Applications` and read all three Info.plists; an app that is not there answers "no such file", told apart from a
+  refusal. The readings stay in memory.
 - **WorkTrack vendor session:** the owner types his vendor email and password in the sign-in sheet; the password is
   sent once, in the body of Firebase's `signInWithPassword` request, and is never stored or logged; the sheet clears
   the field after each attempt. Only the Firebase refresh token is kept, in the Keychain as `worktrack.vendor.session` (JSON with the
