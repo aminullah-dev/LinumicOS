@@ -663,8 +663,11 @@ release-only repositories are left out.
 **GitHub** (GET only, the existing token):
 - `GET /repos/{r}` (default branch), `/pulls?state=open`, `/pulls/{n}` per PR (`mergeable`, `mergeable_state`; GitHub
   computes these lazily, so PRs still "unknown" are read once more after 1.5 s), `/actions/runs?head_sha={sha}` per PR
-  (CI rollup), `/actions/runs?branch={default}` (CI on the default branch), `/releases/latest` (404 → `/tags?per_page=1`;
-  none is a fact).
+  (CI rollup), `/actions/runs?branch={default}` (CI on the default branch), `/releases/latest` (404 → the newest tag;
+  none is a fact), and since 2026-11-04 `/tags?per_page=100` every time: the tag with the highest version number and
+  its commit (`VersionTagsReading`; names that are not versions, such as `salon-desktop` or `v1.14.0-rc1`, are left
+  out). A tag can be newer than the newest published release: KhayatYar's v1.13.0 was tagged on 2026-11-03 while its
+  latest GitHub release was still v1.12.1. "Installed on this Mac" (docs/products.md) uses it.
 - CI rollup: the newest run of each workflow; any failure → failing, any still running → running, otherwise passing;
   GitHub's Dependabot/Pages runs (event `dynamic`) and pull-request runs on the default branch are ignored.
 - **Stacks:** a PR whose base is another open PR's head branch. Shown bottom first (merge order) with the hint "Merge

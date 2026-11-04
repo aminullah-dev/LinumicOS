@@ -550,13 +550,30 @@ public struct GitHubReleaseRef: Codable, Hashable, Sendable {
     public var name: String?
     public var publishedAt: Date?
     public var url: URL?
+    /// The commit a tag points at (the tags list gives it; a release's own read does not). Nil when not read.
+    public var commit: String?
 
-    public init(kind: Kind, tag: String, name: String? = nil, publishedAt: Date? = nil, url: URL? = nil) {
+    public init(kind: Kind, tag: String, name: String? = nil, publishedAt: Date? = nil, url: URL? = nil, commit: String? = nil) {
         self.kind = kind
         self.tag = tag
         self.name = name
         self.publishedAt = publishedAt
         self.url = url
+        self.commit = commit
+    }
+}
+
+/// A repository's tags read as versions (`GET /repos/{r}/tags?per_page=100`). A tag can be newer than the newest
+/// published release: KhayatYar's v1.13.0 was tagged on 2026-11-03 while its latest GitHub release was still v1.12.1.
+public struct VersionTagsReading: Codable, Hashable, Sendable {
+    /// The tag with the highest version number, with its commit; nil when no tag is a version number.
+    public var newest: GitHubReleaseRef?
+    /// How many tags the page held (at most 100).
+    public var tagCount: Int
+
+    public init(newest: GitHubReleaseRef?, tagCount: Int) {
+        self.newest = newest
+        self.tagCount = tagCount
     }
 }
 
@@ -569,6 +586,8 @@ public struct RepoReleaseStatus: Codable, Hashable, Sendable, Identifiable {
     /// The last published release, else the newest tag, else nil (none exists; `lastReleaseRead` says it was read).
     public var lastRelease: GitHubReleaseRef?
     public var lastReleaseRead: Bool
+    /// The tags as versions; nil when they were not read (a reading kept from before 2026-11-04, or the read failed).
+    public var versionTags: VersionTagsReading?
     public var fetchedAt: Date
     public var error: String?
 
@@ -576,7 +595,7 @@ public struct RepoReleaseStatus: Codable, Hashable, Sendable, Identifiable {
 
     public init(repo: ReleaseRepo, defaultBranch: String?, pulls: [GitHubPullInfo] = [], mainCI: CIRollup = .none,
                 mainRuns: [GitHubWorkflowRunInfo] = [], lastRelease: GitHubReleaseRef? = nil, lastReleaseRead: Bool = false,
-                fetchedAt: Date, error: String? = nil) {
+                versionTags: VersionTagsReading? = nil, fetchedAt: Date, error: String? = nil) {
         self.repo = repo
         self.defaultBranch = defaultBranch
         self.pulls = pulls
@@ -584,6 +603,7 @@ public struct RepoReleaseStatus: Codable, Hashable, Sendable, Identifiable {
         self.mainRuns = mainRuns
         self.lastRelease = lastRelease
         self.lastReleaseRead = lastReleaseRead
+        self.versionTags = versionTags
         self.fetchedAt = fetchedAt
         self.error = error
     }

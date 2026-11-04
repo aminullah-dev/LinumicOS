@@ -90,5 +90,33 @@ enum ProductsPreviewData {
                                   isComplete: true, readAt: now.addingTimeInterval(-10 * 60))
         }
     }
+
+    /// SAMPLE apps in /Applications, shaped like the 2026-11-03 case (a 1.12.1 test build while tag v1.13.0 existed), so
+    /// the Releases tab and the Center line can be looked at on any device. Nothing is read.
+    static func installed(now: Date = .now) -> [InstalledAppStatus]? {
+        guard isOn else { return nil }
+        let readAt = now.addingTimeInterval(-5 * 60)
+        func app(_ id: String, _ bundleID: String, _ version: String, _ build: String, channel: String? = nil, commit: String? = nil) -> (String, Sourced<InstalledAppInfo>) {
+            (id, .known(InstalledAppInfo(bundleID: bundleID, version: version, build: build, channel: channel, commit: commit),
+                        source: "SAMPLE /Applications", readAt: readAt))
+        }
+        let installed = Dictionary(uniqueKeysWithValues: [
+            app("khayatyar.app.macOS", "com.afghanjama.khayatyar", "1.12.1", "1.12.1", channel: "test build", commit: "dba44af"),
+            app("linumicos.app.macOS", "com.linumic.commandcenter", "0.3.0", "3"),
+            app("mediflow.app.macOS", "com.mediflow.mediflow", "0.2.0", "0.2.0"),
+        ])
+        func repo(_ slug: String, release: String?, tag: String?) -> RepoReleaseStatus {
+            RepoReleaseStatus(repo: ReleaseRepo(slug: slug, productName: slug, source: "SAMPLE"), defaultBranch: "main",
+                              lastRelease: release.map { GitHubReleaseRef(kind: .release, tag: $0) }, lastReleaseRead: true,
+                              versionTags: VersionTagsReading(newest: tag.map { GitHubReleaseRef(kind: .tag, tag: $0, commit: "e7ed4e6") }, tagCount: tag == nil ? 0 : 6),
+                              fetchedAt: readAt)
+        }
+        let releases = ReleaseCenterSnapshot(repos: [
+            repo("aminullah-dev/AfghanJama", release: "v1.12.1", tag: "v1.13.0"),
+            repo("aminullah-dev/LinumicOS", release: nil, tag: nil),
+            repo("aminullah-dev/MediFlow", release: "v0.2.0", tag: "v0.2.0"),
+        ], gitHubReadAt: readAt)
+        return InstalledAppCheck.statuses(installed: installed, releases: releases)
+    }
 }
 #endif

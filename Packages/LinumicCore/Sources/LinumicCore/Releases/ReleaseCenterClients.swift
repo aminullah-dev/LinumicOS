@@ -225,6 +225,11 @@ extension GitHubClient {
             ])))?.filter { !["pull_request", "pull_request_target"].contains($0.event ?? "") } ?? []
             let mainRuns = CIRollup.activeOnly(allMainRuns, activeWorkflowIDs: active)
 
+            // The tags, read once: the highest version among them (a tag can be newer than the newest published release,
+            // as KhayatYar's v1.13.0 was on 2026-11-03), and the fallback below when nothing is published.
+            let tags = try? await getData("\(base)/tags", query: [URLQueryItem(name: "per_page", value: "100")])
+            let versionTags = tags.flatMap { try? ReleaseCenterParser.gitHubVersionTags($0, slug: repo.slug) }
+
             var release: GitHubReleaseRef?
             var releaseRead = false
             do {
@@ -232,9 +237,9 @@ extension GitHubClient {
                 releaseRead = true
             } catch GitHubError.notFound {
                 // No published release: fall back to the newest tag. No tag either is a fact ("none"), not unknown.
-                if let data = try? await getData("\(base)/tags", query: [URLQueryItem(name: "per_page", value: "1")]) {
+                if let tags {
                     do {
-                        release = try ReleaseCenterParser.gitHubNewestTag(data, slug: repo.slug)
+                        release = try ReleaseCenterParser.gitHubNewestTag(tags, slug: repo.slug)
                         releaseRead = true
                     } catch {}
                 }
@@ -242,7 +247,7 @@ extension GitHubClient {
 
             return RepoReleaseStatus(repo: repo, defaultBranch: branch, pulls: pulls.sorted { $0.number < $1.number },
                                      mainCI: CIRollup.from(mainRuns), mainRuns: CIRollup.latestPerWorkflow(mainRuns),
-                                     lastRelease: release, lastReleaseRead: releaseRead, fetchedAt: now())
+                                     lastRelease: release, lastReleaseRead: releaseRead, versionTags: versionTags, fetchedAt: now())
         } catch {
             return RepoReleaseStatus(repo: repo, defaultBranch: nil, fetchedAt: now(), error: error.localizedDescription)
         }

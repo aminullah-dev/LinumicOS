@@ -427,6 +427,9 @@ struct ReleaseCenterGitHubTests {
         #expect(status.pulls.allSatisfy { $0.mergeableState == "clean" && $0.ci == .none })
         #expect(status.mainCI == .none)
         #expect(status.lastRelease == nil && status.lastReleaseRead)
+        // The tags are read once, for the newest version tag and the fallback, whatever releases/latest says.
+        #expect(status.versionTags == VersionTagsReading(newest: nil, tagCount: 0))
+        #expect(t.paths.filter { $0.hasSuffix("/tags") }.count == 1)
         #expect(t.methods.allSatisfy { $0 == "GET" })
         #expect(t.requests.allSatisfy { $0.url!.host() == "api.github.com" && $0.httpBody == nil })
     }

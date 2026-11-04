@@ -30,7 +30,7 @@ struct CenterView: View {
         // Reading `monitor.now` re-renders every minute, so day counts and freshness stay current.
         let now = max(.now, monitor.now)
         let report = CenterBuilder.build(desk: deskModel.desk(now: now), products: products.report(now: now), today: KeyDay(now),
-                                         tier: products.tiers.tier(forProduct:))
+                                         tier: products.tiers.tier(forProduct:), installed: products.installedStatuses())
         let stale = automation.freshness(now: now).problems.count
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.Spacing.l) {
@@ -47,6 +47,7 @@ struct CenterView: View {
             .padding(20)
             .frame(maxWidth: 1100, alignment: .leading)
         }
+        .onAppear { products.readInstalledApps() }
     }
 
     /// The day, one status line, and search. A count is shown here and nowhere else on the page.
@@ -100,11 +101,11 @@ struct CenterView: View {
 
     // MARK: Waiting on you
 
-    /// The owner's rows, the worst first; pull requests and quiet agents as one line each. Nothing when nothing waits:
-    /// the header already says "All clear".
+    /// The owner's rows, the worst first; pull requests, quiet agents and apps on this Mac that are not the newest release
+    /// as one line each. Nothing when nothing waits: the header already says "All clear".
     @ViewBuilder
     private func waiting(_ report: CenterReport) -> some View {
-        if !report.waiting.isEmpty || !report.pullRows.isEmpty || !report.quietAgentRows.isEmpty {
+        if !report.waiting.isEmpty || !report.pullRows.isEmpty || !report.quietAgentRows.isEmpty || !report.installedAttention.isEmpty {
             section(String(localized: "Waiting on you")) {
                 if !report.waiting.isEmpty {
                     rows(Array(report.waiting.prefix(waitingLimit)))
@@ -124,6 +125,20 @@ struct CenterView: View {
                         Button { router.go(.agents) } label: {
                             Label { Text("\(report.quietAgentRows.count) agents with no recent pull request") } icon: { Image(systemName: "moon.zzz") }
                         }
+                    }
+                    // Apps in /Applications behind their newest release or a test build of it: one line, to the first
+                    // one's Releases tab, where each says against what.
+                    if let first = report.installedAttention.first {
+                        Button { router.openProject(first.spec.productID, tab: .releases) } label: {
+                            Label {
+                                if report.installedAttention.count == 1 {
+                                    Text(verbatim: first.centerLine)
+                                } else {
+                                    Text("Not the newest release on this Mac: \(report.installedAttention.map(\.spec.name).formatted(.list(type: .and)))")
+                                }
+                            } icon: { Image(systemName: "desktopcomputer") }
+                        }
+                        .help(Text(verbatim: report.installedAttention.map { "\($0.spec.name): \($0.verdict.sentence)" }.joined(separator: "\n")))
                     }
                 }
                 .buttonStyle(.borderless)

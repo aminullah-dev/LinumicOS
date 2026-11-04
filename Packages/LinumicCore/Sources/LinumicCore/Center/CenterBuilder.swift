@@ -138,15 +138,20 @@ public struct CenterReport: Hashable, Sendable {
     /// this says why a long waiting list can't be taken at its word. A ledger with no review day isn't listed: unknown.
     public var overdueLedgers: [CenterLedgerReview] = []
 
+    /// Apps on this Mac that are behind their newest release or are a test build of it (`InstalledVerdict.needsOwner`),
+    /// shown as one line that opens the project's Releases tab. Unknown or not installed is never here.
+    public var installedAttention: [InstalledAppStatus] = []
+
     /// Projects with something known to be wrong, in any shown tier.
     public var problemCount: Int { (focus + maintenanceAttention).count(where: \.hasProblem) }
 
-    /// Nothing to look at: nothing waits on the owner (no row, no pull request, no quiet agent), no project has a
-    /// problem or needs a look, every ledger is reviewed, and every reading is current (`staleSources`, from the
-    /// automation log). Only then does the centre say "All clear"; a reading that is old or missing never is.
+    /// Nothing to look at: nothing waits on the owner (no row, no pull request, no quiet agent, no app on this Mac behind
+    /// its release), no project has a problem or needs a look, every ledger is reviewed, and every reading is current
+    /// (`staleSources`, from the automation log). Only then does the centre say "All clear"; a reading that is old or
+    /// missing never is.
     public func isAllClear(staleSources: Int) -> Bool {
         waiting.isEmpty && pullRows.isEmpty && quietAgentRows.isEmpty && maintenanceAttention.isEmpty && problemCount == 0
-            && overdueLedgers.isEmpty && staleSources == 0
+            && overdueLedgers.isEmpty && installedAttention.isEmpty && staleSources == 0
     }
 }
 
@@ -154,8 +159,11 @@ public enum CenterBuilder {
     /// The owner's weekly review: a ledger older than this is due.
     public static let reviewAfterDays = 7
 
+    /// `installed`: the apps on this Mac against their newest release (`InstalledAppCheck.statuses`); only those behind or
+    /// a test build reach the report.
     public static func build(desk: Desk, products: ProductsReport, today: KeyDay? = nil,
-                             tier: (String) -> CenterTier = CenterTier.default(forProduct:)) -> CenterReport {
+                             tier: (String) -> CenterTier = CenterTier.default(forProduct:),
+                             installed: [InstalledAppStatus] = []) -> CenterReport {
         // The worst first, then as the Desk lists them: red never sits below amber on the first screen.
         let open = desk.today + desk.thisWeek
         let owner = open.enumerated().filter(\.element.item.ownerAction)
@@ -184,7 +192,8 @@ public enum CenterBuilder {
         // The worst first: a project that is down outranks one with a failing test.
         attention.sort { rank($0) < rank($1) }
         return CenterReport(waiting: waiting, pullRows: pullRows, quietAgentRows: quietAgentRows, alsoToday: alsoToday, focus: focus,
-                            maintenanceAttention: attention, maintenanceQuiet: quiet, overdueLedgers: overdueLedgers(desk, today: today))
+                            maintenanceAttention: attention, maintenanceQuiet: quiet, overdueLedgers: overdueLedgers(desk, today: today),
+                            installedAttention: installed.filter(\.verdict.needsOwner))
     }
 
     /// A Desk row that comes from a pull request waiting to merge or an agent's pull requests waiting for review.
