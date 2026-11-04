@@ -5,6 +5,24 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: Keys & Backups knows the offline-drive backups of 2026-11-03 (seed revision 3)
+- **Why:** the owner made encrypted copies of every signing key on two offline drives on 2026-11-03 and tested
+  restoring them, but the page still knew only the two Google Drive bundles: it kept saying there was no second copy
+  and that the App Store Connect, KhayatYar, Talar and Namazia keys were in no backup.
+- Two backups, both on the USB flash drive "BACKUP" and the external SSD "Projects-Archive", with their restore tests
+  by the owner on 2026-11-03: `linumic-signing-keys-2026-11-03.tgz.enc` (49 files, 61,472 bytes, 600000 iterations;
+  49 of 49 files identical after decrypting from both copies) and `KhayatYar-signing.pfx.enc` (3,552 bytes, made
+  2026-10-23, OpenSSL's default 10000 iterations; SHA-256 equal to the original, which is only on the Windows PC).
+  Counts and product names only, no file list. Sources: the restore-test record and the session records.
+- Every tracked key now lists the new bundle. "No second copy off this Mac" and "New keys must be added to the
+  bundle" are closed on 2026-11-03; the App Store Connect gap now names only the notarytool profile.
+- Fixed on the way: the restore guide printed `-iter 600000 … | tar -x` for every backup, which would not open the
+  .pfx. A backup now records its iteration count and an archive kind `singleFile`; the guide prints
+  `-iter 10000 -in KhayatYar-signing.pfx.enc -out KhayatYar-signing.pfx`, and its first steps no longer say every file
+  comes from Google Drive.
+- A registry saved at revision 2 gets all of this once on load; a gap the owner closed or a note he edited is left
+  alone. Dari for the new titles, the gap text and the guide steps. 2 new tests, 9 updated.
+
 ### Changed: a moderate visual uplift: colour tokens, sidebar tiles, page headers, pills and cards (2026-10-20)
 - **Why:** the owner asked for "a bit more colour and polish" while keeping a calm, native Mac app.
 - Colour tokens in one table, `tools/design/make_colors.py`, written to the asset catalogue (`AccentColor`, `Theme/`)
