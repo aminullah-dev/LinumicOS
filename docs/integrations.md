@@ -770,6 +770,29 @@ No service and no credential: a registry on this device and, on the Mac, file at
   `Signing-Keys-Backup-2026-09-22.dmg` has not been opened. A registry saved from the first seed (no `seedRevision`)
   gets these once on load: added keys and gaps are appended (one the owner removes later stays removed), and the two
   VELRO entries and the "new keys" gap are corrected only while they still hold the first seed's text.
+- **Backups of 2026-11-03 (seed revision 3):** sources the restore-test record
+  `~/Documents/Admin/Backup-Home-Day-2026-11-03/restore-test-keys-2026-11-03.txt` (read for file names only; nothing
+  from it is copied here) and the session records of 2026-10-23 and 2026-11-03. Two backups on two offline drives, not
+  on this Mac, the USB flash drive "BACKUP" and the external SSD "Projects-Archive":
+  - `linumic-signing-keys-2026-11-03.tgz.enc` ("All signing keys, second and third copy"; 61,472 bytes, tar+gzip,
+    AES-256-CBC, PBKDF2 600000 iterations, made 2026-11-03, byte-identical on both drives). 49 files, among them the
+    Android keystores of KhayatYar, Namazia, Afghan jama, WorkTrack, VELRO, SafeBeauty and SODER-HAKEM, the file the
+    registry tracks as the Talar key, the KhayatYar and MediFlow licence private keys, the App Store Connect API keys
+    and the keystore.properties files. Restore test by the owner on 2026-11-03: decrypted from both copies, 49 of 49
+    files identical to the originals. Not in it: the notarytool profile (a Keychain item) and the Windows .pfx. Only
+    the count and the products are recorded, never the bundle's file list (this repository is public).
+  - `KhayatYar-signing.pfx.enc` ("KhayatYar Windows signing key (encrypted .pfx)"; 3,552 bytes, one file, AES-256-CBC,
+    PBKDF2 at OpenSSL's default of **10000** iterations, not 600000). Made on the flash drive on 2026-10-23; an
+    identical copy went on the SSD on 2026-11-03. Restore test by the owner on 2026-11-03: decrypted with the backup
+    passphrase, SHA-256 equal to the original .pfx, which exists only on the owner's Windows PC. No registry key
+    points to it: a registry key is a file on this Mac, and the .pfx is not one.
+  Every tracked key is now in the new bundle (`backupIDs`). Gaps: "No second copy off this Mac" and "New keys must be
+  added to the bundle" are closed on 2026-11-03; the App Store Connect gap now says only the notarytool profile is in
+  no backup. Both backups use the same passphrase item. A record has `pbkdf2Iterations` and an archive kind
+  (`tarGzip`, `tar`, `singleFile`), so the restore guide prints `-iter 10000 … -out KhayatYar-signing.pfx` for the
+  .pfx; a record saved before 2026-11-03 has no count and gets 600000, as both Drive bundles were made with it. A
+  registry saved at revision 2 gets the two backups, the links and the gap closings once; a gap the owner already
+  closed keeps his day and note, and a note he edited is left alone.
 - **Rules:** a key is "changed after backup" when its file's modification day is later than the day its newest backup
   was made (facts are known to the day, so a change later on the backup's own day isn't flagged). A key file found by
   name that no registry path or pattern covers is "not covered by any backup". Reminders: restore test older than 90
@@ -794,7 +817,8 @@ No service and no credential: a registry on this device and, on the Mac, file at
 - **وقتی نسخهٔ دوم (فلش‌دیسک) را ساختید:** در «کمبودهای شناخته‌شده» دکمهٔ «ثبت نسخهٔ دوم…» و بنویسید کجاست.
 - **وقتی کلید تازه ساختید (مثلاً تالار):** آن را به بستهٔ رمزگذاری‌شده اضافه کنید، فایل تازه را در Drive بگذارید، بعد در برنامه
   «ویرایش پشتیبان…» و روز ساخت را عوض کنید و کلید را با «افزودن به فهرست…» اضافه کنید.
-- **بازیابی:** «راهنمای بازیابی» در پایین صفحه فرمان‌ها را دارد؛ رمز را openssl خودش می‌پرسد.
+- **بازیابی:** «راهنمای بازیابی» در پایین صفحه فرمان‌ها را دارد؛ رمز را openssl خودش می‌پرسد. فرمان فایل `.pfx` خیاط‌یار
+  با بقیه فرق دارد (10000 دور به جای 600000، و tar ندارد)؛ راهنما فرمان درست هر فایل را نشان می‌دهد.
 
 ## Website messages: linumic.com contact form (SureForms, read-only)
 

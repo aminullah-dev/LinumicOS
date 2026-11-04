@@ -80,6 +80,35 @@ private func input(_ fs: FakeFS, registry: KeysRegistry = .seed, now: String = "
                           passphrase: [KeysRegistry.passphraseService: passphrase], checkedAt: at(now), calendar: utc)
 }
 
+/// The registry as the revision 2 seed (2026-10-18) wrote it: none of the backups of 2026-11-03, no iteration counts,
+/// the earlier App Store Connect texts, and the second-copy and new-keys gaps open.
+private func revision2Seed() -> KeysRegistry {
+    var r = KeysRegistry.seed
+    r.seedRevision = 2
+    r.backups.removeAll { KeysRegistry.revision3AddedBackupIDs.contains($0.id) }
+    for i in r.backups.indices { r.backups[i].pbkdf2Iterations = nil }
+    for i in r.keys.indices { r.keys[i].backupIDs.removeAll { KeysRegistry.revision3AddedBackupIDs.contains($0) } }
+    for (id, note) in KeysRegistry.revision2KeyNotes {
+        guard let i = r.keys.firstIndex(where: { $0.id == id }) else { continue }
+        r.keys[i].note = note
+        r.keys[i].source = "~/Keys/README.md (2026-10-09)"
+        r.keys[i].recordedOn = day("2026-10-09")
+    }
+    for (id, detail) in KeysRegistry.revision2GapDetails {
+        guard let i = r.gaps.firstIndex(where: { $0.id == id }) else { continue }
+        r.gaps[i].title = "App Store Connect keys and the notarytool profile are not backed up"
+        r.gaps[i].detail = detail
+        r.gaps[i].source = "~/Keys/README.md (2026-10-09)"
+        r.gaps[i].recordedOn = day("2026-10-09")
+    }
+    for id in KeysRegistry.revision3ClosedGapIDs {
+        guard let i = r.gaps.firstIndex(where: { $0.id == id }) else { continue }
+        r.gaps[i].closedOn = nil
+        r.gaps[i].closedNote = nil
+    }
+    return r
+}
+
 @Suite("Keys & Backups")
 struct KeysTests {
     // MARK: Registry
@@ -88,7 +117,8 @@ struct KeysTests {
         let seed = KeysRegistry.seed
         #expect(seed.keys.count == 15)
         #expect(seed.seedRevision == KeysRegistry.currentSeedRevision)
-        #expect(seed.backups.map(\.id) == [KeysRegistry.androidBundleID, KeysRegistry.licenceBundleID])
+        #expect(seed.backups.map(\.id) == [KeysRegistry.androidBundleID, KeysRegistry.licenceBundleID,
+                                           KeysRegistry.signingKeysBundleID, KeysRegistry.khayatyarPfxBackupID])
         let android = try #require(seed.backup(KeysRegistry.androidBundleID))
         #expect(android.driveFileID == "1mBSWqt_JwvEU7BMSFcJ-FJucPGJeuS4q")
         #expect(android.sizeBytes == 22_336)
@@ -99,13 +129,122 @@ struct KeysTests {
         #expect(licence.driveFileID == "13YZuIKfJrlgZFH98_DeqqBUb_ZXhrd5b")
         #expect(licence.archive == .tar)
         #expect(seed.passphraseServices == ["Linumic license backup passphrase"])
-        #expect(seed.secondCopyGap?.isOpen == true)
+        #expect(seed.secondCopyGap?.isOpen == false)   // closed by the bundle of 2026-11-03
         // Every fact carries a source.
         #expect(seed.keys.allSatisfy { !$0.source.isEmpty })
         #expect(seed.backups.allSatisfy { !$0.source.isEmpty && $0.restoreTests.allSatisfy { !$0.source.isEmpty } })
         #expect(seed.gaps.allSatisfy { !$0.source.isEmpty })
         #expect(seed.keys.first { $0.id == "velro-from-downloads" }?.doNotDelete == true)
-        #expect(seed.keys.first { $0.id == "asc-api-keys" }?.backupIDs.isEmpty == true)
+        #expect(seed.keys.first { $0.id == "asc-api-keys" }?.backupIDs == [KeysRegistry.signingKeysBundleID])
+    }
+
+    @Test func seedHasTheBackupsOf20261103() throws {
+        let seed = KeysRegistry.seed
+        let d3 = day("2026-11-03")
+        let bundle = try #require(seed.backup(KeysRegistry.signingKeysBundleID))
+        #expect(bundle.fileName == "linumic-signing-keys-2026-11-03.tgz.enc")
+        #expect(bundle.sizeBytes == 61_472)
+        #expect(bundle.archive == .tarGzip)
+        #expect(bundle.createdOn == d3)
+        #expect(bundle.verifiedOn == d3)
+        #expect(bundle.pbkdf2Iterations == 600_000)
+        #expect(bundle.driveFileID == nil)   // on two offline drives, not in Drive
+        #expect(bundle.location.contains("“BACKUP”") && bundle.location.contains("“Projects-Archive”"))
+        #expect(bundle.verification?.contains("49 files") == true)
+        #expect(bundle.verification?.contains("notarytool") == true)
+        #expect(bundle.lastRestoreTest?.by == "Owner")
+        #expect(bundle.lastRestoreTest?.on == d3)
+        #expect(bundle.lastRestoreTest?.note?.contains("49 of 49") == true)
+
+        let pfx = try #require(seed.backup(KeysRegistry.khayatyarPfxBackupID))
+        #expect(pfx.fileName == "KhayatYar-signing.pfx.enc")
+        #expect(pfx.sizeBytes == 3_552)
+        #expect(pfx.archive == .singleFile)
+        #expect(pfx.createdOn == day("2026-10-23"))
+        #expect(pfx.verifiedOn == d3)
+        // OpenSSL's default count, not the 600000 of the bundles: said in the text and used by the restore command.
+        #expect(pfx.pbkdf2Iterations == 10_000)
+        #expect(pfx.encryption.contains("10000"))
+        #expect(pfx.verification?.contains("not the 600000") == true)
+        #expect(pfx.verification?.contains("only on the owner's Windows PC") == true)
+        #expect(pfx.lastRestoreTest?.by == "Owner")
+        #expect(pfx.lastRestoreTest?.on == d3)
+        // Same passphrase item as the Drive bundles.
+        #expect(seed.passphraseServices == [KeysRegistry.passphraseService])
+        #expect(seed.lastRestoreTest?.test.on == d3)
+
+        // The bundle holds every key on this Mac; the .pfx is not on this Mac, so no tracked key points to its backup.
+        let inBundle = Set(seed.keys.filter { $0.backupIDs.contains(KeysRegistry.signingKeysBundleID) }.map(\.id))
+        #expect(inBundle == Set(seed.keys.filter { !$0.isDeleted }.map(\.id)))
+        #expect(!seed.keys.contains { $0.backupIDs.contains(KeysRegistry.khayatyarPfxBackupID) })
+        #expect(seed.keys.first { $0.id == "asc-api-keys" }?.note == "In the signing-keys bundle of 2026-11-03 (5 files).")
+
+        // Gaps: the second copy and the new keys are done; the notarytool profile is still in no backup.
+        for id in ["second-copy", "future-keys"] {
+            let gap = try #require(seed.gaps.first { $0.id == id })
+            #expect(gap.closedOn == d3)
+            #expect(gap.closedNote?.contains("linumic-signing-keys-2026-11-03.tgz.enc") == true)
+        }
+        let notary = try #require(seed.gaps.first { $0.id == "asc-notary-not-backed-up" })
+        #expect(notary.isOpen)
+        #expect(notary.title == "The notarytool profile is not backed up")
+        #expect(notary.detail != KeysRegistry.revision2GapDetails["asc-notary-not-backed-up"])
+
+        // A public repository: what the new backups say holds no path of a key, key id, address, volume path or hash.
+        let hex = try Regex("[0-9a-fA-F]{32,}")
+        for b in [bundle, pfx] {
+            let texts = [b.title, b.location, b.verification ?? "", b.encryption, b.source]
+                + b.restoreTests.flatMap { [$0.note ?? "", $0.source] }
+            for t in texts {
+                #expect(!t.contains("/Users") && !t.contains("/Volumes") && !t.contains("AuthKey_") && !t.contains(".jks"), "\(t)")
+                #expect(!t.contains("@") && !t.contains("C:\\"), "\(t)")
+                #expect(t.firstMatch(of: hex) == nil, "\(t)")
+            }
+        }
+        let tests = seed.backups.flatMap(\.restoreTests).map(\.id)
+        #expect(Set(tests).count == tests.count)
+        #expect(Set(seed.backups.map(\.id)).count == seed.backups.count)
+    }
+
+    @Test func savedRegistryFromRevision2GetsThe20261103BackupsOnce() throws {
+        // Untouched: exactly the current seed afterwards.
+        var plain = revision2Seed()
+        let changed = plain.applySeedCorrections()
+        #expect(changed)
+        #expect(plain == KeysRegistry.seed)
+
+        // With the owner's own edits: a key he added, a note he wrote, the second copy he closed himself.
+        var old = revision2Seed()
+        old.keys.append(TrackedKey(id: "owner-added", title: "Owner key", kind: .androidSigning, path: "~/Keys/owner.jks",
+                                   source: "Entered in Linumic OS", recordedOn: day("2026-10-20")))
+        let asc = try #require(old.keys.firstIndex { $0.id == "asc-api-keys" })
+        old.keys[asc].note = "Owner's own note"
+        let second = try #require(old.gaps.firstIndex { $0.id == "second-copy" })
+        old.gaps[second].closedOn = day("2026-11-01")
+        old.gaps[second].closedNote = "USB drive at home"
+
+        let dir = FileManager.default.temporaryDirectory.appending(path: "keys-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let store = KeysRegistryStore(fileURL: dir.appending(path: "keys-registry.json"))
+        try store.save(old)
+        let loaded = try #require(store.load())
+        let seed = KeysRegistry.seed
+        #expect(loaded.seedRevision == 3)
+        #expect(loaded.backups == seed.backups)
+        for s in seed.keys {
+            #expect(loaded.keys.first { $0.id == s.id }?.backupIDs == s.backupIDs, "\(s.id)")
+        }
+        let loadedASC = try #require(loaded.keys.first { $0.id == "asc-api-keys" })
+        #expect(loadedASC.note == "Owner's own note")   // left alone; the link to the bundle is added all the same
+        #expect(loadedASC.backupIDs == [KeysRegistry.signingKeysBundleID])
+        #expect(loaded.keys.first { $0.id == "owner-added" }?.backupIDs.isEmpty == true)
+        let loadedSecond = try #require(loaded.gaps.first { $0.id == "second-copy" })
+        #expect(loadedSecond.closedOn == day("2026-11-01"))
+        #expect(loadedSecond.closedNote == "USB drive at home")
+        #expect(loaded.gaps.first { $0.id == "future-keys" } == seed.gaps.first { $0.id == "future-keys" })
+        #expect(loaded.gaps.first { $0.id == "asc-notary-not-backed-up" } == seed.gaps.first { $0.id == "asc-notary-not-backed-up" })
+        var again = loaded
+        #expect(again.applySeedCorrections() == false)   // idempotent
     }
 
     @Test func seedHasTheCorrectionsOf20261018() throws {
@@ -114,7 +253,7 @@ struct KeysTests {
         // VELRO: the Play upload key is the iCloud file; the one in ~/.velro-keys is not.
         let play = try #require(seed.keys.first { $0.id == "velro-play-upload" })
         #expect(play.path == "\(icloud)/velro-release.jks")
-        #expect(play.backupIDs == [KeysRegistry.androidBundleID])
+        #expect(play.backupIDs == [KeysRegistry.androidBundleID, KeysRegistry.signingKeysBundleID])
         #expect(play.doNotDelete)
         let other = try #require(seed.keys.first { $0.id == "velro-release" })
         #expect(other.path == "~/.velro-keys/velro-release.jks")
@@ -122,14 +261,14 @@ struct KeysTests {
         let copy = try #require(seed.keys.first { $0.id == "velro-from-downloads" })
         #expect(copy.title == "VELRO Play upload key (copy from Downloads)")
         #expect(copy.note?.contains("origin unknown") == false)
-        // Keys the first seed missed: on this Mac, in no backup yet.
+        // Keys the first seed missed (in no backup on 2026-10-18; in the bundle of 2026-11-03).
         let added = ["khayatyar-release": "~/Documents/Khayatyar.jks", "talar-release": "\(icloud)/Untitled.jks",
                      "namazia-release": "\(icloud)/Namazia.jks"]
         for (id, path) in added {
             let key = try #require(seed.keys.first { $0.id == id })
             #expect(key.path == path)
             #expect(key.kind == .androidSigning)
-            #expect(key.backupIDs.isEmpty)
+            #expect(key.backupIDs == [KeysRegistry.signingKeysBundleID])
             #expect(key.doNotDelete)
             #expect(key.recordedOn == day("2026-10-18"))
         }
@@ -151,7 +290,7 @@ struct KeysTests {
 
     @Test func savedRegistryFromTheFirstSeedGetsTheCorrectionsOnce() throws {
         // A registry as the 2026-10-09 seed wrote it: no revision, the old VELRO notes and the old gap text.
-        var old = KeysRegistry.seed
+        var old = revision2Seed()
         old.seedRevision = nil
         old.keys.removeAll { KeysRegistry.revision2AddedKeyIDs.contains($0.id) }
         old.gaps.removeAll { KeysRegistry.revision2AddedGapIDs.contains($0.id) }
@@ -174,18 +313,18 @@ struct KeysTests {
         let store = KeysRegistryStore(fileURL: dir.appending(path: "keys-registry.json"))
         try store.save(old)
         let loaded = try #require(store.load())
-        #expect(loaded.seedRevision == 2)
+        #expect(loaded.seedRevision == 3)
         for id in KeysRegistry.revision2AddedKeyIDs { #expect(loaded.keys.contains { $0.id == id }, "\(id)") }
         for id in KeysRegistry.revision2AddedGapIDs { #expect(loaded.gaps.contains { $0.id == id }, "\(id)") }
         let velro = try #require(loaded.keys.first { $0.id == "velro-release" })
         #expect(velro.title == "Other VELRO key (not the Play key)")
         #expect(velro.path == "~/.velro-keys/velro-release.jks")
-        #expect(velro.backupIDs == [KeysRegistry.androidBundleID])
+        #expect(velro.backupIDs == [KeysRegistry.androidBundleID, KeysRegistry.signingKeysBundleID])
         #expect(loaded.keys.first { $0.id == "velro-from-downloads" }?.note == "Owner's own note")
         #expect(loaded.keys.first { $0.id == "velro-from-downloads" }?.title == "old title")
         let future = try #require(loaded.gaps.first { $0.id == "future-keys" })
         #expect(future.detail == KeysRegistry.seed.gaps.first { $0.id == "future-keys" }?.detail)
-        #expect(future.closedOn == day("2026-10-12"))
+        #expect(future.closedOn == day("2026-10-12"))   // the owner's closing, not revision 3's
         #expect(loaded.keys.contains { $0.id == "owner-added" })
         var again = loaded
         #expect(again.applySeedCorrections() == false)   // idempotent
@@ -323,10 +462,12 @@ struct KeysTests {
     // MARK: Checks and scan
 
     @Test func everythingPresentAndBackedUpLeavesOnlyKnownGaps() {
-        let reminders = KeysRules.reminders(input(seededFS()))
+        // Since 2026-11-03 every key is in a backup and the second copy exists: nothing to remind. Restore tests are recent.
+        #expect(KeysRules.reminders(input(seededFS(), now: "2026-11-03")).isEmpty)
+        // As the revision 2 registry had it: no second copy; the ASC keys and the KhayatYar, Talar and Namazia keys
+        // not backed up.
+        let reminders = KeysRules.reminders(input(seededFS(), registry: revision2Seed()))
         let kinds = Set(reminders.map(\.kind))
-        // Known open gaps only: no second copy; the ASC keys and the KhayatYar, Talar and Namazia keys not backed up.
-        // Restore tests are recent.
         #expect(kinds == [.secondCopyMissing, .keyNotBackedUp])
         #expect(Set(reminders.filter { $0.kind == .keyNotBackedUp }.compactMap(\.keyID))
             == ["asc-api-keys", "khayatyar-release", "talar-release", "namazia-release"])
@@ -346,16 +487,26 @@ struct KeysTests {
     @Test func keyModifiedAfterTheBackupDayIsFlagged() {
         let wt = "/Users/owner/Projects/Multiplatform/WorkTrack/worktrack-release.jks"
         let pem = "/Users/owner/.linumic/license-keys/mediflow-private.pem"
+        let kyPem = "/Users/owner/.linumic/license-keys/khayatyar-private.pem"
         // Same day as the backup: can't be told apart, not flagged. A later day: flagged against the newest backup.
         let fs = seededFS(changing: [wt: at("2026-10-09", hour: 23), pem: at("2026-10-12")])
-        let reminders = KeysRules.reminders(input(fs, now: "2026-10-12"))
+        let old = revision2Seed()
+        let reminders = KeysRules.reminders(input(fs, registry: old, now: "2026-10-12"))
         let changed = reminders.filter { $0.kind == .keyChangedAfterBackup }
         #expect(changed.map(\.keyID) == ["mediflow-licence"])
         #expect(changed.first?.backupID == KeysRegistry.licenceBundleID)
         #expect(changed.first?.severity == .high)
         let key = KeysRegistry.seed.keys.first { $0.id == "mediflow-licence" }!
-        let state = KeysRules.backupState(key, registry: .seed, result: KeyChecker.check(key, home: home, access: .all, fs: fs), calendar: utc)
+        let state = KeysRules.backupState(key, registry: old, result: KeyChecker.check(key, home: home, access: .all, fs: fs), calendar: utc)
         #expect(state == .changedAfterBackup(backupID: KeysRegistry.licenceBundleID, modified: day("2026-10-12")))
+
+        // The bundle of 2026-11-03 holds both: a change before it is covered; one after it is flagged against it.
+        #expect(!KeysRules.reminders(input(fs, now: "2026-11-03")).contains { $0.kind == .keyChangedAfterBackup })
+        let later = seededFS(changing: [pem: at("2026-11-05"), kyPem: at("2026-11-03", hour: 23)])
+        let flagged = KeysRules.reminders(input(later, now: "2026-11-05")).filter { $0.kind == .keyChangedAfterBackup }
+        #expect(flagged.map(\.keyID) == ["mediflow-licence"])
+        #expect(flagged.first?.backupID == KeysRegistry.signingKeysBundleID)
+        #expect(flagged.first?.detail?.contains("linumic-signing-keys-2026-11-03.tgz.enc") == true)
     }
 
     @Test func unregisteredKeyFileIsUncovered() {
@@ -410,6 +561,11 @@ struct KeysTests {
         #expect(at91.contains { $0.kind == .restoreTestDue && $0.backupID == KeysRegistry.androidBundleID })
         // The licence backup's last test was 2026-10-08, so it is due a day earlier.
         #expect(at90.contains { $0.kind == .restoreTestDue && $0.backupID == KeysRegistry.licenceBundleID })
+        // The backups of 2026-11-03: due from the 91st day.
+        let new: Set<String> = [KeysRegistry.signingKeysBundleID, KeysRegistry.khayatyarPfxBackupID]
+        #expect(!KeysRules.reminders(input(fs, now: "2027-02-01")).contains { $0.kind == .restoreTestDue && new.contains($0.backupID ?? "") })
+        #expect(Set(KeysRules.reminders(input(fs, now: "2027-02-02")).filter { $0.kind == .restoreTestDue }.compactMap(\.backupID))
+            .isSuperset(of: new))
 
         var reg = KeysRegistry.seed
         reg.backups[1].restoreTests = []
@@ -425,14 +581,19 @@ struct KeysTests {
         let unknown = KeysRules.reminders(input(fs, passphrase: .unknown))
         #expect(!unknown.contains { $0.kind == .passphraseMissing })
 
+        // Closed in the seed (2026-11-03): no reminder. Reopened: the reminder is back. Closed again: gone.
         var reg = KeysRegistry.seed
+        #expect(!KeysRules.reminders(input(fs, registry: reg)).contains { $0.kind == .secondCopyMissing })
+        reg.reopenGap("second-copy", now: at("2026-11-03"))
+        #expect(KeysRules.reminders(input(fs, registry: reg)).contains { $0.kind == .secondCopyMissing })
         reg.closeGap("second-copy", on: day("2026-10-09"), note: "USB at home", now: at("2026-10-09"), calendar: utc)
         #expect(!KeysRules.reminders(input(fs, registry: reg)).contains { $0.kind == .secondCopyMissing })
     }
 
     @Test func registryOnlyRemindersWithoutLocalChecks() {
         // iOS: no checks at all. Only the registry facts count.
-        let i = KeysCheckInput(registry: .seed, now: at("2026-10-09"), calendar: utc)
+        #expect(KeysRules.reminders(KeysCheckInput(registry: .seed, now: at("2026-11-03"), calendar: utc)).isEmpty)
+        let i = KeysCheckInput(registry: revision2Seed(), now: at("2026-10-09"), calendar: utc)
         let kinds = KeysRules.reminders(i).map(\.kind)
         #expect(Set(kinds) == [.secondCopyMissing, .keyNotBackedUp])
         #expect(KeysRules.reminders(i).allSatisfy { $0.readAt == nil })
@@ -466,7 +627,17 @@ struct KeysTests {
             == "openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 -in linumic-android-signing-keys.tgz.enc | tar -xz")
         #expect(KeysRestoreGuide.decryptCommand(seed.backup(KeysRegistry.licenceBundleID)!)
             == "openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 -in linumic-license-keys.tar.enc | tar -x")
+        #expect(KeysRestoreGuide.decryptCommand(seed.backup(KeysRegistry.signingKeysBundleID)!)
+            == "openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 -in linumic-signing-keys-2026-11-03.tgz.enc | tar -xz")
+        // The .pfx: OpenSSL's default 10000 iterations, one file, no tar.
+        #expect(KeysRestoreGuide.decryptCommand(seed.backup(KeysRegistry.khayatyarPfxBackupID)!)
+            == "openssl enc -d -aes-256-cbc -pbkdf2 -iter 10000 -in KhayatYar-signing.pfx.enc -out KhayatYar-signing.pfx")
+        // A record saved before 2026-11-03 has no count: it is a Drive bundle, made with 600000.
+        var saved = seed.backups[0]
+        saved.pbkdf2Iterations = nil
+        #expect(KeysRestoreGuide.decryptCommand(saved) == KeysRestoreGuide.decryptCommand(seed.backups[0]))
+        #expect(KeysRestoreGuide.decryptedName("plain") == "plain.decrypted")
         // The passphrase is never put on the command line.
-        #expect(!KeysRestoreGuide.decryptCommand(seed.backups[0]).contains("-pass"))
+        #expect(seed.backups.allSatisfy { !KeysRestoreGuide.decryptCommand($0).contains("-pass") })
     }
 }

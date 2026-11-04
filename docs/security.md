@@ -123,7 +123,8 @@ post as Linumic, so it is treated as a production system.
     with its citation (`VaultTemplates.swift`). No secret was read or migrated from anywhere on the Mac.
 - **Keys & Backups (since 2026-10-09):** a registry of where each signing key, licence key and App Store Connect key
   lives and which encrypted backup holds it, in `keys-registry.json` next to `inventory.json` (titles, home-relative
-  paths, days, sizes, Google Drive file ids, restore-test records; no key material, no hash, no passphrase).
+  paths, days, sizes, Google Drive file ids, restore-test records; no key material, no hash, no passphrase). A bundle
+  is described by its file count and the products in it, never by the list of its files.
   - **What is read on the Mac:** for each registry path, and for files found by name in `~/Projects`, `~/Keys`,
     `~/.velro-keys`, `~/.linumic/license-keys` and `~/.appstoreconnect` (skipping node_modules, build, .git and
     symbolic links), only `attributesOfItem` (type, size, modification date) and `contentsOfDirectory`. No file is

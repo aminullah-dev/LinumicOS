@@ -1978,6 +1978,16 @@
         }
       }
     },
+    "All signing keys, second and third copy": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همهٔ کلیدهای امضا، نسخهٔ دوم و سوم"
+          }
+        }
+      }
+    },
     "Also today": {
       "localizations": {
         "fa-AF": {
@@ -2268,6 +2278,16 @@
         }
       }
     },
+    "Decrypt %@:": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن رمز %@:"
+          }
+        }
+      }
+    },
     "Desktop app": {
       "localizations": {
         "fa-AF": {
@@ -2384,6 +2404,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "از آخرین خواندن صفحه‌های عمومی فروشگاه‌ها، یا زنده از کنسول‌ها وقتی کلیدهای فقط‌خواندنی آن‌ها در تنظیمات ← یکپارچه‌سازی‌ها اضافه شود."
+          }
+        }
+      }
+    },
+    "Get the backup file from where its card says: Google Drive (folder Mohem) or one of the external drives.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فایل پشتیبان را از جایی بگیرید که کارت آن نشان می‌دهد: Google Drive (پوشهٔ Mohem) یا یکی از درایوهای بیرونی."
           }
         }
       }
@@ -2558,6 +2588,16 @@
         }
       }
     },
+    "KhayatYar Windows signing key (encrypted .pfx)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضای ویندوز خیاط‌یار (.pfx رمزگذاری‌شده)"
+          }
+        }
+      }
+    },
     "KhayatYar desktop": {
       "localizations": {
         "fa-AF": {
@@ -2664,6 +2704,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "اپ مک"
+          }
+        }
+      }
+    },
+    "Make an empty private folder, put the backup file in it, and go there.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک پوشهٔ خالی و خصوصی بسازید، فایل پشتیبان را در آن بگذارید و وارد آن شوید."
           }
         }
       }
@@ -3674,6 +3724,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "نسخهٔ منتشرشده اعلام نمی‌شود، پس خوانده نمی‌شود."
+          }
+        }
+      }
+    },
+    "The notarytool profile is a Keychain item, not a file, and is in no backup. The 5 App Store Connect .p8 files are in the signing-keys bundle of 2026-11-03.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پروفایل notarytool یک آیتم Keychain است، نه فایل، و در هیچ پشتیبانی نیست. پنج فایل .p8 برای App Store Connect در بستهٔ کلیدهای امضای 2026-11-03 هستند."
+          }
+        }
+      }
+    },
+    "The notarytool profile is not backed up": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پروفایل notarytool پشتیبان ندارد"
           }
         }
       }
@@ -25994,16 +26064,6 @@
         }
       }
     },
-    "Download the backup file from Google Drive, folder Mohem.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "فایل پشتیبان را از Google Drive، پوشهٔ Mohem دانلود کنید."
-          }
-        }
-      }
-    },
     "Edit backup": {
       "localizations": {
         "fa-AF": {
@@ -26370,16 +26430,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "تاریخ ساخت"
-          }
-        }
-      }
-    },
-    "Make an empty private folder, move the downloaded file into it, and go there.": {
-      "localizations": {
-        "fa-AF": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "یک پوشهٔ خالی و خصوصی بسازید، فایل دانلودشده را به آن ببرید و وارد آن شوید."
           }
         }
       }
