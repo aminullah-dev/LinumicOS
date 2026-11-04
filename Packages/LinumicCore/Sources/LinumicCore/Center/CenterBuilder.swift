@@ -122,6 +122,9 @@ public struct CenterReport: Hashable, Sendable {
     public var waiting: [DeskRow]
     /// Pull requests ready to merge and agents' reviews, shown as one line that opens Releases.
     public var pullRows: [DeskRow] = []
+    /// Agents with no pull request for too long, one Desk row each. Alike, and often several at once (four WorkTrack
+    /// agents go quiet together), so the centre shows them as one line that opens Agents.
+    public var quietAgentRows: [DeskRow] = []
     /// Other rows due today: true, but not the owner's to do.
     public var alsoToday: [DeskRow]
     /// Always shown, in the catalog's order.
@@ -137,6 +140,14 @@ public struct CenterReport: Hashable, Sendable {
 
     /// Projects with something known to be wrong, in any shown tier.
     public var problemCount: Int { (focus + maintenanceAttention).count(where: \.hasProblem) }
+
+    /// Nothing to look at: nothing waits on the owner (no row, no pull request, no quiet agent), no project has a
+    /// problem or needs a look, every ledger is reviewed, and every reading is current (`staleSources`, from the
+    /// automation log). Only then does the centre say "All clear"; a reading that is old or missing never is.
+    public func isAllClear(staleSources: Int) -> Bool {
+        waiting.isEmpty && pullRows.isEmpty && quietAgentRows.isEmpty && maintenanceAttention.isEmpty && problemCount == 0
+            && overdueLedgers.isEmpty && staleSources == 0
+    }
 }
 
 public enum CenterBuilder {
@@ -150,8 +161,9 @@ public enum CenterBuilder {
         let owner = open.enumerated().filter(\.element.item.ownerAction)
             .sorted { ($0.element.item.severity.rawValue, $0.offset) < ($1.element.item.severity.rawValue, $1.offset) }
             .map(\.element)
-        let waiting = owner.filter { !isPullRow($0) }
+        let waiting = owner.filter { !isPullRow($0) && !isQuietAgentRow($0) }
         let pullRows = owner.filter(isPullRow)
+        let quietAgentRows = owner.filter(isQuietAgentRow)
         let alsoToday = desk.today.filter { !$0.item.ownerAction }
 
         var focus: [CenterProject] = []
@@ -171,8 +183,8 @@ public enum CenterBuilder {
         }
         // The worst first: a project that is down outranks one with a failing test.
         attention.sort { rank($0) < rank($1) }
-        return CenterReport(waiting: waiting, pullRows: pullRows, alsoToday: alsoToday, focus: focus, maintenanceAttention: attention, maintenanceQuiet: quiet,
-                            overdueLedgers: overdueLedgers(desk, today: today))
+        return CenterReport(waiting: waiting, pullRows: pullRows, quietAgentRows: quietAgentRows, alsoToday: alsoToday, focus: focus,
+                            maintenanceAttention: attention, maintenanceQuiet: quiet, overdueLedgers: overdueLedgers(desk, today: today))
     }
 
     /// A Desk row that comes from a pull request waiting to merge or an agent's pull requests waiting for review.
@@ -180,6 +192,9 @@ public enum CenterBuilder {
         let key = row.item.subjectKey
         return key.hasPrefix("agents.waiting") || ["pullReady|", "stackReady|", "dependencyUpdatesReady|"].contains { key.contains($0) }
     }
+
+    /// A Desk row that says an agent has opened no pull request for too long (`AgentsBrief`, `agents.quiet.<slug>`).
+    public static func isQuietAgentRow(_ row: DeskRow) -> Bool { row.item.subjectKey.hasPrefix("agents.quiet.") }
 
     static func overdueLedgers(_ desk: Desk, today: KeyDay?) -> [CenterLedgerReview] {
         guard let today else { return [] }

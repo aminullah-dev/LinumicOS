@@ -251,4 +251,36 @@ struct CenterTests {
         #expect(r.pullRows.count == 2)
         #expect(r.focus[0].waiting.count == 3, "the project's own count keeps its pull requests")
     }
+
+    @Test func quietAgentsAreOneLineNotOneRowEach() {
+        let quiet = (1...4).map { n -> DeskRow in
+            var r = row("q\(n)", domain: "WorkTrack", owner: true, bucket: .today)
+            r.item.subjectKey = "agents.quiet.worktrack-\(n)"
+            return r
+        }
+        let task = row("task", domain: "WorkTrack", owner: true, bucket: .today)
+        let r = CenterBuilder.build(desk: desk(today: quiet + [task]), products: report([card("worktrack", title: "WorkTrack")]))
+        #expect(r.waiting.map(\.item.title) == ["task"])
+        #expect(r.quietAgentRows.count == 4)
+        #expect(r.pullRows.isEmpty, "a quiet agent has no pull request waiting")
+        #expect(r.focus[0].waiting.count == 5, "the project's own count keeps its quiet agents")
+    }
+
+    @Test func allClearOnlyWhenNothingWaitsNothingIsWrongAndEveryReadingIsCurrent() {
+        let calm = CenterBuilder.build(desk: desk(), products: report([card("worktrack")]))
+        #expect(calm.isAllClear(staleSources: 0))
+        #expect(!calm.isAllClear(staleSources: 1), "an old reading is never all clear")
+        let waiting = CenterBuilder.build(desk: desk(today: [row("task", owner: true, bucket: .today)]), products: report([card("worktrack")]))
+        #expect(!waiting.isAllClear(staleSources: 0))
+        var pull = row("x", owner: true, bucket: .thisWeek)
+        pull.item.subjectKey = "pullReady|r|u"
+        #expect(!CenterBuilder.build(desk: desk(thisWeek: [pull]), products: report([])).isAllClear(staleSources: 0))
+        let look = CenterBuilder.build(desk: desk(), products: report([card("velro", level: .notLevel([]))]))
+        #expect(!look.isAllClear(staleSources: 0), "a maintenance project that needs a look is not all clear")
+        let failing = CenterBuilder.build(desk: desk(), products: report([card("worktrack", ci: known(CISummary(passing: [], failing: ["r"], running: [], noRuns: [])))]))
+        #expect(!failing.isAllClear(staleSources: 0))
+        // Rows that are not the owner's to act on do not make it noisy.
+        let info = CenterBuilder.build(desk: desk(today: [row("fyi", owner: false, bucket: .today)]), products: report([]))
+        #expect(info.isAllClear(staleSources: 0) && info.alsoToday.count == 1)
+    }
 }
