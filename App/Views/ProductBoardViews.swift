@@ -362,6 +362,13 @@ struct ProductBoardDetail: View {
                 .frame(maxWidth: 1000, alignment: .leading)
             }
             .navigationTitle(Text(verbatim: card.product.title))
+            // From the Center: a line about an app on this Mac opens this page on Releases.
+            .onChange(of: router.pendingProjectTab, initial: true) {
+                if let next = router.pendingProjectTab {
+                    tab = next
+                    router.pendingProjectTab = nil
+                }
+            }
             .toolbar {
                 ToolbarItem {
                     // Where this project sits on the centre. Nothing else about it changes.
@@ -484,6 +491,7 @@ struct ProductBoardDetail: View {
     private func releasesTab(_ card: ProductCard) -> some View {
         let compared = card.tracks.filter { $0.slots.contains(where: \.slot.compared) }
         let others = card.tracks.filter { !$0.slots.contains(where: \.slot.compared) }
+        installedPanel(card)
         ForEach(compared) { track in trackPanel(track) }
         storeCards(card)
         if !others.isEmpty {
@@ -501,6 +509,24 @@ struct ProductBoardDetail: View {
             Button { router.go(.platforms) } label: { Label("Open Platforms", systemImage: SidebarItem.platforms.symbol) }
         }
         .buttonStyle(.borderless)
+    }
+
+    /// This project's Mac apps as /Applications holds them, against its newest release. Mac only (iPhone and iPad have no
+    /// /Applications to read); nothing shows for a project with no catalogued Mac app.
+    @ViewBuilder
+    private func installedPanel(_ card: ProductCard) -> some View {
+        let apps = products.installedStatuses().filter { $0.spec.productID == card.product.id }
+        if !apps.isEmpty {
+            DashboardPanel(title: "Installed on this Mac") {
+                ForEach(apps) { app in
+                    InstalledAppRow(status: app).padding(.vertical, 4)
+                    if app.id != apps.last?.id { Divider() }
+                }
+                Text("Only each app's Info.plist is read; the app is never run and its data is never opened. It is called current only when it records that it was built from the release's tag.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+            .onAppear { products.readInstalledApps() }
+        }
     }
 
     private func trackPanel(_ track: TrackReading) -> some View {
@@ -765,6 +791,61 @@ struct LevelBadge: View {
         case .nothingShipped: "circle.dashed"
         }
         BoardPill(text: state.title, symbol: symbol, color: state.tint)
+    }
+}
+
+/// One app on this Mac: its verdict, the sentence, and the two readings it is built from, each with its source.
+struct InstalledAppRow: View {
+    let status: InstalledAppStatus
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text(verbatim: status.spec.name).font(.callout.weight(.semibold))
+                Spacer(minLength: 4)
+                InstalledVerdictBadge(verdict: status.verdict)
+            }
+            // Unknown and not installed are said by the reading itself, below; the sentence would repeat it.
+            switch status.verdict {
+            case .notInstalled, .unknown: EmptyView()
+            default: DirectionalText(status.verdict.sentence).font(.callout).monospacedDigit().textSelection(.enabled)
+            }
+            SourcedRow(title: "Installed", value: status.installed) { $0.label }
+            SourcedRow(title: "Newest release", value: status.newest) { $0.label }
+        }
+    }
+}
+
+/// Current is green; behind and a test build amber; a build newer than every release blue; the same version (how it was
+/// built not recorded), not installed and unknown grey, never green.
+extension InstalledVerdict {
+    var tint: Color {
+        switch self {
+        case .current: .statusGood
+        case .behind, .testBuild: .statusWarn
+        case .unreleased: .statusInfo
+        case .sameVersion, .notInstalled, .unknown: .statusUnknown
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .current: "checkmark.circle.fill"
+        case .sameVersion: "equal.circle"
+        case .behind: "arrow.down.circle.fill"
+        case .testBuild: "testtube.2"
+        case .unreleased: "arrow.up.circle"
+        case .notInstalled: "minus.circle"
+        case .unknown: "questionmark.circle.fill"
+        }
+    }
+}
+
+struct InstalledVerdictBadge: View {
+    let verdict: InstalledVerdict
+
+    var body: some View {
+        BoardPill(text: verdict.title, symbol: verdict.symbol, color: verdict.tint, help: verdict.sentence)
     }
 }
 

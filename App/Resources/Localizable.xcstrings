@@ -32801,6 +32801,386 @@
           }
         }
       }
+    },
+    "%1$@ is another app (%2$@), so it is not compared.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ برنامهٔ دیگری است (%2$@)، پس مقایسه نمی‌شود."
+          }
+        }
+      }
+    },
+    "%1$@ is behind the newest release, %2$@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ از تازه‌ترین انتشار، %2$@، عقب است."
+          }
+        }
+      }
+    },
+    "%1$@ is in /Applications, but its Info.plist could not be read: %2$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ در /Applications هست، ولی Info.plist آن خوانده نشد: %2$@"
+          }
+        }
+      }
+    },
+    "%1$@ is newer than the newest release, %2$@: a build that was not released.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ از تازه‌ترین انتشار، %2$@، تازه‌تر است: بیلدی که منتشر نشده."
+          }
+        }
+      }
+    },
+    "%1$@ is the version of %2$@, but not built from that tag: %3$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ نسخهٔ %2$@ است، ولی از روی همان تگ ساخته نشده: %3$@"
+          }
+        }
+      }
+    },
+    "%1$@ on this Mac is %2$@, a test build, behind %3$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ روی این مک %2$@ است (بیلد آزمایشی) و از %3$@ عقب است"
+          }
+        }
+      }
+    },
+    "%1$@ on this Mac is %2$@, behind %3$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ روی این مک %2$@ است و از %3$@ عقب است"
+          }
+        }
+      }
+    },
+    "%1$@ on this Mac is a test build of %2$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ روی این مک بیلد آزمایشی %2$@ است"
+          }
+        }
+      }
+    },
+    "%1$@, a test build, is behind the newest release, %2$@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@، که بیلد آزمایشی است، از تازه‌ترین انتشار، %2$@، عقب است."
+          }
+        }
+      }
+    },
+    "%@ (GitHub release)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ (ریلیز GitHub)"
+          }
+        }
+      }
+    },
+    "%@ (tag, no GitHub release)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ (تگ، بدون ریلیز GitHub)"
+          }
+        }
+      }
+    },
+    "%@ has no release and no version tag.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ هیچ انتشار و هیچ تگ نسخه ندارد."
+          }
+        }
+      }
+    },
+    "%@ is installed, and the repository has no release or version tag yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ نصب است، و مخزن هنوز هیچ انتشار یا تگ نسخه ندارد."
+          }
+        }
+      }
+    },
+    "/Applications was not read on this device.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "/Applications روی این دستگاه خوانده نشد."
+          }
+        }
+      }
+    },
+    "Behind": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عقب"
+          }
+        }
+      }
+    },
+    "Could not look in /Applications: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "/Applications دیده نشد: %@"
+          }
+        }
+      }
+    },
+    "Current": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به‌روز"
+          }
+        }
+      }
+    },
+    "GitHub tags and releases of %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تگ‌ها و ریلیزهای GitHub در %@"
+          }
+        }
+      }
+    },
+    "Installed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نصب‌شده"
+          }
+        }
+      }
+    },
+    "Installed on this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نصب‌شده روی این مک"
+          }
+        }
+      }
+    },
+    "Newest release": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه‌ترین انتشار"
+          }
+        }
+      }
+    },
+    "Not installed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نصب نیست"
+          }
+        }
+      }
+    },
+    "Not installed in /Applications on this Mac.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در /Applications این مک نصب نیست."
+          }
+        }
+      }
+    },
+    "Not the newest release on this Mac: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه‌ترین انتشار روی این مک نیست: %@"
+          }
+        }
+      }
+    },
+    "Only each app's Info.plist is read; the app is never run and its data is never opened. It is called current only when it records that it was built from the release's tag.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط Info.plist هر برنامه خوانده می‌شود؛ برنامه هرگز اجرا نمی‌شود و معلوماتش باز نمی‌شود. فقط وقتی «به‌روز» گفته می‌شود که خودِ برنامه ثبت کرده باشد از روی تگ انتشار ساخته شده است."
+          }
+        }
+      }
+    },
+    "Only the GitHub release %@ was read, not the tags, so a newer tag may exist.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط ریلیز GitHub ‏%@ خوانده شد، نه تگ‌ها؛ پس شاید تگ تازه‌تری باشد."
+          }
+        }
+      }
+    },
+    "Releases could not read %1$@: %2$@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صفحهٔ انتشارها %1$@ را نتوانست بخواند: %2$@"
+          }
+        }
+      }
+    },
+    "Releases has not read %@ yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صفحهٔ انتشارها هنوز %@ را نخوانده است."
+          }
+        }
+      }
+    },
+    "Same version": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همان نسخه"
+          }
+        }
+      }
+    },
+    "Test build": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیلد آزمایشی"
+          }
+        }
+      }
+    },
+    "The app's Info.plist has no version (CFBundleShortVersionString).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Info.plist برنامه نسخه ندارد (CFBundleShortVersionString)."
+          }
+        }
+      }
+    },
+    "The app's version “%@” is not a version number, so it is not compared.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ برنامه، «%@»، شمارهٔ نسخه نیست، پس مقایسه نمی‌شود."
+          }
+        }
+      }
+    },
+    "The newest release, %@, built from its tag.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تازه‌ترین انتشار، %@، ساخته‌شده از روی تگ آن."
+          }
+        }
+      }
+    },
+    "The tags of %@ were not read yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تگ‌های %@ هنوز خوانده نشده‌اند."
+          }
+        }
+      }
+    },
+    "The version of the newest release, %@. The app does not record whether it was built from that tag.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نسخهٔ تازه‌ترین انتشار، %@. برنامه ثبت نمی‌کند که از روی همان تگ ساخته شده است یا نه."
+          }
+        }
+      }
+    },
+    "Unreleased build": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیلد منتشرنشده"
+          }
+        }
+      }
+    },
+    "it was built from commit %1$@, and %2$@ is commit %3$@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از کامیت %1$@ ساخته شده، و %2$@ کامیت %3$@ است."
+          }
+        }
+      }
+    },
+    "its build channel is “%@”.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کانال بیلد آن «%@» است."
+          }
+        }
+      }
     }
   },
   "version": "1.1"

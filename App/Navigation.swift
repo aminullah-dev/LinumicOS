@@ -202,6 +202,8 @@ final class Router {
     var isNewProductPresented = false
     /// The product tab shown in Operations.
     var operationsTab: OperationsProduct = .talar
+    /// The tab a project's page shows next (the Center's line about an app on this Mac opens Releases); taken once.
+    var pendingProjectTab: ProjectTab?
 
     init() {
         #if DEBUG
@@ -224,6 +226,12 @@ final class Router {
         productPath = []
         sidebar = item
         self.request = request
+    }
+
+    /// One project's page, on one of its tabs.
+    func openProject(_ id: String, tab: ProjectTab) {
+        pendingProjectTab = tab
+        go(.productBoard, request: .productCard(id))
     }
 
     /// Takes the pending request if `accept` wants it, so each request is handled once.

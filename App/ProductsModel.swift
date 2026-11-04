@@ -1,6 +1,9 @@
 import Foundation
 import LinumicCore
 import Observation
+#if os(macOS)
+import AppKit
+#endif
 
 /// Products (محصولات) and Agents (ایجنت‌ها): every product with each platform's store version, build, version on main,
 /// pull requests, CI, licences and health; and what each scheduled agent opened on GitHub. Built on this device from what
@@ -17,6 +20,11 @@ final class ProductsModel {
     private(set) var isRefreshing = false
     private(set) var lastReport: ProductsSync.Report?
     var errorMessage: String?
+    /// The products' Mac apps as /Applications holds them, from their Info.plist only (`InstalledAppReader`): read at
+    /// launch, whenever the app comes to the front, and after each products reading. Never kept in a file. Empty on
+    /// iPhone and iPad, which have no /Applications to read.
+    private(set) var installedApps: [String: Sourced<InstalledAppInfo>] = [:]
+    @ObservationIgnored private var activeObserver: (any NSObjectProtocol)?
 
     private let inventory: InventoryModel
     private let platforms: PlatformHubModel
@@ -40,6 +48,34 @@ final class ProductsModel {
         file = store?.load() ?? ProductsFile()
         tiersStore = (try? ProjectTiersStore.defaultFileURL()).map(ProjectTiersStore.init(fileURL:))
         tiers = tiersStore?.load() ?? ProjectTiers()
+        readInstalledApps()
+        #if os(macOS)
+        // The owner installs a release in the Finder and comes back: the Center and the Releases tab say so at once.
+        activeObserver = NotificationCenter.default.addObserver(forName: NSApplication.didBecomeActiveNotification, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.readInstalledApps() }
+        }
+        #endif
+    }
+
+    /// Lists /Applications and reads the Info.plist of each catalogued app (`InstalledAppCatalog`). Nothing else of an
+    /// app is opened, and none is run.
+    func readInstalledApps(now: Date = .now) {
+        #if os(macOS)
+        installedApps = InstalledAppReader.read(using: LocalInstalledAppFiles(), now: now)
+        #endif
+    }
+
+    /// Each catalogued Mac app against its product's newest release (the GitHub tags and releases Releases read). Empty on
+    /// iPhone and iPad.
+    func installedStatuses() -> [InstalledAppStatus] {
+        #if DEBUG
+        if let sample = ProductsPreviewData.installed() { return sample }
+        #endif
+        #if os(macOS)
+        return InstalledAppCheck.statuses(installed: installedApps, releases: releases.snapshot)
+        #else
+        return []
+        #endif
     }
 
     /// This app's own build: Linumic OS is not in a store, so the build running here is the one that is known.
@@ -98,6 +134,7 @@ final class ProductsModel {
         let (updated, report) = await ProductsSync.refresh(products: inventory.products, file: file, using: client, registry: registry)
         file = updated
         lastReport = report
+        readInstalledApps()
         do { try store?.save(file) } catch {
             errorMessage = String(localized: "Could not save the products reading: \(error.localizedDescription)")
         }
