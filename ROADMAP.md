@@ -81,6 +81,12 @@ the app.
 - [x] Keychain: secrets saved by the Developer ID build can be read back (#43)
 - [x] Projects: choose a tier; a new inventory product gets a card without a build (#44)
 - [x] The weekly review and 0.3.0
+- [x] Simpler (2026-11-04): five daily pages in the sidebar (Center, Desk, Projects, Keys & Backups, Automation), the
+  rest under More and in ⌘K; the Center shows exceptions only, or "All clear"; the Brief and the Dashboard folded into
+  it and archived; a project's page has Overview, Releases, Code and Health tabs
+- [ ] Simpler, next: one sign-in sheet for the three admin consoles, fewer background jobs shown (17 today), and the
+  More pages that only repeat a project tab (Platforms, Repositories, App Store, Google Play) moved to the Archive once
+  the tabs are proven on real data
 - [ ] Read with the Mac off: credentials stay on each device, so most reads stop when the Mac is off
 
 ## Clients

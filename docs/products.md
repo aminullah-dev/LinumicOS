@@ -29,6 +29,23 @@ unknown, then the level rule and every part not read, pull requests with links, 
 and the repositories. Filters: All, Not level, Level unknown. "Read now" queues the Platforms, Release Center and
 Products jobs (the automation queue runs one job at a time).
 
+**Since 2026-11-04** the page is **Projects** (پروژه‌ها), one of the sidebar's five daily pages, and a project's page
+has four tabs, each showing only that project's part of an existing page with the same views, and ending with a link
+to the whole page:
+
+- **Overview:** what waits on the owner for this project (from the Desk), the level across platforms with every part
+  not read, and links to the other pages that hold part of it (WorkTrack customers, Sales and Money for WorkTrack;
+  Operations for Talar, SafeBeauty and VELRO; Licences for MediFlow and KhayatYar; the Marketing queue for the three
+  brands that have one).
+- **Releases:** store, build and main per platform, then the project's App Store and Google Play cards as the Releases
+  page reads them. Releasing a version stays on the Releases page, where its confirmation is.
+- **Code:** open pull requests, CI on the default branch, the scheduled agents that work on its repositories (the Agents
+  page's cards) and the repositories.
+- **Health:** the Monitor reading, the project's Monitor cards and, for a licensed product, its licences.
+
+The header carries the same pills as the card (waiting, pull requests, CI, health) and the level, so a project's
+status reads the same everywhere.
+
 ## Where each value comes from
 
 | Value | Source | Read time |

@@ -5,6 +5,31 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed: five daily pages, an alerts-first centre and a page per project with tabs (2026-11-04)
+- **Why:** the owner found the app too crowded (40 pages, 15 rows under 8 headings in the sidebar, the Centre, Desk,
+  Brief and Dashboard overlapping) and asked for it to stay calm the way a very large company's operations console does.
+- **Sidebar:** five daily pages, the Center (renamed from Management center), Desk, Projects (renamed from Products),
+  Keys & Backups and Automation (⌘1 to ⌘5). The other 25 pages are in one collapsed **More** group, in their area's
+  order, which stays open while one of its pages shows; 10 are in the collapsed **Archive**. No page, record or editor
+  was removed (`SidebarDaily`, `SidebarMore`, `SidebarArchive`, tested: every page has exactly one place).
+- **Command Palette:** the way to every page; each page shows its area ("Money · Company") or "Archive", and the old
+  names still find the renamed pages. The Center has a search field at the top that opens it.
+- **Center:** exceptions only. The header holds the only counts (waiting on you, projects with a problem), or
+  **All clear** when nothing waits, nothing is wrong, every ledger is reviewed and every reading is current
+  (`CenterReport.isAllClear`, tested; an old reading is never all clear). Agents with no recent pull request are one
+  line, as pull requests already were (on the owner's sample, 30 rows became 12). "Also today" and "What changed since
+  yesterday" are behind a tap.
+- **Brief and Dashboard** folded into the Center and moved to the Archive: every Brief line is already a Desk item;
+  the Brief's "What changed since yesterday" and the Dashboard's facts to confirm are on the Center. Same data sources.
+- **A project's page** has four tabs, each with only that project's part of an existing page and its views: Overview
+  (waiting, level, links to its customers, operations, licences and marketing queue), Releases (store, build and main,
+  then its App Store and Google Play cards; parts never compared behind a tap), Code (pull requests, CI, its agents'
+  cards, repositories) and Health (Monitor reading and cards, licences). The header has the card's own status pills.
+- English counts say "1 pull request", not "1 pull requests" (plural forms in the catalog). Dari for every new string.
+- **Seen:** iPad Pro 13" and iPhone 17 Pro simulators (iOS 26.5), English and Dari, light and dark, with the Debug-only
+  `-LCCProductsSample` data. The Mac build compiles but was not launched: a Debug build would ask for the login keychain
+  password (see the pull request).
+
 ### Added: Keys & Backups knows the offline-drive backups of 2026-11-03 (seed revision 3)
 - **Why:** the owner made encrypted copies of every signing key on two offline drives on 2026-11-03 and tested
   restoring them, but the page still knew only the two Google Drive bundles: it kept saying there was no second copy

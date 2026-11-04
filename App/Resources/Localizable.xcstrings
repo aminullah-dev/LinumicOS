@@ -1620,6 +1620,24 @@
     },
     "%lld projects with a problem": {
       "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld project with a problem"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld projects with a problem"
+                }
+              }
+            }
+          }
+        },
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
@@ -1630,6 +1648,24 @@
     },
     "%lld projects with a problem, as last read": {
       "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld project with a problem, as last read"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld projects with a problem, as last read"
+                }
+              }
+            }
+          }
+        },
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
@@ -1770,6 +1806,24 @@
     },
     "%lld pull requests waiting for you": {
       "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld pull request waiting for you"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld pull requests waiting for you"
+                }
+              }
+            }
+          }
+        },
         "fa-AF": {
           "stringUnit": {
             "state": "translated",
@@ -32550,6 +32604,200 @@
           "stringUnit": {
             "state": "translated",
             "value": "امنیت و پشتیبان"
+          }
+        }
+      }
+    },
+    "Center": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرکز"
+          }
+        }
+      }
+    },
+    "Projects": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پروژه‌ها"
+          }
+        }
+      }
+    },
+    "Now covered by the center and the Desk: every line of the Brief is a Desk item, and what changed since yesterday is on the center.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اکنون «مرکز» و «میز کار» این را پوشش می‌دهند: هر خط گزارش روز یک مورد میز کار است، و آنچه از دیروز تغییر کرده در «مرکز» است."
+          }
+        }
+      }
+    },
+    "Now covered by the center: what waits on you, the projects, and the readings that are out of date.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اکنون «مرکز» این را پوشش می‌دهد: آنچه منتظر شماست، پروژه‌ها، و خوانش‌هایی که به‌روز نیستند."
+          }
+        }
+      }
+    },
+    "%lld facts need your confirmation": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld fact needs your confirmation"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld facts need your confirmation"
+                }
+              }
+            }
+          }
+        },
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مورد به تأیید شما نیاز دارد"
+          }
+        }
+      }
+    },
+    "%lld of them conflict with another source.": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld of them conflicts with another source."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld of them conflict with another source."
+                }
+              }
+            }
+          }
+        },
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مورد آن با منبع دیگری متناقض است."
+          }
+        }
+      }
+    },
+    "Open Verification": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن بخش تأیید"
+          }
+        }
+      }
+    },
+    "%lld agents with no recent pull request": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld agent with no recent pull request"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld agents with no recent pull request"
+                }
+              }
+            }
+          }
+        },
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ایجنت مدتی است درخواست ادغامی باز نکرده‌اند"
+          }
+        }
+      }
+    },
+    "Opens this project's page": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صفحهٔ این پروژه را باز می‌کند"
+          }
+        }
+      }
+    },
+    "Opens the Command Palette": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جستجو و فرمان‌ها را باز می‌کند"
+          }
+        }
+      }
+    },
+    "In the stores": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در فروشگاه‌ها"
+          }
+        }
+      }
+    },
+    "Open Oversight": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن نظارت"
+          }
+        }
+      }
+    },
+    "Also on other pages": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در صفحه‌های دیگر هم"
+          }
+        }
+      }
+    },
+    "Parts that are not compared": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بخش‌هایی که مقایسه نمی‌شوند"
           }
         }
       }

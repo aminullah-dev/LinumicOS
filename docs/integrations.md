@@ -701,7 +701,9 @@ release-only repositories are left out.
 Neither feature is an integration: they call no service and add no credential. They only read what the other models
 already hold in memory or in their local files.
 
-- **Daily Brief:** sidebar > Brief («گزارش روز»), right under Dashboard. Sections, in order: Monitor (anything down or
+- **Daily Brief:** sidebar > Archive > Brief («گزارش روز»). Since 2026-11-04 the Center shows what it shows: every line
+  is a Desk item, and so on the Center when it needs the owner; "What changed since yesterday" is on the Center behind a
+  tap. The page and its data are unchanged. Sections, in order: Monitor (anything down or
   slow now, downtime in the last 24 hours, TLS certificates and domain registrations within 30 days), Releases (the
   Release Center's "Waiting on you" items), Licences (MediFlow and KhayatYar licences expired or ending within 30 days,
   and those issued in the last 7 days), WorkTrack customers (renewals due within 30 days and expired licences, TEST and
@@ -719,8 +721,9 @@ already hold in memory or in their local files.
 - **Morning notification:** Settings > Integrations > Daily Brief, on by default at 08:00 local time. One pending local
   notification, rebuilt after every refresh with the brief as it is then; the text ends with "As of <time>" so an old
   brief (the app was closed overnight) is never presented as fresh.
-- **Command Palette:** ⌘K (Go menu), the magnifier in the sidebar toolbar on the Mac and on iPhone/iPad. Fuzzy search
-  over every sidebar destination (also by its English name in Dari), products, WorkTrack companies, licences, Vault
+- **Command Palette:** ⌘K (Go menu), the magnifier in the sidebar toolbar on the Mac and on iPhone/iPad, and the search
+  field at the top of the Center. It is the way to reach any page: the sidebar shows five. Fuzzy search
+  over every page (also by its English name in Dari, with its area beside it, or "Archive"), products, WorkTrack companies, licences, Vault
   entries (title and product only, never a login or password), monitor targets, Release Center apps and open PRs, and
   the actions that already exist: Check now, Refresh releases, Issue licence…, New vault entry…, Lock vault, New
   Product…, and "Open <host>" for the Vault's sign-in addresses and the monitored pages. Nothing writes from the palette:
