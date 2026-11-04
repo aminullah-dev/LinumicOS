@@ -204,12 +204,15 @@ struct CommandPaletteView: View {
             actions[c.id] = a
         }
 
-        // Navigation: every sidebar destination, searchable by its English name in a Dari UI too.
+        // Navigation: every page, the five daily ones first, searchable by its English name in a Dari UI too. The subtitle
+        // is the page's area ("Money · Company"), or "Archive", not the sidebar group it sits in: nearly every page is under
+        // More now, which would say nothing.
         for section in SidebarSection.all {
             for item in section.items {
-                add(PaletteCandidate(id: "nav.\(item.rawValue)", title: item.title,
-                                     subtitle: section.title.map { String(localized: String.LocalizationValue($0)) },
-                                     keywords: [item.rawValue, englishTitle(item)], group: .navigation, symbol: item.symbol),
+                let area = section.isArchive ? section.title : SidebarSection.area(of: item)
+                let subtitle = area.map { String(localized: String.LocalizationValue($0)) }.flatMap { $0 == item.title ? nil : $0 }
+                add(PaletteCandidate(id: "nav.\(item.rawValue)", title: item.title, subtitle: subtitle,
+                                     keywords: [item.rawValue, englishTitle(item)] + formerNames(item), group: .navigation, symbol: item.symbol),
                     .go(item, nil))
             }
         }
@@ -398,6 +401,15 @@ struct CommandPaletteView: View {
     /// The English name of a sidebar item, so typing "monitor" finds «پایش».
     private func englishTitle(_ item: SidebarItem) -> String {
         item.rawValue.replacingOccurrences(of: "([a-z])([A-Z])", with: "$1 $2", options: .regularExpression)
+    }
+
+    /// The names a page had before it was renamed (2026-11-04), so a habit still finds it.
+    private func formerNames(_ item: SidebarItem) -> [String] {
+        switch item {
+        case .center: ["management center", "home", "مرکز مدیریت"]
+        case .productBoard: ["products", "محصولات"]
+        default: []
+        }
     }
 }
 

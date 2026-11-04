@@ -193,8 +193,8 @@ struct LinumicOSApp: App {
     }()
 
     private var goShortcuts: [SidebarItem] {
-        // ⌘1 to ⌘9: the Desk first (the home screen); AI Assistant moved out to keep nine. Release records, Roadmap and
-        // Issues went to the Archive (Phase 6), so their keys go to Obligations, Money and Sales.
-        [.desk, .dashboard, .brief, .allProducts, .verification, .obligations, .money, .sales, .repositories]
+        // ⌘1 to ⌘5: the five daily pages in the sidebar's order; ⌘6 to ⌘9: the most used pages under More. The Brief and
+        // the Dashboard went to the Archive (2026-11-04); everything else is one ⌘K away.
+        [.center, .desk, .productBoard, .keys, .automation, .obligations, .money, .sales, .releaseCenter]
     }
 }

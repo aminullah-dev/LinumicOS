@@ -144,12 +144,21 @@ struct SidebarTile: View {
 /// The top of a main page: a soft band in the area's tint, the page's tile and title, and the page's own summary below.
 /// Solid with Reduce Transparency, outlined with Increase Contrast.
 struct PageHeader<Content: View>: View {
-    let item: SidebarItem
+    let title: String
+    let symbol: String
+    let tint: AreaTint
     var subtitle: Text?
     @ViewBuilder let content: Content
 
     init(_ item: SidebarItem, subtitle: Text? = nil, @ViewBuilder content: () -> Content) {
-        self.item = item
+        self.init(title: item.title, symbol: item.symbol, tint: item.tint, subtitle: subtitle, content: content)
+    }
+
+    /// A page that is not a sidebar item, such as one project's page: the same band, with its own name.
+    init(title: String, symbol: String, tint: AreaTint = .ink, subtitle: Text? = nil, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.symbol = symbol
+        self.tint = tint
         self.subtitle = subtitle
         self.content = content()
     }
@@ -157,9 +166,9 @@ struct PageHeader<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             HStack(alignment: .center, spacing: 14) {
-                IconTile(symbol: item.symbol, tint: item.tint.color, size: 40)
+                IconTile(symbol: symbol, tint: tint.color, size: 40)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(verbatim: item.title)
+                    Text(verbatim: title)
                         .font(.title2.weight(.bold))
                         .accessibilityAddTraits(.isHeader)
                     if let subtitle {
@@ -171,7 +180,7 @@ struct PageHeader<Content: View>: View {
         }
         .padding(Theme.Spacing.l)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background { HeaderBand(tint: item.tint.bandColor) }
+        .background { HeaderBand(tint: tint.bandColor) }
         #if os(iOS)
         // The header carries the title, so the bar shows it small.
         .navigationBarTitleDisplayMode(.inline)

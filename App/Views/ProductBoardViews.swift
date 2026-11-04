@@ -156,7 +156,7 @@ struct ProductBoardCard: View {
                 .help(isOpen ? Text("Close the card") : Text("Open the card"))
             }
             summary
-            closedPills
+            ProjectStatusPills(card: card, waiting: waiting)
             if isOpen {
                 details.transition(.opacity)
             }
@@ -252,37 +252,6 @@ struct ProductBoardCard: View {
         .font(.callout)
     }
 
-    /// The four things a closed card always says, short enough to stay on one line whatever the card's width. The full
-    /// sentence is the pill's help and the open card.
-    private var closedPills: some View {
-        HStack(spacing: 6) {
-            if waiting > 0 {
-                BoardPill(text: waiting.formatted(), symbol: "person.fill.checkmark", color: .statusWarn, help: String(localized: "\(waiting) waiting"))
-            }
-            switch card.pulls {
-            case .known(let p, let source, let at):
-                BoardPill(text: String(localized: "\(p.open) PR"), symbol: "arrow.triangle.pull",
-                          color: p.open > 0 ? .statusInfo : .statusUnknown, help: BoardText.source(source, at))
-            case .none(let why, _, _), .unknown(let why):
-                BoardPill(text: "PR ?", symbol: "arrow.triangle.pull", color: .statusUnknown, help: why)
-            }
-            switch card.ci {
-            case .known(let ci, let source, let at):
-                BoardPill(text: "CI", symbol: !ci.failing.isEmpty ? "xmark.octagon.fill" : "checkmark.seal.fill",
-                          color: !ci.failing.isEmpty ? .statusBad : (ci.passing.isEmpty ? .statusUnknown : .statusGood), help: BoardText.source(source, at))
-            case .none(let why, _, _), .unknown(let why):
-                BoardPill(text: "CI ?", symbol: "gearshape.2", color: .statusUnknown, help: why)
-            }
-            switch card.health {
-            case .known(let h, let source, let at):
-                BoardPill(text: "\(h.up.formatted())/\(h.total.formatted())", symbol: "waveform.path.ecg",
-                          color: h.down > 0 ? .statusBad : (h.degraded > 0 ? .statusWarn : (h.unchecked > 0 ? .statusUnknown : .statusGood)), help: BoardText.source(source, at))
-            case .none(let why, _, _), .unknown(let why):
-                BoardPill(text: "–", symbol: "waveform.path.ecg", color: .statusUnknown, help: why)
-            }
-        }
-    }
-
     private var pullsPill: some View {
         switch card.pulls {
         case .known(let p, let source, let at):
@@ -336,26 +305,58 @@ struct ProductBoardCard: View {
     }
 }
 
-// MARK: - One product
+// MARK: - One project (its page, with tabs)
 
+/// The tabs of a project's page. Each tab shows only this project's part of an existing page, with the same views, and
+/// ends with a link to the whole page.
+enum ProjectTab: String, CaseIterable, Identifiable {
+    case overview, releases, code, health
+
+    var id: String { rawValue }
+
+    var title: LocalizedStringKey {
+        switch self {
+        case .overview: "Overview"
+        case .releases: "Releases"
+        case .code: "Code"
+        case .health: "Health"
+        }
+    }
+
+    /// The tab a page opens on. Debug-only screenshot aid: `-LCCProjectTab releases`.
+    static var initial: ProjectTab {
+        #if DEBUG
+        if let tab = UserDefaults.standard.string(forKey: "LCCProjectTab").flatMap(ProjectTab.init(rawValue:)) { return tab }
+        #endif
+        return .overview
+    }
+}
+
+/// A project's page: what waits on the owner and the level first, then, one tab at a time, its releases, its code and
+/// its health. Every value keeps its source and read time. Read-only.
 struct ProductBoardDetail: View {
     let productID: String
     @Environment(ProductsModel.self) private var products
     @Environment(DeskModel.self) private var desk
+    @Environment(ReleaseCenterModel.self) private var releases
+    @Environment(MonitorModel.self) private var monitor
     @Environment(Router.self) private var router
+    @State private var tab = ProjectTab.initial
+    @State private var showUncompared = false
+
+    private let grid = [GridItem(.adaptive(minimum: 300), spacing: 12, alignment: .top)]
 
     var body: some View {
         if let card = products.report().card(productID) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    waitingPanel(card)
-                    levelPanel(card)
-                    ForEach(card.tracks) { track in trackPanel(track) }
-                    pullsPanel(card)
-                    ciPanel(card)
-                    if let licences = card.licences { licencePanel(licences) }
-                    healthPanel(card)
-                    linksPanel(card)
+                    header(card)
+                    switch tab {
+                    case .overview: overview(card)
+                    case .releases: releasesTab(card)
+                    case .code: codeTab(card)
+                    case .health: healthTab(card)
+                    }
                 }
                 .padding(20)
                 .frame(maxWidth: 1000, alignment: .leading)
@@ -363,7 +364,7 @@ struct ProductBoardDetail: View {
             .navigationTitle(Text(verbatim: card.product.title))
             .toolbar {
                 ToolbarItem {
-                    // Where this project sits on the management centre. Nothing else about it changes.
+                    // Where this project sits on the centre. Nothing else about it changes.
                     Picker("Show on the management center as", selection: Binding(
                         get: { products.tiers.tier(forProduct: productID) },
                         set: { products.setTier($0, forProduct: productID) }
@@ -378,13 +379,51 @@ struct ProductBoardDetail: View {
         }
     }
 
-    /// What waits on the owner for this project, from the Desk. Nothing shows when nothing does.
+    /// The project's name, its status in the same pills as its card, and the tabs.
+    private func header(_ card: ProductCard) -> some View {
+        PageHeader(title: card.product.title, symbol: SidebarItem.productBoard.symbol) {
+            FitRow(spacing: 6) {
+                LevelBadge(state: card.level)
+                ProjectStatusPills(card: card, waiting: waitingRows(card).count)
+            }
+            Picker("Section", selection: $tab) {
+                ForEach(ProjectTab.allCases) { Text($0.title).tag($0) }
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .frame(maxWidth: 480)
+        }
+    }
+
+    // MARK: Overview
+
+    @ViewBuilder
+    private func overview(_ card: ProductCard) -> some View {
+        waitingPanel(card)
+        levelPanel(card)
+        relatedPanel(card)
+    }
+
+    private func waitingRows(_ card: ProductCard) -> [DeskRow] {
+        desk.desk().open.filter { $0.item.ownerAction && $0.item.domain == card.product.deskDomain }
+    }
+
+    /// What waits on the owner for this project, from the Desk. Nothing shows when nothing does. Quiet agents are one
+    /// line, as on the centre, that opens this project's Code tab, where their cards are.
     @ViewBuilder
     private func waitingPanel(_ card: ProductCard) -> some View {
-        let rows = desk.desk().open.filter { $0.item.ownerAction && $0.item.domain == card.product.deskDomain }
+        let rows = waitingRows(card)
+        let quiet = rows.filter(CenterBuilder.isQuietAgentRow)
         if !rows.isEmpty {
             DashboardPanel(title: "Waiting on you") {
-                ForEach(rows) { CenterDeskRow(row: $0) }
+                ForEach(rows.filter { !CenterBuilder.isQuietAgentRow($0) }) { CenterDeskRow(row: $0) }
+                if !quiet.isEmpty {
+                    Button { tab = .code } label: {
+                        Label { Text("\(quiet.count) agents with no recent pull request") } icon: { Image(systemName: "moon.zzz") }
+                    }
+                    .buttonStyle(.borderless)
+                    .padding(.horizontal, 14)
+                }
             }
         }
     }
@@ -421,6 +460,49 @@ struct ProductBoardDetail: View {
         }
     }
 
+    /// The other pages that hold something of this project (its customers, its operations, its licences, its marketing
+    /// queue). They are company-wide pages under More; this is the way to them from here.
+    @ViewBuilder
+    private func relatedPanel(_ card: ProductCard) -> some View {
+        let pages = related(card)
+        if !pages.isEmpty {
+            DashboardPanel(title: "Also on other pages") {
+                FitRow(spacing: 14) {
+                    ForEach(pages, id: \.self) { page in
+                        Button { open(page) } label: { Label(title(page), systemImage: page.item.symbol) }
+                    }
+                }
+                .buttonStyle(.borderless)
+            }
+        }
+    }
+
+    // MARK: Releases
+
+    /// The apps people install first; parts that are never compared (a console, a backend) behind one tap.
+    @ViewBuilder
+    private func releasesTab(_ card: ProductCard) -> some View {
+        let compared = card.tracks.filter { $0.slots.contains(where: \.slot.compared) }
+        let others = card.tracks.filter { !$0.slots.contains(where: \.slot.compared) }
+        ForEach(compared) { track in trackPanel(track) }
+        storeCards(card)
+        if !others.isEmpty {
+            DisclosureGroup(isExpanded: $showUncompared) {
+                VStack(alignment: .leading, spacing: 12) {
+                    ForEach(others) { track in trackPanel(track) }
+                }
+                .padding(.top, 8)
+            } label: {
+                Text("Parts that are not compared").font(.headline)
+            }
+        }
+        FitRow(spacing: 14) {
+            Button { router.go(.releaseCenter) } label: { Label("Open Releases", systemImage: SidebarItem.releaseCenter.symbol) }
+            Button { router.go(.platforms) } label: { Label("Open Platforms", systemImage: SidebarItem.platforms.symbol) }
+        }
+        .buttonStyle(.borderless)
+    }
+
     private func trackPanel(_ track: TrackReading) -> some View {
         DashboardPanel(title: L(track.track.title)) {
             ForEach(track.slots) { s in
@@ -444,6 +526,32 @@ struct ProductBoardDetail: View {
                 if s.id != track.slots.last?.id { Divider() }
             }
         }
+    }
+
+    /// This project's apps as the Releases page reads them from App Store Connect and Google Play, with the same cards.
+    /// Releasing a version stays on the Releases page, where its confirmation is.
+    @ViewBuilder
+    private func storeCards(_ card: ProductCard) -> some View {
+        let id = card.product.inventoryID
+        let apps = releases.snapshot.appStore.filter { id != nil && $0.app.productID == id }
+        let play = releases.snapshot.play.filter { id != nil && $0.app.productID == id }
+        if !apps.isEmpty || !play.isEmpty {
+            sectionTitle("In the stores")
+            LazyVGrid(columns: grid, spacing: 12) {
+                ForEach(apps) { AppStoreCard(status: $0, onRelease: { _ in router.go(.releaseCenter) }) }
+                ForEach(play) { PlayCard(status: $0) }
+            }
+        }
+    }
+
+    // MARK: Code
+
+    @ViewBuilder
+    private func codeTab(_ card: ProductCard) -> some View {
+        pullsPanel(card)
+        ciPanel(card)
+        agentCards(card)
+        linksPanel(card)
     }
 
     private func pullsPanel(_ card: ProductCard) -> some View {
@@ -478,22 +586,16 @@ struct ProductBoardDetail: View {
         }
     }
 
-    private func licencePanel(_ value: Sourced<ProductLicences>) -> some View {
-        DashboardPanel(title: "Licences") {
-            SourcedRow(title: "Licences", value: value) { l in
-                String(localized: "\(l.active) active, \(l.expiringSoon) ending within 30 days, \(l.expired) expired, \(l.total) in the ledger")
-            }
-            Button { router.go(.licences) } label: { Label("Open Licences", systemImage: SidebarItem.licences.symbol) }
-                .buttonStyle(.borderless)
-        }
-    }
-
-    private func healthPanel(_ card: ProductCard) -> some View {
-        DashboardPanel(title: "Health") {
-            SourcedRow(title: "Monitor", value: card.health) { BoardText.health($0) }
-            if card.product.monitor != nil {
-                Button { router.go(.monitor) } label: { Label("Open Monitor", systemImage: SidebarItem.monitor.symbol) }
-                    .buttonStyle(.borderless)
+    /// The scheduled agents that work on this project's repositories, with the Agents page's own cards.
+    @ViewBuilder
+    private func agentCards(_ card: ProductCard) -> some View {
+        let repos = Set(card.repos.map { $0.lowercased() })
+        let report = products.agents()
+        let mine = report.statuses.filter { s in s.agent.repositories.contains { repos.contains($0.lowercased()) } }
+        if !mine.isEmpty {
+            sectionTitle("Agents")
+            LazyVGrid(columns: grid, spacing: 12) {
+                ForEach(mine, id: \.agent.slug) { AgentCard(status: $0, quietAfter: report.registry.rules.quietAfterDays, highlighted: false) }
             }
         }
     }
@@ -507,12 +609,133 @@ struct ProductBoardDetail: View {
                 }
             }
             FitRow(spacing: 12) {
-                Button { router.go(.releaseCenter) } label: { Label("Open Releases", systemImage: SidebarItem.releaseCenter.symbol) }
-                Button { router.go(.platforms) } label: { Label("Open Platforms", systemImage: SidebarItem.platforms.symbol) }
                 Button { router.go(.agents) } label: { Label("Open Agents", systemImage: SidebarItem.agents.symbol) }
+                Button { router.go(.oversight) } label: { Label("Open Oversight", systemImage: SidebarItem.oversight.symbol) }
             }
             .buttonStyle(.borderless)
             Text(verbatim: card.product.source).font(.caption).foregroundStyle(.secondary)
+        }
+    }
+
+    // MARK: Health
+
+    @ViewBuilder
+    private func healthTab(_ card: ProductCard) -> some View {
+        healthPanel(card)
+        if let product = card.product.monitor {
+            let targets = monitor.targets(for: product)
+            if !targets.isEmpty {
+                LazyVGrid(columns: grid, spacing: 12) {
+                    ForEach(targets) { MonitorCard(target: $0) }
+                }
+            }
+        }
+        if let licences = card.licences { licencePanel(licences) }
+    }
+
+    private func healthPanel(_ card: ProductCard) -> some View {
+        DashboardPanel(title: "Health") {
+            SourcedRow(title: "Monitor", value: card.health) { BoardText.health($0) }
+            if card.product.monitor != nil {
+                Button { router.go(.monitor) } label: { Label("Open Monitor", systemImage: SidebarItem.monitor.symbol) }
+                    .buttonStyle(.borderless)
+            }
+        }
+    }
+
+    private func licencePanel(_ value: Sourced<ProductLicences>) -> some View {
+        DashboardPanel(title: "Licences") {
+            SourcedRow(title: "Licences", value: value) { l in
+                String(localized: "\(l.active) active, \(l.expiringSoon) ending within 30 days, \(l.expired) expired, \(l.total) in the ledger")
+            }
+            Button { router.go(.licences) } label: { Label("Open Licences", systemImage: SidebarItem.licences.symbol) }
+                .buttonStyle(.borderless)
+        }
+    }
+
+    // MARK: Parts
+
+    private func sectionTitle(_ title: LocalizedStringKey) -> some View {
+        Text(title).font(.headline).accessibilityAddTraits(.isHeader).padding(.top, 4)
+    }
+
+    /// A company-wide page that holds part of a project.
+    private enum RelatedPage: Hashable {
+        case page(SidebarItem)
+        case operations(OperationsProduct)
+
+        var item: SidebarItem {
+            switch self {
+            case .page(let item): item
+            case .operations: .operations
+            }
+        }
+    }
+
+    private func related(_ card: ProductCard) -> [RelatedPage] {
+        var out: [RelatedPage] = []
+        switch card.product.id {
+        case "worktrack": out += [.page(.worktrackCustomers), .page(.sales), .page(.money)]
+        case "talar": out.append(.operations(.talar))
+        case "safebeauty": out += [.operations(.safeBeauty), .page(.money)]
+        case "velro": out.append(.operations(.velro))
+        default: break
+        }
+        if card.product.licence != nil { out.append(.page(.licences)) }
+        // The brands with a marketing queue (MarketingQueue: WorkTrack, SafeBeauty, VELRO).
+        if ["worktrack", "safebeauty", "velro"].contains(card.product.id) { out.append(.page(.marketingQueue)) }
+        return out
+    }
+
+    private func title(_ page: RelatedPage) -> String {
+        switch page {
+        case .page(let item): item.title
+        case .operations(let product): "\(SidebarItem.operations.title): \(product.title)"
+        }
+    }
+
+    private func open(_ page: RelatedPage) {
+        switch page {
+        case .page(let item): router.go(item)
+        case .operations(let product):
+            router.operationsTab = product
+            router.go(.operations)
+        }
+    }
+}
+
+/// The few things a project's card and its page always say, short enough to stay on one line: what waits on the owner,
+/// pull requests, CI and health. The full sentence is the pill's help, the open card and the project's tabs.
+struct ProjectStatusPills: View {
+    let card: ProductCard
+    var waiting = 0
+
+    var body: some View {
+        HStack(spacing: 6) {
+            if waiting > 0 {
+                BoardPill(text: waiting.formatted(), symbol: "person.fill.checkmark", color: .statusWarn, help: String(localized: "\(waiting) waiting"))
+            }
+            switch card.pulls {
+            case .known(let p, let source, let at):
+                BoardPill(text: String(localized: "\(p.open) PR"), symbol: "arrow.triangle.pull",
+                          color: p.open > 0 ? .statusInfo : .statusUnknown, help: BoardText.source(source, at))
+            case .none(let why, _, _), .unknown(let why):
+                BoardPill(text: "PR ?", symbol: "arrow.triangle.pull", color: .statusUnknown, help: why)
+            }
+            switch card.ci {
+            case .known(let ci, let source, let at):
+                BoardPill(text: "CI", symbol: !ci.failing.isEmpty ? "xmark.octagon.fill" : "checkmark.seal.fill",
+                          color: !ci.failing.isEmpty ? .statusBad : (ci.passing.isEmpty ? .statusUnknown : .statusGood), help: BoardText.source(source, at))
+            case .none(let why, _, _), .unknown(let why):
+                BoardPill(text: "CI ?", symbol: "gearshape.2", color: .statusUnknown, help: why)
+            }
+            switch card.health {
+            case .known(let h, let source, let at):
+                BoardPill(text: "\(h.up.formatted())/\(h.total.formatted())", symbol: "waveform.path.ecg",
+                          color: h.down > 0 ? .statusBad : (h.degraded > 0 ? .statusWarn : (h.unchecked > 0 ? .statusUnknown : .statusGood)), help: BoardText.source(source, at))
+            case .none(let why, _, _), .unknown(let why):
+                BoardPill(text: "–", symbol: "waveform.path.ecg", color: .statusUnknown, help: why)
+            }
         }
     }
 }

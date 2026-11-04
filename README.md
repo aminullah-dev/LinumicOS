@@ -9,7 +9,11 @@ repositories, platforms, versions, releases, roadmap, issues, deployments,
 store status, social media and (later) AI-assisted market intelligence for
 Afghanistan.
 
-**Status:** MVP. **Desk** (home screen, since 2026-10-19): one list of what needs the owner today, this week and
+**Status:** MVP. **The sidebar** (since 2026-11-04) shows five daily pages: the **Center** (home, alerts first: what
+waits on the owner, which project has a problem, which readings are out of date, or "All clear"), the Desk, **Projects**
+(a page per project with Overview, Releases, Code and Health tabs), Keys & Backups and Automation. Every other page is
+under a collapsed **More**, the empty or folded ones (the Brief and the Dashboard among them) under **Archive**, and all
+of them are one ⌘K away in the Command Palette. No page or record was removed. **Desk**: one list of what needs the owner today, this week and
 later, grouped by product (WorkTrack first, then SafeBeauty), built on this device from the Daily Brief and the owner's
 ledgers (the six PRIORITIES.md files and the newest NEXT-ACTIONS, read-only, inside two folders granted once in
 Settings → Integrations → Ledger access); a source that was not read is an item, never zero. Connected, read-only: GitHub (repositories, oversight, platforms hub), the public App Store

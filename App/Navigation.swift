@@ -36,7 +36,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .center: L("Management center")
+        case .center: L("Center")
         case .desk: L("Desk")
         case .obligations: L("Obligations & accounts")
         case .money: L("Money")
@@ -48,7 +48,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .automation: L("Automation")
         case .releaseCenter: L("Releases")
         case .platforms: L("Platforms")
-        case .productBoard: L("Products")
+        case .productBoard: L("Projects")
         case .agents: L("Agents")
         case .oversight: L("Oversight")
         case .licences: L("Licences")
@@ -134,27 +134,33 @@ struct SidebarSection: Identifiable {
     var isMore = false
     var id: String { title ?? "root" }
 
-    /// The sidebar as shown: the pages by area, with the six archived manual pages moved into a last, collapsed group
-    /// (`SidebarArchive`, LinumicCore). No page or record is removed.
+    /// The sidebar as shown: the five daily pages, then every other page in one collapsed "More" group, then the
+    /// collapsed Archive (`SidebarDaily`, `SidebarMore`, `SidebarArchive`, LinumicCore). No page or record is removed:
+    /// each one still opens from the sidebar, the Command Palette, and the links on the centre and the project pages.
     static let all: [SidebarSection] = SidebarMore.arrange(SidebarArchive.arrange(grouped.map { SidebarGroup(title: $0.title, items: $0.items.map(\.rawValue)) }))
         .map { SidebarSection(title: $0.title, items: $0.items.compactMap(SidebarItem.init(rawValue:)), isArchive: $0.isArchive, isMore: $0.isMore) }
 
-    /// Every page by area, before the Archive takes its pages out.
+    /// Every page by area. Every `SidebarItem` appears exactly once.
     ///
-    /// The sidebar reads as one command centre: a short untitled "today" group at the top (the management centre is home), then a
-    /// labelled zone per job — the company's money and obligations, its products, shipping, health, marketing, and the
-    /// vault — ending in Settings. Every `SidebarItem` appears exactly once; the six archived pages are listed in their
-    /// natural zone and `SidebarArchive.arrange` relocates them to the collapsed Archive at the end.
+    /// This is where a page belongs, not what the sidebar shows: `all` takes the five daily pages to the top, the
+    /// archived pages to the Archive, and the rest, in this order, to More, so the pages of one area sit together there.
+    /// The Command Palette shows a page's area beside its name.
     static let grouped: [SidebarSection] = [
         SidebarSection(title: nil, items: [.center, .desk, .brief, .dashboard]),
         SidebarSection(title: "Company", items: [.obligations, .money, .sales, .licences, .legal]),
-        SidebarSection(title: "Products", items: [.productBoard, .allProducts, .verification, .platforms, .operations, .worktrackCustomers, .releases, .roadmap, .issues]),
-        SidebarSection(title: "Build & Ship", items: [.releaseCenter, .repositories, .appStore, .googlePlay, .automation, .agents, .builds, .deployments]),
+        SidebarSection(title: "Projects", items: [.productBoard, .releaseCenter, .platforms, .operations, .worktrackCustomers, .allProducts, .verification,
+                                                  .releases, .roadmap, .issues]),
+        SidebarSection(title: "Build & Ship", items: [.automation, .agents, .repositories, .appStore, .googlePlay, .builds, .deployments]),
         SidebarSection(title: "Health", items: [.monitor, .oversight, .siteMessages]),
         SidebarSection(title: "Marketing", items: [.marketingQueue, .contentCalendar, .marketIntelligence, .aiAssistant, .socialMedia]),
-        SidebarSection(title: "Security & Backups", items: [.vault, .keys, .continuity]),
+        SidebarSection(title: "Security & Backups", items: [.keys, .vault, .continuity]),
         SidebarSection(title: "Settings", items: [.integrations, .security, .account]),
     ]
+
+    /// The area a page belongs to (its group's title), for the Command Palette; nil for the untitled home group.
+    static func area(of item: SidebarItem) -> String? {
+        grouped.first { $0.items.contains(item) }?.title
+    }
 }
 
 /// A request for the screen that opens next: show a record, or open its own sheet (where any confirmation lives).
