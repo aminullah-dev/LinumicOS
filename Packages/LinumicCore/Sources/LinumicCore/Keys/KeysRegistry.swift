@@ -194,6 +194,8 @@ public enum BackupArchive: String, Codable, CaseIterable, Sendable {
     case tarGzip
     /// `.tar.enc`: decrypt, then `tar -x`.
     case tar
+    /// One encrypted file (e.g. `.pfx.enc`): decrypt only, to the name without `.enc`.
+    case singleFile
 }
 
 /// One encrypted backup kept off this Mac.
@@ -213,6 +215,9 @@ public struct BackupRecord: Codable, Identifiable, Hashable, Sendable {
     public var verification: String?
     /// e.g. "AES-256-CBC, PBKDF2 600000 iterations".
     public var encryption: String
+    /// The PBKDF2 iteration count the file was encrypted with; the restore guide's command uses it. Nil in a record
+    /// saved before 2026-11-03: those are the two Drive bundles, both made with 600000 (`KeysRestoreGuide`).
+    public var pbkdf2Iterations: Int?
     /// The Keychain service whose existence (never its value) the app checks.
     public var passphraseKeychainService: String?
     /// Where the owner keeps the passphrase, as words ("macOS Keychain", "private Notion page").
@@ -223,7 +228,7 @@ public struct BackupRecord: Codable, Identifiable, Hashable, Sendable {
 
     public init(id: String, title: String, location: String, fileName: String, driveFileID: String? = nil, sizeBytes: Int? = nil,
                 archive: BackupArchive, createdOn: KeyDay, verifiedOn: KeyDay? = nil, verification: String? = nil,
-                encryption: String, passphraseKeychainService: String? = nil, passphraseKeptIn: [String] = [],
+                encryption: String, pbkdf2Iterations: Int? = nil, passphraseKeychainService: String? = nil, passphraseKeptIn: [String] = [],
                 restoreTests: [RestoreTest] = [], source: String, recordedOn: KeyDay) {
         self.id = id
         self.title = title
@@ -236,6 +241,7 @@ public struct BackupRecord: Codable, Identifiable, Hashable, Sendable {
         self.verifiedOn = verifiedOn
         self.verification = verification
         self.encryption = encryption
+        self.pbkdf2Iterations = pbkdf2Iterations
         self.passphraseKeychainService = passphraseKeychainService
         self.passphraseKeptIn = passphraseKeptIn
         self.restoreTests = restoreTests
@@ -374,18 +380,23 @@ public struct KeysRegistry: Codable, Hashable, Sendable {
     }
 }
 
-// MARK: - Seed (verified facts, 2026-10-09; corrected 2026-10-18)
+// MARK: - Seed (verified facts, 2026-10-09; corrected 2026-10-18; the backups of 2026-11-03)
 
 public extension KeysRegistry {
     static let androidBundleID = "android-signing-keys"
     static let licenceBundleID = "licence-keys"
+    /// The bundle of all signing keys on the two offline drives (2026-11-03).
+    static let signingKeysBundleID = "signing-keys-2026-11-03"
+    /// The encrypted KhayatYar Windows .pfx on the two offline drives (2026-10-23, second copy 2026-11-03).
+    static let khayatyarPfxBackupID = "khayatyar-windows-pfx"
     static let passphraseService = "Linumic license backup passphrase"
     /// Where the backup passphrase is kept (session record 2026-10-09). The plain-text file is not one of them any more.
     static let passphraseLocations = ["macOS Keychain", "Private Notion page", "Paper"]
     static let deletedPassphraseNote = "Deleted on purpose on 2026-10-09 after its hash matched the Keychain item “Linumic license backup passphrase”. The passphrase is kept in that Keychain item, the owner's private Notion page and on paper."
     /// The seed's revision. 1: the facts of 2026-10-09. 2: the corrections of 2026-10-18 (the VELRO Play key; the
-    /// KhayatYar, Talar and Namazia keys; the NerkhTimes, DukanPro and disk-image gaps).
-    static let currentSeedRevision = 2
+    /// KhayatYar, Talar and Namazia keys; the NerkhTimes, DukanPro and disk-image gaps). 3: the backups of 2026-11-03
+    /// (all signing keys on two offline drives; the KhayatYar Windows .pfx) and the gaps they closed.
+    static let currentSeedRevision = 3
     /// iCloud Drive > importand, where the owner keeps several keystores.
     static let iCloudImportand = "~/Library/Mobile Documents/com~apple~CloudDocs/importand"
 
@@ -402,10 +413,23 @@ public extension KeysRegistry {
         "future-keys": "Any new key (the Talar release key is not created yet) must go into the encrypted bundle.",
     ]
 
+    /// Backups that revision 3 added.
+    static let revision3AddedBackupIDs: Set<String> = [signingKeysBundleID, khayatyarPfxBackupID]
+    /// Gaps the bundle of 2026-11-03 closed. Revision 3 closes them only while they are open, so one the owner closed
+    /// keeps his day and note.
+    static let revision3ClosedGapIDs: Set<String> = ["second-copy", "future-keys"]
+    /// The earlier seeds' text of the entries revision 3 corrected (the App Store Connect keys are in the new bundle).
+    static let revision2KeyNotes: [String: String] = [
+        "asc-api-keys": "Not in any backup yet.",
+    ]
+    static let revision2GapDetails: [String: String] = [
+        "asc-notary-not-backed-up": "The 5 AuthKey .p8 files and the notarytool keychain profile are in no backup.",
+    ]
+
     /// Applies facts recorded after a registry was first saved, so a `keys-registry.json` written from an older seed
     /// does not keep warning about them, or keep a wrong fact: a key the seed records as deleted is marked deleted (if
     /// the saved one isn't), backups that use the seed's passphrase item list every place the passphrase is kept, and
-    /// a registry from before revision 2 gets that revision's keys, gaps and corrections once. Returns true when
+    /// a registry from before revision 2 or 3 gets that revision's additions and corrections once. Returns true when
     /// something changed. It never removes anything the owner added.
     @discardableResult
     mutating func applySeedCorrections() -> Bool {
@@ -427,6 +451,10 @@ public extension KeysRegistry {
         }
         if (seedRevision ?? 1) < 2 {
             applyRevision2(from: seed)
+            changed = true
+        }
+        if (seedRevision ?? 1) < 3 {
+            applyRevision3(from: seed)
             changed = true
         }
         return changed
@@ -461,13 +489,57 @@ public extension KeysRegistry {
         seedRevision = 2
     }
 
-    /// The facts as recorded on 2026-10-09 and corrected on 2026-10-18. Sources: `~/Keys/README.md` (written
-    /// 2026-10-09, corrected 2026-10-18), the licensing map (`Linumic/licensing/MAP.md`), the session records of the
-    /// backups and of VELRO's Play key, and a check of file names, sizes and dates on 2026-10-18 (no key opened).
+    /// Revision 3 (2026-11-03). The two backups are added once, like revision 2's keys. A saved key the seed lists in
+    /// a new backup gets that backup among its own; the gaps the new bundle closed are closed while still open; the App
+    /// Store Connect key note and gap are corrected only while they hold the earlier text; the Drive bundles get their
+    /// iteration count.
+    private mutating func applyRevision3(from seed: KeysRegistry) {
+        for b in seed.backups where KeysRegistry.revision3AddedBackupIDs.contains(b.id) && !backups.contains(where: { $0.id == b.id }) {
+            backups.append(b)
+        }
+        for i in backups.indices where backups[i].pbkdf2Iterations == nil {
+            backups[i].pbkdf2Iterations = seed.backup(backups[i].id)?.pbkdf2Iterations
+        }
+        for s in seed.keys {
+            guard let i = keys.firstIndex(where: { $0.id == s.id }) else { continue }
+            for id in s.backupIDs where KeysRegistry.revision3AddedBackupIDs.contains(id) && !keys[i].backupIDs.contains(id) {
+                keys[i].backupIDs.append(id)
+            }
+        }
+        for (id, oldNote) in KeysRegistry.revision2KeyNotes {
+            guard let i = keys.firstIndex(where: { $0.id == id }), keys[i].note == oldNote,
+                  let s = seed.keys.first(where: { $0.id == id }) else { continue }
+            keys[i].note = s.note
+            keys[i].source = s.source
+            keys[i].recordedOn = s.recordedOn
+        }
+        for id in KeysRegistry.revision3ClosedGapIDs {
+            guard let i = gaps.firstIndex(where: { $0.id == id }), gaps[i].isOpen,
+                  let g = seed.gaps.first(where: { $0.id == id }) else { continue }
+            gaps[i].closedOn = g.closedOn
+            gaps[i].closedNote = g.closedNote
+        }
+        for (id, oldDetail) in KeysRegistry.revision2GapDetails {
+            guard let i = gaps.firstIndex(where: { $0.id == id }), gaps[i].detail == oldDetail,
+                  let g = seed.gaps.first(where: { $0.id == id }) else { continue }
+            gaps[i].title = g.title
+            gaps[i].detail = g.detail
+            gaps[i].source = g.source
+            gaps[i].recordedOn = g.recordedOn
+        }
+        seedRevision = 3
+    }
+
+    /// The facts as recorded on 2026-10-09, corrected on 2026-10-18 and extended on 2026-11-03. Sources:
+    /// `~/Keys/README.md` (written 2026-10-09, corrected 2026-10-18), the licensing map (`Linumic/licensing/MAP.md`),
+    /// the session records of the backups and of VELRO's Play key, a check of file names, sizes and dates on
+    /// 2026-10-18 (no key opened), and the restore-test record of 2026-11-03 (file names only, no key opened here).
     static var seed: KeysRegistry {
         let d9 = KeyDay("2026-10-09")!
         let d8 = KeyDay("2026-10-08")!
         let d18 = KeyDay("2026-10-18")!
+        let d23 = KeyDay("2026-10-23")!
+        let d3 = KeyDay("2026-11-03")!
         let readme = "~/Keys/README.md (2026-10-09)"
         let readme18 = "~/Keys/README.md (corrected 2026-10-18)"
         let session = "Session record 2026-10-09"
@@ -475,57 +547,60 @@ public extension KeysRegistry {
         let audit = "Audit of 2026-10-18 (Projects/Multiplatform/NEXT-ACTIONS-2026-10-19.md)"
         let check18 = "File names, sizes and dates on this Mac, 2026-10-18"
         let map = "Linumic/licensing/MAP.md (2026-10-08)"
+        let keysTest = "~/Documents/Admin/Backup-Home-Day-2026-11-03/restore-test-keys-2026-11-03.txt (2026-11-03)"
+        let pfxSession = "Session records 2026-10-23 and 2026-11-03 (the .pfx backup, its SSD copy and its restore test)"
         let android = androidBundleID
         let licence = licenceBundleID
+        let signing = signingKeysBundleID
         let icloud = iCloudImportand
 
         let keys: [TrackedKey] = [
             TrackedKey(id: "worktrack-release", title: "WorkTrack upload key", product: "WorkTrack", kind: .androidSigning,
-                       path: "~/Projects/Multiplatform/WorkTrack/worktrack-release.jks", backupIDs: [android],
+                       path: "~/Projects/Multiplatform/WorkTrack/worktrack-release.jks", backupIDs: [android, signing],
                        note: "~/.gradle/gradle.properties points to this path.", source: readme, recordedOn: d9),
             TrackedKey(id: "worktrack-release-copy", title: "WorkTrack upload key (backup copy)", product: "WorkTrack", kind: .androidSigning,
-                       path: "~/Keys/worktrack/worktrack-release-BACKUP-copy.jks", backupIDs: [android],
+                       path: "~/Keys/worktrack/worktrack-release-BACKUP-copy.jks", backupIDs: [android, signing],
                        note: "Identical to the WorkTrack key in the repository, which is in the bundle.", source: readme, recordedOn: d9),
             TrackedKey(id: "velro-play-upload", title: "VELRO Play upload key", product: "VELRO", kind: .androidSigning,
-                       path: "\(icloud)/velro-release.jks", backupIDs: [android],
+                       path: "\(icloud)/velro-release.jks", backupIDs: [android, signing],
                        note: "The key Google Play expects (iCloud Drive > importand, 2,742 bytes, 2026-08-31). Velro/mobile/keystore.properties points to it since 2026-10-17. In the bundle as the copy from Downloads: same name and size, the same file according to the audit.",
                        doNotDelete: true, source: "\(velroSession); \(audit); \(check18)", recordedOn: d18),
             TrackedKey(id: "velro-release", title: "Other VELRO key (not the Play key)", product: "VELRO", kind: .androidSigning,
-                       path: "~/.velro-keys/velro-release.jks", backupIDs: [android],
+                       path: "~/.velro-keys/velro-release.jks", backupIDs: [android, signing],
                        note: "Not the key Google Play expects: its password does not match and bundleRelease failed with it. Origin unknown; do not delete until it is known.",
                        doNotDelete: true, source: "\(readme18); \(velroSession)", recordedOn: d18),
             TrackedKey(id: "velro-storepass", title: "VELRO keystore password file", product: "VELRO", kind: .passwordFile,
-                       path: "~/.velro-keys/.storepass", backupIDs: [android],
+                       path: "~/.velro-keys/.storepass", backupIDs: [android, signing],
                        note: "Holds the keystore password as plain text. The app reads its date and size only.", source: readme, recordedOn: d9),
             TrackedKey(id: "velro-from-downloads", title: "VELRO Play upload key (copy from Downloads)", product: "VELRO", kind: .androidSigning,
-                       path: "~/Keys/velro/velro-release-FROM-DOWNLOADS-2026-10-03-differs-from-.velro-keys.jks", backupIDs: [android],
+                       path: "~/Keys/velro/velro-release-FROM-DOWNLOADS-2026-10-03-differs-from-.velro-keys.jks", backupIDs: [android, signing],
                        note: "Same name and size (2,742 bytes) as the VELRO Play upload key in iCloud Drive > importand; the same file according to the audit. It differs from the key in ~/.velro-keys, which is not the Play key. Do not delete.",
                        doNotDelete: true, source: "\(readme18); \(audit); \(check18)", recordedOn: d18),
             TrackedKey(id: "safebeauty-release", title: "SafeBeauty signing key", product: "SafeBeauty", kind: .androidSigning,
-                       path: "~/Projects/Multiplatform/Safe beauty/app/safebeauty-release.jks", backupIDs: [android],
+                       path: "~/Projects/Multiplatform/Safe beauty/app/safebeauty-release.jks", backupIDs: [android, signing],
                        source: readme, recordedOn: d9),
             TrackedKey(id: "soder-hakem-release", title: "SODER-HAKEM signing key", product: "SODER-HAKEM", kind: .androidSigning,
-                       path: "~/Projects/Android/SODER-HAKEM/soder-hakim-release.jks", backupIDs: [android],
+                       path: "~/Projects/Android/SODER-HAKEM/soder-hakim-release.jks", backupIDs: [android, signing],
                        source: readme, recordedOn: d9),
             TrackedKey(id: "khayatyar-release", title: "KhayatYar signing key", product: "KhayatYar", kind: .androidSigning,
-                       path: "~/Documents/Khayatyar.jks",
+                       path: "~/Documents/Khayatyar.jks", backupIDs: [signing],
                        note: "Alias khayatyar; signs 1.8.0 and later. The repository's signing guide names ~/Khayatyar.jks, ~/Documents/Secure/Khayatyar.jks and ~/Documents/Secure/afghanjama-keystore.properties; none of them exists. The audit found no other recorded place for the keystore passwords.",
                        doNotDelete: true, source: "AfghanJama tools/android-signing/README.md (2026-09-20); \(audit); \(check18)", recordedOn: d18),
             TrackedKey(id: "talar-release", title: "Talar signing key", product: "Talar", kind: .androidSigning,
-                       path: "\(icloud)/Untitled.jks",
+                       path: "\(icloud)/Untitled.jks", backupIDs: [signing],
                        note: "Untitled.jks in iCloud Drive > importand. The audit identifies it as alias talar2000, the key of the public APK v1.0.0; not re-checked with keytool. Do not create a new key.",
                        doNotDelete: true, source: "\(audit); \(check18)", recordedOn: d18),
             TrackedKey(id: "namazia-release", title: "Namazia signing key", product: "Namazia", kind: .androidSigning,
-                       path: "\(icloud)/Namazia.jks",
+                       path: "\(icloud)/Namazia.jks", backupIDs: [signing],
                        note: "The only Namazia key file on this Mac. The Namazia repository has no Gradle signing config, so whether it is the Play upload key is not verified.",
                        doNotDelete: true, source: check18, recordedOn: d18),
             TrackedKey(id: "mediflow-licence", title: "MediFlow licence signing key", product: "MediFlow", kind: .licenceSigning,
-                       path: "~/.linumic/license-keys/mediflow-private.pem", backupIDs: [licence], source: map, recordedOn: d8),
+                       path: "~/.linumic/license-keys/mediflow-private.pem", backupIDs: [licence, signing], source: map, recordedOn: d8),
             TrackedKey(id: "khayatyar-licence", title: "KhayatYar licence signing key", product: "KhayatYar", kind: .licenceSigning,
-                       path: "~/.linumic/license-keys/khayatyar-private.pem", backupIDs: [licence], source: map, recordedOn: d8),
+                       path: "~/.linumic/license-keys/khayatyar-private.pem", backupIDs: [licence, signing], source: map, recordedOn: d8),
             TrackedKey(id: "asc-api-keys", title: "App Store Connect API keys", kind: .appStoreConnectAPI,
-                       path: "~/.appstoreconnect/private_keys/AuthKey_*.p8", expectedCount: 5,
-                       note: "Not in any backup yet.", source: readme, recordedOn: d9),
+                       path: "~/.appstoreconnect/private_keys/AuthKey_*.p8", expectedCount: 5, backupIDs: [signing],
+                       note: "In the signing-keys bundle of 2026-11-03 (5 files).", source: "\(readme); \(keysTest)", recordedOn: d3),
             // Deleted on purpose on 2026-10-09 after its hash matched the Keychain item. Kept in the registry so the
             // deletion is on record; it is expected to be absent.
             TrackedKey(id: "licence-passphrase-file", title: "Backup passphrase as a plain-text file", kind: .passphraseCopy,
@@ -540,7 +615,7 @@ public extension KeysRegistry {
                          fileName: "linumic-android-signing-keys.tgz.enc", driveFileID: "1mBSWqt_JwvEU7BMSFcJ-FJucPGJeuS4q",
                          sizeBytes: 22_336, archive: .tarGzip, createdOn: d9, verifiedOn: d9,
                          verification: "Downloaded from Drive and compared byte-identical with the original; test-decrypted.",
-                         encryption: "AES-256-CBC, PBKDF2 600000 iterations", passphraseKeychainService: passphraseService,
+                         encryption: "AES-256-CBC, PBKDF2 600000 iterations", pbkdf2Iterations: 600_000, passphraseKeychainService: passphraseService,
                          passphraseKeptIn: passphraseLocations,
                          restoreTests: [
                              RestoreTest(id: UUID(uuidString: "5B0E7C2A-4D1F-4C6E-9A3B-2F8D1E0A9C01")!, on: d9, by: "Owner",
@@ -551,7 +626,7 @@ public extension KeysRegistry {
                          fileName: "linumic-license-keys.tar.enc", driveFileID: "13YZuIKfJrlgZFH98_DeqqBUb_ZXhrd5b",
                          archive: .tar, createdOn: d8, verifiedOn: d9,
                          verification: "Verified on 2026-10-08 and 2026-10-09: byte-identical with the original and decryptable.",
-                         encryption: "AES-256-CBC, PBKDF2 600000 iterations", passphraseKeychainService: passphraseService,
+                         encryption: "AES-256-CBC, PBKDF2 600000 iterations", pbkdf2Iterations: 600_000, passphraseKeychainService: passphraseService,
                          passphraseKeptIn: passphraseLocations,
                          restoreTests: [
                              RestoreTest(id: UUID(uuidString: "5B0E7C2A-4D1F-4C6E-9A3B-2F8D1E0A9C02")!, on: d8, by: "Claude session (test decryption)",
@@ -559,17 +634,49 @@ public extension KeysRegistry {
                                          source: "Session record 2026-10-08"),
                          ],
                          source: "\(map); session records 2026-10-08 and 2026-10-09", recordedOn: d9),
+            // Revision 3. File names and paths of what is inside stay out of this public repository: counts and
+            // products only.
+            BackupRecord(id: signing, title: "All signing keys, second and third copy",
+                         location: "USB flash drive “BACKUP” and external SSD “Projects-Archive” (offline, not on this Mac)",
+                         fileName: "linumic-signing-keys-2026-11-03.tgz.enc", sizeBytes: 61_472, archive: .tarGzip,
+                         createdOn: d3, verifiedOn: d3,
+                         verification: "49 files, among them the Android keystores of KhayatYar, Namazia, Afghan jama, WorkTrack, VELRO, SafeBeauty and SODER-HAKEM, the file this registry tracks as the Talar key, the KhayatYar and MediFlow licence private keys, the App Store Connect API keys and the keystore.properties files. The copies on the two drives are byte-identical. Not in it: the notarytool profile (a Keychain item) and the KhayatYar Windows .pfx (its own backup). The NerkhTimes and DukanPro keys are not on this Mac.",
+                         encryption: "AES-256-CBC, PBKDF2 600000 iterations", pbkdf2Iterations: 600_000, passphraseKeychainService: passphraseService,
+                         passphraseKeptIn: passphraseLocations,
+                         restoreTests: [
+                             RestoreTest(id: UUID(uuidString: "5B0E7C2A-4D1F-4C6E-9A3B-2F8D1E0A9C03")!, on: d3, by: "Owner",
+                                         note: "Decrypted from both copies (flash drive and SSD): 49 of 49 files identical to the originals.",
+                                         source: keysTest),
+                         ],
+                         source: keysTest, recordedOn: d3),
+            BackupRecord(id: khayatyarPfxBackupID, title: "KhayatYar Windows signing key (encrypted .pfx)",
+                         location: "USB flash drive “BACKUP” and external SSD “Projects-Archive” (offline, not on this Mac)",
+                         fileName: "KhayatYar-signing.pfx.enc", sizeBytes: 3_552, archive: .singleFile,
+                         createdOn: d23, verifiedOn: d3,
+                         verification: "Made on the flash drive on 2026-10-23; an identical second copy went on the SSD on 2026-11-03. The original .pfx exists only on the owner's Windows PC. Encrypted with PBKDF2 at OpenSSL's default of 10000 iterations, not the 600000 of the other bundles, so its restore command differs (-iter 10000).",
+                         encryption: "AES-256-CBC, PBKDF2 10000 iterations (the OpenSSL default)", pbkdf2Iterations: 10_000,
+                         passphraseKeychainService: passphraseService, passphraseKeptIn: passphraseLocations,
+                         restoreTests: [
+                             RestoreTest(id: UUID(uuidString: "5B0E7C2A-4D1F-4C6E-9A3B-2F8D1E0A9C04")!, on: d3, by: "Owner",
+                                         note: "Decrypted with the backup passphrase; the SHA-256 of the result matched the original .pfx.",
+                                         source: pfxSession),
+                         ],
+                         source: pfxSession, recordedOn: d3),
         ]
 
         let gaps: [KeyGap] = [
             KeyGap(id: "second-copy", kind: .secondCopy, title: "No second copy off this Mac",
                    detail: "Both backups are only in Google Drive. Keep a second copy elsewhere, e.g. a USB drive at home.",
+                   closedOn: d3,
+                   closedNote: "Second and third copy: linumic-signing-keys-2026-11-03.tgz.enc on two offline drives, the USB flash drive “BACKUP” and the external SSD “Projects-Archive”, byte-identical and restore-tested from both on 2026-11-03 (restore-test-keys-2026-11-03.txt).",
                    source: readme, recordedOn: d9),
-            KeyGap(id: "asc-notary-not-backed-up", kind: .notBackedUp, title: "App Store Connect keys and the notarytool profile are not backed up",
-                   detail: "The 5 AuthKey .p8 files and the notarytool keychain profile are in no backup.",
-                   source: readme, recordedOn: d9),
+            KeyGap(id: "asc-notary-not-backed-up", kind: .notBackedUp, title: "The notarytool profile is not backed up",
+                   detail: "The notarytool profile is a Keychain item, not a file, and is in no backup. The 5 App Store Connect .p8 files are in the signing-keys bundle of 2026-11-03.",
+                   source: "\(readme); \(keysTest)", recordedOn: d3),
             KeyGap(id: "future-keys", kind: .futureKey, title: "New keys must be added to the bundle",
                    detail: "The KhayatYar, Talar and Namazia keys and VELRO's keystore.properties of 2026-10-17 are not in the encrypted bundle. Rebuild it with them.",
+                   closedOn: d3,
+                   closedNote: "All four are in linumic-signing-keys-2026-11-03.tgz.enc (for Talar, the file this registry tracks as its key), according to the file list of its restore test on 2026-11-03.",
                    source: readme18, recordedOn: d18),
             KeyGap(id: "nerkhtimes-upload-key", kind: .other, title: "NerkhTimes upload key is not on this Mac",
                    detail: "No NerkhTimes .jks or .keystore file was found by name. A keystore.jks seen in Downloads on 2026-09-07 is gone; it may be in Signing-Keys-Backup-2026-09-22.dmg (not verified).",

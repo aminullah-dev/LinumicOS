@@ -499,10 +499,25 @@ public enum KeysRestoreGuide {
     /// The folder the guide restores into. Empty and private, deleted afterwards.
     public static let folder = "$HOME/keys-restore-test"
 
-    /// The decryption command for one backup. openssl asks for the passphrase itself; it is never on the command line.
+    /// The iteration count of a record that has none: one saved before 2026-11-03, which can only be one of the two
+    /// Drive bundles, both made with 600000.
+    public static let legacyIterations = 600_000
+
+    /// The decryption command for one backup, with the iteration count it was made with (a wrong count fails as a
+    /// wrong passphrase). openssl asks for the passphrase itself; it is never on the command line.
     public static func decryptCommand(_ backup: BackupRecord) -> String {
-        let untar = backup.archive == .tarGzip ? "tar -xz" : "tar -x"
-        return "openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 -in \(backup.fileName) | \(untar)"
+        let decrypt = "openssl enc -d -aes-256-cbc -pbkdf2 -iter \(backup.pbkdf2Iterations ?? legacyIterations) -in \(backup.fileName)"
+        switch backup.archive {
+        case .tarGzip: return "\(decrypt) | tar -xz"
+        case .tar: return "\(decrypt) | tar -x"
+        case .singleFile: return "\(decrypt) -out \(decryptedName(backup.fileName))"
+        }
+    }
+
+    /// "KhayatYar-signing.pfx.enc" → "KhayatYar-signing.pfx". A name without ".enc" gets ".decrypted", so the output
+    /// never overwrites the encrypted file.
+    static func decryptedName(_ fileName: String) -> String {
+        fileName.hasSuffix(".enc") && fileName.count > 4 ? String(fileName.dropLast(4)) : fileName + ".decrypted"
     }
 
     public static func makeFolderCommand() -> String {
