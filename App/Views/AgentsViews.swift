@@ -130,7 +130,8 @@ struct AgentsView: View {
     }
 }
 
-private struct AgentCard: View {
+/// One agent: its schedule, repositories and pull requests. Also on a project's Code tab.
+struct AgentCard: View {
     let status: AgentStatus
     let quietAfter: Int
     let highlighted: Bool
