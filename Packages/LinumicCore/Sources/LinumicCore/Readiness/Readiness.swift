@@ -375,10 +375,11 @@ public enum ReadinessBuilder {
         case .nothingShipped:
             return ReadinessResult(.level, .notApplicable, L("No compared platform has a build or a store version yet."), source: source, date: date)
         case .nothingCompared:
-            // Never passed. With an app platform listed, nothing of it was read: unknown. With none, there is nothing to level.
+            // Never passed. With an app platform listed, nothing of it was read: unknown. With none listed, the page has
+            // nothing to level (which says what is listed, not what the project is).
             return hasAppPlatform(card)
                 ? ReadinessResult(.level, .unknown, L("No platform of this project is compared: no store listing, release or version file of it is read, so whether its platforms are level is not known."), source: source)
-                : ReadinessResult(.level, .notApplicable, L("This project has no app platform to compare."), source: source)
+                : ReadinessResult(.level, .notApplicable, L("The Projects page lists no app platform for this project, so there is nothing to level."), source: source)
         }
     }
 
@@ -393,7 +394,7 @@ public enum ReadinessBuilder {
             // Nothing is monitored. That is a gap only when the product has a part that answers on a public address.
             let served = card.product.slots.contains { ReadinessRules.servedPlatforms.contains($0.platform) }
             return served
-                ? ReadinessResult(.monitoring, .needsAttention, L("This project has a web or server part, but no public address of it is monitored."), source: L("Monitor catalogue"))
+                ? ReadinessResult(.monitoring, .needsAttention, L("The Projects page lists a web or server part for this project, but no public address of it is monitored."), source: L("Monitor catalogue"))
                 : ReadinessResult(.monitoring, .notApplicable, why, source: L("Monitor catalogue"))
         case .known(let h, let source, let at):
             let date = at.map(ReadinessDate.read)
@@ -420,10 +421,10 @@ public enum ReadinessBuilder {
         }
         let domain = card.product.deskDomain
         let keys = registry.keys.filter { $0.product != nil && !$0.isDeleted && $0.kind.needsBackup && DeskDomain.named($0.product) == domain }
+        // No key on record says nothing either way (the Projects page may list no platform for a project that has an app,
+        // as for SODER-HAKEM, whose key is recorded): unknown, never "nothing to sign".
         guard !keys.isEmpty else {
-            return card.product.slots.isEmpty
-                ? ReadinessResult(.signingKey, .notApplicable, L("This project has no platform, so nothing to sign."), source: source)
-                : ReadinessResult(.signingKey, .unknown, L("The Keys & Backups registry records no key for this project, so whether it has a signing key, and whether that key is in a backup, is not known."), source: source)
+            return ReadinessResult(.signingKey, .unknown, L("The Keys & Backups registry records no key for this project, so whether it has a signing key, and whether that key is in a backup, is not known."), source: source)
         }
         let recorded = keys.map(\.recordedOn).max().map(ReadinessDate.day)
         let states = keys.map { ($0, KeysRules.backupState($0, registry: registry, result: input.keyResults[$0.id], calendar: input.calendar)) }
@@ -460,12 +461,11 @@ public enum ReadinessBuilder {
 
     static func restoreTest(_ card: ProductCard, _ input: ReadinessInput) -> ReadinessResult {
         // Linumic OS's own data: the continuity export, opened outside this Mac, is its restore test.
+        // For every other project nothing is recorded, so nothing is known: never passed, and never "nothing to restore".
         guard card.id == "linumicos" else {
-            return card.product.slots.isEmpty
-                ? ReadinessResult(.restoreTest, .notApplicable, L("This project has no platform, so no data to restore."), source: notRecorded)
-                : ReadinessResult(.restoreTest, .unknown,
-                                  LF("Linumic OS holds no record of a restore test of %@'s data. It records restore tests of the key backups and of its own export only.", card.product.title),
-                                  source: notRecorded)
+            return ReadinessResult(.restoreTest, .unknown,
+                                   LF("Linumic OS holds no record of a restore test of %@'s data. It records restore tests of the key backups and of its own export only.", card.product.title),
+                                   source: notRecorded)
         }
         let source = "continuity.json"
         guard let log = input.continuity else {

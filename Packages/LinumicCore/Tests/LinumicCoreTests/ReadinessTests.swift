@@ -259,7 +259,9 @@ struct ReadinessCheckTests {
                                   backups: [backup("b1", tested: "2026-11-03")])
         let none = check(.signingKey, card(), keys: others)
         #expect(none.state == .unknown, "another product's key, a deleted key, a passphrase copy and a key of no product say nothing about this one")
-        #expect(check(.signingKey, card("radarsystem", title: "Radar-system", platforms: []), keys: others).state == .notApplicable)
+        // A project the page lists no platform for may still have an app (SODER-HAKEM's key is on record): unknown, not "nothing to sign".
+        #expect(check(.signingKey, card("radarsystem", title: "Radar-system", platforms: []), keys: others).state == .unknown)
+        #expect(check(.signingKey, card("soder-hakem", title: "SODER-HAKEM", platforms: []), keys: .seed).state == .passed)
         #expect(check(.signingKey, card(), keys: nil).state == .unknown, "a registry that could not be read")
     }
 
@@ -283,7 +285,7 @@ struct ReadinessCheckTests {
         let result = check(.restoreTest, card(), continuity: ContinuityLog(exports: [export("a.json.age", outside: ["2026-11-01"])]))
         #expect(result.state == .unknown, "Linumic OS's own export says nothing about WorkTrack's database")
         #expect(result.evidence.contains("WorkTrack"))
-        #expect(check(.restoreTest, card("radarsystem", title: "Radar-system", platforms: [])).state == .notApplicable)
+        #expect(check(.restoreTest, card("radarsystem", title: "Radar-system", platforms: [])).state == .unknown, "nothing recorded is never 'nothing to restore'")
     }
 
     @Test func linumicOSRestoreTestIsTheExportOpenedOutsideThisMac() {
