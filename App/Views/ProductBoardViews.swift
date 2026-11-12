@@ -9,21 +9,36 @@ import SwiftUI
 struct ProductBoardView: View {
     enum Filter: String, CaseIterable, Identifiable {
         case all, notLevel, unknown
+        /// Not a filter of the cards: every project's readiness scorecard, the weakest first (docs/readiness.md).
+        case readiness
         var id: String { rawValue }
         var title: LocalizedStringKey {
             switch self {
             case .all: "All"
             case .notLevel: "Not level"
             case .unknown: "Level unknown"
+            case .readiness: "Readiness"
             }
+        }
+
+        /// The view the page opens on. Debug-only screenshot aid: `-LCCProjectsView readiness`.
+        static var initial: Filter {
+            #if DEBUG
+            if let filter = UserDefaults.standard.string(forKey: "LCCProjectsView").flatMap(Filter.init(rawValue:)) { return filter }
+            #endif
+            return .all
         }
     }
 
     @Environment(ProductsModel.self) private var products
+    @Environment(DeskModel.self) private var desk
+    @Environment(KeysModel.self) private var keys
+    @Environment(ObligationsModel.self) private var obligations
+    @Environment(ContinuityModel.self) private var continuity
     @Environment(AutomationEngine.self) private var automation
     @Environment(Router.self) private var router
     @State private var path: [String] = []
-    @State private var filter: Filter = .all
+    @State private var filter = Filter.initial
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -42,6 +57,7 @@ struct ProductBoardView: View {
         case .all: report.cards
         case .notLevel: report.notLevel
         case .unknown: report.unknown
+        case .readiness: []
         }
         return ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -50,7 +66,7 @@ struct ProductBoardView: View {
                     ForEach(Filter.allCases) { Text($0.title).tag($0) }
                 }
                 .pickerStyle(.segmented)
-                .frame(maxWidth: 420)
+                .frame(maxWidth: 560)
                 if report.nothingRead {
                     ContentUnavailableView {
                         Label("Not read yet", systemImage: SidebarItem.productBoard.symbol)
@@ -59,19 +75,23 @@ struct ProductBoardView: View {
                     } actions: {
                         Button("Read now") { readNow() }
                     }
-                } else if cards.isEmpty {
+                } else if cards.isEmpty, filter != .readiness {
                     Text(filter == .notLevel ? "No product is known to be not level." : "No product's level is unknown.")
                         .foregroundStyle(.secondary)
                 }
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 360), spacing: 12, alignment: .top)], spacing: 12) {
-                    ForEach(cards) { card in
-                        Button { path.append(card.id) } label: { ProductBoardCard(card: card) }
-                            .buttonStyle(.plain)
-                            .accessibilityHint(Text("Opens every value of this product with its source"))
+                if filter == .readiness {
+                    ReadinessPortfolioView(portfolio: readiness(report)) { path.append($0) }
+                } else {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 360), spacing: 12, alignment: .top)], spacing: 12) {
+                        ForEach(cards) { card in
+                            Button { path.append(card.id) } label: { ProductBoardCard(card: card) }
+                                .buttonStyle(.plain)
+                                .accessibilityHint(Text("Opens every value of this product with its source"))
+                        }
                     }
+                    Text("Read-only. Live versions come from App Store Connect and Google Play through the Release Center (or, when they were not read, the inventory's store listing), builds from those consoles or the product's GitHub releases, versions on main from each repository's version file, and commits on main from GitHub. Only real version numbers are compared.")
+                        .font(.caption).foregroundStyle(.secondary)
                 }
-                Text("Read-only. Live versions come from App Store Connect and Google Play through the Release Center (or, when they were not read, the inventory's store listing), builds from those consoles or the product's GitHub releases, versions on main from each repository's version file, and commits on main from GitHub. Only real version numbers are compared.")
-                    .font(.caption).foregroundStyle(.secondary)
             }
             .padding(20)
         }
@@ -92,6 +112,13 @@ struct ProductBoardView: View {
         } message: {
             Text(verbatim: products.errorMessage ?? "")
         }
+    }
+
+    /// Every project's scorecard, the weakest first, archived projects apart (the owner's tiers).
+    private func readiness(_ report: ProductsReport) -> ReadinessPortfolio {
+        let input = ReadinessInput.collect(cards: report.cards, products: products, desk: desk, keys: keys, obligations: obligations, continuity: continuity)
+        let tiers = products.tiers
+        return ReadinessBuilder.portfolio(ReadinessBuilder.build(input)) { tiers.tier(forProduct: $0) }
     }
 
     /// The jobs this page is built from, one after another (the automation queue runs one job at a time).
@@ -341,6 +368,9 @@ struct ProductBoardDetail: View {
     @Environment(DeskModel.self) private var desk
     @Environment(ReleaseCenterModel.self) private var releases
     @Environment(MonitorModel.self) private var monitor
+    @Environment(KeysModel.self) private var keys
+    @Environment(ObligationsModel.self) private var obligations
+    @Environment(ContinuityModel.self) private var continuity
     @Environment(Router.self) private var router
     @State private var tab = ProjectTab.initial
     @State private var showUncompared = false
@@ -409,7 +439,17 @@ struct ProductBoardDetail: View {
     private func overview(_ card: ProductCard) -> some View {
         waitingPanel(card)
         levelPanel(card)
+        readinessPanel(card)
         relatedPanel(card)
+    }
+
+    /// The project's readiness scorecard: the same checks as every other project's, from what the app already holds.
+    @ViewBuilder
+    private func readinessPanel(_ card: ProductCard) -> some View {
+        let input = ReadinessInput.collect(cards: [card], products: products, desk: desk, keys: keys, obligations: obligations, continuity: continuity)
+        if let readiness = ReadinessBuilder.build(input).first {
+            ReadinessPanel(readiness: readiness)
+        }
     }
 
     private func waitingRows(_ card: ProductCard) -> [DeskRow] {
