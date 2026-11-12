@@ -12,11 +12,15 @@ Read-only and derived each time: no request of its own, no file, no key, no Supa
 ## Where it is
 
 - **A project's page, Overview tab:** the panel "Operational readiness", after "Level across platforms". One row per
-  check: its state (an icon and a word), the evidence in one sentence, its source and its date. Checks that do not apply
-  are folded under "N checks do not apply to this project".
+  check: its name with its state beside it as one pill (icon, word and colour together), the evidence in one sentence,
+  its source and its date. The rows are **weakest first** (`ProductReadiness.weakestFirst`: failed, needing attention,
+  unknown, passed; inside one state, the order of the table below), so the row under the verdict is the one the verdict
+  is about. Checks that do not apply are folded under "N checks do not apply to this project".
 - **Projects page, "Readiness":** the fourth segment beside All, Not level and Level unknown. Every project with its
-  headline and the first thing to look at, **weakest first**; archived projects are in their own group below, in grey,
+  counts and the first thing to look at, **weakest first**; archived projects are in their own group below, in grey,
   and never push an active project down. A row opens the project's page.
+- **The counts** beside a verdict (`ReadinessTally`) are an icon and a number per state, weakest first, then "6 of 8
+  known". They stand for the headline sentence, which is what VoiceOver reads and what the pointer shows.
 
 Nothing here creates a Desk item, a Brief line, a notification or a "Waiting on you" entry (see "Not on the Desk").
 
@@ -41,7 +45,8 @@ Nothing here creates a Desk item, a Brief line, a notification or a "Waiting on 
 
 ## The checks
 
-In this order, for every project. "Source" is where the result's own source line points.
+The same checks for every project, built in this order (a panel then lists them weakest first, see above). "Source" is
+where the result's own source line points.
 
 | # | Check | Reads (already in the app) | Passed | Needs attention | Failed | Unknown | Not applicable |
 |---|---|---|---|---|---|---|---|

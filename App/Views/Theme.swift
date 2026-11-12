@@ -82,10 +82,97 @@ enum Theme {
         static let m: CGFloat = 12
         static let l: CGFloat = 16
         static let xl: CGFloat = 20
+        /// Between two sections of a page: more than between the cards inside one, so a group reads as a group.
+        static let section: CGFloat = 28
     }
 
     /// The pill's tint behind its text: the contrast of the status colours is checked against it.
     static let pillTint = 0.14
+}
+
+// MARK: - Type scale
+
+/// The five steps a page is read in, largest first. Each is a system text style, so it follows the Mac's and the
+/// iPhone's own sizes and Dynamic Type. The page title (`PageHeader`) is `title2` bold, above all of them.
+extension Font {
+    /// A section of a page ("Waiting on you", "Today"): one step above the cards under it.
+    static let sectionTitle = Font.title3.weight(.semibold)
+    /// The title of a card or a panel.
+    static let panelTitle = Font.headline
+    /// The title of a row inside a card.
+    static let rowTitle = Font.callout.weight(.semibold)
+    /// What a row says in a sentence.
+    static let rowBody = Font.callout
+    /// Where and when: sources, dates, footnotes. Always in the secondary colour.
+    static let rowCaption = Font.caption
+}
+
+/// The title of a section of a page, with how many it holds when that is worth saying. One shape for every page, so
+/// a section is told from a card's own title by size.
+struct SectionHeader: View {
+    let title: String
+    var count: Int?
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.s) {
+            Text(verbatim: title).font(.sectionTitle)
+            if let count {
+                Text(count.formatted()).font(.callout.monospacedDigit()).foregroundStyle(.secondary)
+            }
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isHeader)
+    }
+}
+
+// MARK: - Flow
+
+/// Items side by side, continuing on the next line when a line is full (mirrors in Dari). For pills and short
+/// labels (`PillRow`): at iPhone width or a large text size they wrap like words, instead of one per line.
+struct FlowLayout: Layout {
+    var spacing: CGFloat = 6
+    var lineSpacing: CGFloat = 6
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let lines = lines(subviews, width: proposal.width ?? .infinity)
+        return CGSize(width: lines.map(\.width).max() ?? 0, height: lines.last.map { $0.y + $0.height } ?? 0)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        for line in lines(subviews, width: bounds.width) {
+            for item in line.items {
+                subviews[item.index].place(at: CGPoint(x: bounds.minX + item.x, y: bounds.minY + line.y + (line.height - item.size.height) / 2),
+                                           proposal: ProposedViewSize(item.size))
+            }
+        }
+    }
+
+    private struct Line {
+        var items: [(index: Int, x: CGFloat, size: CGSize)] = []
+        var y: CGFloat = 0
+        var width: CGFloat = 0
+        var height: CGFloat = 0
+    }
+
+    private func lines(_ subviews: Subviews, width: CGFloat) -> [Line] {
+        var lines: [Line] = []
+        var line = Line()
+        for (index, subview) in subviews.enumerated() {
+            // Offered the whole width, so an item wider than a line wraps its own text instead of running off the edge.
+            let size = subview.sizeThatFits(ProposedViewSize(width: width.isFinite ? width : nil, height: nil))
+            guard size.width > 0 || size.height > 0 else { continue }
+            if !line.items.isEmpty, line.width + spacing + size.width > width {
+                lines.append(line)
+                line = Line(y: line.y + line.height + lineSpacing)
+            }
+            let x = line.items.isEmpty ? 0 : line.width + spacing
+            line.items.append((index, x, size))
+            line.width = x + size.width
+            line.height = max(line.height, size.height)
+        }
+        if !line.items.isEmpty { lines.append(line) }
+        return lines
+    }
 }
 
 // MARK: - Icon tile
@@ -389,6 +476,7 @@ struct PillLabel: View {
     let color: Color
     var font: Font = .caption.weight(.semibold)
     @Environment(\.self) private var environment
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         HStack(spacing: 4) {
@@ -400,8 +488,10 @@ struct PillLabel: View {
         .font(font)
         .padding(.horizontal, 8)
         .padding(.vertical, 3)
-        .pillBackground(color)
-        .fixedSize()
+        // At an accessibility text size a long pill wraps inside its row (as `BoardPill` does) instead of pushing the
+        // page wider than the screen.
+        .pillBackground(color, radius: typeSize.isAccessibilitySize ? 10 : nil)
+        .fixedSize(horizontal: !typeSize.isAccessibilitySize, vertical: true)
     }
 }
 

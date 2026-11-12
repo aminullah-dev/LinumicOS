@@ -65,32 +65,76 @@ struct ReadinessBadge: View {
     }
 }
 
-/// One check: its state (icon and word), what was found in one sentence, and where and when.
+/// The counts of a scorecard as icon and number, the weakest first, then how much of it was read. The sentence it
+/// stands for (`headline`) is what VoiceOver reads and what the pointer shows.
+struct ReadinessTally: View {
+    let summary: ReadinessSummary
+
+    var body: some View {
+        // A flow, not a fixed row: at the largest text sizes the counts go onto a second line instead of off the card.
+        FlowLayout(spacing: 10, lineSpacing: 4) {
+            count(.failed, summary.failed)
+            count(.needsAttention, summary.needsAttention)
+            count(.unknown, summary.unknown)
+            count(.passed, summary.passed)
+            Text(verbatim: summary.knownLine).font(.rowCaption).foregroundStyle(.secondary)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: summary.headline))
+        .help(Text(verbatim: summary.headline))
+    }
+
+    @ViewBuilder
+    private func count(_ state: ReadinessState, _ number: Int) -> some View {
+        if number > 0 {
+            HStack(spacing: 3) {
+                Image(systemName: state.symbol).foregroundStyle(state.tint)
+                Text(number.formatted()).monospacedDigit()
+            }
+            .font(.caption.weight(.semibold))
+        }
+    }
+}
+
+/// One check: its name with its state beside it (icon, word and colour together, as on every badge), what was found
+/// in one sentence, and where and when.
 struct ReadinessRow: View {
     let result: ReadinessResult
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 10) {
-            Image(systemName: result.state.symbol).foregroundStyle(result.state.tint).accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 3) {
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text(verbatim: result.check.title).font(.callout.weight(.semibold))
-                    Spacer(minLength: 6)
-                    Text(verbatim: result.state.title).font(.caption.weight(.medium)).foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 4) {
+            // The state at the row's far edge, one column to run the eye down; under the name when they don't fit.
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    title
+                    Spacer(minLength: 8)
+                    state
                 }
-                DirectionalText(result.evidence)
-                    .font(.callout)
-                    .foregroundStyle(result.state == .unknown || result.state == .notApplicable ? .secondary : .primary)
-                    .monospacedDigit()
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .textSelection(.enabled)
-                SourceLine(reference: result.source, date: result.date?.date)
+                VStack(alignment: .leading, spacing: 4) {
+                    title
+                    state
+                }
             }
+            DirectionalText(result.evidence)
+                .font(.rowBody)
+                .foregroundStyle(result.state == .unknown || result.state == .notApplicable ? .secondary : .primary)
+                .monospacedDigit()
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .textSelection(.enabled)
+            SourceLine(reference: result.source, date: result.date?.date)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 6)
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
+    }
+
+    private var title: some View {
+        Text(verbatim: result.check.title).font(.rowTitle).multilineTextAlignment(.leading)
+    }
+
+    private var state: some View {
+        BoardPill(text: result.state.title, symbol: result.state.symbol, color: result.state.tint)
     }
 }
 
@@ -101,12 +145,13 @@ struct ReadinessPanel: View {
 
     var body: some View {
         let summary = readiness.summary
-        let shown = readiness.results.filter { $0.state != .notApplicable }
+        // What failed first: the verdict above and the first row under it say the same thing.
+        let shown = readiness.weakestFirst
         let skipped = readiness.results.filter { $0.state == .notApplicable }
         DashboardPanel(title: "Operational readiness") {
-            FitRow(spacing: 8) {
+            PillRow(spacing: 10) {
                 ReadinessBadge(summary: summary)
-                DirectionalText(summary.headline).font(.callout).monospacedDigit().foregroundStyle(.secondary)
+                ReadinessTally(summary: summary)
             }
             ForEach(shown) { result in
                 Divider()
@@ -136,7 +181,7 @@ struct ReadinessPortfolioView: View {
     var body: some View {
         let notKnown = portfolio.count(.notKnown) + portfolio.count(.partlyKnown)
         VStack(alignment: .leading, spacing: 12) {
-            FitRow(spacing: 8) {
+            PillRow(spacing: 8) {
                 pill(.failing, portfolio.count(.failing), String(localized: "\(portfolio.count(.failing)) failing"))
                 pill(.attention, portfolio.count(.attention), String(localized: "\(portfolio.count(.attention)) need attention"))
                 pill(.notKnown, notKnown, String(localized: "\(notKnown) not fully known"))
@@ -182,10 +227,10 @@ struct ReadinessPortfolioRow: View {
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 VStack(alignment: .leading, spacing: 3) {
                     FitRow(spacing: 8, alignment: .firstTextBaseline) {
-                        Text(verbatim: readiness.title).font(.callout.weight(.semibold)).foregroundStyle(secondary ? .secondary : .primary)
+                        Text(verbatim: readiness.title).font(.rowTitle).foregroundStyle(secondary ? .secondary : .primary)
                         ReadinessBadge(summary: summary)
                     }
-                    DirectionalText(summary.headline).font(.caption).monospacedDigit().foregroundStyle(.secondary)
+                    ReadinessTally(summary: summary)
                     // The first thing to look at: a failure, else what needs attention.
                     if let first = readiness.concerns.first {
                         Label {
