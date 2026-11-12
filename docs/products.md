@@ -28,7 +28,9 @@ inventory product the catalogue does not list (SODER-HAKEM, Tailoring Workshop E
 A product's page lists every value with its source and read time underneath, or what was found (none) or why it is
 unknown, then the level rule and every part not read, pull requests with links, CI per repository, licences, health
 and the repositories. Filters: All, Not level, Level unknown. "Read now" queues the Platforms, Release Center and
-Products jobs (the automation queue runs one job at a time).
+Products jobs (the automation queue runs one job at a time). Since 2026-11-12 a fourth segment, **Readiness**, lists
+every project's operational readiness instead of the cards, and a project's Overview tab ends with its scorecard
+([readiness.md](readiness.md)).
 
 **Since 2026-11-04** the page is **Projects** (پروژه‌ها), one of the sidebar's five daily pages, and a project's page
 has four tabs, each showing only that project's part of an existing page with the same views, and ending with a link

@@ -33321,6 +33321,860 @@
           }
         }
       }
+    },
+    "%1$@ That was read more than %2$ld hours ago, so it is not counted as passed until it is read again.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ این خوانش بیش از %2$ld ساعت پیش بوده، پس تا دوباره خوانده نشود کامیاب حساب نمی‌شود."
+          }
+        }
+      }
+    },
+    "%1$@ was opened outside this Mac on %2$@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ در %2$@ بیرون از این مک باز شد."
+          }
+        }
+      }
+    },
+    "%1$ld keys recorded, each in a backup that was restore-tested on %2$@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$ld کلید ثبت است و هر کدام در پشتیبانی است که در %2$@ بازیابی آزمایشی شد."
+          }
+        }
+      }
+    },
+    "%1$ld keys recorded, each in a backup. The backup was last restore-tested on %2$@, more than %3$ld days ago.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$ld کلید ثبت است و هر کدام در یک پشتیبان است. آخرین بازیابی آزمایشی پشتیبان در %2$@ بود، بیش از %3$ld روز پیش."
+          }
+        }
+      }
+    },
+    "%1$ld of %2$ld addresses have not been checked yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$ld از %2$ld نشانی هنوز بررسی نشده است."
+          }
+        }
+      }
+    },
+    "%1$ld of %2$ld checks down.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$ld از %2$ld بررسی از کار افتاده است."
+          }
+        }
+      }
+    },
+    "%1$ld of %2$ld checks slow, none down.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$ld از %2$ld بررسی کند است و هیچ‌کدام از کار نیفتاده."
+          }
+        }
+      }
+    },
+    "%1$ld of %2$ld keys are in no backup: %3$@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$ld از %2$ld کلید در هیچ پشتیبانی نیست: %3$@."
+          }
+        }
+      }
+    },
+    "%1$ld of %2$ld known": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$ld از %2$ld معلوم"
+          }
+        }
+      }
+    },
+    "%1$ld of %2$ld open pull requests have waited more than %3$ld days. The oldest is %4$@, opened %5$@ (%6$ld days ago).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$ld از %2$ld درخواست ادغام باز بیش از %3$ld روز منتظر مانده است. قدیمی‌ترین آن %4$@ است که در %5$@ باز شد (%6$ld روز پیش)."
+          }
+        }
+      }
+    },
+    "%1$ld open, %2$ld of them with no date recorded. The first of those: %3$@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$ld مورد باز، %2$ld تای آن بدون تاریخ ثبت‌شده. نخستین آن‌ها: %3$@."
+          }
+        }
+      }
+    },
+    "%1$ld open, none due within %2$ld days. The nearest: %3$@ (%4$@).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$ld مورد باز، هیچ‌کدام تا %2$ld روز دیگر سررسید ندارد. نزدیک‌ترین: %3$@ (%4$@)."
+          }
+        }
+      }
+    },
+    "%1$ld open, none waiting more than %2$ld days. The oldest is %3$@, opened %4$@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$ld درخواست ادغام باز، هیچ‌کدام بیش از %2$ld روز منتظر نمانده. قدیمی‌ترین آن %3$@ است که در %4$@ باز شد."
+          }
+        }
+      }
+    },
+    "%1$ld open. Due in %2$ld days: %3$@ (%4$@).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$ld مورد باز. سررسید تا %2$ld روز دیگر: %3$@ (%4$@)."
+          }
+        }
+      }
+    },
+    "%1$ld open. Overdue by %2$ld days: %3$@ (due %4$@).": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$ld مورد باز. %2$ld روز از سررسید گذشته: %3$@ (سررسید %4$@)."
+          }
+        }
+      }
+    },
+    "%@ changed after its newest backup, so that backup may be stale.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ پس از تازه‌ترین پشتیبانش تغییر کرده، پس شاید آن پشتیبان کهنه باشد."
+          }
+        }
+      }
+    },
+    "%@ is in a backup, but it is not on this Mac where the registry says it is.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ در پشتیبان هست، ولی روی این مک در جایی که فهرست می‌گوید نیست."
+          }
+        }
+      }
+    },
+    "%ld failed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld ناکام"
+          }
+        }
+      }
+    },
+    "%ld keys recorded, each in a backup, but no restore test is recorded for a backup that holds them.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld کلید ثبت است و هر کدام در یک پشتیبان است، ولی برای پشتیبانی که آن‌ها را دارد هیچ بازیابی آزمایشی ثبت نشده است."
+          }
+        }
+      }
+    },
+    "%ld need attention": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld نیازمند توجه"
+          }
+        }
+      }
+    },
+    "%ld open, all drafts: none waits for a merge.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld درخواست ادغام باز، همه پیش‌نویس: هیچ‌کدام منتظر ادغام نیست."
+          }
+        }
+      }
+    },
+    "%ld open. When each was opened was not read (a count only), so how long they have waited is not known.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld درخواست ادغام باز. تاریخ باز شدن هر کدام خوانده نشده (فقط شمار)، پس معلوم نیست چه مدت منتظر مانده‌اند."
+          }
+        }
+      }
+    },
+    "%ld passed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld کامیاب"
+          }
+        }
+      }
+    },
+    "%ld unknown": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%ld نامعلوم"
+          }
+        }
+      }
+    },
+    "%lld archived projects": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld archived project"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld archived projects"
+                }
+              }
+            }
+          }
+        },
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld پروژهٔ بایگانی‌شده"
+          }
+        }
+      }
+    },
+    "%lld checks do not apply to this project": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld check does not apply to this project"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld checks do not apply to this project"
+                }
+              }
+            }
+          }
+        },
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld بررسی به این پروژه مربوط نیست"
+          }
+        }
+      }
+    },
+    "%lld failing": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ناکام"
+          }
+        }
+      }
+    },
+    "%lld need attention": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld needs attention"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld need attention"
+                }
+              }
+            }
+          }
+        },
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld نیازمند توجه"
+          }
+        }
+      }
+    },
+    "%lld not fully known": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld کاملاً معلوم نیست"
+          }
+        }
+      }
+    },
+    "%lld ready": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld آماده"
+          }
+        }
+      }
+    },
+    "/Applications is read on the Mac only, so what is installed is not known here.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "/Applications فقط روی مک خوانده می‌شود، پس این‌جا معلوم نیست چه نصب است."
+          }
+        }
+      }
+    },
+    "/Applications on this Mac": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "/Applications این مک"
+          }
+        }
+      }
+    },
+    "All %ld checks up.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر %ld بررسی برقرار است."
+          }
+        }
+      }
+    },
+    "CI is failing on the default branch of %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI روی شاخهٔ اصلی %@ ناموفق است."
+          }
+        }
+      }
+    },
+    "CI is still running on the default branch of %@; its result is not known yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI روی شاخهٔ اصلی %@ هنوز در حال اجرا است؛ نتیجه‌اش هنوز معلوم نیست."
+          }
+        }
+      }
+    },
+    "CI passed on the default branch of %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CI روی شاخهٔ اصلی %@ موفق بود."
+          }
+        }
+      }
+    },
+    "Installed apps catalogue": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست اپ‌های نصب‌شده"
+          }
+        }
+      }
+    },
+    "Last reviewed on %1$@, %2$ld days ago (a review is due every %3$ld days). %4$ld open items.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین بازبینی در %1$@، %2$ld روز پیش (هر %3$ld روز یک بازبینی لازم است). %4$ld مورد باز."
+          }
+        }
+      }
+    },
+    "Ledger reviewed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازبینی دفتر"
+          }
+        }
+      }
+    },
+    "Linumic OS holds no record of a restore test of %@'s data. It records restore tests of the key backups and of its own export only.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در Linumic OS هیچ بازیابی آزمایشی از دادهٔ %@ ثبت نیست. فقط بازیابی آزمایشی پشتیبان کلیدها و خروجی خودش را ثبت می‌کند."
+          }
+        }
+      }
+    },
+    "Monitor catalogue": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست نشانی‌های پایش"
+          }
+        }
+      }
+    },
+    "Monitoring": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پایش"
+          }
+        }
+      }
+    },
+    "No CI run on %@.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روی %@ هیچ CI اجرا نشده."
+          }
+        }
+      }
+    },
+    "No CI run was found on the default branch of %@, so nothing checks it.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "روی شاخهٔ اصلی %@ هیچ اجرای CI پیدا نشد، پس چیزی آن را بررسی نمی‌کند."
+          }
+        }
+      }
+    },
+    "No Mac app of this project is compared with a release.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ اپ مک این پروژه با انتشار مقایسه نمی‌شود."
+          }
+        }
+      }
+    },
+    "No check applies": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ بررسی‌ای مربوط نیست"
+          }
+        }
+      }
+    },
+    "No export of Linumic OS's data has been opened outside this Mac, so no restore is proven.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ خروجی دادهٔ Linumic OS بیرون از این مک باز نشده، پس هیچ بازیابی‌ای ثابت نیست."
+          }
+        }
+      }
+    },
+    "No open pull request.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ درخواست ادغام بازی نیست."
+          }
+        }
+      }
+    },
+    "No platform of this project is compared: no store listing, release or version file of it is read, so whether its platforms are level is not known.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ پلتفرم این پروژه مقایسه نمی‌شود: نه سطر فروشگاه، نه انتشار و نه فایل نسخهٔ آن خوانده می‌شود، پس هم‌پایی پلتفرم‌هایش نامعلوم است."
+          }
+        }
+      }
+    },
+    "Not applicable": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مربوط نیست"
+          }
+        }
+      }
+    },
+    "Not known": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "معلوم نیست"
+          }
+        }
+      }
+    },
+    "Not read, so not known: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خوانده نشده، پس نامعلوم: %@"
+          }
+        }
+      }
+    },
+    "Not recorded in Linumic OS": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در Linumic OS ثبت نیست"
+          }
+        }
+      }
+    },
+    "Obligations and deadlines": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعهدات و سررسیدها"
+          }
+        }
+      }
+    },
+    "Obligations register": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست تعهدات"
+          }
+        }
+      }
+    },
+    "Obligations register: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست تعهدات: %@"
+          }
+        }
+      }
+    },
+    "Opens this project's page with every check": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صفحهٔ این پروژه را با همهٔ بررسی‌ها باز می‌کند"
+          }
+        }
+      }
+    },
+    "Operational readiness": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آمادگی عملیاتی"
+          }
+        }
+      }
+    },
+    "Partly known": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تا حدی معلوم"
+          }
+        }
+      }
+    },
+    "Passed": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کامیاب"
+          }
+        }
+      }
+    },
+    "Projects: the level rule over the compared platforms": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پروژه‌ها: قاعدهٔ هم‌پایی روی پلتفرم‌های مقایسه‌شده"
+          }
+        }
+      }
+    },
+    "Pull requests waiting": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درخواست‌های ادغام منتظر"
+          }
+        }
+      }
+    },
+    "Readiness": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آمادگی"
+          }
+        }
+      }
+    },
+    "Ready": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آماده"
+          }
+        }
+      }
+    },
+    "Restore test": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازیابی آزمایشی"
+          }
+        }
+      }
+    },
+    "Signing key in a backup": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلید امضا در پشتیبان"
+          }
+        }
+      }
+    },
+    "The Desk reads no PRIORITIES.md for %@, so when its ledger was last reviewed is not known.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "میز کار برای %@ هیچ PRIORITIES.md نمی‌خواند، پس معلوم نیست دفترش آخرین بار کی بازبینی شده."
+          }
+        }
+      }
+    },
+    "The Desk's list of ledgers": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست دفترهای میز کار"
+          }
+        }
+      }
+    },
+    "The Keys & Backups registry could not be read on this device.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فهرست کلیدها و پشتیبان‌ها روی این دستگاه خوانده نشد."
+          }
+        }
+      }
+    },
+    "The Keys & Backups registry records no key for this project, so whether it has a signing key, and whether that key is in a backup, is not known.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در فهرست کلیدها و پشتیبان‌ها هیچ کلیدی برای این پروژه ثبت نیست، پس معلوم نیست کلید امضا دارد یا نه، و آن کلید در پشتیبان هست یا نه."
+          }
+        }
+      }
+    },
+    "The last export opened outside this Mac was %1$@ on %2$@, more than %3$ld days ago.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آخرین خروجی‌ای که بیرون از این مک باز شد %1$@ در %2$@ بود، بیش از %3$ld روز پیش."
+          }
+        }
+      }
+    },
+    "The ledger could not be read: %@": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر خوانده نشد: %@"
+          }
+        }
+      }
+    },
+    "The ledger was not read on this device, so when it was last reviewed is not known.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر روی این دستگاه خوانده نشده، پس معلوم نیست آخرین بار کی بازبینی شده."
+          }
+        }
+      }
+    },
+    "The ledger was read, but it has no review day line, so when it was last reviewed is not known.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دفتر خوانده شد، ولی سطر «آخرین بازبینی» ندارد، پس معلوم نیست آخرین بار کی بازبینی شده."
+          }
+        }
+      }
+    },
+    "The register holds no open obligation for %@. That is what is recorded, not proof that nothing is due.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در فهرست هیچ تعهد بازی برای %@ نیست. این فقط چیزی است که ثبت شده، نه دلیل اینکه هیچ سررسیدی نیست."
+          }
+        }
+      }
+    },
+    "The same checks for every project, each answered only from what was already read or recorded. Unknown means not read: it is never counted as passed.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همان بررسی‌ها برای هر پروژه، و جواب هر کدام فقط از چیزی که پیش‌تر خوانده یا ثبت شده. «نامعلوم» یعنی خوانده نشده: هرگز کامیاب حساب نمی‌شود."
+          }
+        }
+      }
+    },
+    "The Projects page lists a web or server part for this project, but no public address of it is monitored.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صفحهٔ پروژه‌ها برای این پروژه بخش وب یا سرور دارد، ولی هیچ نشانی عمومی آن پایش نمی‌شود."
+          }
+        }
+      }
+    },
+    "The Projects page lists no app platform for this project, so there is nothing to level.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صفحهٔ پروژه‌ها برای این پروژه هیچ پلتفرم اپ ندارد، پس چیزی برای هم‌پا کردن نیست."
+          }
+        }
+      }
+    },
+    "Weakest first: failing, needing attention, not known, then ready. Every project gets the same checks, each answered only from what was already read or recorded; a check that was not read is Unknown and is never counted as passed. Nothing here creates a Desk item.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ضعیف‌ترین اول: ناکام، نیازمند توجه، نامعلوم، بعد آماده. هر پروژه همان بررسی‌ها را دارد و جواب هر کدام فقط از چیزی است که پیش‌تر خوانده یا ثبت شده؛ بررسی‌ای که خوانده نشده «نامعلوم» است و هرگز کامیاب حساب نمی‌شود. از این صفحه هیچ موردی به میز کار نمی‌رود."
+          }
+        }
+      }
+    },
+    "obligations.json could not be read, so the dates and Done marks entered in the app are missing.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "obligations.json خوانده نشد، پس تاریخ‌ها و «انجام‌شده»هایی که در برنامه وارد شده این‌جا نیست."
+          }
+        }
+      }
     }
   },
   "version": "1.1"

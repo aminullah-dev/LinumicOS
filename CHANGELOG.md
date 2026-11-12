@@ -5,6 +5,30 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added: operational readiness, the same checks for every project (2026-11-12)
+- **Why:** the owner's open P1 item, an operational checklist per product as Facts with a date and a source (is CI
+  green, the date of the last restore test, is the signing key backed up, is monitoring on), and his word to run the
+  company's platforms from this one app. The Projects page, Releases, the Monitor, Keys & Backups, Continuity,
+  Obligations and the Desk each held a part; nothing joined them per project.
+- **The checks** (`LinumicCore/Readiness`), each answered only from what the app already reads or records, with its
+  sentence, source and date: CI on the default branch, pull requests waiting (more than 14 days), platforms level,
+  monitoring, signing key in a backup (and that backup restore-tested within 90 days), restore test, ledger reviewed
+  (within 7 days), obligations and deadlines (overdue, or due within 14 days), installed on this Mac.
+- **Unknown is never passed:** a check that was not read is Unknown with the reading that is missing, grey, and counted
+  apart. A green reading older than the automation's own window (90 minutes for GitHub, 60 for the Monitor) is not
+  counted as passed until it is read again; a reading that found something wrong stays. There is no score: the headline
+  is "5 of 8 known · 4 passed · 1 failed · 3 unknown", and only a project whose every applicable check was read and
+  passed is "Ready". "No platform compared" is Unknown or Not applicable, never passed.
+- **Restore test** is Unknown for every project but Linumic OS (its export opened outside this Mac): the app has no
+  record of a restore test of another product's data, and it says so rather than borrow the key backups' tests.
+- **Where:** the panel "Operational readiness" on a project's Overview tab, and "Readiness" on the Projects page: every
+  project with its headline, weakest first, archived projects in their own group below.
+- No Desk item, Brief line or notification comes from it (docs/readiness.md says how that could be switched on). No new
+  request, key, file or table. The version stays 0.3.0 (3), as in the two feature changes before it.
+- Tests: every check's states from fixtures, the seed registry, "nothing read means nothing passed" over the real
+  catalogue, the stale-reading rule, the summary, the order and the archived group. Dari for every new string. The
+  panel and the list were compiled for macOS and the iOS Simulator and not run.
+
 ### Changed: every project under ~/Projects/Multiplatform, on the Projects page and the Desk (2026-11-12)
 - **Why:** on 2026-11-12 every project moved directly under `~/Projects/Multiplatform` (PashtoKey, FAMILY-FUND-MANAGEMENT,
   Tailoring Workshop ERP and KabulSignal moved in; Namazia, NerkhTimes, BE-PAYA, Radar-system, SpinCake and SODER-HAKEM

@@ -54,7 +54,11 @@ beside the brand's ledger, with Verify; it never posts. Six empty manual pages a
 **Products** (محصولات, Phase 7): every product's platforms with the live store version,
 newest build, version on main and commits behind it, pull requests, CI, licences and health, each with its source and
 read time, and "platforms not level" on the Desk; **Agents** (ایجنت‌ها): the 20 scheduled agents and their pull requests
-on GitHub, with "no pull request for more than 4 days" on the Desk. See [docs/integrations.md](docs/integrations.md)
+on GitHub, with "no pull request for more than 4 days" on the Desk. **Operational readiness** (آمادگی عملیاتی, since
+2026-11-12): the same nine checks for every project (CI, pull requests waiting, platforms level, monitoring, signing key
+in a backup, restore test, ledger reviewed, obligations, installed on this Mac), each answered only from what the pages
+above already read, with its source and date; on a project's Overview tab and as "Readiness" on the Projects page,
+weakest first. What was not read is Unknown, never passed. See [docs/integrations.md](docs/integrations.md)
 and [docs/security.md](docs/security.md).
 
 ## Layout
@@ -135,6 +139,7 @@ find strings with no Dari translation.
 - [docs/sales.md](docs/sales.md): Sales, what is listed and from where, Kabul's day, privacy, drafts, the owner's shape check
 - [docs/legal.md](docs/legal.md): Legal & company, what is read and what never is, the marker rule and its grep, the sandbox check and the grant
 - [docs/products.md](docs/products.md): Products, every product's platforms with source and read time, and when they are not level
+- [docs/readiness.md](docs/readiness.md): Operational readiness, what each check reads, what makes it pass and what Unknown means
 - [docs/agents.md](docs/agents.md): Agents, the registry of the scheduled agents and their pull requests on GitHub
 - [docs/backend-plan.md](docs/backend-plan.md): Supabase
 - [CHANGELOG.md](CHANGELOG.md)
