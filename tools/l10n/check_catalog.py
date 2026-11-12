@@ -30,6 +30,8 @@ for f in glob.glob("Packages/LinumicCore/Sources/**/*.swift", recursive=True) + 
 IGNORE = {"github_pat_…"}  # placeholders shown verbatim
 spec_only = re.compile(r"%(?:\d+\$)?(?:lld|ld|d|@|f)")
 keys = {k for k in keys if k not in IGNORE and "\\(" not in k and re.search(r"[A-Za-z]", spec_only.sub("", k))}
+# A Swift literal's \" is a plain quote in the catalog key Xcode builds.
+keys = {k.replace('\\"', '"') for k in keys}
 
 spec = re.compile(r"%(?:\d+\$)?(?:lld|ld|d|@|f)")
 norm = lambda s: sorted(re.sub(r"\d+\$", "", x) for x in spec.findall(s))

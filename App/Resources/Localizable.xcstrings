@@ -24108,7 +24108,7 @@
         }
       }
     },
-    "Signed in, but this account isn't a Talar platform admin (no role \\\"admin\\\" claim, or 403). The claim is set once by /v1/admin/bootstrap or an Admin SDK script; an account that owns or joins an organisation loses it.": {
+    "Signed in, but this account isn't a Talar platform admin (no role \"admin\" claim, or 403). The claim is set once by /v1/admin/bootstrap or an Admin SDK script; an account that owns or joins an organisation loses it.": {
       "localizations": {
         "fa-AF": {
           "stringUnit": {

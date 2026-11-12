@@ -5,6 +5,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed: Talar not-admin message had no Dari (2026-11-12)
+- The catalog key for the Talar "isn't a platform admin" message held a literal backslash before each quote, so it
+  never matched the Swift string and Dari users saw English. The key is corrected, and `tools/l10n/check_catalog.py`
+  now reads `\"` in a Swift literal as a quote, so this kind of mismatch fails the check.
+
 ### Added: installed on this Mac, against the newest release (2026-11-04)
 - **Why:** on 2026-11-03 the owner's Mac held KhayatYar 1.12.1, a test build, while tag v1.13.0 existed, and nobody
   noticed until a customer build was made.
