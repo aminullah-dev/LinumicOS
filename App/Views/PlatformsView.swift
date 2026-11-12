@@ -279,10 +279,14 @@ struct SourceLine: View {
     let date: Date?
 
     var body: some View {
-        HStack(spacing: 4) {
+        // One paragraph with the date at its end: beside a long reference the date took a column of its own and the
+        // reference was cut in the middle of a word (iPhone, 2026-11-12).
+        HStack(alignment: .firstTextBaseline, spacing: 4) {
             Image(systemName: "doc.text.magnifyingglass").accessibilityHidden(true)
-            Text(verbatim: reference).textSelection(.enabled)
-            if let date { Text(verbatim: "· \(date.shortDate)") }
+            DirectionalText(date.map { "\(reference) · \($0.shortDate)" } ?? reference)
+                .multilineTextAlignment(.leading)
+                .lineLimit(3)
+                .textSelection(.enabled)
         }
         .font(.caption)
         .foregroundStyle(.secondary)

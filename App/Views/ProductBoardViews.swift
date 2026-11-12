@@ -130,7 +130,7 @@ struct ProductBoardView: View {
 
     private func header(_ report: ProductsReport) -> some View {
         PageHeader(.productBoard) {
-            FitRow(spacing: 8) {
+            PillRow(spacing: 8) {
                 BoardPill(text: String(localized: "\(report.notLevel.count) not level"), symbol: "exclamationmark.triangle.fill",
                           color: report.notLevel.isEmpty ? .statusUnknown : .statusWarn)
                 BoardPill(text: String(localized: "\(report.level.count) level"), symbol: "checkmark.circle.fill", color: .statusGood)
@@ -163,25 +163,35 @@ struct ProductBoardCard: View {
     /// Desk rows of this product that wait on the owner, on the management centre; 0 shows nothing.
     var waiting = 0
     @State private var isOpen = false
-    /// Every card is this tall until it is opened (owner, 2026-11-02): one size, and the detail one click away.
-    @ScaledMetric(relativeTo: .body) private var closedHeight: CGFloat = 132
+    /// Every card is this tall until it is opened (owner, 2026-11-02): one size, and the detail one click away. Tall
+    /// enough for two lines of the summary: at 132 the second line had no room and the sentence was cut at one.
+    @ScaledMetric(relativeTo: .body) private var closedHeight: CGFloat = 144
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    /// Two lines of summary; at an accessibility text size, where a line holds few words, up to five.
+    private var summaryLines: Int { typeSize.isAccessibilitySize ? 5 : 2 }
 
     var body: some View {
+        // At an accessibility text size the badge goes under the name and the card is as tall as it needs: beside the
+        // badge the name was cut ("WorkTr…"), and the fixed height hid what did not fit.
+        let large = typeSize.isAccessibilitySize
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text(verbatim: card.product.title).font(.headline).lineLimit(1)
+                Text(verbatim: card.product.title).font(.headline).lineLimit(large ? 2 : 1)
                 Spacer(minLength: 4)
-                LevelBadge(state: card.level)
+                if !large { LevelBadge(state: card.level) }
                 Button { withAnimation(.snappy) { isOpen.toggle() } } label: {
                     Image(systemName: isOpen ? "chevron.up" : "chevron.down")
-                        .frame(width: 24, height: 24)
+                        .frame(width: 32, height: 24)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.secondary)
+                .minTapTarget()
                 .accessibilityLabel(isOpen ? Text("Close the card") : Text("Open the card"))
                 .help(isOpen ? Text("Close the card") : Text("Open the card"))
             }
+            if large { LevelBadge(state: card.level) }
             summary
             ProjectStatusPills(card: card, waiting: waiting)
             if isOpen {
@@ -189,7 +199,7 @@ struct ProductBoardCard: View {
             }
         }
         .padding(14)
-        .frame(maxWidth: .infinity, minHeight: isOpen ? nil : closedHeight, maxHeight: isOpen ? nil : closedHeight, alignment: .topLeading)
+        .frame(maxWidth: .infinity, minHeight: isOpen || large ? nil : closedHeight, maxHeight: isOpen || large ? nil : closedHeight, alignment: .topLeading)
         .clipped()
         .cardSurface()
         // The level on the leading edge: green, amber, or grey when it is not known.
@@ -198,19 +208,20 @@ struct ProductBoardCard: View {
         .hoverHighlight(cornerRadius: Theme.Radius.card)
     }
 
-    /// The one line a closed card says about its level.
+    /// What a closed card says about its level, in two lines at most: one line cut the sentence before what it is
+    /// about ("… is behind main, 76 commits"), on iPhone and in a two-column grid alike.
     @ViewBuilder
     private var summary: some View {
         switch card.level {
         case .notLevel(let findings):
             if let first = findings.first {
-                Label { DirectionalText(first.text).monospacedDigit().lineLimit(1) } icon: {
+                Label { DirectionalText(first.text).monospacedDigit().lineLimit(summaryLines).multilineTextAlignment(.leading) } icon: {
                     Image(systemName: "arrow.triangle.branch").foregroundStyle(.statusWarn)
                 }
                 .font(.callout)
             }
         case .unknown(let reasons):
-            DirectionalText(reasons.first ?? "").font(.caption).foregroundStyle(.secondary).lineLimit(1)
+            DirectionalText(reasons.first ?? "").font(.caption).foregroundStyle(.secondary).lineLimit(summaryLines).multilineTextAlignment(.leading)
         case .level, .nothingShipped, .nothingCompared:
             EmptyView()
         }
@@ -379,18 +390,28 @@ struct ProductBoardDetail: View {
 
     var body: some View {
         if let card = products.report().card(productID) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    header(card)
-                    switch tab {
-                    case .overview: overview(card)
-                    case .releases: releasesTab(card)
-                    case .code: codeTab(card)
-                    case .health: healthTab(card)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        header(card)
+                        switch tab {
+                        case .overview: overview(card)
+                        case .releases: releasesTab(card)
+                        case .code: codeTab(card)
+                        case .health: healthTab(card)
+                        }
                     }
+                    .padding(20)
+                    .frame(maxWidth: 1000, alignment: .leading)
                 }
-                .padding(20)
-                .frame(maxWidth: 1000, alignment: .leading)
+                #if DEBUG
+                // Debug-only screenshot aid: `-LCCScrollTo readiness` opens the page scrolled to that panel.
+                .task {
+                    guard let anchor = UserDefaults.standard.string(forKey: "LCCScrollTo") else { return }
+                    try? await Task.sleep(for: .milliseconds(700))
+                    proxy.scrollTo(anchor, anchor: .top)
+                }
+                #endif
             }
             .navigationTitle(Text(verbatim: card.product.title))
             // From the Center: a line about an app on this Mac opens this page on Releases.
@@ -420,7 +441,7 @@ struct ProductBoardDetail: View {
     /// The project's name, its status in the same pills as its card, and the tabs.
     private func header(_ card: ProductCard) -> some View {
         PageHeader(title: card.product.title, symbol: SidebarItem.productBoard.symbol) {
-            FitRow(spacing: 6) {
+            PillRow(spacing: 6) {
                 LevelBadge(state: card.level)
                 ProjectStatusPills(card: card, waiting: waitingRows(card).count)
             }
@@ -448,7 +469,7 @@ struct ProductBoardDetail: View {
     private func readinessPanel(_ card: ProductCard) -> some View {
         let input = ReadinessInput.collect(cards: [card], products: products, desk: desk, keys: keys, obligations: obligations, continuity: continuity)
         if let readiness = ReadinessBuilder.build(input).first {
-            ReadinessPanel(readiness: readiness)
+            ReadinessPanel(readiness: readiness).id("readiness")
         }
     }
 
@@ -464,13 +485,13 @@ struct ProductBoardDetail: View {
         let quiet = rows.filter(CenterBuilder.isQuietAgentRow)
         if !rows.isEmpty {
             DashboardPanel(title: "Waiting on you") {
-                ForEach(rows.filter { !CenterBuilder.isQuietAgentRow($0) }) { CenterDeskRow(row: $0) }
+                // Flush with the panel's title: the panel's own padding is the rows' margin.
+                ForEach(rows.filter { !CenterBuilder.isQuietAgentRow($0) }) { CenterDeskRow(row: $0, inset: 0) }
                 if !quiet.isEmpty {
                     Button { tab = .code } label: {
                         Label { Text("\(quiet.count) agents with no recent pull request") } icon: { Image(systemName: "moon.zzz") }
                     }
                     .buttonStyle(.borderless)
-                    .padding(.horizontal, 14)
                 }
             }
         }
@@ -782,29 +803,35 @@ struct ProjectStatusPills: View {
 
     var body: some View {
         HStack(spacing: 6) {
+            // Each pill is short on screen and says its whole sentence to VoiceOver. A reading that is not known is quiet
+            // (no capsule), so the pills that say something are the ones seen.
             if waiting > 0 {
-                BoardPill(text: waiting.formatted(), symbol: "person.fill.checkmark", color: .statusWarn, help: String(localized: "\(waiting) waiting"))
+                BoardPill(text: waiting.formatted(), symbol: "person.fill.checkmark", color: .statusWarn, help: String(localized: "\(waiting) waiting"),
+                          spoken: String(localized: "\(waiting) waiting"))
             }
             switch card.pulls {
             case .known(let p, let source, let at):
                 BoardPill(text: String(localized: "\(p.open) PR"), symbol: "arrow.triangle.pull",
-                          color: p.open > 0 ? .statusInfo : .statusUnknown, help: BoardText.source(source, at))
+                          color: p.open > 0 ? .statusInfo : .statusUnknown, help: BoardText.source(source, at),
+                          spoken: String(localized: "\(p.open) open PRs"))
             case .none(let why, _, _), .unknown(let why):
-                BoardPill(text: "PR ?", symbol: "arrow.triangle.pull", color: .statusUnknown, help: why)
+                BoardPill(text: "PR ?", symbol: "arrow.triangle.pull", color: .statusUnknown, help: why, spoken: why, quiet: true)
             }
             switch card.ci {
             case .known(let ci, let source, let at):
                 BoardPill(text: "CI", symbol: !ci.failing.isEmpty ? "xmark.octagon.fill" : "checkmark.seal.fill",
-                          color: !ci.failing.isEmpty ? .statusBad : (ci.passing.isEmpty ? .statusUnknown : .statusGood), help: BoardText.source(source, at))
+                          color: !ci.failing.isEmpty ? .statusBad : (ci.passing.isEmpty ? .statusUnknown : .statusGood), help: BoardText.source(source, at),
+                          spoken: !ci.failing.isEmpty ? String(localized: "CI failing") : (ci.passing.isEmpty ? String(localized: "No CI runs") : String(localized: "CI passing")))
             case .none(let why, _, _), .unknown(let why):
-                BoardPill(text: "CI ?", symbol: "gearshape.2", color: .statusUnknown, help: why)
+                BoardPill(text: "CI ?", symbol: "gearshape.2", color: .statusUnknown, help: why, spoken: why, quiet: true)
             }
             switch card.health {
             case .known(let h, let source, let at):
                 BoardPill(text: "\(h.up.formatted())/\(h.total.formatted())", symbol: "waveform.path.ecg",
-                          color: h.down > 0 ? .statusBad : (h.degraded > 0 ? .statusWarn : (h.unchecked > 0 ? .statusUnknown : .statusGood)), help: BoardText.source(source, at))
+                          color: h.down > 0 ? .statusBad : (h.degraded > 0 ? .statusWarn : (h.unchecked > 0 ? .statusUnknown : .statusGood)), help: BoardText.source(source, at),
+                          spoken: BoardText.health(h))
             case .none(let why, _, _), .unknown(let why):
-                BoardPill(text: "–", symbol: "waveform.path.ecg", color: .statusUnknown, help: why)
+                BoardPill(text: "–", symbol: "waveform.path.ecg", color: .statusUnknown, help: why, spoken: why, quiet: true)
             }
         }
     }
@@ -900,20 +927,26 @@ struct BoardPill: View {
     let symbol: String
     let color: Color
     var help: String?
+    /// What VoiceOver says when the pill's text is an abbreviation ("PR ?", "3/3"); the text itself otherwise.
+    var spoken: String?
+    /// Icon and word in the secondary colour with no capsule: for a reading that is not known, beside pills that say
+    /// something. A card with nothing read had three grey capsules that weighed as much as its one real status.
+    var quiet = false
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.self) private var environment
 
     var body: some View {
         HStack(spacing: 4) {
-            Image(systemName: symbol).foregroundStyle(color).accessibilityHidden(true)
-            Text(verbatim: text).foregroundStyle(PillTone.text(color, in: environment))
+            Image(systemName: symbol).foregroundStyle(quiet ? AnyShapeStyle(.secondary) : AnyShapeStyle(color)).accessibilityHidden(true)
+            Text(verbatim: text).foregroundStyle(quiet ? AnyShapeStyle(.secondary) : AnyShapeStyle(PillTone.text(color, in: environment)))
         }
         .font(.caption.weight(.medium))
-        .padding(.horizontal, 8)
+        .padding(.horizontal, quiet ? 2 : 8)
         .padding(.vertical, 3)
-        .pillBackground(color, radius: typeSize.isAccessibilitySize ? 10 : nil)
+        .pillBackground(quiet ? .clear : color, radius: typeSize.isAccessibilitySize ? 10 : nil)
         .fixedSize(horizontal: !typeSize.isAccessibilitySize, vertical: true)
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: spoken ?? text))
         .help(Text(verbatim: help ?? text))
     }
 }

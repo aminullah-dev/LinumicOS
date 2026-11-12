@@ -106,7 +106,7 @@ struct DeskView: View {
             // Green only when nothing is open today and every source was read: an unread source is not "all clear".
             let unknown = desk.open.count { $0.item.kind == .source }
             PageHeader(.desk, subtitle: Text(now.formatted(date: .complete, time: .omitted))) {
-                FitRow(spacing: 8) {
+                PillRow(spacing: 8) {
                     ReleaseBadge(text: String(localized: "\(desk.today.count) today"), symbol: "sun.max",
                                  color: !desk.today.isEmpty ? .statusBad : (unknown > 0 ? .statusUnknown : .statusGood))
                     ReleaseBadge(text: String(localized: "\(desk.thisWeek.count) this week"), symbol: "calendar", color: .statusWarn)
@@ -177,12 +177,7 @@ struct DeskView: View {
     }
 
     private func sectionTitle(_ title: String, count: Int) -> some View {
-        HStack(spacing: 8) {
-            Text(verbatim: title).font(.title3.weight(.semibold))
-            Text(count.formatted()).font(.callout.monospacedDigit()).foregroundStyle(.secondary)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isHeader)
+        SectionHeader(title: title, count: count)
     }
 
     private func bucket(_ bucket: DeskBucket, _ rows: [DeskRow]) -> some View {
@@ -259,8 +254,14 @@ struct DeskRowView: View {
     let dismiss: () -> Void
     @State private var expanded = false
     @State private var copied = false
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     private var item: DeskItem { row.item }
+
+    /// At iPhone width, or at an accessibility text size, the actions go under the text. Beside it they took half the
+    /// row: the title wrapped over six lines and "Open" and "Done" broke in the middle of the word.
+    private var stacksActions: Bool { sizeClass == .compact || typeSize.isAccessibilitySize }
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
@@ -269,7 +270,7 @@ struct DeskRowView: View {
                 .accessibilityLabel(Text(verbatim: item.severity.title))
             VStack(alignment: .leading, spacing: 4) {
                 Text(DeskText.text(item.title, of: item)).fixedSize(horizontal: false, vertical: true)
-                FitRow(spacing: 6) {
+                PillRow(spacing: 6) {
                     ReleaseBadge(text: item.domain.displayTitle, symbol: "shippingbox", color: .brandAccent)
                     ForEach(item.related) { other in
                         ReleaseBadge(text: other.displayTitle, symbol: "shippingbox", color: .statusUnknown)
@@ -329,9 +330,10 @@ struct DeskRowView: View {
                         .buttonStyle(.borderless).font(.caption)
                 }
                 sourceLine
+                if stacksActions { actions.padding(.top, 2) }
             }
-            Spacer(minLength: 8)
-            actions
+            Spacer(minLength: stacksActions ? 0 : 8)
+            if !stacksActions { actions }
         }
         .padding(4)
         .hoverHighlight()
@@ -389,7 +391,10 @@ struct DeskRowView: View {
 
     @ViewBuilder
     private var actions: some View {
-        HStack(spacing: 6) {
+        // Beside the text: one row, never narrower than its words (a label is not broken between two letters). Under
+        // the text: a flow, so at the largest text sizes the buttons go onto a second line instead of off the screen.
+        let layout = stacksActions ? AnyLayout(FlowLayout(spacing: 6, lineSpacing: 2)) : AnyLayout(HStackLayout(spacing: 6))
+        layout {
             if copied {
                 Text("Copied").font(.caption).foregroundStyle(.secondary).transition(.opacity)
             }
@@ -462,6 +467,7 @@ struct DeskRowView: View {
             }
         }
         .labelStyle(.iconOnly)
+        .fixedSize(horizontal: !stacksActions, vertical: false)
     }
 
     /// The obligation this item is about, if it is one: from the Brief line, or (for an item made before lines carried
@@ -624,7 +630,8 @@ struct DeskBackupCard: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .background(.background.secondary, in: Capsule())
+        // A card's corners, not a capsule: on iPhone the line wraps, and two lines in a capsule lose their ends.
+        .background(.background.secondary, in: RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous))
         .accessibilityElement(children: .combine)
     }
 

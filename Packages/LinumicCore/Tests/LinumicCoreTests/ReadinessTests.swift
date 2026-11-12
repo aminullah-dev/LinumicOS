@@ -457,6 +457,20 @@ struct ReadinessSummaryTests {
         #expect(p.concerns.map(\.check) == [.level, .pullRequests, .signingKey])
     }
 
+    /// A project's panel lists what failed first, and what does not apply is left out; within one state the fixed order
+    /// of the checks holds.
+    @Test func theWeakestCheckComesFirstInAPanel() {
+        let p = product("p", [.passed, .needsAttention, .failed, .unknown, .needsAttention, .notApplicable, .passed])
+        #expect(p.weakestFirst.map(\.state) == [.failed, .needsAttention, .needsAttention, .unknown, .passed, .passed])
+        let order = Array(ReadinessCheckID.allCases.prefix(7))
+        #expect(p.weakestFirst.map(\.check) == [order[2], order[1], order[4], order[3], order[0], order[6]])
+    }
+
+    @Test func theKnownLineSaysHowMuchWasRead() {
+        #expect(summary([.failed, .needsAttention, .passed, .unknown, .notApplicable]).knownLine == "3 of 4 known")
+        #expect(summary([.notApplicable]).knownLine == "No check applies")
+    }
+
     @Test func nothingReadMeansNothingPassedForAnyProduct() {
         // The real catalogue, with no source read on this device and no registry, register or log loaded.
         let report = ProductsBuilder.build(ProductsInput(now: now, products: [], tracking: [], releases: ReleaseCenterSnapshot(),

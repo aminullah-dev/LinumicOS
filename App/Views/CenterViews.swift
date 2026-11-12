@@ -53,7 +53,7 @@ struct CenterView: View {
     /// The day, one status line, and search. A count is shown here and nowhere else on the page.
     private func header(_ report: CenterReport, stale: Int, now: Date) -> some View {
         PageHeader(.center, subtitle: Text(now.formatted(date: .complete, time: .omitted))) {
-            FitRow(spacing: 8) {
+            PillRow(spacing: 8) {
                 if report.isAllClear(staleSources: stale) {
                     ReleaseBadge(text: String(localized: "All clear"), symbol: "checkmark.circle.fill", color: .statusGood)
                 } else {
@@ -236,11 +236,14 @@ struct CenterView: View {
 
     // MARK: Parts
 
+    /// A section of the page: its title one step above the cards' own titles, and more room above it than between the
+    /// cards inside it, so each group reads as one.
     private func section<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(verbatim: title).font(.headline).accessibilityAddTraits(.isHeader)
+        VStack(alignment: .leading, spacing: 10) {
+            SectionHeader(title: title)
             content()
         }
+        .padding(.top, Theme.Spacing.section - Theme.Spacing.l)
     }
 
     private func rows(_ list: [DeskRow]) -> some View {
@@ -335,7 +338,11 @@ private struct CenterNotice: View {
 /// One Desk row. Opens it on the Desk, where its source, its marks and its actions are.
 struct CenterDeskRow: View {
     @Environment(Router.self) private var router
+    @Environment(\.dynamicTypeSize) private var typeSize
     let row: DeskRow
+    /// The space at the row's sides: its own inside a list card; none inside a panel, whose padding already aligns the
+    /// row with the panel's title.
+    var inset: CGFloat = 14
 
     var body: some View {
         Button { router.go(.desk, request: .deskItem(row.id)) } label: {
@@ -344,7 +351,8 @@ struct CenterDeskRow: View {
                     .foregroundStyle(row.item.severity.color)
                     .accessibilityLabel(Text(verbatim: row.item.severity.title))
                 VStack(alignment: .leading, spacing: 2) {
-                    DirectionalText(row.item.title).font(.callout).lineLimit(2).multilineTextAlignment(.leading)
+                    // Two lines; at an accessibility text size two lines hold three words, so up to six.
+                    DirectionalText(row.item.title).font(.callout).lineLimit(typeSize.isAccessibilitySize ? 6 : 2).multilineTextAlignment(.leading)
                     HStack(spacing: 6) {
                         Text(verbatim: row.item.domain.name)
                         // An old reading says how old, so a line that may already be done isn't taken as today's news.
@@ -358,7 +366,7 @@ struct CenterDeskRow: View {
                 Spacer(minLength: 8)
                 Image(systemName: "chevron.forward").foregroundStyle(.tertiary).accessibilityHidden(true)
             }
-            .padding(.horizontal, 14)
+            .padding(.horizontal, inset)
             .padding(.vertical, 10)
             .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())

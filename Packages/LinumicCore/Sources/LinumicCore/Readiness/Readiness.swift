@@ -144,6 +144,11 @@ public struct ReadinessSummary: Hashable, Sendable {
         return .ready
     }
 
+    /// "5 of 8 known": how much of the scorecard was read at all, for beside the counts.
+    public var knownLine: String {
+        applicable > 0 ? LF("%1$ld of %2$ld known", known, applicable) : L("No check applies")
+    }
+
     /// "5 of 8 known · 4 passed · 1 failed · 3 unknown". Unknown is always said when there is any.
     public var headline: String {
         guard applicable > 0 else { return L("No check applies") }
@@ -171,6 +176,12 @@ public struct ProductReadiness: Hashable, Sendable, Identifiable {
     /// The checks to look at first: failed, then needing attention.
     public var concerns: [ReadinessResult] {
         results.filter { $0.state == .failed } + results.filter { $0.state == .needsAttention }
+    }
+
+    /// The checks that apply, the weakest first: failed, needing attention, not known, then passed. Within one state
+    /// they keep the fixed order of `results`, so two projects' panels still read alike.
+    public var weakestFirst: [ReadinessResult] {
+        [ReadinessState.failed, .needsAttention, .unknown, .passed].flatMap { state in results.filter { $0.state == state } }
     }
 }
 

@@ -58,6 +58,11 @@ Small, verifiable steps:
 - Shared pieces: `PageHeader` at the top of a main page, `.cardSurface()` / `.frostedCard()` for cards, `PillLabel` for
   status pills, `KPITile` for number cards, `.hoverHighlight()` for rows that act. They handle dark mode, Increase
   Contrast, Reduce Transparency and Reduce Motion.
+- Text sizes come from the type scale in `Theme.swift`, largest first: the page title (`PageHeader`), `.sectionTitle`
+  (use `SectionHeader`), `.panelTitle`, `.rowTitle`, `.rowBody`, `.rowCaption`. A section's title is one step above the
+  titles of the cards under it. A state is always one pill with its icon, its word and its colour together.
+- A row of pills is a `PillRow`: at iPhone width or a large text size the pills wrap like words. A row's buttons go
+  under its text at iPhone width, never beside it.
 - The values live in `App/Resources/Assets.xcassets` (`AccentColor`, `Theme/`), each with light, dark and Increase
   Contrast variants, written by `python3 tools/design/make_colors.py`. Change a colour there, never in the asset files;
   `make_colors.py --check` (CI runs it) fails when a file differs from the table or a pair misses its contrast rule.

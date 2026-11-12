@@ -206,6 +206,17 @@ struct FitRow<Content: View>: View {
     }
 }
 
+/// Pills side by side, wrapping onto the next line like words when they don't fit (iPhone width, large text), instead
+/// of `FitRow`'s one per line. For pills and short labels only: no `Spacer` inside.
+struct PillRow<Content: View>: View {
+    var spacing: CGFloat = 6
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        FlowLayout(spacing: spacing, lineSpacing: spacing) { content }
+    }
+}
+
 extension View {
     /// On iPhone, grows the tappable area to the 44pt minimum without changing the layout.
     /// On the Mac, pointer targets are fine as they are.

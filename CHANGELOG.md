@@ -5,6 +5,47 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed: easier to read at a glance, from pictures of the pages (2026-11-12)
+- **Why:** the owner asked for the interface to be more advanced and above all more readable. The five daily pages and
+  the readiness views of the entry below (never looked at until now) were photographed on the iPhone and iPad
+  simulators in Dari light, Dari dark and English, and the ten things below are what the pictures showed.
+- **Desk, iPhone:** a row's buttons sat beside its text and took half the row: the title wrapped over six lines and
+  "Open" and "Done" broke in the middle of the word. At iPhone width (and at accessibility text sizes) the buttons are
+  under the text, and are never narrower than their words.
+- **Project cards:** the one-line summary was cut before what it is about ("… is behind main, 76 commits"). It has two
+  lines; the closed card is 144 points tall instead of 132, still one size for every card.
+- **Readiness rows:** the state was a small grey word at the far edge, away from its icon. It is one pill there, icon,
+  word and colour together, like every other badge.
+- **Readiness panel:** the rows are weakest first (`ProductReadiness.weakestFirst`), so the row under "Failing" is the
+  check that failed. It was four passed rows down.
+- **Readiness counts:** "6 of 8 known · 4 passed · 1 failed · …" was two lines of grey words. It is an icon and a number
+  per state (`ReadinessTally`); the sentence is what VoiceOver reads.
+- **Source lines** (`SourceLine`, every page that shows a source): one paragraph with the date at its end, instead of a
+  reference cut in the middle of a word beside a date in a column of its own.
+- **Pills in a header** wrap like words (`PillRow`, the shared `FlowLayout`) instead of one per line: the Desk's header
+  and the Readiness counts each took four lines on iPhone.
+- **Readings that are not known** on a project card ("PR ?", "CI ?", "–") have no capsule, so the pills that say
+  something are the ones seen; a card with nothing read had three grey capsules beside its one status. Each short pill
+  says its whole sentence to VoiceOver.
+- **A type scale** in `Theme.swift` (`.sectionTitle`, `.panelTitle`, `.rowTitle`, `.rowBody`, `.rowCaption`) and one
+  `SectionHeader`: on the Center a section's title was the size of the cards' own titles; it is one step above, with
+  more room above a section than between its cards.
+- **A project's "Waiting on you" rows** are flush with the panel's title; the Desk's backup line is a card, not a
+  capsule around two lines.
+- **Large text** (iPhone, the accessibility sizes): a status pill (`PillLabel`) wraps inside its row as `BoardPill`
+  already did, where a long one pushed the Desk wider than the screen; a project card puts its badge under its name
+  (the name was cut to "WorkTr…") and is as tall as it needs; a row on the Center has up to six lines for its title
+  instead of two; the Desk's buttons and the readiness counts go onto a second line.
+- **Not seen on a Mac:** every picture is from the iOS Simulator (iPhone 17 and iPad Pro 13-inch, portrait). The Mac's
+  own text sizes, window widths and toolbar were not looked at. Releases and the Monitor were seen only empty (nothing
+  read): the sample data covers the Projects pages, the Center and the Desk.
+- **For taking the pictures:** `-LCCScrollTo readiness` opens a project's page scrolled to that panel (Debug builds
+  only). On the iOS Simulator only (`SimulatorDateOrder.swift`), `Date >=` and `<=` are the module's own: the 27.2
+  simulator runtime on the owner's Mac lacks the symbol the 27.2 SDK back-deploys to, and the app closed on its first
+  page there. That file is not compiled into a device or Mac build.
+- No new string, colour, request, key or table. The version stays 0.3.0 (3). Tests: the panel's order and the "known"
+  line.
+
 ### Added: operational readiness, the same checks for every project (2026-11-12)
 - **Why:** the owner's open P1 item, an operational checklist per product as Facts with a date and a source (is CI
   green, the date of the last restore test, is the signing key backed up, is monitoring on), and his word to run the
