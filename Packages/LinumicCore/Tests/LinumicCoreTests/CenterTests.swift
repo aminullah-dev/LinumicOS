@@ -158,6 +158,15 @@ struct CenterTests {
     @Test func aProductWithNoListingStillGetsACard() {
         let all = ProductsCatalog.all(inventory: [Product(id: "idea", name: "Idea")], catalog: [])
         #expect(all.map(\.id) == ["idea"] && all[0].tracks.isEmpty)
+        // Nothing of it is compared, so it is never "level" (green): before 2026-11-12 it was.
+        let input = ProductsInput(now: now, products: [Product(id: "idea", name: "Idea")], tracking: [], releases: ReleaseCenterSnapshot(),
+                                  licences: BriefLicenceInput(isLoaded: false, records: [], lastSyncedAt: nil), monitor: MonitorSnapshot(), catalog: all)
+        let report = ProductsBuilder.build(input)
+        #expect(report.card("idea")?.level == .nothingCompared)
+        #expect(!report.level.contains { $0.id == "idea" })
+        // And it is not an item on the Desk: there is nothing unknown to read about its level.
+        let section = ProductsBrief.section(ProductsReport(cards: report.cards, generatedAt: now, nothingRead: false))
+        #expect(!section.gaps.contains { $0.key == "idea" } && !section.lines.contains { $0.id.hasSuffix(".idea") })
     }
 
     @Test func aCataloguedProductIsNotListedTwice() {
@@ -167,11 +176,31 @@ struct CenterTests {
     }
 
     @Test func anAddedProductsCommitsAreReadButAnArchivedOnesAreNot() {
-        let added = Product(id: "newapp", name: "New App")
+        var added = Product(id: "newapp", name: "New App")
+        added.storeListings = [listing(.appStore, "com.new.app")]
+        let idea = Product(id: "idea", name: "Idea")
         let book = Product(id: "soder-hakem", name: "SODER-HAKEM")
-        let ids = ProductsCatalog.read(inventory: [added, book]).map(\.id)
+        let ids = ProductsCatalog.read(inventory: [added, idea, book]).map(\.id)
         #expect(ids.contains("newapp") && !ids.contains("soder-hakem"))
         #expect(ids.contains("dukanpro"), "a catalogued product stays read whatever its tier")
+        // A product with no compared platform has no build to count commits after: its repository is not read.
+        #expect(!ids.contains("idea"))
+        for id in ["bepaya", "familyfund", "spincake", "kabulsignal", "radarsystem"] { #expect(!ids.contains(id), "\(id)") }
+        let repos = ProductsSync.historyRepos(products: [], catalog: ProductsCatalog.read(inventory: [])).map { $0.lowercased() }
+        for repo in ["aminullah-dev/be-paya", "aminullah-dev/family-fund-management", "aminullah-dev/spincake", "aminullah-dev/radar-system"] {
+            #expect(!repos.contains(repo), "\(repo)")
+        }
+    }
+
+    @Test func theProjectsListedOn20261112StartArchived() {
+        for id in ["bepaya", "familyfund", "spincake", "kabulsignal", "radarsystem"] {
+            #expect(CenterTier.default(forProduct: id) == .archived, "\(id)")
+            #expect(ProductsCatalog.product(id) != nil, "\(id) is on the Projects page")
+        }
+        // The owner's own list is unchanged.
+        #expect(CenterTier.default(forProduct: "dukanpro") == .archived)
+        #expect(["linumicos", "khayatyar", "worktrack"].allSatisfy { CenterTier.default(forProduct: $0) == .focus })
+        #expect(CenterTier.default(forProduct: "pashtolikman") == .maintenance)
     }
 
     @Test func aConsoleAppWithoutAnInventoryListingIsUnknownUntilReadNotAbsent() throws {

@@ -35,16 +35,25 @@ public struct LedgerSource: Hashable, Sendable, Identifiable {
 
 public enum LedgerAllowList {
     /// The folders the owner grants (home-relative). Every allowed file is inside one of them.
-    /// BE-PAYA (the game) was left out on the owner's word, 2026-10-19.
+    /// BE-PAYA (the game) was left out on the owner's word, 2026-10-19 ("asked to leave the game out", commit c014526).
+    /// Since 2026-11-12 it lives in ~/Projects/Multiplatform/BE-PAYA, inside this folder, and it is still left out: the
+    /// move changed where it is, not the owner's word.
     public static let folders = ["Projects/Multiplatform"]
 
-    /// DukanPro left this list on 2026-11-02: it is archived and no longer on this Mac, so it read as a failure every round.
+    /// The layout of 2026-11-12: every project directly under ~/Projects/Multiplatform.
+    /// - DukanPro left this list on 2026-11-02 (archived and no longer on this Mac, so it read as a failure every round)
+    ///   and is back: ~/Projects/Multiplatform/DukanPro is on this Mac again, on main, its PRIORITIES.md tracked in git.
+    /// - VELRO is read from the Velro-design checkout: the Velro folder is an older branch of the same repository, and
+    ///   every open item of its PRIORITIES.md is in Velro-design's (2026-11-12). Reading both would list them twice.
+    /// - Spin Cake's PRIORITIES.md (the iPhone ordering demo) is read like every other project's.
     public static let priorities: [LedgerSource] = [
         LedgerSource("shared", "Projects/Multiplatform/PRIORITIES.md", .shared),
         LedgerSource("worktrack", "Projects/Multiplatform/WorkTrack/PRIORITIES.md", .worktrack),
         LedgerSource("safebeauty", "Projects/Multiplatform/Safe beauty/PRIORITIES.md", .safeBeauty),
         LedgerSource("talar", "Projects/Multiplatform/Talar/PRIORITIES.md", .talar),
-        LedgerSource("velro", "Projects/Multiplatform/Velro/PRIORITIES.md", .velro),
+        LedgerSource("velro", "Projects/Multiplatform/Velro-design/PRIORITIES.md", .velro),
+        LedgerSource("dukanpro", "Projects/Multiplatform/DukanPro/PRIORITIES.md", .dukanPro),
+        LedgerSource("spincake", "Projects/Multiplatform/SpinCake/PRIORITIES.md", .spinCake),
         // Outside the repository: LinumicOS is public and this ledger holds private notes, so it is never committed.
         LedgerSource("linumicos", "Projects/Multiplatform/Linumic/PRIORITIES-LinumicOS.md", .linumicOS),
     ]

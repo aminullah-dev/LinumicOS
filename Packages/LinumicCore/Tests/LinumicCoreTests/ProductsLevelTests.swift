@@ -180,6 +180,18 @@ struct ProductsLevelTests {
         #expect(state == .nothingShipped)
     }
 
+    @Test func nothingComparedIsNeverLevel() {
+        // A project listed with its platforms but none compared (BE-PAYA, 2026-11-12), or with no platform at all.
+        let unread: Sourced<VersionStamp> = .unknown("No App Store listing for com.linumic.bepaya in the inventory, so its builds are not read.")
+        let listed = ProductLevelRule.evaluate(track("BE-PAYA", [
+            reading(.iOS, build: unread, main: .none("No version file is catalogued for this app yet.", source: nil, readAt: nil), compared: false),
+            reading(.android, build: unread, main: .none("No version file is catalogued for this app yet.", source: nil, readAt: nil), compared: false),
+        ]))
+        #expect(listed == .nothingCompared)
+        #expect(ProductLevelRule.evaluate([]) == .nothingCompared)
+        #expect(listed != .level && listed.unknowns.isEmpty && listed.findings.isEmpty)
+    }
+
     @Test func theFactKeyIgnoresWhatMovesDaily() {
         func key(_ commits: Int, _ days: Int) -> String? {
             ProductLevelRule.evaluate(track([reading(.android, build: v("1.8.0", on: "2026-09-20"), main: v("1.9.0"), behind: behind(commits, days: days))]))

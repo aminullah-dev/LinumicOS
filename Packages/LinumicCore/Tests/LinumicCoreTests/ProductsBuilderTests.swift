@@ -92,7 +92,8 @@ private func input(running: RunningBuild? = RunningBuild(platform: .macOS, versi
 struct ProductsBuilderTests {
     @Test func theCatalogueCoversEveryProductAndReusesTheInventory() throws {
         let catalog = ProductsCatalog.products
-        #expect(catalog.map(\.title) == ["WorkTrack", "SafeBeauty", "VELRO", "Talar", "KhayatYar", "MediFlow", "NerkhTimes", "Namazia", "DukanPro", "Linumic OS", "Pashto Likman"])
+        #expect(catalog.map(\.title) == ["WorkTrack", "SafeBeauty", "VELRO", "Talar", "KhayatYar", "MediFlow", "NerkhTimes", "Namazia", "DukanPro", "Linumic OS", "Pashto Likman",
+                                         "BE-PAYA", "Family Fund Management", "Spin Cake", "Kabul Signal", "Radar-system"])
         let inventory = try SeedInventory.load().products
         let specs = Set((PlatformCatalog.profiles.flatMap(\.versionFiles) + ProductsCatalog.extraVersionFiles).map(\.id))
         for product in catalog {
@@ -109,7 +110,13 @@ struct ProductsBuilderTests {
                     #expect(record.platforms.contains { $0.platform == slot.platform }, "\(slot.id): the inventory lists \(slot.platform)")
                 }
             } else {
-                #expect(["linumicos": ["aminullah-dev/LinumicOS"], "pashtolikman": ["aminullah-dev/PashtoKey"]][product.id] == product.extraRepos)
+                // Not inventory products: each repository is the git remote of the project's own folder (2026-11-12);
+                // Kabul Signal's folder is no git repository, so it has none.
+                let remotes = ["linumicos": ["aminullah-dev/LinumicOS"], "pashtolikman": ["aminullah-dev/PashtoKey"],
+                               "bepaya": ["aminullah-dev/BE-PAYA"], "familyfund": ["aminullah-dev/FAMILY-FUND-MANAGEMENT"],
+                               "spincake": ["aminullah-dev/SpinCake"], "kabulsignal": [], "radarsystem": ["aminullah-dev/Radar-system"]]
+                #expect(remotes[product.id] == product.extraRepos, "\(product.id)")
+                #expect(!product.source.isEmpty && product.slots.allSatisfy { !$0.source.isEmpty })
             }
             #expect(Set(product.slots.map(\.id)).count == product.slots.count)
         }
@@ -233,5 +240,51 @@ struct ProductsBuilderTests {
         }
         let again = ProductsBrief.section(ProductsBuilder.build(later)).lines.first { $0.id == line.id }
         #expect(again?.factKey == line.factKey)
+    }
+
+    @Test func theProjectsListedOn20261112SayOnlyWhatTheirFilesSay() throws {
+        let report = ProductsBuilder.build(try input())
+        let section = ProductsBrief.section(report)
+        let ids = ["bepaya", "familyfund", "spincake", "kabulsignal", "radarsystem"]
+        for id in ids {
+            let card = try #require(report.card(id), "\(id) has a card")
+            // Nothing of it is compared: never "level", never an item on the Desk.
+            #expect(card.level == .nothingCompared, "\(id)")
+            #expect(!section.gaps.contains { $0.key == id } && !section.lines.contains { $0.id.hasSuffix(".\(id)") }, "\(id)")
+            #expect(card.product.source.contains("~/Projects/Multiplatform/") && card.product.source.contains("2026-11-12"), "\(id)")
+            #expect(card.health.reason == "No public address of this product is monitored.")
+            for s in card.slots {
+                #expect(!s.slot.compared && s.slot.source.contains("2026-11-12"), "\(s.slot.id)")
+                // A store app without an inventory listing: not in a store by the inventory, its builds not read; no version.
+                if let appID = s.slot.appIdentifier, let store = s.slot.store {
+                    #expect(s.live.reason == "Not in a store: the inventory has no \(store.title) listing for \(appID).")
+                    #expect(s.build.isUnknown && s.build.reason == "No \(store.title) listing for \(appID) in the inventory, so its builds are not read.")
+                    #expect(s.main.reason == "No version file is catalogued for this app yet.")
+                } else {
+                    #expect(!s.build.isKnown && !s.build.isUnknown, "\(s.slot.id): a web or server part says why it has no build")
+                }
+            }
+        }
+        // Their repositories are not watched by the Release Center, so pull requests and CI say so instead of "not read yet".
+        let bePaya = try #require(report.card("bepaya"))
+        #expect(bePaya.repos == ["aminullah-dev/BE-PAYA"])
+        #expect(bePaya.pulls.reason == "The Release Center does not watch aminullah-dev/BE-PAYA, so its pull requests are not read.")
+        #expect(bePaya.ci.reason == "The Release Center does not watch aminullah-dev/BE-PAYA, so its CI is not read.")
+        #expect(bePaya.slots.map(\.slot.appIdentifier) == ["com.linumic.bepaya", "com.linumic.bepaya"])
+        // Kabul Signal's folder is no git repository: no repository, which is "none", not "not read".
+        let kabul = try #require(report.card("kabulsignal"))
+        #expect(kabul.repos.isEmpty && kabul.pulls.reason == "No code repository is recorded for this product." && !kabul.pulls.isUnknown)
+        // Radar-system is not a product: listed with no platform.
+        #expect(try #require(report.card("radarsystem")).tracks.isEmpty)
+        let fund = try #require(report.card("familyfund"))
+        #expect(fund.slots.map(\.slot.platform) == [.android, .iOS, .web, .backend])
+        #expect(fund.slots.compactMap(\.slot.appIdentifier) == ["af.familyfund.family_fund", "af.familyfund.familyFund"])
+        #expect(try #require(report.card("spincake")).slots.map(\.slot.appIdentifier) == ["com.spincake.ordering", nil])
+        // A repository the Release Center does watch but has not read yet still says "not read yet".
+        let mediflow = try #require(report.card("mediflow"))
+        #expect(mediflow.pulls.reason == "The pull requests of aminullah-dev/MediFlow have not been read yet.")
+        // None of them is a store app the Release Center reads.
+        let apps = Set(ReleaseCatalog.apps(from: try SeedInventory.load().products).map(\.appIdentifier))
+        #expect(apps.isDisjoint(with: ["com.linumic.bepaya", "af.familyfund.family_fund", "af.familyfund.familyFund", "com.spincake.ordering", "com.kabulsignal.reader"]))
     }
 }

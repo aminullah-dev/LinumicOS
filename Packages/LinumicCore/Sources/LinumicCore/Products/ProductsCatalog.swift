@@ -155,6 +155,7 @@ public enum ProductsCatalog {
 
     public static let products: [CompanyProduct] = [
         workTrack, safeBeauty, velro, talar, khayatYar, mediFlow, nerkhTimes, namazia, dukanPro, linumicOS, pashtoLikman,
+        bePaya, familyFund, spinCake, kabulSignal, radarSystem,
     ]
 
     /// The catalog plus a card for every inventory product it doesn't list, so a product added in the app shows up without
@@ -165,9 +166,12 @@ public enum ProductsCatalog {
     }
 
     /// What the GitHub reads cover: everything on the page except an inventory product archived by default, which nobody
-    /// looks at and would only spend the rate limit. A catalogued product stays read whatever its tier.
+    /// looks at and would only spend the rate limit. A catalogued product stays read whatever its tier. A product with no
+    /// compared platform is not read either: the commits on main are counted after a build, and it has none to compare.
     public static func read(inventory: [Product]) -> [CompanyProduct] {
-        all(inventory: inventory).filter { product($0.id) != nil || CenterTier.default(forProduct: $0.id) != .archived }
+        all(inventory: inventory).filter { p in
+            p.slots.contains(where: \.compared) && (product(p.id) != nil || CenterTier.default(forProduct: p.id) != .archived)
+        }
     }
 
     static let notCatalogued = "No version file is catalogued for a product added from the inventory."
@@ -379,8 +383,10 @@ public enum ProductsCatalog {
     }()
 
     /// Pashto Likman, the Pashto keyboard: iPhone only, submitted to App Review on 2026-11-02 (owner). Not an inventory product.
+    /// The folder moved from ~/PashtoKey to ~/Projects/Multiplatform/PashtoKey on 2026-11-12; the bundle id and the remote
+    /// were read again there that day.
     static let pashtoLikman: CompanyProduct = {
-        let source = "~/PashtoKey/ios/PashtoKey.xcodeproj (PRODUCT_BUNDLE_IDENTIFIER, 2026-11-02); git remote aminullah-dev/PashtoKey"
+        let source = "~/Projects/Multiplatform/PashtoKey/ios/PashtoKey.xcodeproj (PRODUCT_BUNDLE_IDENTIFIER com.pashtokey.app, read 2026-11-12; first read 2026-11-02 at ~/PashtoKey); git remote aminullah-dev/PashtoKey"
         return CompanyProduct(id: "pashtolikman", title: "Pashto Likman", inventoryID: nil, tracks: [
             ProductTrack(id: "app", title: "Pashto Likman", slots: [
                 slot("pashtolikman", "app", .iOS, "iPhone app and keyboard", id: "com.pashtokey.app", noVersionFile: "No version file is catalogued for this app yet.",
@@ -400,5 +406,86 @@ public enum ProductsCatalog {
             ]),
         ], extraRepos: ["aminullah-dev/LinumicOS"],
         source: "ReleaseCatalog.extraRepos: git remote of ~/Projects/Multiplatform/Linumic/LinumicCommandCenter (2026-10-09)")
+    }()
+
+    // MARK: Listed on 2026-11-12 (every project under ~/Projects/Multiplatform)
+    //
+    // Not inventory products, so each fact comes from the project's own files, read on 2026-11-12, and nothing more is
+    // said: no store, version or address that was not read there. None is compared: the inventory has no store listing
+    // for any of them and no version file or GitHub release of theirs is catalogued, so "Not in a store: the inventory has
+    // no … listing" and "its builds are not read" are what the page says, and the level is "No platform compared", never
+    // "level". The Release Center does not watch their repositories, so their pull requests and CI say that too; no
+    // GitHub read is added for them. All five start archived (`CenterTier`).
+
+    static let notCompared = "No version file is catalogued for this app yet."
+
+    /// The endless runner game (Expo, iOS and Android). Its ledger stays off the Desk on the owner's word (`LedgerAllowList`).
+    static let bePaya: CompanyProduct = {
+        let files = "~/Projects/Multiplatform/BE-PAYA/app.json"
+        let source = "\(files):12,22 (expo.ios.bundleIdentifier and expo.android.package com.linumic.bepaya) and README.md:10 (iOS and Android, Expo SDK 57), read 2026-11-12; git remote aminullah-dev/BE-PAYA"
+        return CompanyProduct(id: "bepaya", title: "BE-PAYA", inventoryID: nil, tracks: [
+            ProductTrack(id: "app", title: "BE-PAYA", slots: [
+                slot("bepaya", "app", .iOS, "iOS app", id: "com.linumic.bepaya", noVersionFile: notCompared, build: .store, compared: false,
+                     source: "\(files):12, read 2026-11-12"),
+                slot("bepaya", "app", .android, "Android app", id: "com.linumic.bepaya", noVersionFile: notCompared, build: .store, compared: false,
+                     source: "\(files):22, read 2026-11-12"),
+            ]),
+        ], extraRepos: ["aminullah-dev/BE-PAYA"], source: source)
+    }()
+
+    /// A fund-management app: a Flutter app, a Next.js admin panel and a Supabase backend of its own, Pashto only.
+    static let familyFund: CompanyProduct = {
+        let root = "~/Projects/Multiplatform/FAMILY-FUND-MANAGEMENT"
+        let source = "\(root)/README.md:10-13 (Supabase, the Flutter app in apps/mobile, the Next.js admin panel in apps/admin-web), read 2026-11-12; git remote aminullah-dev/FAMILY-FUND-MANAGEMENT"
+        return CompanyProduct(id: "familyfund", title: "Family Fund Management", inventoryID: nil, tracks: [
+            ProductTrack(id: "app", title: "Family Fund Management", slots: [
+                slot("familyfund", "app", .android, "Android app", id: "af.familyfund.family_fund", noVersionFile: notCompared, build: .store,
+                     compared: false, source: "\(root)/apps/mobile/android/app/build.gradle.kts:30 (applicationId), read 2026-11-12"),
+                slot("familyfund", "app", .iOS, "iOS app", id: "af.familyfund.familyFund", noVersionFile: notCompared, build: .store,
+                     compared: false, source: "\(root)/apps/mobile/ios/Runner.xcodeproj/project.pbxproj:567 (PRODUCT_BUNDLE_IDENTIFIER), read 2026-11-12"),
+            ]),
+            ProductTrack(id: "web", title: "Admin and server", slots: [
+                slot("familyfund", "web", .web, "Admin panel (Next.js)", noVersionFile: noWebVersion, build: .none(noDeployedVersion),
+                     compared: false, source: "\(root)/README.md:13, read 2026-11-12"),
+                slot("familyfund", "web", .backend, "Supabase database and functions", noVersionFile: noWebVersion,
+                     build: .none(noDeployedVersion), compared: false, source: "\(root)/README.md:10, read 2026-11-12"),
+            ]),
+        ], extraRepos: ["aminullah-dev/FAMILY-FUND-MANAGEMENT"], source: source)
+    }()
+
+    /// The iPhone ordering app of Spin Cake, a demo (its PRIORITIES.md), with a Google Sheets and Apps Script backend.
+    static let spinCake: CompanyProduct = {
+        let root = "~/Projects/Multiplatform/SpinCake"
+        let source = "\(root)/project.yml:9,16,22 (PRODUCT_BUNDLE_IDENTIFIER com.spincake.ordering, platform iOS, display name Spin Cake) and PRIORITIES.md:1-3 (a demo; Google Sheets and Apps Script backend), read 2026-11-12; git remote aminullah-dev/SpinCake"
+        return CompanyProduct(id: "spincake", title: "Spin Cake", inventoryID: nil, tracks: [
+            ProductTrack(id: "app", title: "Spin Cake", slots: [
+                slot("spincake", "app", .iOS, "iOS app", id: "com.spincake.ordering", noVersionFile: notCompared, build: .store, compared: false,
+                     source: "\(root)/project.yml:9, read 2026-11-12"),
+            ]),
+            ProductTrack(id: "server", title: "Server", slots: [
+                slot("spincake", "server", .backend, "Google Sheets and Apps Script", noVersionFile: noWebVersion, build: .none(noDeployedVersion),
+                     compared: false, source: "\(root)/backend/README.md:1, read 2026-11-12"),
+            ]),
+        ], extraRepos: ["aminullah-dev/SpinCake"], source: source)
+    }()
+
+    /// An iPhone reader app for the Kabul Signal WordPress site. The folder is not a git repository: no GitHub repository.
+    static let kabulSignal: CompanyProduct = {
+        let root = "~/Projects/Multiplatform/KabulSignal"
+        let source = "\(root)/project.yml:15,20,24 (platform iOS, PRODUCT_BUNDLE_IDENTIFIER com.kabulsignal.reader, display name Kabul Signal) and Sources/Services/API.swift (a read-only client of the site's WordPress REST API), read 2026-11-12; the folder has no .git, so no repository is recorded"
+        return CompanyProduct(id: "kabulsignal", title: "Kabul Signal", inventoryID: nil, tracks: [
+            ProductTrack(id: "app", title: "Kabul Signal", slots: [
+                slot("kabulsignal", "app", .iOS, "iOS app", id: "com.kabulsignal.reader", noVersionFile: notCompared, build: .store, compared: false,
+                     source: "\(root)/project.yml:20, read 2026-11-12"),
+            ]),
+        ], source: source)
+    }()
+
+    /// Not a product: a small Arduino/ESP32 ultrasonic radar (firmware and a Python display), sidelined by the owner on
+    /// 2026-09-23 (the inventory's unresolved items). Listed so that every project folder is on the page; no platform.
+    static let radarSystem: CompanyProduct = {
+        let source = "~/Projects/Multiplatform/Radar-system/README.md:1-3 (an Arduino/ESP32 radar: firmware/radar_arduino and software/radar_display.py), read 2026-11-12; git remote aminullah-dev/Radar-system; sidelined by the owner on 2026-09-23 (inventory, unresolved items)"
+        return CompanyProduct(id: "radarsystem", title: "Radar-system", inventoryID: nil, tracks: [],
+                              extraRepos: ["aminullah-dev/Radar-system"], source: source)
     }()
 }

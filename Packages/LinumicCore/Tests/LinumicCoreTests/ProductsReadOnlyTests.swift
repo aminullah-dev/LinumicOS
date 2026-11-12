@@ -148,8 +148,10 @@ struct ProductsReadOnlyTests {
                                                         using: GitHubClient(token: "test-token", transport: transport))
         #expect(transport.count == 1, "no more requests once the limit is hit")
         #expect(report.updated.isEmpty)
-        #expect(Set(report.failed.keys) == Set(ProductsSync.historyRepos(products: products) + AgentRegistry.bundled.repositories
-                                                 + ProductsCatalog.extraVersionFiles.map(\.repo)))
+        // The repositories the round reads: a product with no compared platform is not among them (2026-11-12).
+        let read = ProductsSync.historyRepos(products: products, catalog: ProductsCatalog.read(inventory: products))
+        #expect(Set(report.failed.keys) == Set(read + AgentRegistry.bundled.repositories + ProductsCatalog.extraVersionFiles.map(\.repo)))
+        #expect(!report.failed.keys.contains("aminullah-dev/BE-PAYA") && !report.failed.keys.contains("aminullah-dev/Radar-system"))
         #expect(file.history.isEmpty && file.pullWindows.isEmpty)
     }
 

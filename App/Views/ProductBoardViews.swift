@@ -184,7 +184,7 @@ struct ProductBoardCard: View {
             }
         case .unknown(let reasons):
             DirectionalText(reasons.first ?? "").font(.caption).foregroundStyle(.secondary).lineLimit(1)
-        case .level, .nothingShipped:
+        case .level, .nothingShipped, .nothingCompared:
             EmptyView()
         }
     }
@@ -210,7 +210,8 @@ struct ProductBoardCard: View {
         default:
             EmptyView()
         }
-        platforms
+        // A project with no compared platform has no rows: no grid of empty headers.
+        if card.tracks.contains(where: { $0.slots.contains(where: \.slot.compared) }) { platforms }
         FitRow(spacing: 6) {
             pullsPill
             ciPill
@@ -443,6 +444,9 @@ struct ProductBoardDetail: View {
                 Text("Every compared platform was read: the same versions, and no build is behind main.").foregroundStyle(.secondary)
             case .nothingShipped:
                 Text("No compared platform has a build or a store version yet.").foregroundStyle(.secondary)
+            case .nothingCompared:
+                Text("No platform of this project is compared: none is read from a store, a GitHub release or a version file, so there is nothing to level.")
+                    .foregroundStyle(.secondary)
             case .notLevel(let findings):
                 // The track's name only when the product has more than one app that is compared (VELRO Ride, Driver, Ops).
                 let named = card.product.tracks.filter { $0.slots.contains(where: \.compared) }.count > 1
@@ -768,14 +772,15 @@ struct ProjectStatusPills: View {
 
 // MARK: - Pieces
 
-/// "Level", "Not level", "Level unknown", "Nothing shipped yet", with an icon so color is never the only sign.
+/// "Level", "Not level", "Level unknown", "Nothing shipped yet", "No platform compared", with an icon so color is never
+/// the only sign.
 extension ProductLevelState {
-    /// Level is green, not level orange; unknown and nothing shipped stay grey, never green.
+    /// Level is green, not level orange; unknown, nothing shipped and nothing compared stay grey, never green.
     var tint: Color {
         switch self {
         case .level: .statusGood
         case .notLevel: .statusWarn
-        case .unknown, .nothingShipped: .statusUnknown
+        case .unknown, .nothingShipped, .nothingCompared: .statusUnknown
         }
     }
 }
@@ -789,6 +794,7 @@ struct LevelBadge: View {
         case .notLevel: "exclamationmark.triangle.fill"
         case .unknown: "questionmark.circle.fill"
         case .nothingShipped: "circle.dashed"
+        case .nothingCompared: "minus.circle"
         }
         BoardPill(text: state.title, symbol: symbol, color: state.tint)
     }

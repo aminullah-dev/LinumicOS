@@ -258,30 +258,48 @@ struct LedgerReaderTests {
         #expect(!LedgerAllowList.allows("Projects/Multiplatform/Velro/NEXT-ACTIONS-2026-10-19.md"))
         #expect(!LedgerAllowList.allows("Projects/Multiplatform/NEXT-ACTIONS-latest.md"))
         #expect(!LedgerAllowList.allows("Projects/Multiplatform/AfghanJama/PRIORITIES.md"))
-        #expect(LedgerAllowList.priorities.count == 6)
-        // Archived and off this Mac (2026-11-02).
-        #expect(!LedgerAllowList.allows("Projects/Multiplatform/DukanPro/PRIORITIES.md"))
+        #expect(LedgerAllowList.priorities.count == 8)
+        // Off this Mac from 2026-11-02, back since 2026-11-12.
+        #expect(LedgerAllowList.allows("Projects/Multiplatform/DukanPro/PRIORITIES.md"))
+        #expect(LedgerAllowList.allows("Projects/Multiplatform/SpinCake/PRIORITIES.md"))
+        // VELRO is read from the Velro-design checkout only: the Velro folder is an older branch of the same repository.
+        #expect(LedgerAllowList.allows("Projects/Multiplatform/Velro-design/PRIORITIES.md"))
+        #expect(!LedgerAllowList.allows("Projects/Multiplatform/Velro/PRIORITIES.md"))
+        #expect(LedgerAllowList.priorities(for: .velro)?.path == "Projects/Multiplatform/Velro-design/PRIORITIES.md")
         // Its ledger holds private notes and the repository is public, so it lives outside the repository.
         #expect(!LedgerAllowList.allows("Projects/Multiplatform/Linumic/LinumicCommandCenter/PRIORITIES.md"))
         #expect(LedgerAllowList.allows("Projects/Multiplatform/Linumic/PRIORITIES-LinumicOS.md"))
+        // The game is not a ledger (owner, 2026-10-19), where it was and where it is since 2026-11-12.
         #expect(!LedgerAllowList.allows("Games/BE-PAYA/PRIORITIES.md"))
+        #expect(!LedgerAllowList.allows("Projects/Multiplatform/BE-PAYA/PRIORITIES.md"))
+        // Every listed file is directly in a project folder of ~/Projects/Multiplatform, never deeper, and one per id.
+        #expect(Set(LedgerAllowList.priorities.map(\.id)).count == LedgerAllowList.priorities.count)
+        #expect(LedgerAllowList.priorities.allSatisfy { $0.path.hasPrefix("Projects/Multiplatform/") && $0.path.split(separator: "/").count <= 4 })
     }
 
     @Test func notGrantedNotFoundLinksAndReadFiles() throws {
         var fs = FakeFS()
         fs.files["\(home)/Projects/Multiplatform/PRIORITIES.md"] = "آخرین بازبینی: 2026-10-10\n## P0\n- [ ] یک"
         fs.files["\(home)/Projects/Multiplatform/WorkTrack/PRIORITIES.md"] = try text("ledger-priorities-sample")
-        fs.links.insert("\(home)/Projects/Multiplatform/Velro/PRIORITIES.md")
+        fs.links.insert("\(home)/Projects/Multiplatform/Velro-design/PRIORITIES.md")
+        // The older Velro checkout and the game's ledger are on disk and never opened.
+        fs.files["\(home)/Projects/Multiplatform/Velro/PRIORITIES.md"] = "- [ ] old branch"
+        fs.files["\(home)/Projects/Multiplatform/BE-PAYA/PRIORITIES.md"] = "- [ ] game"
+        fs.files["\(home)/Projects/Multiplatform/DukanPro/PRIORITIES.md"] = "آخرین بازبینی: ۲۰۲۶-۱۱-۱۲\n## باز\n- [ ] دوکان"
         fs.files["\(home)/Projects/Multiplatform/Linumic/PRIORITIES-LinumicOS.md"] = "x"
         fs.sizes["\(home)/Projects/Multiplatform/Linumic/PRIORITIES-LinumicOS.md"] = 5_000_000
         fs.files["\(home)/Projects/Multiplatform/NEXT-ACTIONS-2026-10-09.md"] = "old"
         fs.files["\(home)/Projects/Multiplatform/NEXT-ACTIONS-2026-10-12.md"] = try text("next-actions-sample")
         // Only ~/Projects/Multiplatform is granted.
         let reading = LedgerReader.read(home: home, granted: ["\(home)/Projects/Multiplatform/"], fs: fs, now: now)
-        #expect(reading.files.count == 7)
+        #expect(reading.files.count == 9)
         #expect(reading.file("bepaya") == nil)   // the game is not a ledger (owner, 2026-10-19)
+        #expect(!reading.files.contains { $0.path.hasPrefix("Projects/Multiplatform/BE-PAYA/") || $0.path == "Projects/Multiplatform/Velro/PRIORITIES.md" })
         #expect(reading.file("talar")?.status == .notFound)
         #expect(reading.file("safebeauty")?.status == .notFound)
+        #expect(reading.file("spincake")?.status == .notFound)
+        guard case .read(.priorities(let dukan)) = reading.file("dukanpro")?.status else { Issue.record("DukanPro read"); return }
+        #expect(dukan.items.map(\.text) == ["دوکان"] && dukan.reviewedOn == KeyDay("2026-11-12"))
         guard case .unreadable = reading.file("velro")?.status else { Issue.record("a link is not followed"); return }
         guard case .unreadable = reading.file("linumicos")?.status else { Issue.record("too large"); return }
         guard case .read(.priorities(let wt)) = reading.file("worktrack")?.status else { Issue.record("WorkTrack read"); return }
@@ -376,8 +394,8 @@ struct LocalLedgerFileSystemTests {
     }
 
     @Test func aFolderOnTheWayThatLeadsOutOfTheGrantIsRefused() throws {
-        // A home with ~/Projects/Multiplatform granted, where Velro is a link to ~/Keys (outside the grant), and Talar
-        // a link to a folder inside it.
+        // A home with ~/Projects/Multiplatform granted, where Velro-design is a link to ~/Keys (outside the grant), and
+        // Talar a link to a folder inside it.
         let home = try folder()
         defer { try? FileManager.default.removeItem(at: home) }
         let granted = home.appending(path: "Projects/Multiplatform")
@@ -386,10 +404,10 @@ struct LocalLedgerFileSystemTests {
         for dir in [granted, outside, inside] { try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true) }
         try Data("آخرین بازبینی: 2026-10-19\n- [ ] outside".utf8).write(to: outside.appending(path: "PRIORITIES.md"))
         try Data("آخرین بازبینی: 2026-10-19\n- [ ] inside".utf8).write(to: inside.appending(path: "PRIORITIES.md"))
-        try FileManager.default.createSymbolicLink(at: granted.appending(path: "Velro"), withDestinationURL: outside)
+        try FileManager.default.createSymbolicLink(at: granted.appending(path: "Velro-design"), withDestinationURL: outside)
         try FileManager.default.createSymbolicLink(at: granted.appending(path: "Talar"), withDestinationURL: inside)
         let fs = LocalLedgerFileSystem()
-        let velro = granted.appending(path: "Velro/PRIORITIES.md").path
+        let velro = granted.appending(path: "Velro-design/PRIORITIES.md").path
         #expect(throws: LedgerReadError.outsideGrant) { try fs.readText(atPath: velro, maxBytes: 1_000, roots: [granted.path]) }
 
         let reading = LedgerReader.read(home: home.path, granted: [granted.path], fs: fs, now: now)
