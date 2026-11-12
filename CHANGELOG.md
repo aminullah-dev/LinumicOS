@@ -5,6 +5,32 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed: every project under ~/Projects/Multiplatform, on the Projects page and the Desk (2026-11-12)
+- **Why:** on 2026-11-12 every project moved directly under `~/Projects/Multiplatform` (PashtoKey, FAMILY-FUND-MANAGEMENT,
+  Tailoring Workshop ERP and KabulSignal moved in; Namazia, NerkhTimes, BE-PAYA, Radar-system, SpinCake and SODER-HAKEM
+  were cloned there), and the owner wants Linumic OS to cover all of them.
+- **Projects page:** five more projects, each from its own files read that day (bundle ids and package names, platforms,
+  git remote, with file:line and the day): BE-PAYA (iOS and Android), Family Fund Management (Android, iOS, its admin
+  panel and Supabase backend), Spin Cake (the iPhone ordering demo and its Apps Script backend), Kabul Signal (iPhone;
+  its folder is no git repository, so it has none) and Radar-system (an Arduino radar the owner sidelined; no platform).
+  None is compared and none is in the inventory: "Not in a store: the inventory has no … listing", builds "not read", no
+  version file, and pull requests and CI "The Release Center does not watch …". All five start **archived** (on the
+  page, not on the Center); the tier picker lifts one. No GitHub read, store read or Monitor address was added for them.
+- **"No platform compared"** (grey, never green): a project with no compared platform used to read "Platforms level" in
+  green, which already happened to SODER-HAKEM, Tailoring Workshop ERP and the Pashto research. It is no Desk item.
+- **Desk:** DukanPro's PRIORITIES.md is read again (back on this Mac, on main, tracked in git) and Spin Cake's is read
+  too; VELRO's is read from `Velro-design`, the checkout where its ledger is kept (the `Velro` folder is an older branch
+  of the same repository, and each of its open items is also in Velro-design's), so its items are not listed twice.
+  BE-PAYA's PRIORITIES.md stays off the Desk on the owner's word of 2026-10-19, now that it is inside the folder too.
+  Eight PRIORITIES.md files and the newest NEXT-ACTIONS; the parser was run on all of them (the opt-in live check: every
+  file read, no line set aside).
+- **Paths:** Pashto Likman's bundle id and remote were read again at `~/Projects/Multiplatform/PashtoKey` (2026-11-12).
+  The seed inventory's evidence (2026-09-23) keeps the paths it was read at, and the SODER-HAKEM signing key keeps its
+  recorded place: the new clone holds no `.jks` (ignored by git), so nothing says where the key is now.
+- Tests: the allow-list (8 files, BE-PAYA and the older Velro checkout refused, DukanPro read), the new cards (sources,
+  archived, "No platform compared", no Desk item, "not watched", no repository for Kabul Signal), the level rule, and
+  that the round reads none of their repositories. Dari for every new string.
+
 ### Added: installed on this Mac, against the newest release (2026-11-04)
 - **Why:** on 2026-11-03 the owner's Mac held KhayatYar 1.12.1, a test build, while tag v1.13.0 existed, and nobody
   noticed until a customer build was made.

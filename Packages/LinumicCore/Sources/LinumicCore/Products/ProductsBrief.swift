@@ -42,7 +42,7 @@ public enum ProductsBrief {
                 let more = reasons.count > 2 ? LF(" (and %ld more)", reasons.count - 2) : ""
                 gaps.append(BriefGap(key: card.id, text: LF("%1$@: whether its platforms are level is unknown: %2$@%3$@", card.product.title, shown, more),
                                      product: card.product.title))
-            case .level, .nothingShipped:
+            case .level, .nothingShipped, .nothingCompared:
                 break
             }
         }

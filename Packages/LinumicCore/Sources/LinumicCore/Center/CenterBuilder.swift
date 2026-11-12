@@ -15,12 +15,18 @@ public enum CenterTier: String, Codable, CaseIterable, Sendable, Hashable {
     /// Not shown on the centre.
     case archived
 
-    /// The owner's list: only Linumic OS, KhayatYar and WorkTrack are in focus. DukanPro is archived and off this Mac; the
-    /// book is finished, Tailoring Workshop ERP is sidelined for KhayatYar, and the Pashto research ships no app.
+    /// The owner's list: only Linumic OS, KhayatYar and WorkTrack are in focus. DukanPro is archived (it was off this Mac
+    /// from 2026-11-02 and is back since 2026-11-12; the owner has not moved it); the book is finished, Tailoring Workshop
+    /// ERP is sidelined for KhayatYar, and the Pashto research ships no app.
+    /// The projects listed on 2026-11-12, when every project moved under ~/Projects/Multiplatform, start archived: the
+    /// owner has not placed them, and none has a store listing, a GitHub release or a monitored address to watch (BE-PAYA,
+    /// Family Fund Management, Spin Cake, Kabul Signal, and Radar-system, which the owner sidelined on 2026-09-23). They are
+    /// on the Projects page; the tier picker there lifts one.
     public static func `default`(forProduct id: String) -> CenterTier {
         switch id {
         case "linumicos", "khayatyar", "worktrack": .focus
         case "dukanpro", "soder-hakem", "tailoring-workshop-erp", "the-digital-infrastructure-of-the-pashto-language": .archived
+        case "bepaya", "familyfund", "spincake", "kabulsignal", "radarsystem": .archived
         default: .maintenance
         }
     }

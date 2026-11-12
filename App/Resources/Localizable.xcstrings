@@ -33181,6 +33181,146 @@
           }
         }
       }
+    },
+    "No platform compared": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ پلتفرمی مقایسه نمی‌شود"
+          }
+        }
+      }
+    },
+    "No platform of this project is compared: none is read from a store, a GitHub release or a version file, so there is nothing to level.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ پلتفرم این پروژه مقایسه نمی‌شود: هیچ‌کدام از فروشگاه، ریلیز GitHub یا فایل نسخه خوانده نمی‌شود، پس چیزی برای هم‌پا کردن نیست."
+          }
+        }
+      }
+    },
+    "The Release Center does not watch %@, so its pull requests are not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرکز انتشار مخزن %@ را زیر نظر ندارد، پس درخواست‌های ادغام آن خوانده نمی‌شوند."
+          }
+        }
+      }
+    },
+    "The Release Center does not watch %@, so its CI is not read.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرکز انتشار مخزن %@ را زیر نظر ندارد، پس وضعیت CI آن خوانده نمی‌شود."
+          }
+        }
+      }
+    },
+    "No version file is catalogued for this app yet.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برای این اپ هنوز فایل نسخه‌ای در فهرست نیست."
+          }
+        }
+      }
+    },
+    "iPhone app and keyboard": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اپ آیفون و کیبورد"
+          }
+        }
+      }
+    },
+    "Admin panel (Next.js)": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنل مدیریت (Next.js)"
+          }
+        }
+      }
+    },
+    "Supabase database and functions": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پایگاه داده و تابع‌های Supabase"
+          }
+        }
+      }
+    },
+    "Google Sheets and Apps Script": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Sheets و Apps Script"
+          }
+        }
+      }
+    },
+    "BE-PAYA": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BE-PAYA"
+          }
+        }
+      }
+    },
+    "Family Fund Management": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Family Fund Management"
+          }
+        }
+      }
+    },
+    "Spin Cake": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spin Cake"
+          }
+        }
+      }
+    },
+    "Kabul Signal": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kabul Signal"
+          }
+        }
+      }
+    },
+    "Radar-system": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Radar-system"
+          }
+        }
+      }
     }
   },
   "version": "1.1"

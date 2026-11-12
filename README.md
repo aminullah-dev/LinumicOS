@@ -16,7 +16,7 @@ in /Applications is the newest release), Keys & Backups and Automation. Every ot
 under a collapsed **More**, the empty or folded ones (the Brief and the Dashboard among them) under **Archive**, and all
 of them are one ⌘K away in the Command Palette. No page or record was removed. **Desk**: one list of what needs the owner today, this week and
 later, grouped by product (WorkTrack first, then SafeBeauty), built on this device from the Daily Brief and the owner's
-ledgers (the six PRIORITIES.md files and the newest NEXT-ACTIONS, read-only, inside two folders granted once in
+ledgers (the eight PRIORITIES.md files and the newest NEXT-ACTIONS, read-only, inside two folders granted once in
 Settings → Integrations → Ledger access); a source that was not read is an item, never zero. Connected, read-only: GitHub (repositories, oversight, platforms hub), the public App Store
 lookup, App Store Connect and Google Play (with the owner's keys), and Supabase for the shared inventory and licence
 ledger. WorkTrack customers: the vendor API, read plus licence renewals confirmed per action. Operations: Talar,

@@ -42,6 +42,9 @@ public enum ProductLevelState: Hashable, Sendable {
     case unknown([String])
     /// No compared platform has a build or a live version (a product in development).
     case nothingShipped
+    /// The product has no compared platform at all (none listed, or none read from a store, a release or a version file),
+    /// so there is nothing to level. Never "level": with nothing compared, "level" would be green for what was not read.
+    case nothingCompared
 
     public var findings: [LevelFinding] { if case .notLevel(let f) = self { f } else { [] } }
     public var unknowns: [String] { if case .unknown(let u) = self { u } else { [] } }
@@ -52,6 +55,7 @@ public enum ProductLevelState: Hashable, Sendable {
         case .notLevel: L("Platforms not level")
         case .unknown: L("Level unknown")
         case .nothingShipped: L("Nothing shipped yet")
+        case .nothingCompared: L("No platform compared")
         }
     }
 }
@@ -77,7 +81,8 @@ public enum ProductLevelRule {
         }
         if !findings.isEmpty { return .notLevel(findings) }
         if !unknowns.isEmpty { return .unknown(unknowns) }
-        if anyCompared, !anythingShipped { return .nothingShipped }
+        guard anyCompared else { return .nothingCompared }
+        if !anythingShipped { return .nothingShipped }
         return .level
     }
 

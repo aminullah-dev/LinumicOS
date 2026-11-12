@@ -40,6 +40,10 @@ public struct DeskDomain: Hashable, Codable, Sendable, Identifiable {
     public static let khayatYar = DeskDomain("khayatyar", "KhayatYar")
     public static let nerkhTimes = DeskDomain("nerkhtimes", "NerkhTimes")
     public static let namazia = DeskDomain("namazia", "Namazia")
+    /// The iPhone ordering demo whose PRIORITIES.md the Desk reads (since 2026-11-12). The other projects listed that day
+    /// (Family Fund Management, Kabul Signal, Radar-system) keep their own names as "other:" domains: no ledger of theirs
+    /// is read.
+    public static let spinCake = DeskDomain("spincake", "Spin Cake")
     /// What belongs to every product or to none: the shared ledger, Oversight, an unnamed source.
     public static let shared = DeskDomain("shared", "All products")
 
@@ -52,7 +56,7 @@ public struct DeskDomain: Hashable, Codable, Sendable, Identifiable {
     public var displayTitle: String { self == .shared ? L("All products") : name }
 
     static let known: [DeskDomain] = [.worktrack, .safeBeauty, .talar, .velro, .dukanPro, .linumicOS, .bePaya, .website,
-                                      .mediflow, .khayatYar, .nerkhTimes, .namazia]
+                                      .mediflow, .khayatYar, .nerkhTimes, .namazia, .spinCake]
 
     /// Spellings of record (folder, repository and app names), compared without case, spaces, dashes, dots or underscores.
     static let aliases: [String: DeskDomain] = {

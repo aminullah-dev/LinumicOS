@@ -13,10 +13,11 @@ read, and two GitHub GETs of its own with the existing token. Code: `Packages/Li
 ## The page
 
 One card per product, in this order: WorkTrack, SafeBeauty, VELRO, Talar, KhayatYar, MediFlow, NerkhTimes, Namazia,
-DukanPro, Linumic OS. A card shows:
+DukanPro, Linumic OS, Pashto Likman, BE-PAYA, Family Fund Management, Spin Cake, Kabul Signal, Radar-system, then any
+inventory product the catalogue does not list (SODER-HAKEM, Tailoring Workshop ERP, the Pashto research). A card shows:
 
-- the **level badge**: Platforms level, Platforms not level, Level unknown, or Nothing shipped yet (with an icon, so
-  colour is never the only sign);
+- the **level badge**: Platforms level, Platforms not level, Level unknown, Nothing shipped yet, or No platform compared
+  (with an icon, so colour is never the only sign);
 - the findings when it is not level, the first unread part when it is unknown;
 - one row per **compared platform** (the apps people install): Store, Build, Main. On the Mac each value shows its
   source and read time on hover; a dash is "none" (the reason on hover), "Unknown" says why;
@@ -78,6 +79,18 @@ inventory and every version file id against the catalogue. What it adds, with it
   MediFlow's `-windows.zip`, SafeBeauty's salon desktop `.dmg`/`.exe`), from the GitHub releases read on 2026-10-20.
 - KhayatYar iOS has no version file: `iosApp/project.yml` on main sets no MARKETING_VERSION (GitHub contents API,
   2026-10-20). It has no App Store listing in the inventory, so its builds are Unknown, not "none".
+- **The projects listed on 2026-11-12**, when every project moved directly under `~/Projects/Multiplatform` (not
+  inventory products; each fact from the project's own files that day, with file:line): **BE-PAYA** (`app.json`:
+  `com.linumic.bepaya` on iOS and Android), **Family Fund Management** (Android `af.familyfund.family_fund`, iOS
+  `af.familyfund.familyFund`, its Next.js admin panel and Supabase backend), **Spin Cake** (iOS `com.spincake.ordering`,
+  a demo with a Google Sheets and Apps Script backend), **Kabul Signal** (iOS `com.kabulsignal.reader`; the folder is no
+  git repository, so no repository is recorded and its pull requests and CI are "none") and **Radar-system** (an
+  Arduino radar the owner sidelined on 2026-09-23; not a product, no platform). Their repositories are each folder's git
+  remote. None is compared: the inventory has no store listing for them and no version file or release of theirs is
+  catalogued, so the page says "Not in a store: the inventory has no … listing", "its builds are not read" and "No
+  version file is catalogued for this app yet". The Release Center does not watch their repositories (that would put
+  their pull requests and CI in "Waiting on you"), so their pull requests and CI say so. They start **archived**
+  (`CenterTier`): on this page, not on the Center, until the owner lifts one with the tier picker.
 
 **Compared** are the apps people install: WorkTrack, SafeBeauty, NerkhTimes and Namazia on Android and iOS; VELRO Ride
 and Driver on Android and iOS, VELRO Ops on iOS and macOS; Talar's Android app; KhayatYar on Android, macOS, Windows and
@@ -101,6 +114,10 @@ Within each track, over the compared platforms (`ProductLevelRule`):
 
 Only real version numbers are compared (`SemanticVersion`): a tag like `android-app` or `salon-desktop` never is, and
 build numbers are per platform (WorkTrack 1.3.0 is build 6 on Android and 4 on iOS: level).
+
+**No platform compared**: the product has no compared platform at all (none listed, as for an inventory product with
+no store listing, or none read, as for the projects listed on 2026-11-12). Grey, and never a Desk item: before
+2026-11-12 such a product read "Platforms level" in green, which said nothing was wrong about what was never read.
 
 **Level** means every compared platform was read and no rule found anything. A value that was not read (no key, a
 repository not read yet, a store record instead of a console reading) makes the product **Level unknown**, with every
@@ -154,7 +171,8 @@ The automation job **Products and agents** (every 30 minutes, after the Platform
 token required) reads, read-only:
 
 - `GET /repos/{r}` and `GET /repos/{r}/commits?sha=<branch>&per_page=100` for every compared platform's version-file
-  repository and every product's code repository (10 repositories today);
+  repository and every product's code repository (10 repositories today). A product with no compared platform is not
+  read: the commits are counted after a build, and it has none to compare (the projects listed on 2026-11-12);
 - Linumic OS's repository through the hub's `releaseTracking` (repository, latest release, releases, open pull request
   count, workflows and their latest runs, `project.yml`);
 - the agents' pull requests ([docs/agents.md](agents.md)).

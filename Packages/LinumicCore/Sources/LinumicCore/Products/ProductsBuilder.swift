@@ -167,12 +167,16 @@ public enum ProductsBuilder {
         let tracking: [String: RepoReleaseTracking]
         let history: [String: MainHistory]
         let specs: [String: VersionFileSpec]
+        /// The repositories the Release Center reads (lower-cased): its catalogue and whatever its last reading holds. One
+        /// outside it is never read, so it is not "not read yet".
+        let watched: Set<String>
 
         init(_ input: ProductsInput) {
             self.input = input
             tracking = Dictionary(input.tracking.map { ($0.slug.lowercased(), $0) }, uniquingKeysWith: { a, b in a.fetchedAt >= b.fetchedAt ? a : b })
             history = Dictionary(input.history.map { ($0.repo.lowercased(), $0) }, uniquingKeysWith: { a, b in a.readAt >= b.readAt ? a : b })
             specs = Dictionary(input.versionFiles.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+            watched = Set((ReleaseCatalog.repos(from: input.products).map(\.slug) + input.releases.repos.map(\.repo.slug)).map { $0.lowercased() })
         }
 
         func inventory(_ product: CompanyProduct) -> Product? {
@@ -457,6 +461,8 @@ public enum ProductsBuilder {
                 counted += n
                 times.append(tracking.fetchedAt)
                 sources.append(LF("Platforms hub, GitHub /repos/%@/pulls (count only)", repo))
+            } else if !ctx.watched.contains(repo.lowercased()) {
+                return .unknown(LF("The Release Center does not watch %@, so its pull requests are not read.", repo))
             } else {
                 return .unknown(LF("The pull requests of %@ have not been read yet.", repo))
             }
@@ -488,6 +494,8 @@ public enum ProductsBuilder {
                 else { s.noRuns.append(repo) }
                 times.append(tracking.fetchedAt)
                 sources.append(LF("Platforms hub, GitHub Actions workflows of %@", repo))
+            } else if !ctx.watched.contains(repo.lowercased()) {
+                return .unknown(LF("The Release Center does not watch %@, so its CI is not read.", repo))
             } else {
                 return .unknown(LF("CI of %@ has not been read yet.", repo))
             }

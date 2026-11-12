@@ -62,15 +62,19 @@ public enum ReleaseCatalog {
     public static let extraRepos: [ReleaseRepo] = [
         ReleaseRepo(slug: "aminullah-dev/LinumicOS", productName: "Linumic OS",
                     source: "git remote of ~/Projects/Multiplatform/Linumic/LinumicCommandCenter (2026-10-09)"),
+        // The folder moved from ~/PashtoKey on 2026-11-12; the remote was read again there that day.
         ReleaseRepo(slug: "aminullah-dev/PashtoKey", productName: "Pashto Likman",
-                    source: "git remote of ~/PashtoKey (2026-11-02)"),
+                    source: "git remote of ~/Projects/Multiplatform/PashtoKey (2026-11-12; first read 2026-11-02 at ~/PashtoKey)"),
     ]
+    // The projects listed on 2026-11-12 (BE-PAYA, Family Fund Management, Spin Cake, Radar-system) are not watched here:
+    // they are archived, and watching them would add their pull requests and CI to "Waiting on you" (ProductsCatalog).
 
     /// Store apps that aren't an inventory product's listing.
-    /// Pashto Likman: PRODUCT_BUNDLE_IDENTIFIER in ~/PashtoKey/ios/PashtoKey.xcodeproj (2026-11-02).
+    /// Pashto Likman: PRODUCT_BUNDLE_IDENTIFIER in ~/Projects/Multiplatform/PashtoKey/ios/PashtoKey.xcodeproj (2026-11-12).
     public static let extraApps: [ReleaseApp] = [
         ReleaseApp(store: .appStore, appIdentifier: "com.pashtokey.app", name: "Pashto Likman", productID: "pashtolikman",
-                   productName: "Pashto Likman", source: "PRODUCT_BUNDLE_IDENTIFIER in ~/PashtoKey/ios/PashtoKey.xcodeproj (2026-11-02)"),
+                   productName: "Pashto Likman",
+                   source: "PRODUCT_BUNDLE_IDENTIFIER in ~/Projects/Multiplatform/PashtoKey/ios/PashtoKey.xcodeproj (2026-11-12; first read 2026-11-02 at ~/PashtoKey)"),
     ]
 
     static func isExtraApp(store: AppStore, appIdentifier: String) -> Bool {
