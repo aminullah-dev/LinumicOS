@@ -18,6 +18,7 @@ struct CenterView: View {
     @Environment(AutomationEngine.self) private var automation
     @Environment(BriefModel.self) private var briefs
     @Environment(InventoryModel.self) private var inventory
+    @Environment(ObligationsModel.self) private var obligations
     @Environment(Router.self) private var router
     @State private var showQuiet = false
     @State private var showAlsoToday = false
@@ -30,7 +31,8 @@ struct CenterView: View {
         // Reading `monitor.now` re-renders every minute, so day counts and freshness stay current.
         let now = max(.now, monitor.now)
         let report = CenterBuilder.build(desk: deskModel.desk(now: now), products: products.report(now: now), today: KeyDay(now),
-                                         tier: products.tiers.tier(forProduct:), installed: products.installedStatuses())
+                                         tier: products.tiers.tier(forProduct:), installed: products.installedStatuses(),
+                                         marketing: MarketingSummary(register: obligations.register(now: now), today: KeyDay(now)))
         let stale = automation.freshness(now: now).problems.count
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.Spacing.l) {
@@ -105,7 +107,8 @@ struct CenterView: View {
     /// as one line each. Nothing when nothing waits: the header already says "All clear".
     @ViewBuilder
     private func waiting(_ report: CenterReport) -> some View {
-        if !report.waiting.isEmpty || !report.pullRows.isEmpty || !report.quietAgentRows.isEmpty || !report.installedAttention.isEmpty {
+        if !report.waiting.isEmpty || !report.pullRows.isEmpty || !report.quietAgentRows.isEmpty || !report.installedAttention.isEmpty
+            || report.marketingOverdue > 0 {
             section(String(localized: "Waiting on you")) {
                 if !report.waiting.isEmpty {
                     rows(Array(report.waiting.prefix(waitingLimit)))
@@ -119,6 +122,12 @@ struct CenterView: View {
                     if !report.pullRows.isEmpty {
                         Button { router.go(.releaseCenter) } label: {
                             Label { Text("\(report.pullRows.count) pull requests waiting for you") } icon: { Image(systemName: "arrow.triangle.pull") }
+                        }
+                    }
+                    // Marketing is on its own page; only that something there is overdue is said here, in one line.
+                    if report.marketingOverdue > 0 {
+                        Button { router.openMarketing() } label: {
+                            Label { Text("Marketing: \(report.marketingOverdue) overdue") } icon: { Image(systemName: SidebarItem.marketing.symbol) }
                         }
                     }
                     if !report.quietAgentRows.isEmpty {

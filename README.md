@@ -9,10 +9,11 @@ repositories, platforms, versions, releases, roadmap, issues, deployments,
 store status, social media and (later) AI-assisted market intelligence for
 Afghanistan.
 
-**Status:** MVP. **The sidebar** (since 2026-11-04) shows five daily pages: the **Center** (home, alerts first: what
+**Status:** MVP. **The sidebar** (since 2026-11-04) shows six daily pages: the **Center** (home, alerts first: what
 waits on the owner, which project has a problem, which readings are out of date, or "All clear"), the Desk, **Projects**
 (a page per project with Overview, Releases, Code and Health tabs; Releases also says whether the copy of each Mac app
-in /Applications is the newest release), Keys & Backups and Automation. Every other page is
+in /Applications is the newest release), **Marketing** (since 2026-11-13: every marketing item, and nowhere else), Keys &
+Backups and Automation. On the Mac the text is one step larger by default (Settings → Account → Text size; ⌘+ ⌘− ⌘0). Every other page is
 under a collapsed **More**, the empty or folded ones (the Brief and the Dashboard among them) under **Archive**, and all
 of them are one ⌘K away in the Command Palette. No page or record was removed. **Desk**: one list of what needs the owner today, this week and
 later, grouped by product (WorkTrack first, then SafeBeauty), built on this device from the Daily Brief and the owner's
@@ -49,8 +50,9 @@ with no CRM account, renewals, website messages and the SafeBeauty KYC count, re
 drafts that are only copied. **Legal & company** (حقوقی و شرکت, Phase 6): the company card (not registered, the seller
 per store as the listings say it, the DSA status Unknown), and on the Mac the [TO FILL], [LAWYER] and [TO DECIDE]
 markers of the legal drafts with file and line, never their text, and the Asasnama files by name and date, never opened,
-through a one-time read-only grant. **Marketing queue**: each brand's queue end and the clock change as obligations
-beside the brand's ledger, with Verify; it never posts. Six empty manual pages are in a collapsed **Archive**.
+through a one-time read-only grant. **Marketing** (one page, 2026-11-13): the Queue (each brand's queue end and the
+clock change as obligations beside the brand's ledger, with Verify), Posts (content calendar and social accounts) and
+Market research; it never posts, and marketing is shown nowhere else. Empty manual pages are in a collapsed **Archive**.
 **Products** (محصولات, Phase 7): every product's platforms with the live store version,
 newest build, version on main and commits behind it, pull requests, CI, licences and health, each with its source and
 read time, and "platforms not level" on the Desk; **Agents** (ایجنت‌ها): the 20 scheduled agents and their pull requests

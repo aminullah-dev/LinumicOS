@@ -692,6 +692,9 @@ struct AccountSettingsView: View {
             } footer: {
                 Text("Dari uses right-to-left layout, Persian digits and the Solar Hijri calendar with Afghan month names. Recorded evidence (quotes, sources) stays in its original language.")
             }
+            #if os(macOS)
+            TextSizeSection()
+            #endif
             CloudAccountSection()
         }
         .formStyle(.grouped)

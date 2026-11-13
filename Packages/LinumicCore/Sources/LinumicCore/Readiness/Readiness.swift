@@ -532,8 +532,11 @@ public enum ReadinessBuilder {
             return ReadinessResult(.obligations, .unknown, L("obligations.json could not be read, so the dates and Done marks entered in the app are missing."), source: register)
         }
         let domain = card.product.deskDomain
-        // Nearest first: the register is sorted by due day, undated last.
-        let open = all.obligations.filter { !$0.isClosed && $0.product != nil && DeskDomain.named($0.product) == domain }
+        // Nearest first: the register is sorted by due day, undated last. Marketing rows (a post queue ending, a clock
+        // change) are the Marketing page's and nowhere else (owner, 2026-11-13): they don't make a project unready.
+        let open = all.obligations.filter {
+            !$0.isClosed && !MarketingScope.isMarketing($0) && $0.product != nil && DeskDomain.named($0.product) == domain
+        }
         // A live source of this product that was not read leaves its rows out: unknown, not none.
         var unread: [ObligationLiveSource] = []
         if card.product.licence != nil, all.unread.contains(.licences) { unread.append(.licences) }

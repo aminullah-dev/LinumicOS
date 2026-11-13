@@ -9,6 +9,8 @@ enum PaletteAction {
     case go(SidebarItem, RouterRequest?)
     case product(String)
     case operations(OperationsProduct)
+    /// The Marketing page on one tab, with one marketing obligation to show, or none.
+    case marketing(MarketingTab, String?)
     case openURL(URL)
     case newProduct
     case checkMonitor
@@ -167,6 +169,7 @@ struct CommandPaletteView: View {
         case .operations(let product):
             router.operationsTab = product
             router.go(.operations)
+        case .marketing(let tab, let obligation): router.openMarketing(tab, obligation: obligation)
         case .openURL(let url): openURL(url)
         case .newProduct: router.isNewProductPresented = true
         case .checkMonitor:
@@ -215,6 +218,13 @@ struct CommandPaletteView: View {
                                      keywords: [item.rawValue, englishTitle(item)] + formerNames(item), group: .navigation, symbol: item.symbol),
                     .go(item, nil))
             }
+        }
+        // The Marketing page's tabs, found by their own names and by the pages they replaced.
+        for tab in MarketingTab.allCases where tab != .queue {
+            add(PaletteCandidate(id: "nav.marketing.\(tab.rawValue)", title: "\(SidebarItem.marketing.title): \(tab.title)",
+                                 keywords: ["marketing", tab.rawValue] + MarketingTab.replacedPageIDs.filter { MarketingTab.replacing(pageID: $0) == tab }
+                                    + (tab == .posts ? ["content calendar", "social media", "posts"] : ["market intelligence", "research"]),
+                                 group: .navigation, symbol: SidebarItem.marketing.symbol), .marketing(tab, nil))
         }
         for p in OperationsProduct.allCases {
             add(PaletteCandidate(id: "nav.operations.\(p.rawValue)", title: "\(SidebarItem.operations.title): \(p.title)",
@@ -336,12 +346,14 @@ struct CommandPaletteView: View {
                                      symbol: "arrow.triangle.pull"), .openURL(pr.url))
             }
         }
-        // Obligations that are open: title and product; choosing one shows it on its screen.
+        // Obligations that are open: title and product; choosing one shows it on its screen (a marketing one on Marketing).
         for o in obligations.register().obligations where !o.isClosed {
+            let marketing = MarketingScope.isMarketing(o)
             add(PaletteCandidate(id: "obligation.\(o.id)", title: o.displayTitle,
-                                 subtitle: "\(SidebarItem.obligations.title) · \(o.due?.description ?? (o.origin == .continuity ? String(localized: "To do now") : String(localized: "Date unknown")))",
+                                 subtitle: "\((marketing ? SidebarItem.marketing : .obligations).title) · \(o.due?.description ?? (o.origin == .continuity ? String(localized: "To do now") : String(localized: "Date unknown")))",
                                  keywords: ["obligation", "due", o.product ?? "", o.area.rawValue], group: .entity,
-                                 symbol: "calendar.badge.exclamationmark"), .go(.obligations, .obligation(o.id)))
+                                 symbol: marketing ? SidebarItem.marketing.symbol : "calendar.badge.exclamationmark"),
+                marketing ? .marketing(.queue, o.id) : .go(.obligations, .obligation(o.id)))
         }
         for p in model.products.sorted(by: { $0.name < $1.name }) {
             add(PaletteCandidate(id: "product.\(p.id)", title: p.name, subtitle: String(localized: "Product"),
@@ -408,6 +420,7 @@ struct CommandPaletteView: View {
         switch item {
         case .center: ["management center", "home", "مرکز مدیریت"]
         case .productBoard: ["products", "محصولات"]
+        case .marketing: ["marketing queue", "content calendar", "social media", "market intelligence", "صف بازاریابی", "شبکه‌های اجتماعی"]
         default: []
         }
     }

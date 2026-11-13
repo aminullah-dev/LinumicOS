@@ -137,6 +137,9 @@ struct LinumicOSApp: App {
                 Button("New Product…") { router.isNewProductPresented = true }
                     .keyboardShortcut("n")
             }
+            #if os(macOS)
+            TextSizeCommands()
+            #endif
             CommandMenu("Go") {
                 Button("Command Palette…") { router.isPalettePresented = true }
                     .keyboardShortcut("k")
@@ -163,6 +166,8 @@ struct LinumicOSApp: App {
     /// Every model, for the main window and the menu bar panel alike.
     private func environment<V: View>(_ view: V) -> some View {
         view
+            // The text size chosen on this Mac (TextSize.swift); iPhone and iPad follow Dynamic Type.
+            .modifier(TextSizeRoot())
             // Buttons, toggles and links in the Linumic slate blue (Theme.swift), whatever accent the system is set to.
             .tint(.brandAccent)
             .environment(\.layoutDirection, Self.layoutDirection)
@@ -197,8 +202,8 @@ struct LinumicOSApp: App {
     }()
 
     private var goShortcuts: [SidebarItem] {
-        // ⌘1 to ⌘5: the five daily pages in the sidebar's order; ⌘6 to ⌘9: the most used pages under More. The Brief and
-        // the Dashboard went to the Archive (2026-11-04); everything else is one ⌘K away.
-        [.center, .desk, .productBoard, .keys, .automation, .obligations, .money, .sales, .releaseCenter]
+        // ⌘1 to ⌘6: the six daily pages in the sidebar's order (Marketing joined on 2026-11-13); ⌘7 to ⌘9: the most used
+        // pages under More. The Brief and the Dashboard went to the Archive (2026-11-04); everything else is one ⌘K away.
+        [.center, .desk, .productBoard, .marketing, .keys, .automation, .obligations, .money, .releaseCenter]
     }
 }

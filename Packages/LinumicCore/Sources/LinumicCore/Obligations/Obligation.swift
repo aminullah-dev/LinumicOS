@@ -155,7 +155,8 @@ public struct Obligation: Codable, Identifiable, Hashable, Sendable {
         case .licence: subject.map(BriefDestination.licence) ?? .licences
         case .keys: .keys
         case .continuity: .continuity
-        case .seed, .owner, .account: .obligation(id)
+        // A marketing row is shown, dated and closed on the Marketing page (owner, 2026-11-13).
+        case .seed, .owner, .account: area == .marketing ? .marketing(id) : .obligation(id)
         }
     }
 }

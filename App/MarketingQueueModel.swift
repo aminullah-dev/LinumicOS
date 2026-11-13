@@ -5,11 +5,11 @@ import Observation
 import AppKit
 #endif
 
-/// Marketing queue (صف بازاریابی), read-only, never posts: each brand's marketing obligations (queue ends, the clock
-/// change) from the obligations register, beside the brand's own ledger. Of a ledger the app reads only the file's
+/// The Marketing page's queue (صف بازاریابی), read-only, never posts: each brand's marketing obligations (queue ends,
+/// the clock change) from the obligations register, beside the brand's own ledger. Of a ledger the app reads only the file's
 /// modification date (metadata, which the sandbox allows without a grant) and never its text. Verify opens the ledger in
 /// its own app, inside a read-only grant of that ledger's folder (`LCCMarketingBookmarks`; only the ledgers' own folders
-/// are kept), so the owner checks the date there and corrects it, or records Done, on the Obligations screen.
+/// are kept), so the owner checks the date there and corrects it, or records Done, on the Marketing page.
 @MainActor
 @Observable
 final class MarketingQueueModel {

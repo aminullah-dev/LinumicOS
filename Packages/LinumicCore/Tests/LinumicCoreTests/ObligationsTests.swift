@@ -450,6 +450,12 @@ struct ObligationDeskTests {
                      now: now, calendar: utc)
         try file.add(title: "Tomorrow", product: nil, area: .other, due: day("2026-10-20"), consequence: nil, source: "email", now: now,
                      calendar: utc)
+        try file.add(title: "In 7 days", product: nil, area: .stores, due: day("2026-10-26"), consequence: nil, source: "store email",
+                     now: now, calendar: utc)
+        try file.add(title: "In 11 days", product: nil, area: .accounts, due: day("2026-10-30"), consequence: nil, source: "bill 2",
+                     now: now, calendar: utc)
+        try file.add(title: "In 21 days", product: nil, area: .company, due: day("2026-11-09"), consequence: nil, source: "letter",
+                     now: now, calendar: utc)
         let register = build(file)
         let brief = DailyBrief(sections: [DailyBriefBuilder.obligations(briefInput(register))], generatedAt: now)
         let desk = DeskBuilder.build(brief: brief, ledgers: .unsupported, state: DeskState(), now: now, calendar: utc)
@@ -459,9 +465,14 @@ struct ObligationDeskTests {
         }
         #expect(bucket(register.obligations.first { $0.title == "Overdue bill" }!.id) == .today)
         #expect(bucket(register.obligations.first { $0.title == "Tomorrow" }!.id) == .today)
-        #expect(bucket("marketing.worktrack-queue-end") == .thisWeek)       // 7 days
-        #expect(bucket("marketing.safebeauty-dst-pashto") == .thisWeek)     // 11 days: the 14-day window
-        #expect(bucket("marketing.safebeauty-dst-reels") == .later)         // 21 days: the 30-day window
+        func added(_ title: String) -> String { register.obligations.first { $0.title == title }!.id }
+        #expect(bucket(added("In 7 days")) == .thisWeek)
+        #expect(bucket(added("In 11 days")) == .thisWeek)                   // the 14-day window
+        #expect(bucket(added("In 21 days")) == .later)                      // the 30-day window
+        // Marketing rows at the same distances are the Marketing page's, never the Desk's (owner, 2026-11-13).
+        #expect(bucket("marketing.worktrack-queue-end") == nil)
+        #expect(bucket("marketing.safebeauty-dst-pashto") == nil)
+        #expect(bucket("marketing.safebeauty-dst-reels") == nil)
         #expect(bucket("signing.developer-id-certificate") == .later)
         #expect(bucket("signing.apple-development-certificate") == .later)
         #expect(bucket("signing.linumicos-mac-profile") == .later)
@@ -524,7 +535,7 @@ struct ObligationDeskTests {
         #expect(line.obligationID == "continuity.export")
         #expect(line.closesAtSource)
         // An obligation the owner closes with evidence does not.
-        #expect(section.lines.first { $0.id == "obligation.marketing.worktrack-queue-end" }?.closesAtSource == false)
+        #expect(section.lines.first { $0.id == "obligation.signing.developer-id-certificate" }?.closesAtSource == false)
     }
 
     @Test func aTypedDoneNeverClosesTheContinuityRow() throws {

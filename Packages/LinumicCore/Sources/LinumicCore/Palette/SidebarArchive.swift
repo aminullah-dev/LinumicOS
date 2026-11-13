@@ -29,11 +29,11 @@ public enum SidebarArchive {
     /// The group's title (English; the app localizes it).
     public static let title = "Archive"
 
-    /// The pages, in the order they show in the Archive. Content Calendar and Market Intelligence joined on 2026-11-02:
-    /// both held no records on the owner's Mac. The Brief and the Dashboard joined on 2026-11-04: the centre shows what
-    /// they showed, from the same models (every Brief line is a Desk item, and the centre is built from the Desk).
-    public static let ids = ["brief", "dashboard", "releases", "roadmap", "issues", "builds", "deployments", "socialMedia", "contentCalendar",
-                             "marketIntelligence"]
+    /// The pages, in the order they show in the Archive. The Brief and the Dashboard joined on 2026-11-04: the centre
+    /// shows what they showed, from the same models (every Brief line is a Desk item, and the centre is built from the
+    /// Desk). Social Media, Content Calendar and Market Intelligence (archived 2026-10-20 and 2026-11-02) left on
+    /// 2026-11-13: they are tabs of the Marketing page now (`MarketingTab`).
+    public static let ids = ["brief", "dashboard", "releases", "roadmap", "issues", "builds", "deployments"]
 
     /// What covers an archived page now, in the app's language (the row's help text).
     public static func coveredBy(_ id: String) -> String? {
@@ -44,8 +44,6 @@ public enum SidebarArchive {
         case "roadmap", "issues": L("Now covered by the Desk, which lists the ledgers' open items.")
         case "builds": L("Now covered by Releases: builds and CI per store and repository.")
         case "deployments": L("Now covered by the Monitor and Platforms: live endpoints and the versions on main.")
-        case "socialMedia", "contentCalendar": L("Now covered by the Marketing queue.")
-        case "marketIntelligence": L("Holds no records on this device yet.")
         default: nil
         }
     }
@@ -75,9 +73,10 @@ public enum SidebarArchive {
 // what is on show.
 
 public enum SidebarDaily {
-    /// The five pages used every day, in this order, as one untitled group at the top: the centre (home), the Desk,
-    /// Projects (each project's page, with its tabs), Keys & Backups and Automation.
-    public static let ids = ["center", "desk", "productBoard", "keys", "automation"]
+    /// The six pages used every day, in this order, as one untitled group at the top: the centre (home), the Desk,
+    /// Projects (each project's page, with its tabs), Marketing (every marketing item, since 2026-11-13), Keys & Backups
+    /// and Automation.
+    public static let ids = ["center", "desk", "productBoard", "marketing", "keys", "automation"]
 
     public static func contains(_ id: String) -> Bool { ids.contains(id) }
 }

@@ -176,12 +176,22 @@ entered with its source on the account's card. A cost is one amount in one curre
 another currency), how often, and the bill it was read from. Never a password or a card number: sign-ins are in the
 Vault. After the company is registered, the holder column is the list of what to move.
 
-## Marketing queue (Phase 6, roadmap module 8)
+## Marketing (Phase 6, roadmap module 8; one page since 2026-11-13)
 
 The end of each brand's scheduled queue and the US clock change on 2026-11-01 are rows of this register (area
-Marketing, the seed above), so they reach the Desk, the 30/14/7/1-day alerts and the server's sweep like any other. The
-sidebar's **Marketing queue** (which takes the Social Media page's place; that page is in the Archive) groups them by
-brand beside the brand's own ledger (`MarketingLedgers`, each named in a memory note with its line):
+Marketing, the seed above), stored, synced and swept like any other: the 30/14/7/1-day alerts and the server's sweep
+still name them. Since 2026-11-13 (the owner: "Show every marketing item there and remove it from everywhere else") they
+are **shown on the Marketing page only** (`MarketingScope`): not in the Daily Brief, and so not on the Desk, the Center or
+a project's card; not on this Obligations screen (its lanes and counts leave them out, and its "Add obligation" offers
+every area but Marketing); and not in a project's readiness check 8 (docs/readiness.md). The Center keeps one line,
+"Marketing: N overdue", only while some are overdue, so an overdue post is never invisible. Nothing stored changed.
+
+The sidebar's **Marketing** page (a daily page, after Projects; it replaced the Marketing queue, Content Calendar, Social
+Media and Market Intelligence pages, and links to those open it on their tab, `MarketingTab.replacing`) has three tabs:
+**Queue** (the rows below, the brand with the oldest overdue row first, each dated, closed with evidence or reopened
+there with the same sheets as this screen, and "Add…" for a new marketing date with its source), **Posts** (the content
+calendar and the social accounts recorded per product) and **Market research** (market intelligence). The Queue groups
+the rows by brand beside the brand's own ledger (`MarketingLedgers`, each named in a memory note with its line):
 
 | Brand | Ledger | Named in |
 |---|---|---|
@@ -192,9 +202,9 @@ brand beside the brand's own ledger (`MarketingLedgers`, each named in a memory 
 The app never parses a ledger's text (roadmap §5). It reads the ledger file's modification date only (`lstat`, which
 the sandbox allows without a grant; docs/legal.md has the check), and flags a row whose ledger changed on a later day
 than the row was recorded (or than the owner set its date): "The ledger changed after this was recorded: verify".
-**Verify** (on the Marketing queue page and on a marketing row of this screen) opens the ledger in its own app, inside
-a read-only grant of that ledger's own folder (`LCCMarketingBookmarks`; `~/Desktop/1` as a whole is refused, since it
-also holds other drafts). The owner then changes the date ("Change date…", with its source) or records Done here.
+**Verify** (on each brand of the Marketing page's Queue) opens the ledger in its own app, inside a read-only grant of
+that ledger's own folder (`LCCMarketingBookmarks`; `~/Desktop/1` as a whole is refused, since it also holds other
+drafts). The owner then changes the date ("Change date…", with its source) or records Done on the Marketing page.
 Nothing is posted, scheduled or written; the job and the network are not involved.
 
 ## Files
@@ -214,5 +224,5 @@ overwritten, and is not synced.
 - سطرهای زنده (خروجی تداوم، بازیابی آزمایشی، لایسنس، دامنه) با جملهٔ تایپ‌شده بسته نمی‌شوند: فقط وقتی منبع خودشان ثبت کند. دکمهٔ آن‌ها همان‌جا را باز می‌کند.
 - تاریخ تمدید هر حساب فقط در کارت همان حساب («ویرایش…») ثبت می‌شود؛ «تعیین تاریخ…» در سطر تمدید هم همان کارت را باز می‌کند.
 - تمدید یک حساب فقط وقتی تعهد می‌شود که تاریخش یا هزینهٔ ماهانه/سالانه‌اش با منبع ثبت شده باشد.
-- «صف بازاریابی» پایان صف هر برند و جابه‌جایی ساعت را کنار دفتر همان برند نشان می‌دهد. برنامه متن دفتر را نمی‌خواند؛ «بررسی…» دفتر را در برنامهٔ خودش باز می‌کند (بار اول به پوشهٔ همان دفتر اجازه بدهید) و تاریخ یا «انجام شد» را این‌جا ثبت می‌کنید.
+- از ۲۰۲۶-۱۱-۱۳ همهٔ کارهای بازاریابی فقط در صفحهٔ «بازاریابی» است (بخش «صف»): پایان صف هر برند و جابه‌جایی ساعت، کنار دفتر همان برند. در «میز کار»، «مرکز»، این صفحه و آمادگی پروژه‌ها دیگر نمی‌آید؛ «مرکز» فقط وقتی چیزی سررسید گذشته باشد یک خط «بازاریابی: N مورد سررسید گذشته» دارد. برنامه متن دفتر را نمی‌خواند؛ «بررسی…» دفتر را در برنامهٔ خودش باز می‌کند (بار اول به پوشهٔ همان دفتر اجازه بدهید) و تاریخ یا «انجام شد» را در همان صفحهٔ «بازاریابی» ثبت می‌کنید.
 - صف VELRO تاریخ ندارد، چون هیچ منبعی زمان‌بندی آن را ثبت نکرده؛ تا وقتی تاریخش را با منبع ثبت کنید، «تاریخ نامعلوم» می‌ماند.

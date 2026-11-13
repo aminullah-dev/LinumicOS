@@ -40,7 +40,7 @@ struct MarketingSeedTests {
         #expect(rows.first { $0.id == "marketing.safebeauty-dst-reels" }?.due == KeyDay("2026-11-09"))
     }
 
-    @Test func theRegisterAcceptsThemAndTheDeskShowsThem() {
+    @Test func theRegisterAcceptsThemAndOnlyTheMarketingPageShowsThem() {
         let r = register()
         #expect(r.issues.isEmpty)
         let lanes = r.lanes(today: KeyDay(now, calendar: utc))
@@ -50,10 +50,15 @@ struct MarketingSeedTests {
                                                              worktrack: BriefWorkTrackInput(isSignedIn: false, environment: nil, companies: [], lastRead: nil),
                                                              operations: [], oversight: BriefOversightInput(repos: [], recentChanges: []),
                                                              obligations: BriefObligationsInput(register: r)))
+        // Not in the Brief, so not on the Desk or the Center either (owner, 2026-11-13): the Marketing page holds them.
         let ids = Set(brief.lines.map(\.id))
-        for id in ["marketing.worktrack-queue-end", "marketing.safebeauty-queue-end", "marketing.velro-queue"] {
-            #expect(ids.contains("obligation.\(id)"))
+        for id in ["marketing.worktrack-queue-end", "marketing.safebeauty-queue-end", "marketing.velro-queue",
+                   "marketing.safebeauty-dst-pashto", "marketing.safebeauty-dst-reels"] {
+            #expect(!ids.contains("obligation.\(id)"))
         }
+        #expect(!brief.lines.isEmpty, "the other obligations are still there")
+        let page = MarketingQueue.build(register: r, files: [:], calendar: utc).flatMap(\.obligations).map(\.id)
+        #expect(Set(page) == Set(r.obligations.filter { $0.area == .marketing }.map(\.id)))
     }
 
     @Test func theNewRowsAreSentForTheServersSweepAtTheNewRevision() {
@@ -133,30 +138,31 @@ struct SidebarArchiveTests {
         SidebarGroup(title: nil, items: ["center", "desk", "brief", "dashboard"]),
         SidebarGroup(title: "Company", items: ["obligations", "money", "sales", "licences", "legal"]),
         SidebarGroup(title: "Projects", items: ["productBoard", "releaseCenter", "platforms", "operations", "worktrackCustomers", "allProducts",
-                                                "verification", "releases", "roadmap", "issues"]),
+                                                "verification", "releases", "roadmap", "issues", "aiAssistant"]),
         SidebarGroup(title: "Build & Ship", items: ["automation", "agents", "repositories", "appStore", "googlePlay", "builds", "deployments"]),
         SidebarGroup(title: "Health", items: ["monitor", "oversight", "siteMessages"]),
-        SidebarGroup(title: "Marketing", items: ["marketingQueue", "contentCalendar", "marketIntelligence", "aiAssistant", "socialMedia"]),
+        SidebarGroup(title: "Marketing", items: ["marketing"]),
         SidebarGroup(title: "Security & Backups", items: ["keys", "vault", "continuity"]),
         SidebarGroup(title: "Settings", items: ["integrations", "security", "account"]),
     ]
 
     private var arranged: [SidebarGroup] { SidebarMore.arrange(SidebarArchive.arrange(groups)) }
 
-    @Test func theSidebarShowsFiveDailyPagesThenMoreThenTheArchive() {
+    @Test func theSidebarShowsSixDailyPagesThenMoreThenTheArchive() {
         let out = arranged
         #expect(out.count == 3)
         #expect(out[0].title == nil && !out[0].isMore && !out[0].isArchive)
-        #expect(out[0].items == ["center", "desk", "productBoard", "keys", "automation"])
+        #expect(out[0].items == ["center", "desk", "productBoard", "marketing", "keys", "automation"])
         #expect(out[1].isMore && out[1].title == "More")
         #expect(out[2].isArchive && out[2].title == "Archive")
-        #expect(out[2].items == ["brief", "dashboard", "releases", "roadmap", "issues", "builds", "deployments", "socialMedia", "contentCalendar",
-                                 "marketIntelligence"])
+        #expect(out[2].items == ["brief", "dashboard", "releases", "roadmap", "issues", "builds", "deployments"])
+        // The four marketing pages are one daily page now, and none of them is anywhere else.
+        for id in MarketingTab.replacedPageIDs { #expect(!out.flatMap(\.items).contains(id)) }
     }
 
     @Test func morePagesKeepTheirAreasOrderSoAnAreaStaysTogether() {
         let more = arranged[1].items
-        #expect(more.count == 25)
+        #expect(more.count == 24)
         #expect(Array(more.prefix(5)) == ["obligations", "money", "sales", "licences", "legal"])
         #expect(Array(more.suffix(3)) == ["integrations", "security", "account"])
         #expect(more.firstIndex(of: "monitor")! < more.firstIndex(of: "oversight")!)
@@ -167,7 +173,7 @@ struct SidebarArchiveTests {
         let before = groups.flatMap(\.items)
         let after = arranged.flatMap(\.items)
         #expect(after.count == before.count && Set(after) == Set(before), "every page once, none removed")
-        #expect(before.count == 40)
+        #expect(before.count == 37)
         for id in before {
             let homes = [SidebarDaily.contains(id), SidebarMore.contains(id), SidebarArchive.isArchived(id)].filter { $0 }
             #expect(homes.count == 1, "\(id) has exactly one place")
@@ -178,7 +184,7 @@ struct SidebarArchiveTests {
         let archived = SidebarArchive.arrange(groups)
         #expect(archived.last?.isArchive == true)
         #expect(archived.dropLast().allSatisfy { g in g.items.allSatisfy { !SidebarArchive.isArchived($0) } })
-        #expect(archived.first { $0.title == "Marketing" }?.items == ["marketingQueue", "aiAssistant"])
+        #expect(archived.first { $0.title == "Marketing" }?.items == ["marketing"])
         // A group left with no page is dropped; the Archive never invents a page that was not in the sidebar.
         let lone = SidebarArchive.arrange([SidebarGroup(title: "Old", items: ["roadmap", "issues"]), SidebarGroup(title: "Kept", items: ["desk"])])
         #expect(lone.map(\.title) == ["Kept", "Archive"])
@@ -187,7 +193,7 @@ struct SidebarArchiveTests {
     }
 
     @Test func everyArchivedPageSaysWhatCoversItNow() {
-        #expect(SidebarArchive.ids.count == 10)
+        #expect(SidebarArchive.ids.count == 7)
         for id in SidebarArchive.ids { #expect(SidebarArchive.coveredBy(id) != nil) }
         #expect(SidebarArchive.coveredBy("desk") == nil)
     }
@@ -202,6 +208,6 @@ struct SidebarArchiveTests {
 
     @Test func noDailyPageIsArchived() {
         #expect(Set(SidebarDaily.ids).isDisjoint(with: SidebarArchive.ids))
-        #expect(SidebarDaily.ids.count == 5)
+        #expect(SidebarDaily.ids.count == 6)
     }
 }

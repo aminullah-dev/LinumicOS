@@ -85,6 +85,8 @@ public enum BriefDestination: Hashable, Sendable {
     case agents(String?)
     /// The Legal & company screen.
     case legal
+    /// The Marketing page, with one marketing obligation to show (its id), or none.
+    case marketing(String?)
 }
 
 public enum BriefSeverity: Int, Codable, Sendable, Comparable {

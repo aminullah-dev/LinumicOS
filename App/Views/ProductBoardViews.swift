@@ -773,8 +773,9 @@ struct ProductBoardDetail: View {
         default: break
         }
         if card.product.licence != nil { out.append(.page(.licences)) }
-        // The brands with a marketing queue (MarketingQueue: WorkTrack, SafeBeauty, VELRO).
-        if ["worktrack", "safebeauty", "velro"].contains(card.product.id) { out.append(.page(.marketingQueue)) }
+        // The brands with a marketing queue (MarketingQueue: WorkTrack, SafeBeauty, VELRO): a link to the Marketing page,
+        // which holds them; their marketing rows are not on the project's page.
+        if ["worktrack", "safebeauty", "velro"].contains(card.product.id) { out.append(.page(.marketing)) }
         return out
     }
 

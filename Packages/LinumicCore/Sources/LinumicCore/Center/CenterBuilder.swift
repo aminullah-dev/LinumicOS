@@ -148,16 +148,20 @@ public struct CenterReport: Hashable, Sendable {
     /// shown as one line that opens the project's Releases tab. Unknown or not installed is never here.
     public var installedAttention: [InstalledAppStatus] = []
 
+    /// Marketing obligations past their day. Marketing is shown on its own page and nowhere else (owner, 2026-11-13);
+    /// this count is the Center's one line that opens it, so an overdue post is never invisible. Zero shows nothing.
+    public var marketingOverdue = 0
+
     /// Projects with something known to be wrong, in any shown tier.
     public var problemCount: Int { (focus + maintenanceAttention).count(where: \.hasProblem) }
 
     /// Nothing to look at: nothing waits on the owner (no row, no pull request, no quiet agent, no app on this Mac behind
-    /// its release), no project has a problem or needs a look, every ledger is reviewed, and every reading is current
+    /// its release, no marketing obligation overdue), no project has a problem or needs a look, every ledger is reviewed, and every reading is current
     /// (`staleSources`, from the automation log). Only then does the centre say "All clear"; a reading that is old or
     /// missing never is.
     public func isAllClear(staleSources: Int) -> Bool {
         waiting.isEmpty && pullRows.isEmpty && quietAgentRows.isEmpty && maintenanceAttention.isEmpty && problemCount == 0
-            && overdueLedgers.isEmpty && installedAttention.isEmpty && staleSources == 0
+            && overdueLedgers.isEmpty && installedAttention.isEmpty && marketingOverdue == 0 && staleSources == 0
     }
 }
 
@@ -166,10 +170,10 @@ public enum CenterBuilder {
     public static let reviewAfterDays = 7
 
     /// `installed`: the apps on this Mac against their newest release (`InstalledAppCheck.statuses`); only those behind or
-    /// a test build reach the report.
+    /// a test build reach the report. `marketing`: the marketing obligations' counts, of which only the overdue reach it.
     public static func build(desk: Desk, products: ProductsReport, today: KeyDay? = nil,
                              tier: (String) -> CenterTier = CenterTier.default(forProduct:),
-                             installed: [InstalledAppStatus] = []) -> CenterReport {
+                             installed: [InstalledAppStatus] = [], marketing: MarketingSummary? = nil) -> CenterReport {
         // The worst first, then as the Desk lists them: red never sits below amber on the first screen.
         let open = desk.today + desk.thisWeek
         let owner = open.enumerated().filter(\.element.item.ownerAction)
@@ -199,7 +203,7 @@ public enum CenterBuilder {
         attention.sort { rank($0) < rank($1) }
         return CenterReport(waiting: waiting, pullRows: pullRows, quietAgentRows: quietAgentRows, alsoToday: alsoToday, focus: focus,
                             maintenanceAttention: attention, maintenanceQuiet: quiet, overdueLedgers: overdueLedgers(desk, today: today),
-                            installedAttention: installed.filter(\.verdict.needsOwner))
+                            installedAttention: installed.filter(\.verdict.needsOwner), marketingOverdue: marketing?.overdue ?? 0)
     }
 
     /// A Desk row that comes from a pull request waiting to merge or an agent's pull requests waiting for review.

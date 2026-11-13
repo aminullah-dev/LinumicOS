@@ -75,15 +75,25 @@ enum Theme {
         static let large: CGFloat = 16
     }
 
-    /// The spacing scale (a 4-point rhythm).
+    /// The spacing scale (a 4-point rhythm), a little wider at a larger text size on the Mac (`TextSizeSetting`).
     enum Spacing {
-        static let xs: CGFloat = 4
-        static let s: CGFloat = 8
-        static let m: CGFloat = 12
-        static let l: CGFloat = 16
-        static let xl: CGFloat = 20
+        static var xs: CGFloat { 4 * textScale }
+        static var s: CGFloat { 8 * textScale }
+        static var m: CGFloat { 12 * textScale }
+        static var l: CGFloat { 16 * textScale }
+        static var xl: CGFloat { 20 * textScale }
         /// Between two sections of a page: more than between the cards inside one, so a group reads as a group.
-        static let section: CGFloat = 28
+        static var section: CGFloat { 28 * textScale }
+    }
+
+    /// How much spacing and the fixed sizes that go with text grow at the chosen text size: 1 on iPhone and iPad, where
+    /// Dynamic Type sizes the text.
+    static var textScale: CGFloat {
+        #if os(macOS)
+        AppTextSize.spacing
+        #else
+        1
+        #endif
     }
 
     /// The pill's tint behind its text: the contrast of the status colours is checked against it.
@@ -92,19 +102,20 @@ enum Theme {
 
 // MARK: - Type scale
 
-/// The five steps a page is read in, largest first. Each is a system text style, so it follows the Mac's and the
-/// iPhone's own sizes and Dynamic Type. The page title (`PageHeader`) is `title2` bold, above all of them.
+/// The five steps a page is read in, largest first. Each is a text style: on iPhone and iPad SwiftUI's own, which follow
+/// Dynamic Type; on the Mac the app's, at the size chosen in Settings (TextSize.swift; Large by default, one step above
+/// the Mac's own). The page title (`PageHeader`) is `title2` bold, above all of them.
 extension Font {
     /// A section of a page ("Waiting on you", "Today"): one step above the cards under it.
-    static let sectionTitle = Font.title3.weight(.semibold)
+    static var sectionTitle: Font { Font.title3.weight(.semibold) }
     /// The title of a card or a panel.
-    static let panelTitle = Font.headline
+    static var panelTitle: Font { Font.headline }
     /// The title of a row inside a card.
-    static let rowTitle = Font.callout.weight(.semibold)
+    static var rowTitle: Font { Font.callout.weight(.semibold) }
     /// What a row says in a sentence.
-    static let rowBody = Font.callout
+    static var rowBody: Font { Font.callout }
     /// Where and when: sources, dates, footnotes. Always in the secondary colour.
-    static let rowCaption = Font.caption
+    static var rowCaption: Font { Font.caption }
 }
 
 /// The title of a section of a page, with how many it holds when that is worth saying. One shape for every page, so
@@ -209,7 +220,7 @@ struct SidebarTile: View {
     #endif
 
     var body: some View {
-        IconTile(symbol: item.symbol, tint: (muted ? AreaTint.graphite : item.tint).color, size: size)
+        IconTile(symbol: item.symbol, tint: (muted ? AreaTint.graphite : item.tint).color, size: size * Theme.textScale)
             .opacity(muted ? 0.8 : 1)
     }
 
@@ -253,7 +264,7 @@ struct PageHeader<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             HStack(alignment: .center, spacing: 14) {
-                IconTile(symbol: symbol, tint: tint.color, size: 40)
+                IconTile(symbol: symbol, tint: tint.color, size: 40 * Theme.textScale)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(verbatim: title)
                         .font(.title2.weight(.bold))
@@ -486,8 +497,8 @@ struct PillLabel: View {
             text.foregroundStyle(PillTone.text(color, in: environment))
         }
         .font(font)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 3)
+        .padding(.horizontal, 8 * Theme.textScale)
+        .padding(.vertical, 3 * Theme.textScale)
         // At an accessibility text size a long pill wraps inside its row (as `BoardPill` does) instead of pushing the
         // page wider than the screen.
         .pillBackground(color, radius: typeSize.isAccessibilitySize ? 10 : nil)
