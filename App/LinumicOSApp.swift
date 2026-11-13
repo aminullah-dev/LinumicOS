@@ -120,6 +120,10 @@ struct LinumicOSApp: App {
                 }
                 // Keeps the Monitor's relative times current; the checks themselves run in `AutomationEngine`.
                 .task { await monitor.keepTime() }
+                #if DEBUG && os(macOS)
+                // Debug-only screenshot aid (`-LCCSnapshot`, DebugSnapshot.swift).
+                .onAppear { DebugSnapshot.scheduleIfAsked() }
+                #endif
         }
         #if os(macOS)
         .defaultLaunchBehavior(MacPresence.startsHidden && showMenuBar ? .suppressed : .automatic)
