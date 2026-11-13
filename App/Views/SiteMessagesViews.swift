@@ -94,7 +94,7 @@ struct SiteMessageCard: View {
     var body: some View {
         StripeCard(tint: isSeen ? .statusUnknown : .statusWarn) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(verbatim: message.sender).font(.headline).textSelection(.enabled)
+                Text(verbatim: message.sender).font(.headline).selectableText()
                 Spacer(minLength: 8)
                 if !isSeen { ReleaseBadge(text: String(localized: "New"), symbol: "envelope.badge", color: .statusWarn) }
                 if message.isUnreadInWordPress {
@@ -108,14 +108,14 @@ struct SiteMessageCard: View {
                     Text(verbatim: message.createdAtText)
                 }
                 if let email = message.email {
-                    Text(verbatim: email).textSelection(.enabled).environment(\.layoutDirection, .leftToRight)
+                    Text(verbatim: email).selectableText().environment(\.layoutDirection, .leftToRight)
                 }
                 Text(verbatim: "\(message.formName) · #\(message.id)")
             }
             .font(.caption).foregroundStyle(.secondary)
             // The full text, in its own writing direction (a Dari message reads right to left in an English UI too).
             Text(verbatim: message.message.isEmpty ? String(localized: "(no message text)") : message.message)
-                .textSelection(.enabled)
+                .selectableText()
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
             FitRow(spacing: 12) {

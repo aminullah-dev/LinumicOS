@@ -260,11 +260,11 @@ struct KeysView: View {
                             .accessibilityLabel(Text(verbatim: r.severity.title))
                         VStack(alignment: .leading, spacing: 3) {
                             Text(verbatim: r.text).fixedSize(horizontal: false, vertical: true)
-                            if let d = r.detail { Text(verbatim: d).font(.caption).foregroundStyle(.secondary).textSelection(.enabled) }
+                            if let d = r.detail { Text(verbatim: d).font(.caption).foregroundStyle(.secondary).selectableText() }
                             if let at = r.readAt {
                                 ReleaseSourceLine(source: r.source, at: at)
                             } else {
-                                Text("Source: \(r.source)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
+                                Text("Source: \(r.source)").font(.caption2).foregroundStyle(.tertiary).selectableText()
                             }
                         }
                         Spacer(minLength: 8)
@@ -340,7 +340,7 @@ struct KeysView: View {
                         VStack(alignment: .leading, spacing: 3) {
                             Text(verbatim: file.name).fontWeight(.medium)
                             Text(verbatim: KeyPaths.abbreviate(file.path, home: keys.home))
-                                .font(.caption.monospaced()).foregroundStyle(.secondary).textSelection(.enabled)
+                                .font(.caption.monospaced()).foregroundStyle(.secondary).selectableText()
                                 .environment(\.layoutDirection, .leftToRight)
                             FileFactsLine(file: file)
                         }
@@ -382,7 +382,7 @@ struct KeysView: View {
                     if let note = gap.closedNote, !note.isEmpty { Text(verbatim: note).font(.callout) }
                     HStack {
                         Text("Source: \(gap.source), recorded \(gap.recordedOn.description)")
-                            .font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
+                            .font(.caption2).foregroundStyle(.tertiary).selectableText()
                         Spacer(minLength: 8)
                         if gap.isOpen {
                             Button(gap.kind == .secondCopy ? "Mark second copy done…" : "Mark done…") { closingGap = gap }
@@ -416,7 +416,7 @@ struct KeysView: View {
             }
             if !keys.grantedFolders.isEmpty {
                 Text("Granted: \(keys.grantedFolders.joined(separator: ", "))")
-                    .font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                    .font(.caption).foregroundStyle(.secondary).selectableText()
                 HStack {
                     Button("Choose another folder…") { keys.chooseFolder(suggested: "~") }
                     Button("Remove access", role: .destructive) { keys.revokeFolders() }
@@ -518,7 +518,7 @@ struct KeyCard: View {
             Text(verbatim: [key.kind.title, key.product].compactMap { $0 }.joined(separator: " · "))
                 .font(.caption).foregroundStyle(.secondary)
             Text(verbatim: key.path)
-                .font(.caption.monospaced()).textSelection(.enabled)
+                .font(.caption.monospaced()).selectableText()
                 .environment(\.layoutDirection, .leftToRight)
                 .frame(maxWidth: .infinity, alignment: .leading)
             ForEach(result?.files ?? [], id: \.path) { file in
@@ -544,7 +544,7 @@ struct KeyCard: View {
                 Text(verbatim: deletedNote).font(.caption).foregroundStyle(.secondary)
             }
             Text("Source: \(key.source), recorded \(key.recordedOn.description)")
-                .font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
+                .font(.caption2).foregroundStyle(.tertiary).selectableText()
         }
         .contextMenu {
             Button("Edit…", action: edit)
@@ -574,7 +574,7 @@ struct BackupCard: View {
                     ReleaseBadge(text: String(localized: "No restore test"), symbol: "clock.badge.exclamationmark", color: .statusWarn)
                 }
             }
-            Text(verbatim: backup.fileName).font(.callout.monospaced()).textSelection(.enabled)
+            Text(verbatim: backup.fileName).font(.callout.monospaced()).selectableText()
                 .environment(\.layoutDirection, .leftToRight)
             Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 4) {
                 row("Where", backup.location)
@@ -609,14 +609,14 @@ struct BackupCard: View {
                 Button("Mark restore test done…", action: markRestore).minTapTarget()
             }
             Text("Source: \(backup.source), recorded \(backup.recordedOn.description)")
-                .font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
+                .font(.caption2).foregroundStyle(.tertiary).selectableText()
         }
     }
 
     private func row(_ label: LocalizedStringKey, _ value: String) -> some View {
         GridRow {
             Text(label).foregroundStyle(.secondary)
-            Text(verbatim: value).textSelection(.enabled)
+            Text(verbatim: value).selectableText()
         }
     }
 }
@@ -660,7 +660,7 @@ struct RestoreGuidePanel: View {
                 HStack(alignment: .top, spacing: 8) {
                     Text(verbatim: command)
                         .font(.callout.monospaced())
-                        .textSelection(.enabled)
+                        .selectableText()
                         .padding(8)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(.background, in: RoundedRectangle(cornerRadius: 6))

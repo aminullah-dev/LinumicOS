@@ -28,8 +28,11 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
     case allProducts, verification, releases, roadmap, issues
     case repositories, builds, deployments
     case appStore, googlePlay
-    case marketingQueue, socialMedia, contentCalendar
-    case marketIntelligence, aiAssistant
+    /// Every marketing item: the queue, posts and social accounts, market research (`MarketingTab`). It replaced the
+    /// Marketing queue, Content Calendar, Social Media and Market Intelligence pages on 2026-11-13; links to those open it
+    /// on their tab (`Router.resolve(screen:)`).
+    case marketing
+    case aiAssistant
     case integrations, security, account
 
     var id: String { rawValue }
@@ -68,10 +71,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .deployments: L("Deployments")
         case .appStore: L("App Store")
         case .googlePlay: L("Google Play")
-        case .marketingQueue: L("Marketing queue")
-        case .socialMedia: L("Social Media")
-        case .contentCalendar: L("Content Calendar")
-        case .marketIntelligence: L("Market Intelligence")
+        case .marketing: L("Marketing")
         case .aiAssistant: L("AI Assistant")
         case .integrations: L("Integrations")
         case .security: L("Security")
@@ -113,10 +113,7 @@ enum SidebarItem: String, Hashable, CaseIterable, Identifiable {
         case .deployments: "server.rack"
         case .appStore: "applelogo"
         case .googlePlay: "play.rectangle"
-        case .marketingQueue: "calendar.badge.clock"
-        case .socialMedia: "bubble.left.and.bubble.right"
-        case .contentCalendar: "calendar"
-        case .marketIntelligence: "chart.line.uptrend.xyaxis"
+        case .marketing: "megaphone"
         case .aiAssistant: "sparkles"
         case .integrations: "puzzlepiece.extension"
         case .security: "lock.shield"
@@ -149,10 +146,10 @@ struct SidebarSection: Identifiable {
         SidebarSection(title: nil, items: [.center, .desk, .brief, .dashboard]),
         SidebarSection(title: "Company", items: [.obligations, .money, .sales, .licences, .legal]),
         SidebarSection(title: "Projects", items: [.productBoard, .releaseCenter, .platforms, .operations, .worktrackCustomers, .allProducts, .verification,
-                                                  .releases, .roadmap, .issues]),
+                                                  .releases, .roadmap, .issues, .aiAssistant]),
         SidebarSection(title: "Build & Ship", items: [.automation, .agents, .repositories, .appStore, .googlePlay, .builds, .deployments]),
         SidebarSection(title: "Health", items: [.monitor, .oversight, .siteMessages]),
-        SidebarSection(title: "Marketing", items: [.marketingQueue, .contentCalendar, .marketIntelligence, .aiAssistant, .socialMedia]),
+        SidebarSection(title: "Marketing", items: [.marketing]),
         SidebarSection(title: "Security & Backups", items: [.keys, .vault, .continuity]),
         SidebarSection(title: "Settings", items: [.integrations, .security, .account]),
     ]
@@ -204,17 +201,35 @@ final class Router {
     var operationsTab: OperationsProduct = .talar
     /// The tab a project's page shows next (the Center's line about an app on this Mac opens Releases); taken once.
     var pendingProjectTab: ProjectTab?
+    /// The Marketing page's tab.
+    var marketingTab: MarketingTab = .queue
 
     init() {
         #if DEBUG
         // Debug-only screenshot aid: `-LCCScreen appStore` and `-LCCProduct safe-beauty` as launch arguments.
         let defaults = UserDefaults.standard
-        if let screen = defaults.string(forKey: "LCCScreen").flatMap(SidebarItem.init(rawValue:)) { sidebar = screen }
+        if let screen = defaults.string(forKey: "LCCScreen"), let (item, tab) = Self.resolve(screen: screen) {
+            sidebar = item
+            if let tab { marketingTab = tab }
+        }
         if let tab = defaults.string(forKey: "LCCOpsTab").flatMap(OperationsProduct.init(rawValue:)) { operationsTab = tab }
         if let product = defaults.string(forKey: "LCCProduct") { open(productID: product) }
         if let card = defaults.string(forKey: "LCCProductCard") { request = .productCard(card) }
         if let agent = defaults.string(forKey: "LCCAgent") { request = .agent(agent) }
         #endif
+    }
+
+    /// A page by its id, including the pages folded into Marketing on 2026-11-13 (`MarketingTab.replacing`), which open
+    /// Marketing on the tab that holds them. Nil for an id that names no page.
+    static func resolve(screen id: String) -> (SidebarItem, MarketingTab?)? {
+        if let tab = MarketingTab.replacing(pageID: id) { return (.marketing, tab) }
+        return SidebarItem(rawValue: id).map { ($0, nil) }
+    }
+
+    /// The Marketing page on one tab, with one marketing obligation to show, or none.
+    func openMarketing(_ tab: MarketingTab = .queue, obligation: String? = nil) {
+        marketingTab = tab
+        go(.marketing, request: obligation.map(RouterRequest.obligation))
     }
 
     func open(productID: String) {
@@ -265,6 +280,7 @@ final class Router {
         case .products(let id): go(.productBoard, request: id.map(RouterRequest.productCard))
         case .agents(let slug): go(.agents, request: slug.map(RouterRequest.agent))
         case .legal: go(.legal)
+        case .marketing(let id): openMarketing(.queue, obligation: id)
         }
     }
 

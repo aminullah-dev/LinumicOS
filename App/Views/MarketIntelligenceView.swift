@@ -2,6 +2,7 @@ import LinumicCore
 import SwiftUI
 
 /// Sources → evidence → findings. Nothing appears here unless a person records it with its source.
+/// The Marketing page's "Market research" tab (its own page until 2026-11-13).
 struct MarketIntelligenceView: View {
     @Environment(InventoryModel.self) private var model
     @State private var editing: Editing?
@@ -20,81 +21,76 @@ struct MarketIntelligenceView: View {
 
     var body: some View {
         let m = model.market
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                PageHeader(.marketIntelligence)
-                Text("Market intelligence for Afghanistan. Every evidence item names its source and collection date, every finding cites evidence, and derived findings state their method. Nothing here is generated.")
-                    .font(.callout).foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 20) {
+            Text("Market intelligence for Afghanistan. Every evidence item names its source and collection date, every finding cites evidence, and derived findings state their method. Nothing here is generated.")
+                .font(.callout).foregroundStyle(.secondary)
 
-                if m.sources.isEmpty && m.evidence.isEmpty && m.findings.isEmpty {
-                    ContentUnavailableView {
-                        Label("No market evidence recorded yet", systemImage: "chart.line.uptrend.xyaxis")
-                    } description: {
-                        Text("Start by registering a source, such as a dataset, survey, customer interview or product request. Then record what it says.")
-                    } actions: {
-                        Button("Add Source") { editing = .source(nil) }
-                    }
+            if m.sources.isEmpty && m.evidence.isEmpty && m.findings.isEmpty {
+                ContentUnavailableView {
+                    Label("No market evidence recorded yet", systemImage: "chart.line.uptrend.xyaxis")
+                } description: {
+                    Text("Start by registering a source, such as a dataset, survey, customer interview or product request. Then record what it says.")
+                } actions: {
+                    Button("Add Source") { editing = .source(nil) }
                 }
+            }
 
-                section("Findings", count: m.findings.count, add: m.evidence.isEmpty ? nil : { editing = .finding(nil) },
-                        hint: m.evidence.isEmpty ? "Record evidence before adding findings." : nil) {
-                    ForEach(m.findings) { f in
-                        VStack(alignment: .leading, spacing: 4) {
-                            HStack {
-                                Text(f.statement).fontWeight(.medium)
-                                Spacer()
-                                StatusBadge(text: f.kind.title, color: f.kind == .verified ? .statusGood : .statusInfo)
-                                StatusBadge(text: f.review.title, color: f.review == .reviewed ? .statusGood : .statusWarn)
-                            }
-                            if f.kind == .derived { Text("Method: \(f.method)").font(.caption).foregroundStyle(.secondary) }
-                            Text(verbatim: String(localized: "Evidence:") + " " + m.evidence(for: f).map { "“\($0.excerpt.prefix(60))” (\(m.source(for: $0)?.name ?? "?"), \($0.collectedAt.shortDate))" }.joined(separator: "; "))
-                                .font(.caption).foregroundStyle(.secondary)
+            section("Findings", count: m.findings.count, add: m.evidence.isEmpty ? nil : { editing = .finding(nil) },
+                    hint: m.evidence.isEmpty ? "Record evidence before adding findings." : nil) {
+                ForEach(m.findings) { f in
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text(f.statement).fontWeight(.medium)
+                            Spacer()
+                            StatusBadge(text: f.kind.title, color: f.kind == .verified ? .statusGood : .statusInfo)
+                            StatusBadge(text: f.review.title, color: f.review == .reviewed ? .statusGood : .statusWarn)
                         }
-                        .row { editing = .finding(f) } delete: {
-                            model.updateMarket { $0.findings.removeAll { $0.id == f.id } }
-                        }
+                        if f.kind == .derived { Text("Method: \(f.method)").font(.caption).foregroundStyle(.secondary) }
+                        Text(verbatim: String(localized: "Evidence:") + " " + m.evidence(for: f).map { "“\($0.excerpt.prefix(60))” (\(m.source(for: $0)?.name ?? "?"), \($0.collectedAt.shortDate))" }.joined(separator: "; "))
+                            .font(.caption).foregroundStyle(.secondary)
                     }
-                }
-
-                section("Evidence", count: m.evidence.count, add: m.sources.isEmpty ? nil : { editing = .evidence(nil) },
-                        hint: m.sources.isEmpty ? "Register a source before recording evidence." : nil) {
-                    ForEach(m.evidence.sorted { $0.collectedAt > $1.collectedAt }) { e in
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text("“\(e.excerpt)”")
-                            Text([m.source(for: e)?.name, e.publishedAt.map { String(localized: "published \($0.shortDate)") }, String(localized: "collected \(e.collectedAt.shortDate)"), e.region, e.sector]
-                                .compactMap { $0 }.joined(separator: " · "))
-                                .font(.caption).foregroundStyle(.secondary)
-                        }
-                        .row { editing = .evidence(e) } delete: {
-                            var ok = false
-                            model.updateMarket { ok = $0.removeEvidence(e.id) }
-                            if !ok { refusal = String(localized: "This evidence is cited by a finding. Remove or edit the finding first.") }
-                        }
-                    }
-                }
-
-                section("Sources", count: m.sources.count, add: { editing = .source(nil) }, hint: nil) {
-                    ForEach(m.sources) { src in
-                        VStack(alignment: .leading, spacing: 3) {
-                            HStack {
-                                Text(src.name).fontWeight(.medium)
-                                StatusBadge(text: src.kind.title, color: .statusInfo)
-                                Spacer()
-                                if let url = src.url { Link("Open", destination: url) }
-                            }
-                            if !src.reliabilityNote.isEmpty { Text(src.reliabilityNote).font(.caption).foregroundStyle(.secondary) }
-                        }
-                        .row { editing = .source(src) } delete: {
-                            var ok = false
-                            model.updateMarket { ok = $0.removeSource(src.id) }
-                            if !ok { refusal = String(localized: "Evidence still comes from this source. Remove that evidence first.") }
-                        }
+                    .row { editing = .finding(f) } delete: {
+                        model.updateMarket { $0.findings.removeAll { $0.id == f.id } }
                     }
                 }
             }
-            .padding(20)
+
+            section("Evidence", count: m.evidence.count, add: m.sources.isEmpty ? nil : { editing = .evidence(nil) },
+                    hint: m.sources.isEmpty ? "Register a source before recording evidence." : nil) {
+                ForEach(m.evidence.sorted { $0.collectedAt > $1.collectedAt }) { e in
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("“\(e.excerpt)”")
+                        Text([m.source(for: e)?.name, e.publishedAt.map { String(localized: "published \($0.shortDate)") }, String(localized: "collected \(e.collectedAt.shortDate)"), e.region, e.sector]
+                            .compactMap { $0 }.joined(separator: " · "))
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                    .row { editing = .evidence(e) } delete: {
+                        var ok = false
+                        model.updateMarket { ok = $0.removeEvidence(e.id) }
+                        if !ok { refusal = String(localized: "This evidence is cited by a finding. Remove or edit the finding first.") }
+                    }
+                }
+            }
+
+            section("Sources", count: m.sources.count, add: { editing = .source(nil) }, hint: nil) {
+                ForEach(m.sources) { src in
+                    VStack(alignment: .leading, spacing: 3) {
+                        HStack {
+                            Text(src.name).fontWeight(.medium)
+                            StatusBadge(text: src.kind.title, color: .statusInfo)
+                            Spacer()
+                            if let url = src.url { Link("Open", destination: url) }
+                        }
+                        if !src.reliabilityNote.isEmpty { Text(src.reliabilityNote).font(.caption).foregroundStyle(.secondary) }
+                    }
+                    .row { editing = .source(src) } delete: {
+                        var ok = false
+                        model.updateMarket { ok = $0.removeSource(src.id) }
+                        if !ok { refusal = String(localized: "Evidence still comes from this source. Remove that evidence first.") }
+                    }
+                }
+            }
         }
-        .navigationTitle("Market Intelligence")
         .sheet(item: $editing) { e in
             switch e {
             case .source(let s): MarketSourceEditor(source: s) { new in model.updateMarket { $0.sources.upsert(new) } }

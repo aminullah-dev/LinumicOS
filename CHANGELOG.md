@@ -5,6 +5,40 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed: one Marketing page, and larger text on the Mac (2026-11-13)
+- **Why:** the owner: "Open a Marketing section. Show every marketing item there and remove it from everywhere else.
+  Don't make the app cluttered. Make the app a bit bigger, because it can't be read with the eye."
+- **Marketing** is a daily page in the sidebar, after Projects (⌘4), with three tabs: **Queue** (each brand's queue end
+  and the clock change beside its ledger, the brand with the oldest overdue row first; Done, Change date, Reopen,
+  Verify and "Add…" are on the page itself), **Posts** (the content calendar and the social accounts) and **Market
+  research**. It replaces the Marketing queue, Content Calendar, Social Media and Market Intelligence pages; a link to
+  one of those (`-LCCScreen`, the Command Palette, an old obligation link) opens Marketing on its tab.
+- **Marketing is shown nowhere else** (`MarketingScope`): not in the Daily Brief, and so not on the Desk, the Center or a
+  project's card; not on the Obligations page (its counts and lanes, and its "Add obligation" no longer offers the area);
+  not in readiness check 8, where an overdue post made WorkTrack and SafeBeauty read Failed. The Center keeps one line,
+  "Marketing: N overdue", only while some are overdue, and "All clear" waits for it. Nothing stored changed: the rows,
+  dates, Done marks, the obligation alerts and the server's sweep are as they were.
+- **Text on the Mac** is one step larger by default: body 13 → 15 points, callout 12 → 14, caption 10 → 12, title3 15 →
+  18, with the spacing, icon tiles and pills 10% wider and controls one size up (`TextSizeSetting`, App/Views/TextSize.swift).
+  Settings → Account → Text size: Standard (the Mac's own sizes, as before), Large (default), Larger (body 17); ⌘+, ⌘−
+  and ⌘0 in the View menu. Per device. iPhone and iPad keep Dynamic Type. On the Mac SwiftUI ignores Dynamic Type
+  (checked: `.dynamicTypeSize` changes nothing there), so inside the app `.caption`, `.callout`, `.body` and the other
+  styles are the app's own on the Mac.
+- **Go menu:** ⌘1 to ⌘6 follow the six daily pages (Marketing is ⌘4, Keys & Backups ⌘5, Automation ⌘6); ⌘7 to ⌘9 are
+  Obligations, Money and Releases. Sales lost its shortcut (⌘K finds it). The AI Assistant moved from the Marketing area
+  to Projects (it answers about the inventory).
+- **Dari on the Mac, found in the pictures:** on the Marketing, Obligations and project pages the page grew wider than
+  the window (the sidebar and the row buttons cut off at the edge, blank lines under each row) at 960 points at the old
+  size and up to about 1200 at the new one. The cause is `.textSelection(.enabled)`: a selectable text mixing Dari and
+  Latin is measured at another width than it is drawn. All 90 uses are now `.selectableText()`, which keeps selection
+  everywhere except on the Mac in Dari, where sources and paths are plain text (they can no longer be selected there).
+- **Pictures on the Mac without the owner's data:** `tools/design/mac-preview.sh` builds a Debug copy under
+  `com.linumic.commandcenter.preview`, ad-hoc signed and sandboxed with no network and no folder of the owner's, and
+  `-LCCSnapshot` (Debug only) makes it draw its own window into a PNG and quit, so no Screen Recording permission is
+  asked. The sidebar's glass is drawn solid in those pictures.
+- The version stays 0.3.0 (3). Tests: marketing never reaches the Brief, the Desk, the Center, the Obligations page or
+  readiness; the Marketing page holds all of it; the old pages open their tab; the text sizes map to the type scale.
+
 ### Changed: easier to read at a glance, from pictures of the pages (2026-11-12)
 - **Why:** the owner asked for the interface to be more advanced and above all more readable. The five daily pages and
   the readiness views of the entry below (never looked at until now) were photographed on the iPhone and iPad

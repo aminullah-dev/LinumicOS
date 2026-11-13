@@ -64,7 +64,7 @@ private struct LegalCompanyCard: View {
                 VStack(alignment: .leading, spacing: 3) {
                     LabeledContent {
                         if seller.isKnown {
-                            Text(verbatim: seller.sellers.joined(separator: ", ")).textSelection(.enabled)
+                            Text(verbatim: seller.sellers.joined(separator: ", ")).selectableText()
                         } else {
                             UnknownLabel()
                         }
@@ -76,7 +76,7 @@ private struct LegalCompanyCard: View {
                         ReleaseSourceLine(source: seller.source, at: at)
                     } else {
                         Text(String(localized: "Source: \(seller.source), recorded \(seller.recordedOn.map { $0.start().formatted(date: .abbreviated, time: .omitted) } ?? String(localized: "unknown"))"))
-                            .font(.caption2).foregroundStyle(.tertiary).lineLimit(3).textSelection(.enabled)
+                            .font(.caption2).foregroundStyle(.tertiary).lineLimit(3).selectableText()
                     }
                 }
             }
@@ -99,7 +99,7 @@ private struct LegalCompanyCard: View {
             }
             if let source = f.source {
                 Text(String(localized: "Source: \(source), recorded \(f.recordedOn.map { $0.start().formatted(date: .abbreviated, time: .omitted) } ?? String(localized: "unknown"))"))
-                    .font(.caption2).foregroundStyle(.tertiary).lineLimit(4).textSelection(.enabled)
+                    .font(.caption2).foregroundStyle(.tertiary).lineLimit(4).selectableText()
             } else if let why = f.unknownReason {
                 Text(verbatim: L(why)).font(.caption).foregroundStyle(.secondary)
             }
@@ -142,7 +142,7 @@ private struct LegalMarkersCard: View {
                         .font(.caption).foregroundStyle(.secondary)
                 }
                 Text(verbatim: String(localized: "Same rule as: grep -rnoE '\(LegalMarkerScanner.pattern)' \(reading.folder) (text files only, Asasnama files left out)"))
-                    .font(.caption2.monospaced()).foregroundStyle(.tertiary).textSelection(.enabled)
+                    .font(.caption2.monospaced()).foregroundStyle(.tertiary).selectableText()
                 ReleaseSourceLine(source: String(localized: "\(reading.folder), file:line only"), at: reading.readAt)
             } else {
                 Text(verbatim: LegalBrief.notReadText(access, reading: reading) ?? String(localized: "Not read yet.")).font(.callout)
@@ -173,7 +173,7 @@ private struct LegalFileRow: View {
                     if !lines.isEmpty {
                         LabeledContent {
                             Text(verbatim: lines.map { $0.formatted() }.joined(separator: ", "))
-                                .font(.caption.monospacedDigit()).textSelection(.enabled).multilineTextAlignment(.trailing)
+                                .font(.caption.monospacedDigit()).selectableText().multilineTextAlignment(.trailing)
                         } label: {
                             Text(verbatim: kind.label).font(.caption.monospaced())
                         }
@@ -183,7 +183,7 @@ private struct LegalFileRow: View {
             .padding(.top, 4)
         } label: {
             HStack {
-                Text(verbatim: file.path).font(.callout.monospaced()).lineLimit(2).textSelection(.enabled)
+                Text(verbatim: file.path).font(.callout.monospaced()).lineLimit(2).selectableText()
                 Spacer()
                 Text("\(file.hits.count) markers").font(.caption).foregroundStyle(.secondary)
             }
@@ -209,7 +209,7 @@ private struct LegalAsasnamaCard: View {
                             Text(f.modifiedAt.formatted(date: .abbreviated, time: .shortened)).font(.caption).foregroundStyle(.secondary)
                         } label: {
                             VStack(alignment: .leading, spacing: 1) {
-                                Text(verbatim: f.name).textSelection(.enabled)
+                                Text(verbatim: f.name).selectableText()
                                 Text(verbatim: f.folder).font(.caption2.monospaced()).foregroundStyle(.tertiary)
                             }
                         }

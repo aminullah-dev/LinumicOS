@@ -50,7 +50,6 @@ struct ObligationsView: View {
     @Environment(ObligationsModel.self) private var model
     @Environment(Router.self) private var router
     @Environment(MonitorModel.self) private var monitor
-    @Environment(MarketingQueueModel.self) private var marketing
     @AppStorage(ObligationsModel.notifyKey) private var notify = true
     @State private var adding = false
     @State private var addingAccount = false
@@ -63,7 +62,8 @@ struct ObligationsView: View {
 
     var body: some View {
         let now = max(.now, monitor.now)
-        let register = model.register(now: now)
+        // Marketing rows are on the Marketing page only (owner, 2026-11-13): left out of the lanes and the counts here.
+        let register = MarketingScope.withoutMarketing(model.register(now: now))
         let today = KeyDay(now)
         let lanes = register.lanes(today: today)
         ScrollViewReader { proxy in
@@ -92,6 +92,8 @@ struct ObligationsView: View {
             }
             .onChange(of: router.request, initial: true) {
                 switch router.take({ if case .obligation = $0 { true } else if case .completeObligation = $0 { true } else { false } }) {
+                case .obligation(let id)? where model.register(now: now).obligation(id).map(MarketingScope.isMarketing) == true:
+                    router.openMarketing(.queue, obligation: id)
                 case .obligation(let id)?:
                     reveal(id, register: register, today: today, proxy: proxy)
                 case .completeObligation(let id)?:
@@ -114,7 +116,7 @@ struct ObligationsView: View {
                     .help("Add an obligation with its source")
             }
         }
-        .sheet(isPresented: $adding) { ObligationAddSheet() }
+        .sheet(isPresented: $adding) { ObligationAddSheet(areas: ObligationArea.allCases.filter { $0 != .marketing }) }
         .sheet(isPresented: $addingAccount) { AccountAddSheet() }
         .sheet(item: $completing) { ObligationDoneSheet(obligation: $0) }
         .sheet(item: $dating) { ObligationDateSheet(obligation: $0) }
@@ -123,11 +125,6 @@ struct ObligationsView: View {
             Button("OK") { model.errorMessage = nil }
         } message: {
             Text(verbatim: model.errorMessage ?? "")
-        }
-        .alert("Not opened", isPresented: Binding(get: { marketing.errorMessage != nil }, set: { if !$0 { marketing.errorMessage = nil } })) {
-            Button("OK") { marketing.errorMessage = nil }
-        } message: {
-            Text(verbatim: marketing.errorMessage ?? "")
         }
     }
 
@@ -232,22 +229,11 @@ struct ObligationsView: View {
                                   },
                                   open: { router.open(o.destination) },
                                   closeAtSource: { router.closeAtSource(o.id, destination: o.destination) },
-                                  reopen: { model.reopen(o) },
-                                  verify: verifyAction(o))
+                                  reopen: { model.reopen(o) })
                     .id(o.id)
                 if o.id != rows.last?.id { Divider() }
             }
         }
-    }
-
-    /// A marketing row with a recorded ledger is verified there: the ledger opens in its own app (Mac only).
-    private func verifyAction(_ o: Obligation) -> (() -> Void)? {
-        #if os(macOS)
-        guard o.area == .marketing, !o.isClosed, let ledger = MarketingLedgers.ledger(forBrand: o.product) else { return nil }
-        return { marketing.verify(ledger) }
-        #else
-        return nil
-        #endif
     }
 
     private func accountsSection(_ accounts: [VendorAccount]) -> some View {
@@ -302,6 +288,8 @@ struct ObligationRowView: View {
     let reopen: () -> Void
     /// Opens the row's marketing ledger, when it has one.
     var verify: (() -> Void)? = nil
+    /// The product and area pills; off where the card around the row already says them (a brand on the Marketing page).
+    var showsContext = true
 
     private var o: Obligation { obligation }
 
@@ -314,10 +302,12 @@ struct ObligationRowView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(verbatim: o.displayTitle).fixedSize(horizontal: false, vertical: true)
                 FitRow(spacing: 6) {
-                    if let product = o.product {
+                    if showsContext, let product = o.product {
                         ReleaseBadge(text: product, symbol: "shippingbox", color: .brandAccent)
                     }
-                    ReleaseBadge(text: o.area.title, symbol: "tag", color: .statusUnknown)
+                    if showsContext {
+                        ReleaseBadge(text: o.area.title, symbol: "tag", color: .statusUnknown)
+                    }
                     timingBadge
                     ReleaseBadge(text: o.origin.label, symbol: o.origin.isLive ? "dot.radiowaves.left.and.right" : "doc.text",
                                  color: o.origin.isLive ? .statusInfo : .statusUnknown)
@@ -333,9 +323,9 @@ struct ObligationRowView: View {
                     .font(.caption)
                 }
                 if let dueSource = o.dueSource {
-                    Text("Date from: \(dueSource)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
+                    Text("Date from: \(dueSource)").font(.caption2).foregroundStyle(.tertiary).selectableText()
                 }
-                Text(sourceText).font(.caption2).foregroundStyle(.tertiary).lineLimit(4).textSelection(.enabled)
+                Text(sourceText).font(.caption2).foregroundStyle(.tertiary).lineLimit(4).selectableText()
             }
             Spacer(minLength: 8)
             actions
@@ -463,10 +453,10 @@ struct AccountCard: View {
                 Label { Text("Cost unknown") } icon: { Image(systemName: "questionmark.circle") }
                     .font(.caption).foregroundStyle(.secondary)
             }
-            if let s = account.holderSource { Text("Holder from: \(s)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled) }
-            if let s = account.cost?.source { Text("Cost from: \(s)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled) }
-            if let s = account.renewalSource { Text("Renewal from: \(s)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled) }
-            Text("Source: \(account.source)").font(.caption2).foregroundStyle(.tertiary).lineLimit(3).textSelection(.enabled)
+            if let s = account.holderSource { Text("Holder from: \(s)").font(.caption2).foregroundStyle(.tertiary).selectableText() }
+            if let s = account.cost?.source { Text("Cost from: \(s)").font(.caption2).foregroundStyle(.tertiary).selectableText() }
+            if let s = account.renewalSource { Text("Renewal from: \(s)").font(.caption2).foregroundStyle(.tertiary).selectableText() }
+            Text("Source: \(account.source)").font(.caption2).foregroundStyle(.tertiary).lineLimit(3).selectableText()
             HStack {
                 Spacer()
                 Button("Edit…", action: edit).buttonStyle(.borderless).font(.callout)
@@ -496,9 +486,16 @@ private func clean(_ s: String) -> String { s.trimmingCharacters(in: .whitespace
 struct ObligationAddSheet: View {
     @Environment(ObligationsModel.self) private var model
     @Environment(\.dismiss) private var dismiss
+    /// The areas offered: the Obligations page offers every area but marketing, the Marketing page only marketing.
+    let areas: [ObligationArea]
     @State private var title = ""
     @State private var product = ""
-    @State private var area = ObligationArea.other
+    @State private var area: ObligationArea
+
+    init(areas: [ObligationArea] = ObligationArea.allCases) {
+        self.areas = areas
+        _area = State(initialValue: areas.contains(.other) ? .other : (areas.first ?? .other))
+    }
     @State private var due: Date?
     /// A day was picked: switching "The due date is known" on starts at today, which is never saved as the due day.
     @State private var duePicked = false
@@ -516,8 +513,10 @@ struct ObligationAddSheet: View {
                     }) {
             TextField("What is due", text: $title, axis: .vertical)
             TextField("Product (optional)", text: $product)
-            Picker("Area", selection: $area) {
-                ForEach(ObligationArea.allCases) { Text(verbatim: $0.title).tag($0) }
+            if areas.count > 1 {
+                Picker("Area", selection: $area) {
+                    ForEach(areas) { Text(verbatim: $0.title).tag($0) }
+                }
             }
             OptionalDatePicker(title: String(localized: "The due date is known"), date: Binding(get: { due }, set: { new in
                 // Switched on (nil to today) is not a pick; a change of the day is.

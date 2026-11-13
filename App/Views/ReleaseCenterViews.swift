@@ -118,7 +118,7 @@ struct ReleaseSourceLine: View {
 
     var body: some View {
         Text("Source: \(source), read \(at.formatted(date: .abbreviated, time: .shortened))")
-            .font(.caption2).foregroundStyle(.tertiary).lineLimit(3).textSelection(.enabled)
+            .font(.caption2).foregroundStyle(.tertiary).lineLimit(3).selectableText()
     }
 }
 

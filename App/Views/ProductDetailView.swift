@@ -326,7 +326,7 @@ private struct OverviewTab: View {
     private var footer: some View {
             if !product.notes.isEmpty {
                 GroupBox("Notes") {
-                    Text(product.notes).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
+                    Text(product.notes).selectableText().frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
             let issues = product.integrityIssues
@@ -389,7 +389,7 @@ private struct RepositoryRow: View {
                 VStack(alignment: .leading, spacing: 1) {
                     HStack(spacing: 6) {
                         Image(systemName: "laptopcomputer").font(.caption)
-                        Text(c.path).font(.caption.monospaced()).textSelection(.enabled)
+                        Text(c.path).font(.caption.monospaced()).selectableText()
                         if let b = c.branch { Text("on \(b)").font(.caption).foregroundStyle(.secondary) }
                     }
                     if let commit = c.lastCommit {
@@ -470,13 +470,13 @@ private struct VerificationTab: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 HStack(alignment: .firstTextBaseline) {
                                     StatusBadge(text: s.sourceType.title, color: s.sourceType.isLocal ? .statusInfo : .statusInfo)
-                                    Text(s.sourceReference).font(.caption.monospaced()).textSelection(.enabled)
+                                    Text(s.sourceReference).font(.caption.monospaced()).selectableText()
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .fixedSize(horizontal: false, vertical: true)
                                     Text(s.verifiedAt.shortDate).font(.caption).foregroundStyle(.secondary)
                                 }
                                 if let value = s.observedValue {
-                                    Text(value).font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                                    Text(value).font(.caption).foregroundStyle(.secondary).selectableText()
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .fixedSize(horizontal: false, vertical: true)
                                 }
@@ -563,7 +563,7 @@ private struct ReviewRow: View {
                 Spacer(minLength: 0)
                 if let date = review.createdAt { Text(date.shortDate).foregroundStyle(.secondary) }
             }
-            if let body = review.body { Text(body).lineLimit(3).textSelection(.enabled) }
+            if let body = review.body { Text(body).lineLimit(3).selectableText() }
             if let who = review.reviewer { Text(verbatim: "— \(who)\(review.territory.map { " · \($0)" } ?? "")").foregroundStyle(.secondary) }
         }
         .font(.caption)

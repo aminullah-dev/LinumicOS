@@ -78,7 +78,7 @@ struct PlatformDetailView: View {
                         }
                         Text(verbatim: flag.detail).font(.callout).monospacedDigit()
                         ForEach(flag.evidence, id: \.self) { line in
-                            Text(verbatim: line).font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                            Text(verbatim: line).font(.caption).foregroundStyle(.secondary).selectableText()
                         }
                     }
                     if flag.id != row.flags.last?.id { Divider() }

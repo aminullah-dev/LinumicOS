@@ -71,7 +71,7 @@ struct ContinuityView: View {
                         Text("Last verified export off this Mac: \(offMac.createdAt.formatted(date: .abbreviated, time: .shortened))")
                             .font(.title3.weight(.semibold))
                         Text(verbatim: "\(offMac.fileName) · \(offMac.folder) · \(offMac.folderKind.title)")
-                            .font(.callout).foregroundStyle(.secondary).textSelection(.enabled)
+                            .font(.callout).foregroundStyle(.secondary).selectableText()
                         if let next = model.log.nextExportDue() {
                             Text("Next export due \(next.formatted(date: .abbreviated, time: .omitted)) (every \(ObligationsBuilder.exportEveryDays) days).")
                                 .font(.caption).foregroundStyle(.secondary)
@@ -103,7 +103,7 @@ struct ContinuityView: View {
             HStack(spacing: 10) {
                 if let path = model.folderPath {
                     Image(systemName: "folder").foregroundStyle(.secondary).accessibilityHidden(true)
-                    Text(verbatim: path).font(.callout.monospaced()).textSelection(.enabled).lineLimit(2)
+                    Text(verbatim: path).font(.callout.monospaced()).selectableText().lineLimit(2)
                     if let kind = model.folderKind {
                         ReleaseBadge(text: kind.title, symbol: kind.isOffThisMac ? "checkmark.circle" : "exclamationmark.triangle",
                                      color: kind.isOffThisMac ? .statusGood : .statusWarn)
@@ -153,7 +153,7 @@ struct ContinuityView: View {
                 Button("Suggest a passphrase") { suggestion = ContinuityPassphrase.suggestion() }
                     .buttonStyle(.borderless)
                 if let suggestion {
-                    Text(verbatim: suggestion).font(.callout.monospaced()).textSelection(.enabled)
+                    Text(verbatim: suggestion).font(.callout.monospaced()).selectableText()
                     Button("Use it") {
                         passphrase = suggestion
                         confirmation = suggestion
@@ -211,7 +211,7 @@ struct ContinuityView: View {
                 Label {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Written and read back: \(r.fileName) decrypted and matched what was written.")
-                        Text("SHA-256 of the decrypted file: \(r.plaintextSHA256)").font(.caption.monospaced()).textSelection(.enabled)
+                        Text("SHA-256 of the decrypted file: \(r.plaintextSHA256)").font(.caption.monospaced()).selectableText()
                     }
                 } icon: {
                     Image(systemName: "checkmark.seal.fill").foregroundStyle(.statusGood)
@@ -257,7 +257,7 @@ struct ContinuityView: View {
             ForEach(model.log.exports) { r in
                 StripeCard(tint: r.isVerified ? (r.isKnownOffThisMac ? .statusGood : .statusWarn) : .statusBad) {
                     HStack(alignment: .firstTextBaseline) {
-                        Text(verbatim: r.fileName).font(.callout.monospaced()).textSelection(.enabled)
+                        Text(verbatim: r.fileName).font(.callout.monospaced()).selectableText()
                         Spacer(minLength: 6)
                         ReleaseBadge(text: r.folderKind.title, symbol: "folder", color: r.isKnownOffThisMac ? .statusGood : .statusWarn)
                         if r.uploadNotChecked {
@@ -273,7 +273,7 @@ struct ContinuityView: View {
                         }
                         .font(.caption)
                     }
-                    Text("SHA-256 (decrypted): \(r.plaintextSHA256)").font(.caption2.monospaced()).foregroundStyle(.tertiary).textSelection(.enabled)
+                    Text("SHA-256 (decrypted): \(r.plaintextSHA256)").font(.caption2.monospaced()).foregroundStyle(.tertiary).selectableText()
                     ForEach(Array(r.outsideChecks.enumerated()), id: \.offset) { _, c in
                         Label { Text("Opened outside this Mac \(c.on.start().formatted(date: .abbreviated, time: .omitted)): \(c.evidence)") } icon: {
                             Image(systemName: "laptopcomputer").foregroundStyle(.statusInfo)
@@ -302,7 +302,7 @@ struct ContinuityView: View {
             Text("The file is a standard age file. On any computer with age installed (age-encryption.org; on a Mac `brew install age`):")
                 .font(.callout).fixedSize(horizontal: false, vertical: true)
             Text(verbatim: "age -d -o linumic-os-continuity.json linumic-os-continuity-….json.age\nshasum -a 256 linumic-os-continuity.json")
-                .font(.caption.monospaced()).textSelection(.enabled)
+                .font(.caption.monospaced()).selectableText()
                 .padding(8)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(.background.tertiary, in: RoundedRectangle(cornerRadius: 8))

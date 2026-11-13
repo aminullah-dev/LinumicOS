@@ -450,7 +450,7 @@ struct SecuritySettingsView: View {
             Section("Local data") {
                 LabeledContent("Inventory file") {
                     Text((try? JSONFileInventoryStore.defaultFileURL().path(percentEncoded: false)) ?? "Unavailable")
-                        .textSelection(.enabled)
+                        .selectableText()
                         .font(.callout.monospaced())
                 }
                 Text("The inventory file contains no secrets.")
@@ -531,7 +531,7 @@ private struct CloudAccountSection: View {
             } else if let user = model.cloudUser {
                 LabeledContent("Signed in") { Text(verbatim: user.email ?? user.userID) }
                 LabeledContent("User ID") {
-                    Text(verbatim: user.userID).font(.caption.monospaced()).textSelection(.enabled)
+                    Text(verbatim: user.userID).font(.caption.monospaced()).selectableText()
                 }
                 statusRow
                 deskSyncRows
@@ -692,6 +692,9 @@ struct AccountSettingsView: View {
             } footer: {
                 Text("Dari uses right-to-left layout, Persian digits and the Solar Hijri calendar with Afghan month names. Recorded evidence (quotes, sources) stays in its original language.")
             }
+            #if os(macOS)
+            TextSizeSection()
+            #endif
             CloudAccountSection()
         }
         .formStyle(.grouped)

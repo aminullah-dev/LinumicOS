@@ -1,7 +1,8 @@
 import LinumicCore
 import SwiftUI
 
-/// Drafts, approval and schedule for social posts. Linumic OS never posts anything.
+/// Drafts, approval and schedule for social posts, and the social accounts recorded per product: the Marketing page's
+/// "Posts" tab (the Content Calendar and Social Media pages until 2026-11-13). Linumic OS never posts anything.
 /// "Published" is recorded by a person, with the link to the live post.
 struct ContentCalendarView: View {
     @Environment(InventoryModel.self) private var model
@@ -19,45 +20,38 @@ struct ContentCalendarView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                AdaptiveStack(spacing: 8) {
-                    Text("Workflow: Idea → Draft → In Review → Approved → Scheduled → Published. Publishing is done by a person on the network, then recorded here with its link.")
-                        .font(.caption).foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+        VStack(alignment: .leading, spacing: 18) {
+            AdaptiveStack(spacing: 8) {
+                Text("Workflow: Idea → Draft → In Review → Approved → Scheduled → Published. Publishing is done by a person on the network, then recorded here with its link.")
+                    .font(.caption).foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                if !model.content.isEmpty {
                     Picker("Show", selection: $filter) {
                         Text("All").tag(ContentStatus?.none)
                         ForEach(ContentStatus.allCases) { Text($0.title).tag(ContentStatus?.some($0)) }
                     }
                     .frame(maxWidth: 200)
                 }
-                if model.content.isEmpty {
-                    ContentUnavailableView {
-                        Label("No content yet", systemImage: "calendar")
-                    } description: {
-                        Text("Draft a product or release announcement, send it for review, and schedule it once approved.")
-                    } actions: {
-                        Button("New Post") { isAdding = true }
+                Button { isAdding = true } label: { Label("New Post", systemImage: "square.and.pencil") }
+                    .keyboardShortcut("n", modifiers: [.command, .shift])
+                    .fixedSize()
+            }
+            if model.content.isEmpty {
+                Text("No posts recorded yet. Draft a product or release announcement, send it for review, and schedule it once approved.")
+                    .font(.callout).foregroundStyle(.secondary)
+            }
+            ForEach(groups, id: \.0) { status, items in
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        StatusBadge(text: status.title, color: status.color)
+                        Text("\(items.count)").foregroundStyle(.secondary)
                     }
-                }
-                ForEach(groups, id: \.0) { status, items in
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack {
-                            StatusBadge(text: status.title, color: status.color)
-                            Text("\(items.count)").foregroundStyle(.secondary)
-                        }
-                        ForEach(items) { item in
-                            ContentCard(item: item, productName: model.product(id: item.productID ?? "")?.name) { editing = item }
-                        }
+                    ForEach(items) { item in
+                        ContentCard(item: item, productName: model.product(id: item.productID ?? "")?.name) { editing = item }
                     }
                 }
             }
-            .padding(20)
-        }
-        .navigationTitle("Content Calendar")
-        .toolbar {
-            Button { isAdding = true } label: { Label("New Post", systemImage: "square.and.pencil") }
-                .keyboardShortcut("n", modifiers: [.command, .shift])
+            SocialAccountsSection()
         }
         .sheet(isPresented: $isAdding) { ContentEditor(item: nil) }
         .sheet(item: $editing) { ContentEditor(item: $0) }
@@ -194,26 +188,31 @@ extension ContentStatus {
 }
 
 /// Social accounts recorded per product. No network is connected.
-struct SocialAccountsView: View {
+private struct SocialAccountsSection: View {
     @Environment(InventoryModel.self) private var model
 
     var body: some View {
         let rows = model.products.flatMap { p in p.socialAccounts.map { (p.name, $0) } }
-        List {
-            Section {
-                Text("LinkedIn, Facebook, Instagram, X and YouTube aren't connected: that needs OAuth credentials, which will live on the backend. Draft and approve posts in the Content Calendar.")
-                    .font(.caption).foregroundStyle(.secondary)
-            }
+        VStack(alignment: .leading, spacing: 8) {
+            SectionHeader(title: String(localized: "Social accounts"), count: rows.count)
+            Text("LinkedIn, Facebook, Instagram, X and YouTube aren't connected: that needs OAuth credentials, which will live on the backend.")
+                .font(.caption).foregroundStyle(.secondary)
             if rows.isEmpty {
                 Text("No social accounts recorded. None were found as verified evidence during discovery.")
-                    .foregroundStyle(.secondary)
-            }
-            ForEach(rows, id: \.1.id) { product, account in
-                LabeledContent("\(product) · \(account.network.title)") {
-                    if let url = account.url { Link(account.handle, destination: url) } else { Text(account.handle) }
+                    .font(.callout).foregroundStyle(.secondary)
+            } else {
+                VStack(spacing: 0) {
+                    ForEach(rows, id: \.1.id) { product, account in
+                        LabeledContent("\(product) · \(account.network.title)") {
+                            if let url = account.url { Link(account.handle, destination: url) } else { Text(account.handle) }
+                        }
+                        .padding(10)
+                        if account.id != rows.last?.1.id { Divider() }
+                    }
                 }
+                .cardSurface(.inner)
             }
         }
-        .navigationTitle("Social Media")
+        .padding(.top, Theme.Spacing.m)
     }
 }

@@ -942,7 +942,7 @@ private struct SalesUnknownText: View {
         VStack(alignment: .leading, spacing: 4) {
             SalesPill(text: String(localized: "Unknown"), symbol: "questionmark.circle", color: .statusUnknown)
             #if os(macOS)
-            Text(verbatim: reason).font(.callout).foregroundStyle(.secondary).textSelection(.enabled)
+            Text(verbatim: reason).font(.callout).foregroundStyle(.secondary).selectableText()
             #else
             Text(verbatim: reason).font(.callout).foregroundStyle(.secondary)
             #endif

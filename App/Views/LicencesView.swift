@@ -331,7 +331,7 @@ private struct SigningKeyRow: View {
             Text("Public key fingerprint (SHA-256): \(ltr(KeyFingerprint.short(product.productionPublicKey)))")
                 .font(.caption.monospaced())
                 .foregroundStyle(.secondary)
-                .textSelection(.enabled)
+                .selectableText()
                 .help(KeyFingerprint.sha256Hex(product.productionPublicKey))
             if let message {
                 Text(verbatim: message).font(.caption).foregroundStyle(.statusBad)
@@ -375,11 +375,11 @@ struct LicenceDetailView: View {
             Form {
                 Section {
                     LabeledContent("Status") { LicenceStateBadge(record: r) }
-                    LabeledContent("Customer") { Text(verbatim: r.customer).textSelection(.enabled) }
+                    LabeledContent("Customer") { Text(verbatim: r.customer).selectableText() }
                     LabeledContent("Product") { Text(verbatim: r.product.displayName) }
                     LabeledContent("Machine code") {
                         Text(verbatim: r.machine == "*" ? String(localized: "Any machine (*)") : ltr(r.machine))
-                            .font(.body.monospaced()).textSelection(.enabled)
+                            .font(.body.monospaced()).selectableText()
                     }
                     LabeledContent("Issued") { Text(verbatim: "\(formatted(r.issued))  (\(ltr(r.issued)))") }
                     LabeledContent("Last valid day") {
@@ -415,7 +415,7 @@ struct LicenceDetailView: View {
                         keyVerification(key, product: r.product)
                         Text(verbatim: key)
                             .font(.caption.monospaced())
-                            .textSelection(.enabled)
+                            .selectableText()
                             .environment(\.layoutDirection, .leftToRight)
                             .lineLimit(6)
                         KeyActions(key: key, licenceID: r.licenceID)
@@ -722,7 +722,7 @@ private struct IssuedKeyView: View {
                         .font(.caption).foregroundStyle(.statusGood)
                     Text(verbatim: key)
                         .font(.caption.monospaced())
-                        .textSelection(.enabled)
+                        .selectableText()
                         .environment(\.layoutDirection, .leftToRight)
                     KeyActions(key: key, licenceID: record.licenceID)
                 } header: {

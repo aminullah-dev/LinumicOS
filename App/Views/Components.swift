@@ -16,7 +16,7 @@ struct ValueOrUnknown: View {
 
     var body: some View {
         if let value, !value.isEmpty {
-            Text(value).textSelection(.enabled)
+            Text(value).selectableText()
         } else {
             UnknownLabel()
         }
@@ -229,6 +229,30 @@ extension View {
         self
         #endif
     }
+
+    /// Text that can be selected and copied (sources, paths, ids), except on the Mac in Dari. There a selectable text
+    /// that mixes Dari and Latin is measured at another width than it is drawn: the page grew wider than the window, the
+    /// sidebar and the row buttons were cut off, and blank lines were left under the rows (seen on the Marketing,
+    /// Obligations and project pages at 960 to 1200 points, 2026-11-13). In Dari on the Mac it is plain text.
+    func selectableText() -> some View {
+        modifier(SelectableText())
+    }
+}
+
+private struct SelectableText: ViewModifier {
+    @Environment(\.layoutDirection) private var direction
+
+    func body(content: Content) -> some View {
+        #if os(macOS)
+        if direction == .rightToLeft {
+            content
+        } else {
+            content.textSelection(.enabled)
+        }
+        #else
+        content.textSelection(.enabled)
+        #endif
+    }
 }
 
 struct EvidenceView: View {
@@ -246,7 +270,7 @@ struct EvidenceView: View {
                 }
             }
             if !verification.notes.isEmpty {
-                Text(verification.notes).font(.callout).textSelection(.enabled)
+                Text(verification.notes).font(.callout).selectableText()
             }
             Divider()
             if verification.sources.isEmpty {
@@ -262,10 +286,10 @@ struct EvidenceView: View {
                         if let url = URL(string: source.reference), url.scheme?.hasPrefix("http") == true {
                             Link(source.reference, destination: url).font(.caption)
                         } else {
-                            Text(source.reference).font(.caption.monospaced()).textSelection(.enabled)
+                            Text(source.reference).font(.caption.monospaced()).selectableText()
                         }
                         if let detail = source.detail {
-                            Text(detail).font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                            Text(detail).font(.caption).foregroundStyle(.secondary).selectableText()
                         }
                     }
                 }

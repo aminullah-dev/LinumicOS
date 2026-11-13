@@ -514,7 +514,7 @@ struct ProductBoardDetail: View {
                 ForEach(findings) { f in
                     VStack(alignment: .leading, spacing: 2) {
                         if named { Text(verbatim: L(f.track)).font(.caption).foregroundStyle(.secondary) }
-                        Text(verbatim: f.text).monospacedDigit().textSelection(.enabled)
+                        Text(verbatim: f.text).monospacedDigit().selectableText()
                     }
                 }
             case .unknown:
@@ -773,8 +773,9 @@ struct ProductBoardDetail: View {
         default: break
         }
         if card.product.licence != nil { out.append(.page(.licences)) }
-        // The brands with a marketing queue (MarketingQueue: WorkTrack, SafeBeauty, VELRO).
-        if ["worktrack", "safebeauty", "velro"].contains(card.product.id) { out.append(.page(.marketingQueue)) }
+        // The brands with a marketing queue (MarketingQueue: WorkTrack, SafeBeauty, VELRO): a link to the Marketing page,
+        // which holds them; their marketing rows are not on the project's page.
+        if ["worktrack", "safebeauty", "velro"].contains(card.product.id) { out.append(.page(.marketing)) }
         return out
     }
 
@@ -881,7 +882,7 @@ struct InstalledAppRow: View {
             // Unknown and not installed are said by the reading itself, below; the sentence would repeat it.
             switch status.verdict {
             case .notInstalled, .unknown: EmptyView()
-            default: DirectionalText(status.verdict.sentence).font(.callout).monospacedDigit().textSelection(.enabled)
+            default: DirectionalText(status.verdict.sentence).font(.callout).monospacedDigit().selectableText()
             }
             SourcedRow(title: "Installed", value: status.installed) { $0.label }
             SourcedRow(title: "Newest release", value: status.newest) { $0.label }
@@ -983,7 +984,7 @@ struct SourcedRow<Value: Hashable & Sendable>: View {
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 Text(title).foregroundStyle(.secondary)
                 switch value {
-                case .known(let v, _, _): Text(verbatim: text(v)).monospacedDigit().textSelection(.enabled)
+                case .known(let v, _, _): Text(verbatim: text(v)).monospacedDigit().selectableText()
                 case .none(let why, _, _): Text(verbatim: why).foregroundStyle(.secondary)
                 case .unknown(let why):
                     Text("Unknown").italic().foregroundStyle(.secondary)

@@ -21,7 +21,10 @@ public struct BriefObligationsInput: Sendable {
 /// days before it ends, so they stay on the Obligations screen and out of the Desk.
 public enum ObligationsBriefRules {
     public static func showsInBrief(_ o: Obligation, today: KeyDay) -> Bool {
-        guard o.completion == nil else { return false }
+        // Marketing rows are shown on the Marketing page only (owner, 2026-11-13), so not in the Brief, and so not on
+        // the Desk, the Center or a project's card either, which are built from it. The Center keeps one line when some
+        // are overdue (`MarketingSummary`).
+        guard o.completion == nil, !MarketingScope.isMarketing(o) else { return false }
         switch o.origin {
         case .certificate:
             return false

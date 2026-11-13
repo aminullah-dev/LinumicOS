@@ -235,7 +235,7 @@ struct MonitorView: View {
     private var cachePanel: some View {
         DashboardPanel(title: "Caching of the home page") {
             if let c = monitor.snapshot.cache {
-                LabeledContent("Cache-Control") { Text(verbatim: c.cacheControl ?? "–").font(.callout.monospaced()).textSelection(.enabled) }
+                LabeledContent("Cache-Control") { Text(verbatim: c.cacheControl ?? "–").font(.callout.monospaced()).selectableText() }
                 LabeledContent("cf-cache-status") { Text(verbatim: c.cdnStatus ?? "–").font(.callout.monospaced()) }
                 if let age = c.age {
                     LabeledContent("Age") { Text("\(age) seconds").monospacedDigit() }
@@ -277,7 +277,7 @@ struct MonitorView: View {
                         }
                         if let registrar = d.registrar { LabeledContent("Registrar") { Text(verbatim: registrar) } }
                         Text("Source: \(d.sourceURL), read \(d.fetchedAt.formatted(date: .abbreviated, time: .shortened))")
-                            .font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                            .font(.caption).foregroundStyle(.secondary).selectableText()
                     } else if monitor.isCheckingDomains {
                         Text("Reading from RDAP…").foregroundStyle(.secondary)
                     } else {
@@ -380,7 +380,7 @@ struct MonitorCard: View {
             } else {
                 Text("Not checked yet.").font(.caption).foregroundStyle(.secondary)
             }
-            Text("Source: \(target.source)").font(.caption2).foregroundStyle(.tertiary).lineLimit(2).textSelection(.enabled)
+            Text("Source: \(target.source)").font(.caption2).foregroundStyle(.tertiary).lineLimit(2).selectableText()
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .topLeading)

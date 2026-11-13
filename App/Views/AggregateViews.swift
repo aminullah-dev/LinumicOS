@@ -136,7 +136,7 @@ struct AllRepositoriesView: View {
             TableColumn("Product") { ProductCell(name: $0.productName, detail: $0.record.gitHubSlug ?? $0.record.name) }
             TableColumn("Repository") { row in
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(row.record.gitHubSlug ?? row.record.name).textSelection(.enabled)
+                    Text(row.record.gitHubSlug ?? row.record.name).selectableText()
                     Text([row.record.type.title, row.record.gitHub?.visibility?.title].compactMap { $0 }.joined(separator: " · "))
                         .font(.caption).foregroundStyle(.secondary)
                 }

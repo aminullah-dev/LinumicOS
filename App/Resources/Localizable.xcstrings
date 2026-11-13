@@ -34175,6 +34175,226 @@
           }
         }
       }
+    },
+    "%lld due within 7 days": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مورد تا ۷ روز سررسید دارد"
+          }
+        }
+      }
+    },
+    "%lld overdue": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مورد سررسید گذشته"
+          }
+        }
+      }
+    },
+    "%lld with no date": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld مورد بی‌تاریخ"
+          }
+        }
+      }
+    },
+    "Add a marketing date with its source": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یک تاریخ بازاریابی را با منبعش اضافه کنید"
+          }
+        }
+      }
+    },
+    "Add…": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افزودن…"
+          }
+        }
+      }
+    },
+    "Default Text Size": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اندازهٔ پیش‌فرض متن"
+          }
+        }
+      }
+    },
+    "Each brand's scheduled queue and the clock change, with their sources. Nothing is posted from here. A ledger's text is never read: Verify opens it in its own app.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صف زمان‌بندی‌شدهٔ هر برند و تغییر ساعت، با منبع‌شان. از این‌جا هیچ چیزی نشر نمی‌شود. متن دفتر هرگز خوانده نمی‌شود: «بررسی» آن را در برنامهٔ خودش باز می‌کند."
+          }
+        }
+      }
+    },
+    "For this Mac only. Large is one step above the Mac's own size. ⌘+ and ⌘− in the View menu change it too, and ⌘0 goes back to Large.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فقط برای همین مک. «بزرگ» یک پله بزرگ‌تر از اندازهٔ خود مک است. ⌘+ و ⌘− در منوی View هم آن را عوض می‌کنند و ⌘0 آن را به «بزرگ» برمی‌گرداند."
+          }
+        }
+      }
+    },
+    "Large": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بزرگ"
+          }
+        }
+      }
+    },
+    "Larger": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بزرگ‌تر"
+          }
+        }
+      }
+    },
+    "Larger Text": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متن بزرگ‌تر"
+          }
+        }
+      }
+    },
+    "LinkedIn, Facebook, Instagram, X and YouTube aren't connected: that needs OAuth credentials, which will live on the backend.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LinkedIn، Facebook، Instagram، X و YouTube وصل نیستند: این کار به اعتبارنامهٔ OAuth نیاز دارد که روی سرور نگه داشته می‌شود."
+          }
+        }
+      }
+    },
+    "Market research": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تحقیق بازار"
+          }
+        }
+      }
+    },
+    "Marketing: %lld overdue": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازاریابی: %lld مورد سررسید گذشته"
+          }
+        }
+      }
+    },
+    "No posts recorded yet. Draft a product or release announcement, send it for review, and schedule it once approved.": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز هیچ پستی ثبت نشده. اعلان محصول یا انتشار را بنویسید، برای بازبینی بفرستید و پس از تأیید زمان‌بندی کنید."
+          }
+        }
+      }
+    },
+    "Nothing open in the queue": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "در صف چیزی باز نیست"
+          }
+        }
+      }
+    },
+    "Part": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بخش"
+          }
+        }
+      }
+    },
+    "Posts": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پست‌ها"
+          }
+        }
+      }
+    },
+    "Queue": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صف"
+          }
+        }
+      }
+    },
+    "Smaller Text": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متن کوچک‌تر"
+          }
+        }
+      }
+    },
+    "Standard": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "معمولی"
+          }
+        }
+      }
+    },
+    "Text size": {
+      "localizations": {
+        "fa-AF": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اندازهٔ متن"
+          }
+        }
+      }
     }
   },
   "version": "1.1"
