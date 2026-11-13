@@ -143,7 +143,7 @@ struct AgentCard: View {
             // The status on its own line, so a long slug never wraps letter by letter on an iPhone.
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(verbatim: agent.label).font(.headline)
-                Text(verbatim: agent.slug).font(.callout.monospaced()).foregroundStyle(.secondary).textSelection(.enabled)
+                Text(verbatim: agent.slug).font(.callout.monospaced()).foregroundStyle(.secondary).selectableText()
                     .lineLimit(1).truncationMode(.middle)
             }
             pills

@@ -121,7 +121,7 @@ struct ReadinessRow: View {
                 .monospacedDigit()
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
-                .textSelection(.enabled)
+                .selectableText()
             SourceLine(reference: result.source, date: result.date?.date)
         }
         .padding(.vertical, 6)

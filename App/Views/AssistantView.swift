@@ -72,8 +72,8 @@ private struct AnswerCard: View {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
                     KindBadge(kind: s.kind)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(s.text).textSelection(.enabled)
-                        Text(s.basis).font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                        Text(s.text).selectableText()
+                        Text(s.basis).font(.caption).foregroundStyle(.secondary).selectableText()
                     }
                     Spacer()
                     if let id = s.productID {

@@ -136,7 +136,7 @@ struct BriefSectionCard: View {
             if let at = section.readAt {
                 ReleaseSourceLine(source: section.source, at: at)
             } else {
-                Text("Source: \(section.source)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
+                Text("Source: \(section.source)").font(.caption2).foregroundStyle(.tertiary).selectableText()
             }
         }
     }
@@ -188,7 +188,7 @@ struct BriefLineRow: View {
                 if let at = line.readAt {
                     ReleaseSourceLine(source: line.source, at: at)
                 } else {
-                    Text("Source: \(line.source)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
+                    Text("Source: \(line.source)").font(.caption2).foregroundStyle(.tertiary).selectableText()
                 }
             }
             Spacer(minLength: 8)

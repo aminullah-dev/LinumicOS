@@ -99,7 +99,7 @@ private struct MarketingQueueTab: View {
             if !model.grantedFolders.isEmpty {
                 HStack {
                     Text(String(localized: "Read-only grants for Verify: \(model.grantedFolders.joined(separator: ", "))"))
-                        .font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                        .font(.caption).foregroundStyle(.secondary).selectableText()
                     Spacer()
                     Button("Remove access", role: .destructive) { model.revokeAll() }
                 }
@@ -169,7 +169,7 @@ private struct MarketingBrandCard: View {
             if let ledger = brand.ledger {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(fileText).font(.rowCaption).foregroundStyle(.secondary)
-                    Text(verbatim: ledger.displayFile).font(.caption2.monospaced()).foregroundStyle(.tertiary).textSelection(.enabled)
+                    Text(verbatim: ledger.displayFile).font(.caption2.monospaced()).foregroundStyle(.tertiary).selectableText()
                         .help(Text(String(localized: "Named as the ledger in: \(ledger.source)")))
                 }
             } else {

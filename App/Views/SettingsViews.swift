@@ -450,7 +450,7 @@ struct SecuritySettingsView: View {
             Section("Local data") {
                 LabeledContent("Inventory file") {
                     Text((try? JSONFileInventoryStore.defaultFileURL().path(percentEncoded: false)) ?? "Unavailable")
-                        .textSelection(.enabled)
+                        .selectableText()
                         .font(.callout.monospaced())
                 }
                 Text("The inventory file contains no secrets.")
@@ -531,7 +531,7 @@ private struct CloudAccountSection: View {
             } else if let user = model.cloudUser {
                 LabeledContent("Signed in") { Text(verbatim: user.email ?? user.userID) }
                 LabeledContent("User ID") {
-                    Text(verbatim: user.userID).font(.caption.monospaced()).textSelection(.enabled)
+                    Text(verbatim: user.userID).font(.caption.monospaced()).selectableText()
                 }
                 statusRow
                 deskSyncRows

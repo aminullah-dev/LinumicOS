@@ -177,7 +177,7 @@ struct VaultEntryRow: View {
                 }
             }
             if !entry.notes.isEmpty {
-                Text(verbatim: entry.notes).font(.callout).foregroundStyle(.secondary).lineLimit(3).textSelection(.enabled)
+                Text(verbatim: entry.notes).font(.callout).foregroundStyle(.secondary).lineLimit(3).selectableText()
             }
             footer
         }
@@ -204,7 +204,7 @@ struct VaultEntryRow: View {
         VaultFieldLine(symbol: entry.loginKind.symbol, label: Text(entry.loginKind.title)) {
             if let login = entry.trimmedLogin {
                 Text(verbatim: login)
-                    .textSelection(.enabled)
+                    .selectableText()
                     .environment(\.layoutDirection, .leftToRight)
             } else {
                 Text("Not added yet").foregroundStyle(.secondary).italic()
@@ -224,7 +224,7 @@ struct VaultEntryRow: View {
             } else if let revealed {
                 Text(verbatim: revealed)
                     .font(.body.monospaced())
-                    .textSelection(.enabled)
+                    .selectableText()
                     .environment(\.layoutDirection, .leftToRight)
             } else {
                 Text(verbatim: "••••••••••••").foregroundStyle(.secondary).accessibilityLabel(Text("Hidden"))

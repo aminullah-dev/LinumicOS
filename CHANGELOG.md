@@ -27,6 +27,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Go menu:** ⌘1 to ⌘6 follow the six daily pages (Marketing is ⌘4, Keys & Backups ⌘5, Automation ⌘6); ⌘7 to ⌘9 are
   Obligations, Money and Releases. Sales lost its shortcut (⌘K finds it). The AI Assistant moved from the Marketing area
   to Projects (it answers about the inventory).
+- **Dari on the Mac, found in the pictures:** on the Marketing, Obligations and project pages the page grew wider than
+  the window (the sidebar and the row buttons cut off at the edge, blank lines under each row) at 960 points at the old
+  size and up to about 1200 at the new one. The cause is `.textSelection(.enabled)`: a selectable text mixing Dari and
+  Latin is measured at another width than it is drawn. All 90 uses are now `.selectableText()`, which keeps selection
+  everywhere except on the Mac in Dari, where sources and paths are plain text (they can no longer be selected there).
 - **Pictures on the Mac without the owner's data:** `tools/design/mac-preview.sh` builds a Debug copy under
   `com.linumic.commandcenter.preview`, ad-hoc signed and sandboxed with no network and no folder of the owner's, and
   `-LCCSnapshot` (Debug only) makes it draw its own window into a PNG and quit, so no Screen Recording permission is

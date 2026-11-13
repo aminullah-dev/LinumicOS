@@ -110,8 +110,8 @@ struct VerificationView: View {
                     ForEach(model.unresolved) { item in
                         GroupBox {
                             VStack(alignment: .leading, spacing: 6) {
-                                Text(item.location).font(.caption.monospaced()).textSelection(.enabled)
-                                Text(item.findings).font(.callout).textSelection(.enabled)
+                                Text(item.location).font(.caption.monospaced()).selectableText()
+                                Text(item.findings).font(.callout).selectableText()
                                 if let q = item.question {
                                     Label(q, systemImage: "questionmark.bubble").font(.callout.weight(.medium)).foregroundStyle(.statusWarn)
                                 }

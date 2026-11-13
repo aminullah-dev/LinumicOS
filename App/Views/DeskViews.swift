@@ -306,7 +306,7 @@ struct DeskRowView: View {
                     Text("Source in the report: \(reference)")
                         .font(.caption).foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
-                        .textSelection(.enabled)
+                        .selectableText()
                 }
                 // The ledger's own dated corrections under the line are always shown: the line above may be wrong.
                 ForEach(Array(item.corrections.enumerated()), id: \.offset) { _, note in
@@ -355,10 +355,10 @@ struct DeskRowView: View {
                 ReleaseSourceLine(source: item.evidence.location, at: at)
             } else {
                 Text("Source: \(item.evidence.location), checked \(at.formatted(date: .abbreviated, time: .shortened))")
-                    .font(.caption2).foregroundStyle(.tertiary).lineLimit(3).textSelection(.enabled)
+                    .font(.caption2).foregroundStyle(.tertiary).lineLimit(3).selectableText()
             }
         } else {
-            Text("Source: \(item.evidence.location), read time unknown").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
+            Text("Source: \(item.evidence.location), read time unknown").font(.caption2).foregroundStyle(.tertiary).selectableText()
         }
     }
 
@@ -808,7 +808,7 @@ struct LedgerAccessSettingsSection: View {
                     LabeledContent {
                         Text(verbatim: sourceState(source.state)).font(.caption).foregroundStyle(.secondary)
                     } label: {
-                        Text(verbatim: source.displayPath).font(.caption.monospaced()).textSelection(.enabled)
+                        Text(verbatim: source.displayPath).font(.caption.monospaced()).selectableText()
                     }
                 }
                 Text("Read \(reading.readAt.formatted(date: .abbreviated, time: .shortened)).").font(.caption).foregroundStyle(.secondary)

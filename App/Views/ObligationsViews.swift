@@ -323,9 +323,9 @@ struct ObligationRowView: View {
                     .font(.caption)
                 }
                 if let dueSource = o.dueSource {
-                    Text("Date from: \(dueSource)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled)
+                    Text("Date from: \(dueSource)").font(.caption2).foregroundStyle(.tertiary).selectableText()
                 }
-                Text(sourceText).font(.caption2).foregroundStyle(.tertiary).lineLimit(4).textSelection(.enabled)
+                Text(sourceText).font(.caption2).foregroundStyle(.tertiary).lineLimit(4).selectableText()
             }
             Spacer(minLength: 8)
             actions
@@ -453,10 +453,10 @@ struct AccountCard: View {
                 Label { Text("Cost unknown") } icon: { Image(systemName: "questionmark.circle") }
                     .font(.caption).foregroundStyle(.secondary)
             }
-            if let s = account.holderSource { Text("Holder from: \(s)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled) }
-            if let s = account.cost?.source { Text("Cost from: \(s)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled) }
-            if let s = account.renewalSource { Text("Renewal from: \(s)").font(.caption2).foregroundStyle(.tertiary).textSelection(.enabled) }
-            Text("Source: \(account.source)").font(.caption2).foregroundStyle(.tertiary).lineLimit(3).textSelection(.enabled)
+            if let s = account.holderSource { Text("Holder from: \(s)").font(.caption2).foregroundStyle(.tertiary).selectableText() }
+            if let s = account.cost?.source { Text("Cost from: \(s)").font(.caption2).foregroundStyle(.tertiary).selectableText() }
+            if let s = account.renewalSource { Text("Renewal from: \(s)").font(.caption2).foregroundStyle(.tertiary).selectableText() }
+            Text("Source: \(account.source)").font(.caption2).foregroundStyle(.tertiary).lineLimit(3).selectableText()
             HStack {
                 Spacer()
                 Button("Edit…", action: edit).buttonStyle(.borderless).font(.callout)

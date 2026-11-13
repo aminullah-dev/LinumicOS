@@ -405,7 +405,7 @@ private struct MoneyFigureRow: View {
             }
             MoneyAmountsText(figure: figure)
             if let reason = figure.unknownReason {
-                Text(verbatim: reason.text).font(.callout).foregroundStyle(.secondary).textSelection(.enabled)
+                Text(verbatim: reason.text).font(.callout).foregroundStyle(.secondary).selectableText()
             }
             if let caveat = figure.completeness.caveat, figure.isKnown {
                 Label { Text(verbatim: caveat) } icon: { Image(systemName: "exclamationmark.triangle").foregroundStyle(.statusWarn) }
@@ -449,7 +449,7 @@ private struct MoneySourceLine: View {
                 Text("\(place) · never read")
             }
         }
-        .font(.caption2).foregroundStyle(.tertiary).lineLimit(3).textSelection(.enabled)
+        .font(.caption2).foregroundStyle(.tertiary).lineLimit(3).selectableText()
     }
 }
 

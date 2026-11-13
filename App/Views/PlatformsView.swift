@@ -286,7 +286,7 @@ struct SourceLine: View {
             DirectionalText(date.map { "\(reference) · \($0.shortDate)" } ?? reference)
                 .multilineTextAlignment(.leading)
                 .lineLimit(3)
-                .textSelection(.enabled)
+                .selectableText()
         }
         .font(.caption)
         .foregroundStyle(.secondary)

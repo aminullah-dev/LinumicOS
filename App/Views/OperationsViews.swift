@@ -88,7 +88,7 @@ struct OpsReadLine: View {
         }
         .font(.caption)
         .foregroundStyle(.secondary)
-        .textSelection(.enabled)
+        .selectableText()
     }
 }
 
@@ -406,7 +406,7 @@ struct TalarHallView: View {
                         LabeledContent("Refund rule") { Text("\(r.refundPct)% if cancelled \(r.minDaysBefore)+ days before") }
                     }
                     LabeledContent("Submitted") { Text(verbatim: h.createdAt?.date.formatted(date: .abbreviated, time: .shortened) ?? "—") }
-                    LabeledContent("Hall id") { Text(verbatim: ltr(h.id)).font(.body.monospaced()).textSelection(.enabled) }
+                    LabeledContent("Hall id") { Text(verbatim: ltr(h.id)).font(.body.monospaced()).selectableText() }
                 } header: {
                     Text("Awaiting review")
                 } footer: {
@@ -484,7 +484,7 @@ struct TalarReviewSheet: View {
                     Section {
                         if isProduction {
                             TextField("Type the hall name to confirm", text: $typed).autocorrectionDisabled()
-                            Text("Type: \(name)").font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                            Text("Type: \(name)").font(.caption).foregroundStyle(.secondary).selectableText()
                         } else {
                             Toggle("I've checked the hall above", isOn: $checked)
                         }
@@ -704,7 +704,7 @@ struct SafeBeautyPane: View {
                     // Why, in plain sight: a tooltip is not seen on iPhone, nor by keyboard and VoiceOver users.
                     if sb.balances == nil {
                         Text(verbatim: sb.balancesError ?? String(localized: "The balance totals have not been read yet."))
-                            .font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                            .font(.caption).foregroundStyle(.secondary).selectableText()
                     }
                     if let b = sb.balances, b.owedBySalonsCount > 0 {
                         LabeledContent("Salons that owe the platform") {
@@ -818,7 +818,7 @@ struct SafeBeautyPersonView: View {
                     LabeledContent("Account status") { Text(verbatim: p.status) }
                     LabeledContent("Identity check (KYC)") { Text(verbatim: p.kycStatus) }
                     LabeledContent("Joined") { Text(verbatim: p.joined?.formatted(date: .abbreviated, time: .omitted) ?? "—") }
-                    LabeledContent("Account id") { Text(verbatim: ltr(p.id)).font(.body.monospaced()).textSelection(.enabled) }
+                    LabeledContent("Account id") { Text(verbatim: ltr(p.id)).font(.body.monospaced()).selectableText() }
                 } footer: {
                     Text(kyc ? "The tazkira and selfie are not downloaded to this device. Review them, and approve or reject, in the SafeBeauty admin console (KYC tab)."
                              : "Approve or reject in the SafeBeauty admin console (Approvals tab). SafeBeauty doesn't audit that change, so it isn't offered here.")
@@ -1105,7 +1105,7 @@ struct VelroDriverView: View {
                     LabeledContent("Availability") { Text(verbatim: d.availability ?? "—") }
                     LabeledContent("Vehicle") { Text(verbatim: vehicle(d)) }
                     LabeledContent("Completed trips") { Text(verbatim: "\(d.completedTrips ?? 0)").monospacedDigit() }
-                    LabeledContent("Driver id") { Text(verbatim: ltr(d.id)).font(.body.monospaced()).textSelection(.enabled) }
+                    LabeledContent("Driver id") { Text(verbatim: ltr(d.id)).font(.body.monospaced()).selectableText() }
                 }
             }
             Section {

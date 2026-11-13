@@ -493,7 +493,7 @@ struct WorkTrackCompanyView: View {
                 Section {
                     if let env = worktrack.environment {
                         Text("Read from \(env.apiBase.absoluteString)/vendor/companies/\(companyID)/detail and /orders at \(r.readAt.formatted(date: .abbreviated, time: .shortened)).")
-                            .font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                            .font(.caption).foregroundStyle(.secondary).selectableText()
                     }
                 }
             } else if isLoading {
@@ -561,7 +561,7 @@ struct WorkTrackCompanyView: View {
 
     @ViewBuilder private func companySection(_ c: WTCompany) -> some View {
         Section("Company") {
-            LabeledContent("Company id") { Text(verbatim: ltr(c.companyId)).font(.body.monospaced()).textSelection(.enabled) }
+            LabeledContent("Company id") { Text(verbatim: ltr(c.companyId)).font(.body.monospaced()).selectableText() }
             LabeledContent("Account status") { Text(verbatim: c.status) }
             LabeledContent("Signed up") {
                 if let d = WorkTrackDates.instant(c.createdAt) { Text(d.formatted(date: .abbreviated, time: .omitted)) } else { UnknownLabel() }
@@ -653,7 +653,7 @@ struct WorkTrackCompanyView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(verbatim: c.name + (c.primary ? " ★" : "")).font(.callout)
                     Text(verbatim: [c.role, c.phone, c.email].compactMap { $0 }.joined(separator: " · ")).font(.caption).foregroundStyle(.secondary)
-                        .textSelection(.enabled)
+                        .selectableText()
                 }
             }
         } header: {
@@ -846,7 +846,7 @@ struct WorkTrackRenewSheet: View {
                 if worktrack.environment?.isProduction == true {
                     TextField("Type the company name to confirm", text: $typedName)
                         .autocorrectionDisabled()
-                    Text("Type: \(c.name)").font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                    Text("Type: \(c.name)").font(.caption).foregroundStyle(.secondary).selectableText()
                 } else {
                     Toggle("I've checked the changes above", isOn: $checked)
                 }
