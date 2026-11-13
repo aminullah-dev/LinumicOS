@@ -62,7 +62,9 @@ Small, verifiable steps:
   (use `SectionHeader`), `.panelTitle`, `.rowTitle`, `.rowBody`, `.rowCaption`. On the Mac every text style (`.caption`,
   `.callout`, `.body`, …) is the app's own at the size chosen in Settings (`App/Views/TextSize.swift`,
   `TextSizeSetting` in LinumicCore), so use text styles, never `.system(size:)`, and `Theme.Spacing` for spacing that
-  goes with text: both grow with the setting. iPhone and iPad keep SwiftUI's styles and Dynamic Type. A section's title is one step above the
+  goes with text: both grow with the setting. iPhone and iPad keep SwiftUI's styles and Dynamic Type.
+- Text the owner may copy (a source, a path, an id) uses `.selectableText()`, never `.textSelection(.enabled)`: on the
+  Mac in Dari a selectable text is measured at another width than it is drawn and pushes the page past the window. A section's title is one step above the
   titles of the cards under it. A state is always one pill with its icon, its word and its colour together.
 - A row of pills is a `PillRow`: at iPhone width or a large text size the pills wrap like words. A row's buttons go
   under its text at iPhone width, never beside it.
