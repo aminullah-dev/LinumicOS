@@ -5,6 +5,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Tests: text size (2026-11-14)
+- `TextSizeTests` covers `TextSizeSetting` and `TextStyleName` (default and unknown stored value, the ⌘+ and ⌘− steps, whole-point sizes growing with each size, spacing growing less than text). No app change.
+
 ### Changed: one Marketing page, and larger text on the Mac (2026-11-13)
 - **Why:** the owner: "Open a Marketing section. Show every marketing item there and remove it from everywhere else.
   Don't make the app cluttered. Make the app a bit bigger, because it can't be read with the eye."
